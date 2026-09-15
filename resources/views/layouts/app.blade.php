@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    @php
+        $currentRouteName = request()->route() ? request()->route()->getName() : '';
+        $routeSlugMap = [
+            'home' => 'home',
+            'shop.index' => 'shop',
+            'shop.show' => 'shop',
+            'about' => 'about',
+            'contact' => 'contact',
+            'quotations.create' => 'quotations',
+            'walkin.index' => 'walkin',
+            'cart.index' => 'cart',
+            'checkout.index' => 'checkout',
+            'terms' => 'terms_conditions',
+            'privacy' => 'privacy_policy',
+        ];
+        $activeSlug = $routeSlugMap[$currentRouteName] ?? trim(request()->path(), '/');
+        $activePageSeo = null;
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('page_seos')) {
+                $activePageSeo = \App\Models\PageSeo::where('page_slug', $activeSlug)->first();
+            }
+        } catch (\Throwable $e) {
+            $activePageSeo = null;
+        }
+
+        $defaultOgImage = asset('images/og-default.jpg');
+        $resolvedOgImage = $defaultOgImage;
+        if (!empty($activePageSeo?->og_image)) {
+            $resolvedOgImage = str_starts_with($activePageSeo->og_image, 'http')
+                ? $activePageSeo->og_image
+                : asset('storage/' . $activePageSeo->og_image);
+        }
+    @endphp
+
+    <title>@yield('title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import and Export Sdn Bhd'))</title>
+    <meta name="description"
+        content="@yield('meta_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export Sdn Bhd — Johor Bahru frozen seafood trading and wholesale company serving Malaysia and Singapore.'))">
+
+    @php
+        $keywords = $activePageSeo?->meta_keywords ?? ($settings['meta_keywords'] ?? '');
+    @endphp
+    @if(!empty($keywords))
+        <meta name="keywords" content="{{ $keywords }}">
+    @endif
+
+    <link rel="canonical"
+        href="@yield('canonical_url', $activePageSeo?->canonical_url ?? ($settings['canonical_url'] ?? url()->current()))">
+    @if(!empty($settings['site_favicon']))
+        <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
+        <link rel="shortcut icon" href="{{ asset('images/favicon.webp') }}">
+    @else
+        <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
+        <link rel="shortcut icon" href="{{ asset('images/favicon.webp') }}">
+    @endif
+    <meta property="og:title"
+        content="@yield('og_title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import and Export Sdn Bhd'))">
+    <meta property="og:description"
+        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'Premium frozen seafood — shop online or visit our store.'))">
+    <meta property="og:image" content="@yield('og_image', $resolvedOgImage)">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
+    @if(!empty($settings['tracking_ga4_id']))
+        <!-- Google Analytics GA4 -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $settings['tracking_ga4_id'] }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', '{{ $settings["tracking_ga4_id"] }}');
+        </script>
+    @endif
+
+    @if(!empty($settings['schema_markup']))
+        <!-- Schema Markup JSON-LD -->
+        {!! str_starts_with(trim($settings['schema_markup']), '<script') ? $settings['schema_markup'] : '<script type="application/ld+json">' . $settings['schema_markup'] . '</script>' !!}
+    @endif
+
+    @if(!empty($settings['header_tags']))
+        <!-- Custom Header Tags -->
+        {!! $settings['header_tags'] !!}
+    @endif
+
+    <style>
+        .footer-social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            color: #ffffff !important;
+            text-decoration: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+            flex-shrink: 0;
+        }
+
+        .footer-social-icon:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .social-share-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.92;
+        }
+
+        @keyframes btnSpin { 100% { transform: rotate(360deg); } }
+        .btn-added {
+            background: #059669 !important;
+            border-color: #047857 !important;
+            color: #ffffff !important;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35) !important;
+        }
+
+        /* ── Currency Selector (Circular Button & Smooth Dropdown) ── */
+        .currency-menu {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .currency-circle-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid var(--royalblue-600, #2563eb);
+            color: var(--royalblue-600, #2563eb);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            font-weight: 800;
+            font-family: var(--font-heading, inherit);
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.18);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            padding: 0;
+            flex-shrink: 0;
+            outline: none;
+        }
+        .currency-circle-btn:hover {
+            background: var(--royalblue-50, #eff6ff);
+            border-color: var(--royalblue-700, #1d4ed8);
+            color: var(--royalblue-700, #1d4ed8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+        }
+        .currency-circle-btn.active {
+            background: var(--royalblue-600, #2563eb);
+            border-color: var(--royalblue-600, #2563eb);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+        }
+        .currency-circle-code {
+            line-height: 1;
+        }
+        .currency-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 240px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            box-shadow: 0 16px 36px rgba(6, 21, 43, 0.14), 0 4px 12px rgba(6, 21, 43, 0.06);
+            padding: 8px;
+            opacity: 0;
+            transform: translateY(-8px);
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1050;
+        }
+        .currency-dropdown.open {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+        .currency-dropdown-header {
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--royalblue-700, #1d4ed8);
+            padding: 6px 10px 8px;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .currency-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #1e293b;
+            background: none;
+            border: 1px solid transparent;
+            width: 100%;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+        .currency-option:hover {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+        .currency-option.active {
+            background: #eff6ff; /* Clean light royal blue surface */
+            border-color: #bfdbfe; /* Glacial ice blue border */
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+        }
+        .currency-option-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 28px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+            border: 1px solid #e2e8f0;
+            transition: all 0.15s ease;
+        }
+        .currency-option:hover .currency-option-pill {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .currency-option.active .currency-option-pill {
+            background: #2563eb; /* Vibrant Royal Blue matching brand */
+            color: #ffffff;
+            border-color: #1d4ed8;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.32);
+        }
+        .currency-option-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .currency-option-name {
+            font-size: 0.84rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #1e293b;
+            transition: color 0.15s ease;
+        }
+        .currency-option.active .currency-option-name {
+            color: #1d4ed8; /* Strong Royal Blue */
+            font-weight: 800;
+        }
+        .currency-option-rate {
+            font-size: 0.72rem;
+            color: #64748b;
+            margin-top: 2px;
+            transition: color 0.15s ease;
+        }
+        .currency-option.active .currency-option-rate {
+            color: #2563eb;
+            font-weight: 500;
+        }
+        .currency-option-check {
+            color: #2563eb; /* Vibrant Royal Blue checkmark */
+            font-weight: 900;
+            font-size: 1rem;
+            line-height: 1;
+        }
+    </style>
+    @stack('styles')
+</head>
+
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="{{ route('home') }}" class="nav-logo">
+                <img src="{{ asset('images/logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}"
+                    style="height:44px;width:44px;object-fit:contain;border-radius:8px;">
+                <div class="logo-text">
+                    <span class="logo-brand">MST</span>
+                    <span class="logo-sub">Import &amp; Export Sdn Bhd</span>
+                </div>
+            </a>
+            <div class="nav-links" id="navLinks">
+                <div class="mobile-drawer-header-hint">Navigation</div>
+                <div class="mobile-nav-group">
+                    <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                        <span class="nav-link-content">
+                            <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                            <span>Home</span>
+                        </span>
+                        <span class="mobile-chevron">›</span>
+                    </a>
+                    <a href="{{ route('shop.index') }}"
+                        class="nav-link {{ request()->routeIs('shop.*') ? 'active' : '' }}">
+                        <span class="nav-link-content">
+                            <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <span>Shop</span>
+                        </span>
+                        <span class="mobile-chevron">›</span>
+                    </a>
+                    <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">
+                        <span class="nav-link-content">
+                            <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <span>About</span>
+                        </span>
+                        <span class="mobile-chevron">›</span>
+                    </a>
+                    <a href="{{ route('contact') }}"
+                        class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">
+                        <span class="nav-link-content">
+                            <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                                </path>
+                            </svg>
+                            <span>Contact</span>
+                        </span>
+                        <span class="mobile-chevron">›</span>
+                    </a>
+                    @auth
+                        @if(auth()->user()->customer_group === 'trading' && auth()->user()->isApproved())
+                            <a href="{{ route('quotations.index') }}"
+                                class="nav-link {{ request()->routeIs('quotations.*') ? 'active' : '' }}">
+                                <span class="nav-link-content">
+                                    <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                                        <polyline points="10 9 9 9 8 9"></polyline>
+                                    </svg>
+                                    <span>My RFQs</span>
+                                </span>
+                                <span class="mobile-chevron">›</span>
+                            </a>
+                        @endif
+                    @endauth
+                </div>
+
+                <div class="mobile-drawer-divider"></div>
+
+                <!-- Mobile Drawer Cart Link -->
+                <a href="{{ route('cart.index') }}" class="mobile-drawer-cart-link">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div class="mobile-drawer-cart-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"></path>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <path d="M16 10a4 4 0 01-8 0"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;font-size:0.95rem;color:var(--seagreen-900);line-height:1.2">
+                                Shopping Cart</div>
+                            <div style="font-size:0.75rem;color:#64748b;margin-top:2px">View items & checkout</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <span class="cart-count mobile-cart-badge" style="display:none">0</span>
+                        <span class="mobile-chevron" style="color:var(--seagreen-700)">›</span>
+                    </div>
+                </a>
+
+                <!-- Mobile Drawer User Account Section -->
+                @auth
+                    <div class="mobile-drawer-user-card">
+                        <div class="mobile-drawer-user-header">
+                            <div class="user-avatar"
+                                style="width:40px;height:40px;font-size:1rem;background:var(--seagreen-700);color:#ffffff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700">
+                                {{ substr(auth()->user()->name, 0, 1) }}
+                            </div>
+                            <div style="flex:1;min-width:0">
+                                <div
+                                    style="font-weight:700;color:var(--seagreen-900);font-size:0.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                                    {{ auth()->user()->name }}
+                                </div>
+                                <div style="display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap">
+                                    <span class="group-badge group-{{ auth()->user()->customer_group }}"
+                                        style="font-size:0.7rem;padding:2px 8px;border-radius:6px">
+                                        {{ ucfirst(auth()->user()->customer_group) }}
+                                    </span>
+                                    @if(auth()->user()->isAdmin())
+                                        <span
+                                            style="font-size:0.7rem;background:#fee2e2;color:#991b1b;padding:2px 7px;border-radius:6px;font-weight:700">Admin</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mobile-drawer-user-links">
+                            <a href="{{ route('account.dashboard') }}" class="mobile-drawer-user-item">
+                                <div style="display:flex;align-items:center;gap:10px">
+                                    <span class="drawer-icon">📊</span>
+                                    <span>Dashboard</span>
+                                </div>
+                                <span class="mobile-chevron">›</span>
+                            </a>
+                            <a href="{{ route('account.orders') }}" class="mobile-drawer-user-item">
+                                <div style="display:flex;align-items:center;gap:10px">
+                                    <span class="drawer-icon">📦</span>
+                                    <span>My Orders</span>
+                                </div>
+                                <span class="mobile-chevron">›</span>
+                            </a>
+                            <a href="{{ route('account.profile') }}" class="mobile-drawer-user-item">
+                                <div style="display:flex;align-items:center;gap:10px">
+                                    <span class="drawer-icon">👤</span>
+                                    <span>Profile Settings</span>
+                                </div>
+                                <span class="mobile-chevron">›</span>
+                            </a>
+                            @if(auth()->user()->isAdmin())
+                                <a href="{{ route('admin.dashboard') }}" class="mobile-drawer-user-item admin-item">
+                                    <div style="display:flex;align-items:center;gap:10px">
+                                        <span class="drawer-icon">⚡</span>
+                                        <span>Admin Panel</span>
+                                    </div>
+                                    <span class="mobile-chevron" style="color:var(--seagreen-700)">›</span>
+                                </a>
+                            @endif
+                        </div>
+                        <form method="POST" action="{{ route('logout') }}" style="margin-top:10px">
+                            @csrf
+                            <button type="submit" class="mobile-drawer-logout-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                <span>Sign Out</span>
+                            </button>
+                        </form>
+                    </div>
+                @else
+                <div class="mobile-drawer-auth-card">
+                    <div class="mobile-drawer-auth-title">Welcome to {{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</div>
+                    <div class="mobile-drawer-auth-sub">Sign in to track orders or access wholesale rates</div>
+                    <div class="mobile-drawer-auth-buttons">
+                        <a href="{{ route('login') }}" class="btn btn-primary"
+                            style="flex:1;text-align:center;font-weight:700;padding:11px;border-radius:10px">Sign In</a>
+                        <a href="{{ route('register') }}" class="btn btn-secondary"
+                            style="flex:1;text-align:center;font-weight:700;padding:11px;border-radius:10px">Register</a>
+                    </div>
+                </div>
+                @endguest
+
+                <div class="mobile-drawer-footer-info">
+                    <span>📞 013-280 0168</span>
+                    <span>•</span>
+                    <span>📍 Johor Bahru, Malaysia</span>
+                </div>
+            </div>
+            <div class="nav-actions">
+                @if(session('walkin_session'))
+                    <div class="walkin-badge">
+                        <span>🏪 Walk-in Mode</span>
+                        <a href="{{ route('walkin.exit') }}" class="walkin-exit">Exit</a>
+                    </div>
+                @endif
+                @auth
+                    <div class="group-badge group-{{ auth()->user()->customer_group }}">
+                        {{ ucfirst(auth()->user()->customer_group) }}
+                    </div>
+                @endauth
+
+                <!-- Currency Selector Circle Button (RM / SGD / USD) -->
+                <div class="currency-menu" id="currencyMenu">
+                    <button type="button" class="currency-circle-btn" id="currencyBtn" onclick="toggleCurrencyMenu()" aria-label="Select Currency" title="Select Currency">
+                        <span class="currency-circle-code" id="activeCurrencyCode">{{ $currencyList[$currentCurrency]['label'] ?? 'RM' }}</span>
+                    </button>
+                    <div class="currency-dropdown" id="currencyDropdown">
+                        <div class="currency-dropdown-header">Select Currency</div>
+                        @foreach($currencyList as $code => $cur)
+                            <button type="button" class="currency-option {{ $currentCurrency === $code ? 'active' : '' }}" onclick="selectCurrency('{{ $code }}')" data-code="{{ $code }}">
+                                <span class="currency-option-pill">{{ $cur['label'] }}</span>
+                                <div class="currency-option-info">
+                                    <span class="currency-option-name">{{ $cur['name'] }}</span>
+                                    <span class="currency-option-rate">
+                                        @if($code === 'MYR')
+                                            Base Currency
+                                        @else
+                                            1 RM ≈ {{ $cur['symbol'] }} {{ number_format($currencyService->convert(1, $code), 4) }}
+                                        @endif
+                                    </span>
+                                </div>
+                                <span class="currency-option-check" style="{{ $currentCurrency === $code ? '' : 'display:none' }}">✓</span>
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+
+                <a href="{{ route('cart.index') }}" class="cart-btn" id="cartBtn">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 01-8 0"></path>
+                    </svg>
+                    <span class="cart-count" id="cartCount" style="display:none">0</span>
+                </a>
+                @guest
+                    <a href="{{ route('login') }}" class="btn-ghost">Sign In</a>
+                    <a href="{{ route('register') }}" class="btn-primary-sm">Register</a>
+                @else
+                    <div class="user-menu" id="userMenu">
+                        <button class="user-btn" onclick="toggleUserMenu()">
+                            <div class="user-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
+                            <span class="user-name-nav">{{ explode(' ', auth()->user()->name)[0] }}</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="{{ route('account.dashboard') }}" class="dropdown-item">Dashboard</a>
+                            <a href="{{ route('account.orders') }}" class="dropdown-item">My Orders</a>
+                            <a href="{{ route('account.profile') }}" class="dropdown-item">Profile</a>
+                            @if(auth()->user()->isAdmin())
+                                <div class="dropdown-divider"></div>
+                                <a href="{{ route('admin.dashboard') }}" class="dropdown-item dropdown-admin">Admin Panel</a>
+                            @endif
+                            <div class="dropdown-divider"></div>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item dropdown-logout">Sign Out</button>
+                            </form>
+                        </div>
+                    </div>
+                @endguest
+                <button class="mobile-toggle" id="mobileToggle" onclick="toggleMobileMenu()">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    @if(session('success') || session('error') || session('info'))
+        <div class="flash-container">
+            @if(session('success'))
+                <div class="flash flash-success">✓ {{ session('success') }}<button class="flash-close"
+                        onclick="this.parentElement.remove()">✕</button></div>
+            @endif
+            @if(session('error'))
+                <div class="flash flash-error">⚠ {{ session('error') }}<button class="flash-close"
+                        onclick="this.parentElement.remove()">✕</button></div>
+            @endif
+            @if(session('info'))
+                <div class="flash flash-info">ℹ {{ session('info') }}<button class="flash-close"
+                        onclick="this.parentElement.remove()">✕</button></div>
+            @endif
+        </div>
+    @endif
+
+    <main class="main-content">
+        @yield('content')
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="{{ asset('images/logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}"
+                            style="height:52px;width:52px;object-fit:contain;border-radius:10px;">
+                        <div class="logo-text">
+                            <span class="logo-brand">MST</span>
+                            <span class="logo-sub">Import &amp; Export Sdn Bhd</span>
+                        </div>
+                    </div>
+                    <p class="footer-desc">
+                        {{ $settings['store_tagline'] ?? 'Premium frozen seafood for retail, wholesale, and trading customers across Malaysia. Quality you can trust, freshness you can taste.' }}
+                    </p>
+                    <div class="footer-social"
+                        style="display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap">
+                        <!-- WhatsApp -->
+                        <a href="{{ !empty($settings['social_whatsapp']) ? $settings['social_whatsapp'] : 'https://wa.me/60123456789' }}"
+                            target="_blank" class="footer-social-icon" title="WhatsApp"
+                            style="background:#25D366;box-shadow:0 2px 6px rgba(37,211,102,0.35)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.41 5.82a8.18 8.18 0 0 1-5.83 2.42c-1.45 0-2.88-.38-4.14-1.11l-.3-.17-3.12.82.83-3.04-.19-.31a8.21 8.21 0 0 1-1.26-4.43c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.64c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.12.17 1.78 2.71 4.3 3.8 2.53 1.09 2.53.73 2.99.69.45-.04 1.47-.6 1.68-1.18.2-.58.2-1.08.14-1.18-.06-.1-.22-.16-.47-.28z" />
+                            </svg>
+                        </a>
+
+                        <!-- Facebook -->
+                        <a href="{{ !empty($settings['social_facebook']) ? $settings['social_facebook'] : 'https://facebook.com' }}"
+                            target="_blank" class="footer-social-icon" title="Facebook"
+                            style="background:#1877F2;box-shadow:0 2px 6px rgba(24,119,242,0.35)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </a>
+
+                        <!-- Instagram -->
+                        <a href="{{ !empty($settings['social_instagram']) ? $settings['social_instagram'] : 'https://instagram.com' }}"
+                            target="_blank" class="footer-social-icon" title="Instagram"
+                            style="background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);box-shadow:0 2px 6px rgba(220,39,67,0.35)">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                            </svg>
+                        </a>
+
+                        <!-- TikTok -->
+                        <a href="{{ !empty($settings['social_tiktok']) ? $settings['social_tiktok'] : 'https://tiktok.com' }}"
+                            target="_blank" class="footer-social-icon" title="TikTok"
+                            style="background:#000000;box-shadow:0 2px 6px rgba(0,0,0,0.35)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+                            </svg>
+                        </a>
+
+                        <!-- X / Twitter -->
+                        <a href="{{ !empty($settings['social_twitter']) ? $settings['social_twitter'] : 'https://x.com' }}"
+                            target="_blank" class="footer-social-icon" title="X (Twitter)"
+                            style="background:#0f172a;box-shadow:0 2px 6px rgba(15,23,42,0.35)">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ route('home') }}">Home</a></li>
+                        <li><a href="{{ route('shop.index') }}">Shop Catalogue</a></li>
+                        <li><a href="{{ route('walkin.entry') }}">Walk-in Store (QR)</a></li>
+                        <li><a href="{{ route('about') }}">About Us</a></li>
+                        <li><a href="{{ route('contact') }}">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Featured Categories</h4>
+                    <ul class="footer-links">
+                        @if(isset($footerCategories) && $footerCategories->count())
+                            @foreach($footerCategories as $fCat)
+                                <li><a href="{{ route('shop.index', ['category' => $fCat->slug]) }}">{{ $fCat->name }}</a></li>
+                            @endforeach
+                        @else
+                            <li><a href="{{ route('shop.index') }}">All Fresh Seafood</a></li>
+                        @endif
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Store Location & Contact</h4>
+                    <div class="footer-contact">
+                        <div class="contact-item">📍
+                            {{ $settings['store_address'] ?? '7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia' }}
+                        </div>
+                        @php
+                            $footerPhones = array_filter([
+                                $settings['store_phone'] ?? '013-2800168',
+                                $settings['store_phone_2'] ?? '',
+                                $settings['store_phone_3'] ?? '',
+                            ]);
+                        @endphp
+                        @foreach($footerPhones as $fPhone)
+                            <div class="contact-item">📞 <a href="tel:{{ preg_replace('/[^0-9+]/', '', $fPhone) }}"
+                                    style="color:inherit;text-decoration:none">{{ $fPhone }}</a></div>
+                        @endforeach
+                        <div class="contact-item">✉ <a
+                                href="mailto:{{ $settings['store_email'] ?? 'mikatrading15@gmail.com' }}"
+                                style="color:inherit;text-decoration:none">{{ $settings['store_email'] ??
+                                'mikatrading15@gmail.com' }}</a></div>
+                        <div class="contact-item">🕐 {{ $settings['store_hours'] ?? 'Mon–Sat: 8am – 6pm' }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© {{ date('Y') }} {{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}. All
+                    rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="{{ route('contact') }}">Support</a>
+                    <a href="{{ route('about') }}">About</a>
+                    <a href="{{ route('walkin.entry') }}">In-Store Pass</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const toggle = document.getElementById('mobileToggle');
+            const isOpen = navLinks.classList.toggle('open');
+            toggle.classList.toggle('active', isOpen);
+            document.body.classList.toggle('mobile-drawer-open', isOpen);
+        }
+        window.AppCurrency = {
+            current: @json($currentCurrency),
+            label: @json($currencyLabel),
+            symbol: @json($currencySymbol),
+            isAuto: @json((bool)$currencyService->isAutoConvert()),
+            rates: @json($currencyService->getRates()),
+            currencies: @json($currencyList)
+        };
+
+        function selectCurrency(code) {
+            // 1. Close currency dropdown
+            document.getElementById('currencyDropdown')?.classList.remove('open');
+            document.getElementById('currencyBtn')?.classList.remove('active');
+
+            // 2. Immediate visual update of circular button text
+            const label = code === 'MYR' ? 'RM' : code;
+            const circleCode = document.getElementById('activeCurrencyCode');
+            if (circleCode) circleCode.textContent = label;
+
+            // 3. Update dropdown options visual active/check state
+            document.querySelectorAll('#currencyDropdown .currency-option').forEach(opt => {
+                const isSelected = opt.getAttribute('data-code') === code;
+                opt.classList.toggle('active', isSelected);
+                const check = opt.querySelector('.currency-option-check');
+                if (check) check.style.display = isSelected ? 'inline-block' : 'none';
+            });
+
+            // 4. Update local currency state
+            if (window.AppCurrency) {
+                window.AppCurrency.current = code;
+                const curMeta = window.AppCurrency.currencies[code] || {};
+                window.AppCurrency.symbol = curMeta.symbol || (code === 'MYR' ? 'RM' : code);
+                window.AppCurrency.label = curMeta.label || code;
+            }
+
+            // 5. Update every price on the current page immediately WITHOUT refresh
+            updatePageCurrencies(code);
+
+            // 6. Asynchronously update server session
+            fetch('/currency/' + encodeURIComponent(code), {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(r => r.json()).then(data => {
+                if (data && data.success) {
+                    if (data.rates) window.AppCurrency.rates = data.rates;
+                    if (typeof data.is_auto !== 'undefined') window.AppCurrency.isAuto = data.is_auto;
+                    updatePageCurrencies(code);
+                }
+            }).catch(e => console.error('Currency switch error:', e));
+        }
+
+        function calculatePriceForElement(el, targetCurrency) {
+            const baseRm = parseFloat(el.getAttribute('data-base-rm') || '0');
+            if (isNaN(baseRm) || baseRm <= 0) {
+                return { formatted: 'Price on Request', amount: null, baseRm: null };
+            }
+
+            const conf = window.AppCurrency || {};
+            const curMeta = (conf.currencies && conf.currencies[targetCurrency]) || {};
+            const symbol = curMeta.symbol || (targetCurrency === 'MYR' ? 'RM' : targetCurrency);
+
+            if (targetCurrency === 'MYR') {
+                return {
+                    amount: baseRm,
+                    symbol: 'RM',
+                    formatted: 'RM ' + baseRm.toFixed(2),
+                    baseRm: null
+                };
+            }
+
+            // Auto Convert mode
+            if (conf.isAuto) {
+                const rate = (conf.rates && conf.rates[targetCurrency]) ? parseFloat(conf.rates[targetCurrency]) : 1;
+                const converted = Math.round(baseRm * rate * 100) / 100;
+                return {
+                    amount: converted,
+                    symbol: symbol,
+                    formatted: symbol + ' ' + converted.toFixed(2),
+                    baseRm: baseRm
+                };
+            }
+
+            // Manual Mode (Auto OFF): Check per-product manual prices
+            const isWholesale = el.getAttribute('data-group') === 'wholesale' || el.getAttribute('data-group') === 'trading';
+            let manualVal = null;
+            if (targetCurrency === 'SGD') {
+                manualVal = isWholesale ? (el.getAttribute('data-manual-wholesale-sgd') || el.getAttribute('data-manual-sgd')) : el.getAttribute('data-manual-sgd');
+            } else if (targetCurrency === 'USD') {
+                manualVal = isWholesale ? (el.getAttribute('data-manual-wholesale-usd') || el.getAttribute('data-manual-usd')) : el.getAttribute('data-manual-usd');
+            }
+
+            if (manualVal && !isNaN(parseFloat(manualVal)) && parseFloat(manualVal) > 0) {
+                const amt = parseFloat(manualVal);
+                return {
+                    amount: amt,
+                    symbol: symbol,
+                    formatted: symbol + ' ' + amt.toFixed(2),
+                    baseRm: baseRm
+                };
+            }
+
+            // Fallback to manual exchange rate conversion
+            const rate = (conf.rates && conf.rates[targetCurrency]) ? parseFloat(conf.rates[targetCurrency]) : 1;
+            const converted = Math.round(baseRm * rate * 100) / 100;
+            return {
+                amount: converted,
+                symbol: symbol,
+                formatted: symbol + ' ' + converted.toFixed(2),
+                baseRm: baseRm
+            };
+        }
+
+        function updatePageCurrencies(targetCurrency) {
+            const conf = window.AppCurrency || {};
+            const curMeta = (conf.currencies && conf.currencies[targetCurrency]) || {};
+            const symbol = curMeta.symbol || (targetCurrency === 'MYR' ? 'RM' : targetCurrency);
+
+            // 1. Update all standard product price blocks (.js-currency-price)
+            document.querySelectorAll('.js-currency-price').forEach(el => {
+                const res = calculatePriceForElement(el, targetCurrency);
+                const amountEl = el.querySelector('.price-amount');
+                if (amountEl) {
+                    amountEl.textContent = res.formatted;
+                } else {
+                    el.textContent = res.formatted;
+                }
+
+                const baseRmEl = el.querySelector('.price-base-rm');
+                if (baseRmEl) {
+                    if (targetCurrency !== 'MYR' && res.baseRm) {
+                        baseRmEl.textContent = 'RM ' + res.baseRm.toFixed(2);
+                        baseRmEl.style.display = 'block';
+                    } else {
+                        baseRmEl.style.display = 'none';
+                    }
+                }
+            });
+
+            // 2. Update product detail approx note (.js-product-approx-note)
+            document.querySelectorAll('.js-product-approx-note').forEach(el => {
+                const baseRm = parseFloat(el.getAttribute('data-base-rm') || '0');
+                if (targetCurrency !== 'MYR' && baseRm > 0) {
+                    el.innerHTML = 'Approx. <strong>RM ' + baseRm.toFixed(2) + '</strong> (billed in MYR at checkout)';
+                    el.style.display = 'block';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+
+            // 3. Update cart items & totals if on cart page (.js-cart-item-price, .js-cart-item-subtotal, etc.)
+            document.querySelectorAll('.js-cart-item-price').forEach(el => {
+                const res = calculatePriceForElement(el, targetCurrency);
+                el.textContent = res.formatted;
+            });
+            document.querySelectorAll('.js-cart-item-subtotal').forEach(el => {
+                const qty = parseInt(el.getAttribute('data-qty') || '1', 10);
+                const parent = el.closest('[data-base-rm]');
+                const unitBase = parent ? parseFloat(parent.getAttribute('data-base-rm') || '0') : parseFloat(el.getAttribute('data-base-rm') || '0');
+                const lineBase = unitBase * qty;
+                const rate = (conf.rates && conf.rates[targetCurrency]) ? parseFloat(conf.rates[targetCurrency]) : 1;
+                const convertedLine = targetCurrency === 'MYR' ? lineBase : Math.round(lineBase * rate * 100) / 100;
+                if (targetCurrency !== 'MYR') {
+                    el.innerHTML = symbol + ' ' + convertedLine.toFixed(2) + '<div style="font-size:0.75rem;color:#64748b;font-weight:normal">RM ' + lineBase.toFixed(2) + '</div>';
+                } else {
+                    el.textContent = 'RM ' + lineBase.toFixed(2);
+                }
+            });
+            document.querySelectorAll('.js-cart-summary-subtotal').forEach(el => {
+                const base = parseFloat(el.getAttribute('data-base-subtotal') || '0');
+                const rate = (conf.rates && conf.rates[targetCurrency]) ? parseFloat(conf.rates[targetCurrency]) : 1;
+                const converted = targetCurrency === 'MYR' ? base : Math.round(base * rate * 100) / 100;
+                if (targetCurrency !== 'MYR') {
+                    el.innerHTML = symbol + ' ' + converted.toFixed(2) + '<span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal">RM ' + base.toFixed(2) + '</span>';
+                } else {
+                    el.textContent = 'RM ' + base.toFixed(2);
+                }
+            });
+            document.querySelectorAll('.js-cart-summary-total').forEach(el => {
+                const base = parseFloat(el.getAttribute('data-base-total') || '0');
+                const rate = (conf.rates && conf.rates[targetCurrency]) ? parseFloat(conf.rates[targetCurrency]) : 1;
+                const converted = targetCurrency === 'MYR' ? base : Math.round(base * rate * 100) / 100;
+                if (targetCurrency !== 'MYR') {
+                    el.innerHTML = symbol + ' ' + converted.toFixed(2) + '<span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal;margin-top:2px">Base: RM ' + base.toFixed(2) + '</span>';
+                } else {
+                    el.textContent = 'RM ' + base.toFixed(2);
+                }
+            });
+            document.querySelectorAll('.js-cart-currency-note').forEach(el => {
+                el.style.display = targetCurrency !== 'MYR' ? 'block' : 'none';
+                const codeEl = el.querySelector('.js-cart-currency-code');
+                if (codeEl) codeEl.textContent = targetCurrency;
+            });
+        }
+
+        function toggleUserMenu() {
+            document.getElementById('userDropdown')?.classList.toggle('open');
+            document.getElementById('currencyDropdown')?.classList.remove('open');
+            document.getElementById('currencyBtn')?.classList.remove('active');
+        }
+        function toggleCurrencyMenu() {
+            const dropdown = document.getElementById('currencyDropdown');
+            const btn = document.getElementById('currencyBtn');
+            const isOpen = dropdown?.classList.toggle('open');
+            btn?.classList.toggle('active', isOpen);
+            document.getElementById('userDropdown')?.classList.remove('open');
+        }
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('userMenu');
+            if (menu && !menu.contains(e.target)) {
+                document.getElementById('userDropdown')?.classList.remove('open');
+            }
+            const curMenu = document.getElementById('currencyMenu');
+            if (curMenu && !curMenu.contains(e.target)) {
+                document.getElementById('currencyDropdown')?.classList.remove('open');
+                document.getElementById('currencyBtn')?.classList.remove('active');
+            }
+            const navLinks = document.getElementById('navLinks');
+            const mobileToggle = document.getElementById('mobileToggle');
+            if (navLinks && navLinks.classList.contains('open')) {
+                if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
+                    navLinks.classList.remove('open');
+                    mobileToggle.classList.remove('active');
+                    document.body.classList.remove('mobile-drawer-open');
+                }
+            }
+        });
+        async function updateCartCount() {
+            try {
+                const res = await fetch('{{ route("cart.count") }}');
+                const data = await res.json();
+                document.querySelectorAll('.cart-count').forEach(badge => {
+                    badge.textContent = data.count;
+                    badge.style.display = data.count > 0 ? (badge.classList.contains('mobile-cart-badge') ? 'inline-flex' : 'flex') : 'none';
+                });
+            } catch (e) { }
+        }
+        function showGlobalToast(message, type = 'success') {
+            let container = document.querySelector('.flash-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'flash-container';
+                document.body.appendChild(container);
+            }
+            const icon = type === 'success' ? '✓' : (type === 'error' ? '⚠' : 'ℹ');
+            const flash = document.createElement('div');
+            flash.className = `flash flash-${type}`;
+            flash.innerHTML = `<span>${icon}</span> <span>${message}</span><button type="button" class="flash-close" onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;margin-left:auto;font-size:1.1rem;line-height:1">✕</button>`;
+            container.appendChild(flash);
+            setTimeout(() => {
+                flash.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+                flash.style.opacity = '0';
+                flash.style.transform = 'translateX(24px)';
+                setTimeout(() => flash.remove(), 350);
+            }, 4000);
+        }
+
+        // Global AJAX Add to Cart (prevents full-page reload)
+        document.addEventListener('submit', async function(e) {
+            const form = e.target;
+            if (!form || !form.action) return;
+            const actionUrl = form.action;
+
+            if (actionUrl.includes('/cart/add') || actionUrl.endsWith('/cart')) {
+                // If Buy Now is flagged, allow standard redirection
+                const buyNowVal = form.querySelector('input[name="buy_now"]')?.value;
+                if (buyNowVal === '1' || buyNowVal === 'true') {
+                    return;
+                }
+                if (form.getAttribute('data-no-ajax') === 'true') {
+                    return;
+                }
+
+                e.preventDefault();
+                const submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('button');
+                const origHtml = submitBtn ? submitBtn.innerHTML : '';
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('loading');
+                    submitBtn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px"><svg style="animation:btnSpin 0.8s linear infinite;width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg> Adding...</span>';
+                }
+
+                try {
+                    const formData = new FormData(form);
+                    const bodyObj = {};
+                    formData.forEach((val, key) => bodyObj[key] = val);
+
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || form.querySelector('input[name="_token"]')?.value || '';
+
+                    const res = await fetch(actionUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify(bodyObj)
+                    });
+
+                    const data = await res.json();
+                    if (data.success) {
+                        if (submitBtn) {
+                            submitBtn.classList.remove('loading');
+                            submitBtn.classList.add('btn-added');
+                            submitBtn.innerHTML = '✓ Added!';
+                            setTimeout(() => {
+                                submitBtn.classList.remove('btn-added');
+                                submitBtn.innerHTML = origHtml;
+                                submitBtn.disabled = false;
+                            }, 1800);
+                        }
+                        if (typeof updateCartCount === 'function') updateCartCount();
+                        showGlobalToast(data.message || 'Product added to cart!', 'success');
+                    } else {
+                        showGlobalToast(data.message || 'Could not add to cart.', 'error');
+                        if (submitBtn) {
+                            submitBtn.classList.remove('loading');
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = origHtml;
+                        }
+                    }
+                } catch (err) {
+                    console.error('Add to cart error:', err);
+                    showGlobalToast('Error adding product to cart.', 'error');
+                    if (submitBtn) {
+                        submitBtn.classList.remove('loading');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = origHtml;
+                    }
+                }
+            }
+        });
+
+        setTimeout(() => {
+            document.querySelectorAll('.flash').forEach(f => {
+                f.style.opacity = '0';
+                setTimeout(() => f.remove(), 400);
+            });
+        }, 5000);
+        updateCartCount();
+    </script>
+    @if(!empty($settings['footer_tags']))
+        <!-- Custom Footer Tags -->
+        {!! $settings['footer_tags'] !!}
+    @endif
+
+    @stack('scripts')
+</body>
+
+</html>

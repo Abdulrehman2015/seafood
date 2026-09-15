@@ -1,0 +1,11 @@
+/node_modules
+/vendor
+.env
+.env.backup
+.git
+.gitignore
+.editorconfig
+cloudflared.exe
+*.log
+.phpunit.result.cache
+storage/*.key
