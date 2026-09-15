@@ -1327,7 +1327,7 @@
                         <div>
                             <a href="{{ route('admin.database.download') }}" class="btn btn-primary" style="background:#2563eb;border-color:#2563eb;padding:12px 24px;font-size:0.95rem;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,0.25);border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:8px">
                                 <span>📥</span>
-                                <span>Download MySQL (.sql)</span>
+                                <span>Download MySQL (.mysql)</span>
                             </a>
                         </div>
                     </div>
@@ -1335,7 +1335,7 @@
 
                 <!-- Existing Backups Info -->
                 @php
-                    $backupFiles = glob(storage_path('app/backups/*.sql'));
+                    $backupFiles = array_merge(glob(storage_path('app/backups/*.mysql')), glob(storage_path('app/backups/*.sql')));
                     if (!empty($backupFiles)) {
                         usort($backupFiles, fn($a, $b) => filemtime($b) <=> filemtime($a));
                     }

@@ -202,25 +202,27 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
     // Walk-in QR Code
     Route::get('walkin-qr', [WalkInController::class, 'generateQr'])->name('walkin.qr');
 
-    // Database Dump Download (Admin only)
+    // Database Dump Download (Admin only) - Streams .mysql dump
     Route::get('database/download/{filename?}', function ($filename = null) {
         $backupDir = storage_path('app/backups');
         if (!is_dir($backupDir)) {
             @mkdir($backupDir, 0750, true);
         }
 
-        // If a specific backup file was requested, validate and serve it
+        // If a specific backup file was requested, validate and serve it with .mysql extension
         if ($filename) {
             $cleanName = basename($filename);
             $targetPath = "{$backupDir}/{$cleanName}";
-            if (file_exists($targetPath) && str_ends_with(strtolower($cleanName), '.sql')) {
-                return response()->download($targetPath, $cleanName, [
-                    'Content-Type' => 'application/sql',
+            if (file_exists($targetPath)) {
+                $downloadName = preg_replace('/\.(sql|mysql)$/i', '', $cleanName) . '.mysql';
+                return response()->download($targetPath, $downloadName, [
+                    'Content-Type'        => 'application/x-mysql',
+                    'Content-Disposition' => 'attachment; filename="' . $downloadName . '"',
                 ]);
             }
         }
 
-        $newFilename = 'mst_mysql_backup_' . date('Y-m-d_His') . '.sql';
+        $newFilename = 'mst_mysql_backup_' . date('Y-m-d_His') . '.mysql';
         $dumpPath = "{$backupDir}/{$newFilename}";
 
         // Candidate mysqldump locations across Windows, Linux, and custom servers
@@ -255,14 +257,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 
         @exec($cmd);
 
-        // If newly generated file is valid and non-empty, download it
+        // If newly generated file is valid and non-empty, download it with .mysql extension
         if (file_exists($dumpPath) && filesize($dumpPath) > 500) {
             return response()->download($dumpPath, $newFilename, [
-                'Content-Type' => 'application/sql',
+                'Content-Type'        => 'application/x-mysql',
+                'Content-Disposition' => 'attachment; filename="' . $newFilename . '"',
             ]);
         }
 
-        // Secondary Fallback: Pure PHP PDO SQL Dumper
+        // Secondary Fallback: Pure PHP PDO SQL/MySQL Dumper
         try {
             $pdo = \Illuminate\Support\Facades\DB::connection()->getPdo();
             $tables = [];
@@ -273,7 +276,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 
             if (!empty($tables)) {
                 $handle = fopen($dumpPath, 'w');
-                fwrite($handle, "-- MST Seafood Database Dump\n");
+                fwrite($handle, "-- MST Seafood MySQL Database Dump (.mysql)\n");
                 fwrite($handle, "-- Generated: " . date('Y-m-d H:i:s') . "\n");
                 fwrite($handle, "-- Database: `{$dbName}`\n\n");
                 fwrite($handle, "SET FOREIGN_KEY_CHECKS=0;\n");
@@ -303,7 +306,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 
                 if (file_exists($dumpPath) && filesize($dumpPath) > 500) {
                     return response()->download($dumpPath, $newFilename, [
-                        'Content-Type' => 'application/sql',
+                        'Content-Type'        => 'application/x-mysql',
+                        'Content-Disposition' => 'attachment; filename="' . $newFilename . '"',
                     ]);
                 }
             }
@@ -311,17 +315,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
             \Illuminate\Support\Facades\Log::warning('PDO MySQL dump fallback failed: ' . $e->getMessage());
         }
 
-        // Final Fallback: check if existing backup exists in backups directory
-        $existing = glob("{$backupDir}/*.sql");
+        // Final Fallback: check if existing backup exists in backups directory and serve as .mysql
+        $existing = array_merge(glob("{$backupDir}/*.mysql"), glob("{$backupDir}/*.sql"));
         if (!empty($existing)) {
             usort($existing, fn($a, $b) => filemtime($b) <=> filemtime($a));
-            return response()->download($existing[0], 'mst_mysql_backup_' . date('Y-m-d') . '.sql', [
-                'Content-Type' => 'application/sql',
+            $fallbackFile = $existing[0];
+            $downloadName = 'mst_mysql_backup_' . date('Y-m-d') . '.mysql';
+            return response()->download($fallbackFile, $downloadName, [
+                'Content-Type'        => 'application/x-mysql',
+                'Content-Disposition' => 'attachment; filename="' . $downloadName . '"',
             ]);
         }
 
         return back()->with('error', 'Unable to generate MySQL dump. Ensure MySQL service is running.');
-    })->name('admin.database.download');
+    })->name('database.download');
 
 });
 
