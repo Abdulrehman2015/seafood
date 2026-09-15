@@ -32,17 +32,69 @@ class Setting extends Model
     }
 
     /**
-     * Get dynamic base URL based on active web request domain, fallback to config('app.url').
+     * Get dynamic base URL based on active web request domain, fallback to canonical_url or config('app.url').
+     * If on local server (e.g. 127.0.0.1:8000), it returns that local server domain.
+     * If on live domain (e.g. https://yourdomain.com), it returns that live domain.
      */
     public static function getBaseUrl(): string
     {
         try {
-            $reqHost = (request() && !app()->runningInConsole()) ? request()->getSchemeAndHttpHost() : null;
-            $baseUrl = !empty($reqHost) ? $reqHost : rtrim(config('app.url', 'http://127.0.0.1:8000'), '/');
+            if (request() && !app()->runningInConsole()) {
+                $reqHost = request()->getSchemeAndHttpHost();
+                if (!empty($reqHost)) {
+                    return rtrim($reqHost, '/');
+                }
+            }
         } catch (\Throwable $e) {
-            $baseUrl = rtrim(config('app.url', 'http://127.0.0.1:8000'), '/');
+            // ignore
         }
-        return rtrim($baseUrl, '/');
+
+        try {
+            $canonical = static::get('canonical_url');
+            if (!empty($canonical) && filter_var($canonical, FILTER_VALIDATE_URL)) {
+                return rtrim($canonical, '/');
+            }
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
+        $configUrl = config('app.url', 'http://127.0.0.1:8000');
+        return rtrim($configUrl, '/');
+    }
+
+    /**
+     * Get absolute local filesystem path to the logo file for embedding in emails (CID embedding).
+     */
+    public static function getLogoPhysicalPath(): ?string
+    {
+        try {
+            $siteLogo = static::get('site_logo');
+
+            if (!empty($siteLogo) && !str_starts_with($siteLogo, 'http://') && !str_starts_with($siteLogo, 'https://')) {
+                $cleanPath = ltrim(preg_replace('/^(\.\.\/)+/', '', $siteLogo), '/');
+                if (file_exists(public_path($cleanPath))) {
+                    return public_path($cleanPath);
+                }
+                if (file_exists(public_path('storage/' . $cleanPath))) {
+                    return public_path('storage/' . $cleanPath);
+                }
+                if (file_exists(storage_path('app/public/' . $cleanPath))) {
+                    return storage_path('app/public/' . $cleanPath);
+                }
+            }
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
+        // Check preferred PNG first (best email client compatibility), then WebP
+        if (file_exists(public_path('images/logo.png'))) {
+            return public_path('images/logo.png');
+        }
+        if (file_exists(public_path('images/logo.webp'))) {
+            return public_path('images/logo.webp');
+        }
+
+        return null;
     }
 
     /**
@@ -51,25 +103,66 @@ class Setting extends Model
     public static function getLogoUrl(): string
     {
         $baseUrl = static::getBaseUrl();
-        $siteLogo = static::get('site_logo');
 
-        if (!empty($siteLogo)) {
-            if (str_starts_with($siteLogo, 'http://') || str_starts_with($siteLogo, 'https://')) {
-                return $siteLogo;
-            }
-            if (str_contains($siteLogo, 'images/')) {
+        try {
+            $siteLogo = static::get('site_logo');
+
+            if (!empty($siteLogo)) {
+                if (str_starts_with($siteLogo, 'http://') || str_starts_with($siteLogo, 'https://')) {
+                    return $siteLogo;
+                }
                 $cleanPath = ltrim(preg_replace('/^(\.\.\/)+/', '', $siteLogo), '/');
-                return $baseUrl . '/' . $cleanPath;
+                if (file_exists(public_path($cleanPath))) {
+                    return $baseUrl . '/' . $cleanPath;
+                }
+                if (file_exists(public_path('storage/' . $cleanPath))) {
+                    return $baseUrl . '/storage/' . $cleanPath;
+                }
             }
-            if (file_exists(public_path('storage/' . ltrim($siteLogo, '/')))) {
-                return $baseUrl . '/storage/' . ltrim($siteLogo, '/');
-            }
-            if (file_exists(public_path(ltrim($siteLogo, '/')))) {
-                return $baseUrl . '/' . ltrim($siteLogo, '/');
-            }
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
+        if (file_exists(public_path('images/logo.png'))) {
+            return $baseUrl . '/images/logo.png';
         }
 
         return $baseUrl . '/images/logo.webp';
+    }
+
+    /**
+     * Get the site logo as a base64-encoded data URI for use in emails or previews.
+     */
+    public static function getLogoBase64(): string
+    {
+        $filePath = static::getLogoPhysicalPath();
+
+        if ($filePath && file_exists($filePath)) {
+            try {
+                $imageData   = base64_encode(file_get_contents($filePath));
+                $extension   = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                $mimeTypeMap = [
+                    'webp' => 'image/webp',
+                    'png'  => 'image/png',
+                    'jpg'  => 'image/jpeg',
+                    'jpeg' => 'image/jpeg',
+                    'gif'  => 'image/gif',
+                    'svg'  => 'image/svg+xml',
+                ];
+                $mimeType = $mimeTypeMap[$extension] ?? 'image/png';
+                return 'data:' . $mimeType . ';base64,' . $imageData;
+            } catch (\Throwable $e) {
+                // Fall through to placeholder
+            }
+        }
+
+        // Minimal SVG fallback
+        $svgFallback = '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="48" viewBox="0 0 160 48">'
+            . '<rect width="160" height="48" rx="8" fill="#0f274a"/>'
+            . '<text x="80" y="30" text-anchor="middle" font-family="Arial,sans-serif" '
+            . 'font-size="14" font-weight="bold" fill="#38bdf8">MST Import &amp; Export</text>'
+            . '</svg>';
+        return 'data:image/svg+xml;base64,' . base64_encode($svgFallback);
     }
 
     /**

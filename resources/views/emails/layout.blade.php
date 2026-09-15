@@ -58,11 +58,22 @@
                                     <td align="center">
                                         @php
                                             $baseUrl = \App\Models\Setting::getBaseUrl();
-                                            $logoUrl = \App\Models\Setting::getLogoUrl();
+                                            $logoPhysicalPath = \App\Models\Setting::getLogoPhysicalPath();
+                                            $logoSrc = null;
+                                            if (isset($message) && is_object($message) && method_exists($message, 'embed') && $logoPhysicalPath && file_exists($logoPhysicalPath)) {
+                                                try {
+                                                    $logoSrc = $message->embed($logoPhysicalPath);
+                                                } catch (\Throwable $e) {
+                                                    $logoSrc = null;
+                                                }
+                                            }
+                                            if (empty($logoSrc)) {
+                                                $logoSrc = \App\Models\Setting::getLogoUrl();
+                                            }
                                         @endphp
                                         <div style="margin-bottom: 12px;">
                                             <a href="{{ $baseUrl }}" target="_blank" style="text-decoration: none; display: inline-block;">
-                                                <img src="{{ $logoUrl }}" alt="MST Import & Export" style="height: 56px; width: auto; max-width: 220px; object-fit: contain; vertical-align: middle; border-radius: 8px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); display: block; margin: 0 auto;" />
+                                                <img src="{{ $logoSrc }}" alt="MST Import & Export" style="height: 56px; width: auto; max-width: 220px; object-fit: contain; vertical-align: middle; border-radius: 8px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); display: block; margin: 0 auto;" />
                                             </a>
                                         </div>
                                         <div style="font-size: 17px; font-weight: 800; color: #ffffff; letter-spacing: 0.04em; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; text-transform: uppercase;">
