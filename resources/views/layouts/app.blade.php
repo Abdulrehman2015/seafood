@@ -72,7 +72,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ file_exists(public_path('css/app.css')) ? filemtime(public_path('css/app.css')) : time() }}">
 
     @if(!empty($settings['tracking_ga4_id']))
         <!-- Google Analytics GA4 -->
@@ -96,6 +96,126 @@
     @endif
 
     <style>
+        /* ─── Footer: Matches Homepage 1st Section (Hero) Royal Oceanic Gradient ─── */
+        .footer {
+            position: relative !important;
+            overflow: hidden !important;
+            background: linear-gradient(135deg, #06152b 0%, #0c2146 40%, #14356b 75%, #1d4ed8 100%) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+            padding: var(--space-16, 4rem) 0 var(--space-8, 2rem) !important;
+            margin-top: var(--space-16, 4rem) !important;
+            color: #cbd5e1 !important;
+        }
+        .footer-bg-glow {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .footer-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+        }
+        .footer-orb-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.35) 0%, transparent 70%);
+            top: -120px;
+            right: -100px;
+        }
+        .footer-orb-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(96, 165, 250, 0.25) 0%, transparent 70%);
+            bottom: -60px;
+            left: -80px;
+        }
+        .footer-grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+        .footer .container {
+            position: relative;
+            z-index: 1;
+        }
+        .footer-brand .logo-brand {
+            color: #ffffff !important;
+            font-size: 1.35rem !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.02em !important;
+        }
+        .footer-brand .logo-sub {
+            color: #93c5fd !important;
+            font-size: 0.74rem !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.06em !important;
+        }
+        .footer-desc {
+            font-size: 0.88rem !important;
+            color: #cbd5e1 !important;
+            max-width: 320px;
+            line-height: 1.7 !important;
+        }
+        .footer-heading {
+            font-family: var(--font-heading, inherit) !important;
+            font-size: 0.92rem !important;
+            font-weight: 700 !important;
+            color: #ffffff !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.08em !important;
+            margin-bottom: var(--space-4, 1rem) !important;
+        }
+        .footer-links a {
+            font-size: 0.88rem !important;
+            color: #94a3b8 !important;
+            text-decoration: none !important;
+            transition: all 0.18s ease !important;
+            display: inline-flex;
+            align-items: center;
+        }
+        .footer-links a:hover {
+            color: #60a5fa !important;
+            transform: translateX(3px);
+        }
+        .footer-contact .contact-item {
+            font-size: 0.875rem !important;
+            color: #cbd5e1 !important;
+            line-height: 1.55 !important;
+        }
+        .footer-contact .contact-item a {
+            color: #cbd5e1 !important;
+            text-decoration: none !important;
+            transition: color 0.18s ease !important;
+        }
+        .footer-contact .contact-item a:hover {
+            color: #60a5fa !important;
+            text-decoration: underline !important;
+        }
+        .footer-bottom {
+            padding-top: var(--space-6, 1.5rem) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+            color: #94a3b8 !important;
+        }
+        .footer-bottom p {
+            color: #94a3b8 !important;
+            margin: 0;
+        }
+        .footer-bottom-links a {
+            color: #94a3b8 !important;
+            text-decoration: none !important;
+            transition: color 0.18s ease !important;
+        }
+        .footer-bottom-links a:hover {
+            color: #ffffff !important;
+        }
         .footer-social-icon {
             display: inline-flex;
             align-items: center;
@@ -107,6 +227,7 @@
             text-decoration: none;
             transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
             flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .footer-social-icon:hover {
@@ -597,6 +718,13 @@
     </main>
 
     <footer class="footer">
+        {{-- Background Glow Orbs matching Homepage Hero Section --}}
+        <div class="footer-bg-glow" aria-hidden="true">
+            <div class="footer-orb footer-orb-1"></div>
+            <div class="footer-orb footer-orb-2"></div>
+            <div class="footer-grid-overlay"></div>
+        </div>
+
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">

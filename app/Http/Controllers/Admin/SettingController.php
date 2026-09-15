@@ -26,6 +26,11 @@ class SettingController extends Controller
     {
         $tab = $request->input('tab', 'general');
 
+        $request->validate([
+            'site_logo'    => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:8192',
+            'site_favicon' => 'nullable|file|mimes:jpeg,png,jpg,webp,ico,gif|max:2048',
+        ]);
+
         // Extract and process any uploaded appearance images
         if ($request->hasFile('site_logo')) {
             $media = $this->imageService->upload($request->file('site_logo'), 'gallery', 'Site Logo');

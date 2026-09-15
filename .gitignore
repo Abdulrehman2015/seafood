@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+*.sql
+*.zip
+/storage/app/backups
+/storage/app/map-tiles

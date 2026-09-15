@@ -69,8 +69,8 @@ class GalleryController extends Controller
     {
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'files'   => 'nullable|array',
-            'files.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,bmp,svg,pdf,doc,docx,mp4|max:51200',
-            'file'    => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,bmp,svg,pdf,doc,docx,mp4|max:51200',
+            'files.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,bmp,pdf,doc,docx,mp4|max:51200',
+            'file'    => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,bmp,pdf,doc,docx,mp4|max:51200',
             'folder'  => 'nullable|string|max:50',
         ]);
 

@@ -181,8 +181,24 @@ class CheckoutController extends Controller
         Stripe::setApiKey($stripeSecret);
 
         $lineItems = [];
+        $snapshotItems = [];
+        $calculatedSubtotal = 0;
+
         foreach ($cartItems as $item) {
             $price = $item->product->getPriceForGroup($group);
+            $lineSubtotal = round($price * $item->quantity, 2);
+            $calculatedSubtotal += $lineSubtotal;
+
+            $snapshotItems[] = [
+                'product_id'   => $item->product_id,
+                'product_name' => $item->product->name,
+                'product_sku'  => $item->product->sku,
+                'quantity'     => $item->quantity,
+                'unit_price'   => $price,
+                'subtotal'     => $lineSubtotal,
+                'track_stock'  => (bool) $item->product->track_stock,
+            ];
+
             $lineItems[] = [
                 'price_data' => [
                     'currency'     => $currency,
@@ -196,6 +212,13 @@ class CheckoutController extends Controller
             ];
         }
 
+        $expectedTotalCents = (int) round($calculatedSubtotal * 100);
+
+        $payload['cart_snapshot']        = $snapshotItems;
+        $payload['expected_subtotal']    = $calculatedSubtotal;
+        $payload['expected_total']       = $calculatedSubtotal;
+        $payload['expected_total_cents'] = $expectedTotalCents;
+
         session(['stripe_checkout_payload' => $payload]);
 
         try {
@@ -207,9 +230,10 @@ class CheckoutController extends Controller
                 'cancel_url'           => route('checkout.stripe.cancel'),
                 'customer_email'       => $payload['customer_email'] ?: null,
                 'metadata'             => [
-                    'user_id'          => Auth::id() ?? 'guest',
-                    'fulfillment_type' => $request->fulfillment_type,
-                    'customer_group'   => $group,
+                    'user_id'              => Auth::id() ?? 'guest',
+                    'fulfillment_type'     => $request->fulfillment_type,
+                    'customer_group'       => $group,
+                    'expected_total_cents' => $expectedTotalCents,
                 ],
             ]);
 
@@ -252,14 +276,45 @@ class CheckoutController extends Controller
                 return redirect()->route('checkout.success', $existingOrder);
             }
 
-            $payload   = session('stripe_checkout_payload', []);
-            $cartItems = $this->cart->getItems();
+            $payload       = session('stripe_checkout_payload', []);
+            $snapshotItems = $payload['cart_snapshot'] ?? [];
 
-            if ($cartItems->isEmpty()) {
-                return redirect()->route('shop.index')->with('error', 'Cart is empty.');
+            // Fallback to current cart items if session payload was lost (e.g. strict browser cookie policy)
+            if (empty($snapshotItems)) {
+                $cartItems = $this->cart->getItems();
+                if ($cartItems->isEmpty()) {
+                    return redirect()->route('shop.index')->with('error', 'Checkout session has expired. Please try again.');
+                }
+                $group = $payload['group'] ?? $this->pricing->resolveGroup();
+                $subtotal = 0;
+                foreach ($cartItems as $cItem) {
+                    $p = $cItem->product->getPriceForGroup($group);
+                    $lineSub = round($p * $cItem->quantity, 2);
+                    $subtotal += $lineSub;
+                    $snapshotItems[] = [
+                        'product_id'   => $cItem->product_id,
+                        'product_name' => $cItem->product->name,
+                        'product_sku'  => $cItem->product->sku,
+                        'quantity'     => $cItem->quantity,
+                        'unit_price'   => $p,
+                        'subtotal'     => $lineSub,
+                        'track_stock'  => (bool) $cItem->product->track_stock,
+                    ];
+                }
+                $payload['expected_subtotal'] = $subtotal;
+                $payload['expected_total']    = $subtotal;
             }
 
-            return $this->processOrderDirectly($payload, $cartItems, 'stripe', $paymentRef);
+            // Security Validation: Verify amount paid on Stripe matches the order snapshot
+            $expectedTotalCents = (int) ($stripeSession->metadata['expected_total_cents'] ?? ($payload['expected_total_cents'] ?? round(($payload['expected_total'] ?? 0) * 100)));
+            $actualPaidCents    = (int) ($stripeSession->amount_total ?? 0);
+
+            if ($expectedTotalCents > 0 && $actualPaidCents < $expectedTotalCents) {
+                \Illuminate\Support\Facades\Log::critical("Payment Amount Mismatch! Stripe Session {$sessionId}: Expected {$expectedTotalCents} cents, Paid {$actualPaidCents} cents.");
+                return redirect()->route('checkout.index')->with('error', 'Payment verification failed: amount paid does not match the order total.');
+            }
+
+            return $this->processOrderDirectly($payload, $snapshotItems, 'stripe', $paymentRef);
         } catch (\Throwable $e) {
             return redirect()->route('checkout.index')->with('error', 'Stripe Verification Error: ' . $e->getMessage());
         }
@@ -276,13 +331,14 @@ class CheckoutController extends Controller
     /**
      * Internal helper to create Order database record & send notifications.
      */
-    protected function processOrderDirectly(array $payload, $cartItems, string $paymentMethod, string $paymentRef)
+    protected function processOrderDirectly(array $payload, array $snapshotItems, string $paymentMethod, string $paymentRef)
     {
-        $totals = $this->cart->totals();
-        $group  = $payload['group'] ?? $this->pricing->resolveGroup();
-        $order  = null;
+        $group    = $payload['group'] ?? $this->pricing->resolveGroup();
+        $subtotal = $payload['expected_subtotal'] ?? 0;
+        $total    = $payload['expected_total'] ?? $subtotal;
+        $order    = null;
 
-        DB::transaction(function () use ($payload, $cartItems, $group, $totals, $paymentMethod, $paymentRef, &$order) {
+        DB::transaction(function () use ($payload, $snapshotItems, $group, $subtotal, $total, $paymentMethod, $paymentRef, &$order) {
             $user = Auth::user();
 
             $shippingAddress = null;
@@ -308,27 +364,26 @@ class CheckoutController extends Controller
                 'paid_at'               => now(),
                 'fulfillment_type'      => $payload['fulfillment_type'] ?? 'delivery',
                 'shipping_address'      => $shippingAddress,
-                'subtotal'              => $totals['subtotal'],
-                'total'                 => $totals['total'],
+                'subtotal'              => $subtotal,
+                'total'                 => $total,
                 'stripe_payment_intent' => $paymentRef,
                 'customer_notes'        => $payload['customer_notes'] ?? null,
             ]);
 
-            foreach ($cartItems as $item) {
-                $price = $item->product->getPriceForGroup($group);
+            foreach ($snapshotItems as $item) {
                 OrderItem::create([
                     'order_id'     => $order->id,
-                    'product_id'   => $item->product_id,
-                    'product_name' => $item->product->name,
-                    'product_sku'  => $item->product->sku,
-                    'quantity'     => $item->quantity,
-                    'unit_price'   => $price,
-                    'subtotal'     => $price * $item->quantity,
+                    'product_id'   => $item['product_id'],
+                    'product_name' => $item['product_name'],
+                    'product_sku'  => $item['product_sku'] ?? null,
+                    'quantity'     => $item['quantity'],
+                    'unit_price'   => $item['unit_price'],
+                    'subtotal'     => $item['subtotal'],
                     'price_group'  => $group,
                 ]);
 
-                if ($item->product->track_stock) {
-                    $item->product->decrement('stock_quantity', $item->quantity);
+                if (!empty($item['track_stock'])) {
+                    \App\Models\Product::where('id', $item['product_id'])->decrement('stock_quantity', $item['quantity']);
                 }
             }
 

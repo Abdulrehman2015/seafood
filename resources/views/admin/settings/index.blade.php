@@ -27,6 +27,7 @@
         ['id' => 'appearance', 'icon' => '🎨', 'label' => 'Site Appearance'],
         ['id' => 'recaptcha',  'icon' => '🛡️', 'label' => 'reCAPTCHA Settings'],
         ['id' => 'keys',       'icon' => '🔑', 'label' => 'Site Keys'],
+        ['id' => 'database',   'icon' => '💾', 'label' => 'Database Backup'],
     ];
 @endphp
 
@@ -1285,6 +1286,103 @@
                     </button>
                 </div>
             </form>
+        </div>
+
+        <!-- ================= TAB: DATABASE BACKUP ================= -->
+        <div id="tab-database" class="settings-pane card" style="display:none;background:white;border-radius:12px;border:1px solid var(--gray-200);box-shadow:0 1px 3px rgba(0,0,0,0.05);overflow:hidden">
+            <div style="padding:16px 22px;border-bottom:1px solid var(--gray-200);background:#fafafa;display:flex;justify-content:space-between;align-items:center">
+                <div>
+                    <h2 style="font-size:1.05rem;font-weight:800;color:var(--gray-900);margin:0">💾 MySQL Database Backup &amp; Export</h2>
+                    <p class="text-xs text-muted" style="margin:4px 0 0 0">Generate and download a full SQL snapshot of your database safely from the admin panel</p>
+                </div>
+                <span class="badge" style="background:#ecfdf5;color:#047857;border:1px solid #a7f3d0;font-size:0.75rem;padding:5px 10px;border-radius:6px;font-weight:700">🔒 Admin Only</span>
+            </div>
+
+            <div style="padding:22px">
+                <!-- Database Environment Summary -->
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:14px;margin-bottom:24px">
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px">
+                        <div style="font-size:0.75rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Database Name</div>
+                        <div style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-top:4px">{{ config('database.connections.mysql.database', 'oceanfresh') }}</div>
+                    </div>
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px">
+                        <div style="font-size:0.75rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Host &amp; Port</div>
+                        <div style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-top:4px">{{ config('database.connections.mysql.host', '127.0.0.1') }}:{{ config('database.connections.mysql.port', '3306') }}</div>
+                    </div>
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px">
+                        <div style="font-size:0.75rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Default Charset</div>
+                        <div style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-top:4px">utf8mb4 (Unicode)</div>
+                    </div>
+                </div>
+
+                <!-- Action Card -->
+                <div style="border:1.5px solid #e0e7ff;background:#f5f7ff;border-radius:12px;padding:20px;margin-bottom:24px">
+                    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+                        <div style="max-width:560px">
+                            <h3 style="font-size:1rem;font-weight:800;color:#1e3a8a;margin:0 0 6px 0">Ready to download a fresh database snapshot?</h3>
+                            <p style="font-size:0.85rem;color:#475569;line-height:1.6;margin:0">
+                                Clicking the button below generates an instantaneous, complete SQL dump of all tables (products, categories, customer accounts, orders, quotations, reviews, and configuration settings) and downloads it directly to your device.
+                            </p>
+                        </div>
+                        <div>
+                            <a href="{{ route('admin.database.download') }}" class="btn btn-primary" style="background:#2563eb;border-color:#2563eb;padding:12px 24px;font-size:0.95rem;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,0.25);border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:8px">
+                                <span>📥</span>
+                                <span>Download MySQL (.sql)</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Existing Backups Info -->
+                @php
+                    $backupFiles = glob(storage_path('app/backups/*.sql'));
+                    if (!empty($backupFiles)) {
+                        usort($backupFiles, fn($a, $b) => filemtime($b) <=> filemtime($a));
+                    }
+                @endphp
+                @if(!empty($backupFiles))
+                <div style="margin-top:16px">
+                    <div style="font-size:0.85rem;font-weight:700;color:#334155;margin-bottom:10px">Stored Backup Archives in Server Storage</div>
+                    <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+                        <table class="table" style="margin:0;width:100%;font-size:0.82rem">
+                            <thead>
+                                <tr style="background:#f8fafc">
+                                    <th style="padding:10px 14px">Archive File</th>
+                                    <th style="padding:10px 14px">File Size</th>
+                                    <th style="padding:10px 14px">Created Date</th>
+                                    <th style="padding:10px 14px;text-align:right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(array_slice($backupFiles, 0, 5) as $bFile)
+                                <tr>
+                                    <td style="padding:10px 14px;font-weight:600;color:#0f172a">
+                                        📄 {{ basename($bFile) }}
+                                    </td>
+                                    <td style="padding:10px 14px;color:#64748b">
+                                        {{ number_format(filesize($bFile) / 1024, 1) }} KB
+                                    </td>
+                                    <td style="padding:10px 14px;color:#64748b">
+                                        {{ date('d M Y, h:i A', filemtime($bFile)) }}
+                                    </td>
+                                    <td style="padding:10px 14px;text-align:right">
+                                        <a href="{{ route('admin.database.download', ['filename' => basename($bFile)]) }}" class="btn btn-secondary btn-sm" style="font-size:0.75rem;padding:4px 10px">
+                                            Download
+                                        </a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Security & Notice Box -->
+                <div style="margin-top:24px;padding:14px 16px;background:#fefce8;border:1px solid #fef08a;border-radius:8px;font-size:0.8rem;color:#854d0e;line-height:1.5">
+                    <strong>Security Notice:</strong> Database dumps contain sensitive customer data, order details, and encrypted authentication credentials. Always store downloaded backups in a safe, encrypted location.
+                </div>
+            </div>
         </div>
 
     </div>

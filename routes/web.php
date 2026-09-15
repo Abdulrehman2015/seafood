@@ -202,40 +202,141 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
     // Walk-in QR Code
     Route::get('walkin-qr', [WalkInController::class, 'generateQr'])->name('walkin.qr');
 
-    // Database Dump Download
-    Route::get('database/download', function () {
-        $dumpPath = base_path('oceanfresh_latest.sql');
-        $mysqldump = 'C:\\laragon\\bin\\mysql\\mysql-8.4.3-winx64\\bin\\mysqldump.exe';
-        if (file_exists($mysqldump)) {
-            @exec("{$mysqldump} -u root --default-character-set=utf8mb4 oceanfresh > \"{$dumpPath}\"");
+    // Database Dump Download (Admin only)
+    Route::get('database/download/{filename?}', function ($filename = null) {
+        $backupDir = storage_path('app/backups');
+        if (!is_dir($backupDir)) {
+            @mkdir($backupDir, 0750, true);
         }
-        if (file_exists($dumpPath)) {
-            return response()->download($dumpPath, 'mst_' . date('Y-m-d_His') . '.sql', [
+
+        // If a specific backup file was requested, validate and serve it
+        if ($filename) {
+            $cleanName = basename($filename);
+            $targetPath = "{$backupDir}/{$cleanName}";
+            if (file_exists($targetPath) && str_ends_with(strtolower($cleanName), '.sql')) {
+                return response()->download($targetPath, $cleanName, [
+                    'Content-Type' => 'application/sql',
+                ]);
+            }
+        }
+
+        $newFilename = 'mst_mysql_backup_' . date('Y-m-d_His') . '.sql';
+        $dumpPath = "{$backupDir}/{$newFilename}";
+
+        // Candidate mysqldump locations across Windows, Linux, and custom servers
+        $mysqldumpCandidates = [
+            'C:\\laragon\\bin\\mysql\\mysql-8.4.3-winx64\\bin\\mysqldump.exe',
+            'C:\\Program Files\\MySQL\\MySQL Server 8.4\\bin\\mysqldump.exe',
+            'C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump.exe',
+            'C:\\xampp\\mysql\\bin\\mysqldump.exe',
+            '/usr/bin/mysqldump',
+            '/usr/local/bin/mysqldump',
+        ];
+
+        $mysqldumpBin = null;
+        foreach ($mysqldumpCandidates as $candidate) {
+            if (file_exists($candidate)) {
+                $mysqldumpBin = "\"{$candidate}\"";
+                break;
+            }
+        }
+        if (!$mysqldumpBin) {
+            $mysqldumpBin = 'mysqldump';
+        }
+
+        $dbHost = config('database.connections.mysql.host', '127.0.0.1');
+        $dbPort = config('database.connections.mysql.port', '3306');
+        $dbName = config('database.connections.mysql.database', 'oceanfresh');
+        $dbUser = config('database.connections.mysql.username', 'root');
+        $dbPass = config('database.connections.mysql.password', '');
+
+        $passArg = !empty($dbPass) ? "-p" . escapeshellarg($dbPass) : "";
+        $cmd = "{$mysqldumpBin} --host=" . escapeshellarg($dbHost) . " --port=" . escapeshellarg($dbPort) . " --user=" . escapeshellarg($dbUser) . " {$passArg} --default-character-set=utf8mb4 " . escapeshellarg($dbName) . " > \"{$dumpPath}\"";
+
+        @exec($cmd);
+
+        // If newly generated file is valid and non-empty, download it
+        if (file_exists($dumpPath) && filesize($dumpPath) > 500) {
+            return response()->download($dumpPath, $newFilename, [
                 'Content-Type' => 'application/sql',
             ]);
         }
-        return abort(404, 'Dump file could not be generated.');
+
+        // Secondary Fallback: Pure PHP PDO SQL Dumper
+        try {
+            $pdo = \Illuminate\Support\Facades\DB::connection()->getPdo();
+            $tables = [];
+            $stmt = $pdo->query('SHOW FULL TABLES WHERE Table_type = "BASE TABLE"');
+            while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+                $tables[] = $row[0];
+            }
+
+            if (!empty($tables)) {
+                $handle = fopen($dumpPath, 'w');
+                fwrite($handle, "-- MST Seafood Database Dump\n");
+                fwrite($handle, "-- Generated: " . date('Y-m-d H:i:s') . "\n");
+                fwrite($handle, "-- Database: `{$dbName}`\n\n");
+                fwrite($handle, "SET FOREIGN_KEY_CHECKS=0;\n");
+                fwrite($handle, "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";\n\n");
+
+                foreach ($tables as $table) {
+                    fwrite($handle, "-- Table structure for `{$table}`\n");
+                    fwrite($handle, "DROP TABLE IF EXISTS `{$table}`;\n");
+                    $createRow = $pdo->query("SHOW CREATE TABLE `{$table}`")->fetch(\PDO::FETCH_NUM);
+                    if ($createRow && isset($createRow[1])) {
+                        fwrite($handle, $createRow[1] . ";\n\n");
+                    }
+
+                    fwrite($handle, "-- Data for `{$table}`\n");
+                    $rowsStmt = $pdo->query("SELECT * FROM `{$table}`");
+                    while ($row = $rowsStmt->fetch(\PDO::FETCH_ASSOC)) {
+                        $keys = array_map(fn($k) => "`{$k}`", array_keys($row));
+                        $vals = array_map(function ($v) use ($pdo) {
+                            return is_null($v) ? "NULL" : $pdo->quote($v);
+                        }, array_values($row));
+                        fwrite($handle, "INSERT INTO `{$table}` (" . implode(', ', $keys) . ") VALUES (" . implode(', ', $vals) . ");\n");
+                    }
+                    fwrite($handle, "\n");
+                }
+                fwrite($handle, "SET FOREIGN_KEY_CHECKS=1;\n");
+                fclose($handle);
+
+                if (file_exists($dumpPath) && filesize($dumpPath) > 500) {
+                    return response()->download($dumpPath, $newFilename, [
+                        'Content-Type' => 'application/sql',
+                    ]);
+                }
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('PDO MySQL dump fallback failed: ' . $e->getMessage());
+        }
+
+        // Final Fallback: check if existing backup exists in backups directory
+        $existing = glob("{$backupDir}/*.sql");
+        if (!empty($existing)) {
+            usort($existing, fn($a, $b) => filemtime($b) <=> filemtime($a));
+            return response()->download($existing[0], 'mst_mysql_backup_' . date('Y-m-d') . '.sql', [
+                'Content-Type' => 'application/sql',
+            ]);
+        }
+
+        return back()->with('error', 'Unable to generate MySQL dump. Ensure MySQL service is running.');
     })->name('admin.database.download');
 
 });
 
-// Direct one-click download for development
-Route::get('/download-database', function () {
-    $dumpPath = base_path('oceanfresh_latest.sql');
-    $mysqldump = 'C:\\laragon\\bin\\mysql\\mysql-8.4.3-winx64\\bin\\mysqldump.exe';
-    if (file_exists($mysqldump)) {
-        @exec("{$mysqldump} -u root --default-character-set=utf8mb4 oceanfresh > \"{$dumpPath}\"");
-    }
-    if (file_exists($dumpPath)) {
-        return response()->download($dumpPath, 'oceanfresh_latest_' . date('Y-m-d') . '.sql', [
-            'Content-Type' => 'application/sql',
-        ]);
-    }
-    return abort(404, 'Database dump not found');
-})->name('database.download');
-
-// Local Map Tile Proxy (Serves map tiles from same-origin localhost, completely immune to ad-blockers and Brave Shields)
+// Local Map Tile Proxy (Safely caches and proxies OSM map tiles with strict bounds)
 Route::get('/map-tile/{z}/{x}/{y}', function ($z, $x, $y) {
+    $z = (int) $z;
+    $x = (int) $x;
+    $y = (int) $y;
+
+    // Validate zoom and coordinate ranges
+    $maxCoord = (1 << $z);
+    if ($z < 0 || $z > 19 || $x < 0 || $y < 0 || $x >= $maxCoord || $y >= $maxCoord) {
+        return abort(400, 'Invalid tile coordinates');
+    }
+
     $cacheDir = storage_path("app/map-tiles/{$z}/{$x}");
     if (!is_dir($cacheDir)) {
         @mkdir($cacheDir, 0755, true);
@@ -245,10 +346,12 @@ Route::get('/map-tile/{z}/{x}/{y}', function ($z, $x, $y) {
         $ch = curl_init("https://tile.openstreetmap.org/{$z}/{$x}/{$y}.png");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERAGENT, 'MSTImportExportApp/1.0 (info@mst.my)');
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 6);
         $data = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
         if ($code === 200 && !empty($data)) {
             @file_put_contents($cacheFile, $data);
         } else {
@@ -266,7 +369,7 @@ Route::get('/map-tile/{z}/{x}/{y}', function ($z, $x, $y) {
     return response($data, 200)
         ->header('Content-Type', 'image/png')
         ->header('Cache-Control', 'public, max-age=86400');
-});
+})->whereNumber(['z', 'x', 'y']);
 
 // ─── Auth Routes (Breeze) ──────────────────────────────────────────────────────
 
