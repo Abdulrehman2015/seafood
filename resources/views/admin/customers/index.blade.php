@@ -75,7 +75,7 @@
     </div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
         <span style="background:#eff6ff;color:#1d4ed8;font-size:0.85rem;font-weight:700;padding:8px 16px;border-radius:20px;border:1px solid #bfdbfe;display:inline-flex;align-items:center;gap:6px;">
-            👥 {{ number_format($stats['total']) }} Registered Accounts
+            👥 <span class="customer-total-count">{{ number_format($stats['total']) }}</span> Registered Accounts
         </span>
     </div>
 </div>
@@ -84,7 +84,7 @@
 <div class="cat-metrics-grid" style="margin-bottom:22px;">
     <a href="{{ route('admin.customers.index') }}" class="category-metric-card {{ !request()->hasAny(['group','status','search','sort']) ? 'active' : '' }}">
         <div>
-            <div class="cat-metric-value">{{ number_format($stats['total']) }}</div>
+            <div class="cat-metric-value"><span class="customer-total-count">{{ number_format($stats['total']) }}</span></div>
             <div class="cat-metric-title">All Customers</div>
         </div>
         <div class="cat-metric-icon" style="background:#eff6ff;color:#2563eb;">👥</div>
@@ -194,7 +194,7 @@
                 </thead>
                 <tbody>
                     @foreach($customers as $customer)
-                    <tr style="border-bottom:1px solid #f1f5f9;transition:background 0.15s ease;">
+                    <tr id="customer-row-{{ $customer->id }}" class="customer-table-row" style="border-bottom:1px solid #f1f5f9;transition:all 0.3s ease;">
                         <td style="padding:14px 18px;">
                             <div style="display:flex;align-items:center;gap:12px;">
                                 <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.88rem;flex-shrink:0;box-shadow:0 2px 4px rgba(37,99,235,0.2);">
@@ -285,6 +285,15 @@
                                         </button>
                                     </form>
                                 @endif
+                                <button type="button"
+                                        class="btn btn-sm delete-customer-trigger"
+                                        data-id="{{ $customer->id }}"
+                                        data-name="{{ $customer->name }}"
+                                        data-url="{{ route('admin.customers.destroy', $customer) }}"
+                                        style="padding:6px 9px;font-size:0.78rem;font-weight:600;display:inline-flex;align-items:center;gap:3px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:8px;cursor:pointer;"
+                                        title="Delete Customer Account">
+                                    🗑️
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -297,7 +306,7 @@
     <!-- ─── Mobile & Tablet Card View (< 992px) ─────────────────────────────── -->
     <div class="categories-cards-container">
         @foreach($customers as $customer)
-        <div class="category-item-card" style="box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+        <div id="customer-card-{{ $customer->id }}" class="category-item-card customer-card-item" style="box-shadow:0 1px 3px rgba(0,0,0,0.03);transition:all 0.3s ease;">
             <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
                 <!-- Avatar -->
                 <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0;box-shadow:0 2px 5px rgba(37,99,235,0.25);">
@@ -361,18 +370,18 @@
 
             <!-- Mobile Actions -->
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                <a href="{{ route('admin.customers.show', $customer) }}" class="btn btn-secondary btn-sm" style="flex:1;min-width:120px;text-align:center;justify-content:center;font-weight:600;padding:8px 12px;font-size:0.82rem;">
+                <a href="{{ route('admin.customers.show', $customer) }}" class="btn btn-secondary btn-sm" style="flex:1;min-width:110px;text-align:center;justify-content:center;font-weight:600;padding:8px 12px;font-size:0.82rem;">
                     View Profile
                 </a>
 
                 @if($customer->approval_status === 'pending')
-                    <form action="{{ route('admin.customers.approve', $customer) }}" method="POST" style="margin:0;flex:1;min-width:100px;">
+                    <form action="{{ route('admin.customers.approve', $customer) }}" method="POST" style="margin:0;flex:1;min-width:90px;">
                         @csrf
                         <button type="submit" class="btn btn-sm" style="width:100%;padding:8px 10px;background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;font-weight:700;border-radius:8px;cursor:pointer;font-size:0.82rem;">
                             ✓ Approve
                         </button>
                     </form>
-                    <form action="{{ route('admin.customers.reject', $customer) }}" method="POST" style="margin:0;flex:1;min-width:100px;">
+                    <form action="{{ route('admin.customers.reject', $customer) }}" method="POST" style="margin:0;flex:1;min-width:90px;">
                         @csrf
                         <input type="hidden" name="reason" value="Application does not meet requirements.">
                         <button type="submit" class="btn btn-danger btn-sm" style="width:100%;padding:8px 10px;font-weight:700;font-size:0.82rem;">
@@ -380,13 +389,23 @@
                         </button>
                     </form>
                 @elseif($customer->approval_status === 'approved' && in_array($customer->customer_group, ['wholesale','trading']))
-                    <form action="{{ route('admin.customers.reject', $customer) }}" method="POST" style="margin:0;flex:1;min-width:110px;">
+                    <form action="{{ route('admin.customers.reject', $customer) }}" method="POST" style="margin:0;flex:1;min-width:100px;">
                         @csrf
                         <button type="submit" class="btn btn-danger btn-sm" style="width:100%;padding:8px 10px;font-weight:600;font-size:0.82rem;" onclick="return confirm('Revoke B2B access for {{ addslashes($customer->name) }}?')">
                             Revoke B2B
                         </button>
                     </form>
                 @endif
+
+                <button type="button"
+                        class="btn btn-sm delete-customer-trigger"
+                        data-id="{{ $customer->id }}"
+                        data-name="{{ $customer->name }}"
+                        data-url="{{ route('admin.customers.destroy', $customer) }}"
+                        style="padding:8px 12px;font-size:0.82rem;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:8px;cursor:pointer;flex:1;min-width:85px;"
+                        title="Delete Customer Account">
+                    🗑️ Delete
+                </button>
             </div>
         </div>
         @endforeach
@@ -422,4 +441,140 @@
     </div>
 @endif
 
+<!-- Custom Delete Confirmation Modal -->
+<div id="deleteConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center;padding:16px">
+    <div style="background:#ffffff;border-radius:16px;max-width:440px;width:100%;box-shadow:0 20px 25px -5px rgba(0,0,0,0.2), 0 10px 10px -5px rgba(0,0,0,0.1);border:1px solid #e2e8f0;overflow:hidden">
+        <div style="padding:26px 24px 18px;text-align:center">
+            <div style="width:58px;height:58px;border-radius:50%;background:#fee2e2;color:#ef4444;font-size:1.6rem;display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px;box-shadow:0 4px 12px rgba(239,68,68,0.15)">
+                🗑️
+            </div>
+            <h3 style="font-size:1.2rem;font-weight:800;color:#0f172a;margin:0 0 8px">Delete Customer Account?</h3>
+            <p style="font-size:0.88rem;line-height:1.55;color:#64748b;margin:0 0 12px">
+                Are you sure you want to permanently delete customer <strong id="deleteTargetName" style="color:#0f172a"></strong>?
+            </p>
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 12px;font-size:0.8rem;color:#991b1b;line-height:1.4">
+                ⚠️ All active carts will be cleared and order records unlinked. This operation cannot be reversed.
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:14px 24px 20px;background:#f8fafc;border-top:1px solid #f1f5f9;justify-content:flex-end">
+            <button type="button" id="cancelDeleteBtn" class="btn btn-secondary" style="padding:9px 18px;font-size:0.85rem;font-weight:600;border-radius:8px">
+                Cancel
+            </button>
+            <button type="button" id="confirmDeleteBtn" class="btn btn-danger" style="padding:9px 20px;font-size:0.85rem;font-weight:700;border-radius:8px;background:#dc2626;border-color:#dc2626;display:inline-flex;align-items:center;gap:6px">
+                <span>Yes, Delete Customer</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Toast Alert -->
+<div id="customerToast" style="display:none;position:fixed;bottom:24px;right:24px;z-index:10000;background:#0f172a;color:#ffffff;padding:12px 20px;border-radius:10px;font-size:0.88rem;font-weight:600;box-shadow:0 10px 25px rgba(0,0,0,0.25);align-items:center;gap:10px;border:1px solid #334155">
+    <span id="toastIcon" style="color:#10b981;font-size:1.1rem">✓</span>
+    <span id="toastMessage">Customer deleted successfully.</span>
+</div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let targetCustomerId = null;
+    let targetCustomerUrl = null;
+    const modal = document.getElementById('deleteConfirmModal');
+    const cancelBtn = document.getElementById('cancelDeleteBtn');
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    const targetNameEl = document.getElementById('deleteTargetName');
+    const toast = document.getElementById('customerToast');
+    const toastMsg = document.getElementById('toastMessage');
+
+    document.querySelectorAll('.delete-customer-trigger').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            targetCustomerId = this.dataset.id;
+            targetCustomerUrl = this.dataset.url;
+            targetNameEl.textContent = this.dataset.name;
+            modal.style.display = 'flex';
+        });
+    });
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    }
+
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', async function() {
+            if (!targetCustomerUrl) return;
+
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = '<span>Deleting...</span>';
+
+            try {
+                const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const response = await fetch(targetCustomerUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': csrf,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    modal.style.display = 'none';
+
+                    // Animate and remove desktop row
+                    const row = document.getElementById(`customer-row-${targetCustomerId}`);
+                    if (row) {
+                        row.style.opacity = '0';
+                        row.style.transform = 'scale(0.95)';
+                        setTimeout(() => row.remove(), 300);
+                    }
+
+                    // Animate and remove mobile card
+                    const card = document.getElementById(`customer-card-${targetCustomerId}`);
+                    if (card) {
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(() => card.remove(), 300);
+                    }
+
+                    // Update total count labels dynamically
+                    document.querySelectorAll('.customer-total-count').forEach(counter => {
+                        const val = parseInt(counter.textContent.replace(/[^0-9]/g, '')) || 0;
+                        if (val > 0) {
+                            counter.textContent = (val - 1).toLocaleString();
+                        }
+                    });
+
+                    // Show success toast
+                    toastMsg.textContent = data.message || 'Customer deleted successfully.';
+                    toast.style.display = 'flex';
+                    setTimeout(() => {
+                        toast.style.display = 'none';
+                    }, 4000);
+
+                } else {
+                    alert(data.message || 'Failed to delete customer.');
+                }
+            } catch (err) {
+                alert('An error occurred while deleting the customer account. Please try again.');
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = '<span>Yes, Delete Customer</span>';
+            }
+        });
+    }
+});
+</script>
+@endpush
 @endsection

@@ -28,7 +28,16 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if ($request->user()->isAdmin()) {
+        $user = $request->user();
+
+        // Redirect unverified regular users to complete OTP verification
+        if (!$user->isAdmin() && !$user->isEmailVerified()) {
+            Auth::guard('web')->logout();
+            $request->session()->put('otp_verify_user_id', $user->id);
+            return redirect()->route('otp.verify')->with('status', 'Please verify your email with the 6-digit verification code before logging in.');
+        }
+
+        if ($user->isAdmin()) {
             return redirect()->intended(route('admin.dashboard'));
         }
 

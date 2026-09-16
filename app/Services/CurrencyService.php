@@ -261,9 +261,15 @@ class CurrencyService
         // 1. If Auto Conversion is OFF, check for manual per-product pricing
         if (!$isAuto) {
             if ($currency === 'SGD') {
-                $manualPrice = ($group === 'wholesale' && !empty($product->wholesale_price_sgd))
-                    ? (float) $product->wholesale_price_sgd
-                    : (!empty($product->price_sgd) ? (float) $product->price_sgd : null);
+                if ($group === 'wholesale' && !empty($product->wholesale_price_sgd)) {
+                    $manualPrice = (float) $product->wholesale_price_sgd;
+                } elseif ($group === 'trading' && !empty($product->trading_price_sgd)) {
+                    $manualPrice = (float) $product->trading_price_sgd;
+                } elseif (!empty($product->price_sgd)) {
+                    $manualPrice = (float) $product->price_sgd;
+                } else {
+                    $manualPrice = null;
+                }
 
                 if ($manualPrice !== null && $manualPrice > 0) {
                     return [
@@ -276,9 +282,15 @@ class CurrencyService
                     ];
                 }
             } elseif ($currency === 'USD') {
-                $manualPrice = ($group === 'wholesale' && !empty($product->wholesale_price_usd))
-                    ? (float) $product->wholesale_price_usd
-                    : (!empty($product->price_usd) ? (float) $product->price_usd : null);
+                if ($group === 'wholesale' && !empty($product->wholesale_price_usd)) {
+                    $manualPrice = (float) $product->wholesale_price_usd;
+                } elseif ($group === 'trading' && !empty($product->trading_price_usd)) {
+                    $manualPrice = (float) $product->trading_price_usd;
+                } elseif (!empty($product->price_usd)) {
+                    $manualPrice = (float) $product->price_usd;
+                } else {
+                    $manualPrice = null;
+                }
 
                 if ($manualPrice !== null && $manualPrice > 0) {
                     return [

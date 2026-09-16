@@ -37,6 +37,14 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
+// Email OTP Verification Routes (accessible with session or unverified auth)
+Route::controller(\App\Http\Controllers\Auth\OtpVerificationController::class)->group(function () {
+    Route::get('verify-otp', 'show')->name('otp.verify');
+    Route::post('verify-otp', 'verify')->middleware('throttle:15,1')->name('otp.check');
+    Route::post('resend-otp', 'resend')->middleware('throttle:5,1')->name('otp.resend');
+    Route::get('otp-status', 'checkStatus')->name('otp.check_status');
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');

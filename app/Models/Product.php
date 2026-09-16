@@ -16,6 +16,7 @@ class Product extends Model
         'category_id',
         'retail_price', 'walkin_price', 'wholesale_price', 'trading_price',
         'price_sgd', 'price_usd', 'wholesale_price_sgd', 'wholesale_price_usd',
+        'trading_price_sgd', 'trading_price_usd',
         'weight', 'unit', 'origin', 'storage_temp', 'brand',
         'specifications', 'images', 'thumbnail',
         'stock_quantity', 'track_stock',
@@ -38,8 +39,10 @@ class Product extends Model
         'trading_price'       => 'decimal:2',
         'price_sgd'           => 'decimal:2',
         'price_usd'           => 'decimal:2',
-        'wholesale_price_sgd' => 'decimal:2',
-        'wholesale_price_usd' => 'decimal:2',
+        'wholesale_price_sgd'  => 'decimal:2',
+        'wholesale_price_usd'  => 'decimal:2',
+        'trading_price_sgd'   => 'decimal:2',
+        'trading_price_usd'   => 'decimal:2',
     ];
 
     protected static function booted(): void

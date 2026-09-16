@@ -81,10 +81,25 @@ class CustomerController extends Controller
             'approval_status' => 'required|in:pending,approved,rejected',
         ]);
 
-        if ($validated['approval_status'] === 'approved' && $user->approval_status !== 'approved') {
-            $validated['approved_at'] = now();
-            $validated['approved_by'] = auth()->id();
+        if ($validated['approval_status'] === 'approved') {
+            if ($user->approval_status !== 'approved') {
+                $validated['approved_at'] = now();
+                $validated['approved_by'] = auth()->id();
+            }
             $validated['rejection_reason'] = null;
+            // Always unblock OTP, reset attempts and verify email when admin approves or saves approved status
+            $validated['email_otp_blocked_at'] = null;
+            $validated['email_otp_attempts']   = 0;
+            $validated['email_otp_resends']    = 0;
+            $validated['email_otp_code']       = null;
+            $validated['email_otp_expires_at'] = null;
+            $validated['email_otp_sent_at']    = null;
+            if (!$user->email_verified_at) {
+                $validated['email_verified_at'] = now();
+            }
+        } elseif ($validated['approval_status'] === 'rejected' && $user->approval_status !== 'rejected') {
+            $validated['approved_at'] = null;
+            $validated['approved_by'] = null;
         }
 
         $user->update($validated);
@@ -94,16 +109,7 @@ class CustomerController extends Controller
 
     public function approve(User $user)
     {
-        if (!in_array($user->customer_group, ['wholesale', 'trading'])) {
-            return back()->with('error', 'Only wholesale/trading accounts require approval.');
-        }
-
-        $user->update([
-            'approval_status'  => 'approved',
-            'approved_at'      => now(),
-            'approved_by'      => auth()->id(),
-            'rejection_reason' => null,
-        ]);
+        $user->unblockAndVerifyFromAdmin();
 
         // Send approval email
         $mailSent = false;
@@ -119,10 +125,17 @@ class CustomerController extends Controller
         }
 
         if ($mailSent) {
-            return back()->with('success', "Account for {$user->name} has been approved and confirmation email sent to {$user->email}.");
+            return back()->with('success', "Account for {$user->name} has been approved, unblocked, and confirmation email sent to {$user->email}.");
         }
 
-        return back()->with('warning', "Account for {$user->name} has been approved in database, but confirmation email could not be delivered to {$user->email} ({$mailError}).");
+        return back()->with('success', "Account for {$user->name} has been approved and unblocked.");
+    }
+
+    public function unblock(User $user)
+    {
+        $user->unblockAndVerifyFromAdmin();
+
+        return back()->with('success', "Customer {$user->name} has been successfully unblocked and email verified. They can now log in and access their dashboard.");
     }
 
     public function reject(Request $request, User $user)
@@ -154,5 +167,39 @@ class CustomerController extends Controller
         }
 
         return back()->with('warning', "Account for {$user->name} has been rejected in database, but notification email could not be delivered to {$user->email} ({$mailError}).");
+    }
+
+    /**
+     * Delete a customer account.
+     */
+    public function destroy(Request $request, User $user)
+    {
+        if ($user->isAdmin()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Administrator accounts cannot be deleted.',
+                ], 403);
+            }
+            return back()->with('error', 'Administrator accounts cannot be deleted.');
+        }
+
+        $userName = $user->name;
+
+        // Delete customer avatar if exists
+        if ($user->avatar && file_exists(public_path($user->avatar))) {
+            @unlink(public_path($user->avatar));
+        }
+
+        $user->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Customer '{$userName}' has been deleted successfully.",
+            ]);
+        }
+
+        return back()->with('success', "Customer '{$userName}' has been deleted successfully.");
     }
 }

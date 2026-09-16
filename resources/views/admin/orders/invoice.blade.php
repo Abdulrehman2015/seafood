@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice #{{ $order->order_number }} — MST Import and Export SDN BHD</title>
+@extends(request()->is('admin/*') ? 'layouts.admin' : 'layouts.app')
+
+@section('title', 'Invoice #' . $order->order_number . ' — MST Import and Export SDN BHD')
+
+@push('styles')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700;900&family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,19 +23,12 @@
             --gray-800: #1e293b;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
+        .invoice-body-reset {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #e2e8f0;
             color: var(--gray-800);
             line-height: 1.45;
-            padding: 30px 16px;
             -webkit-font-smoothing: antialiased;
+            width: 100%;
         }
 
         /* Top Action Bar (hidden when printing) */
@@ -515,6 +507,48 @@
             text-transform: uppercase;
         }
 
+        /* Responsive Screen Styles for Mobile & Tablet */
+        @media (max-width: 860px) {
+            .invoice-container {
+                padding: 20px 14px !important;
+                border-radius: 8px !important;
+            }
+            .invoice-header {
+                flex-direction: column !important;
+                gap: 16px !important;
+                align-items: flex-start !important;
+            }
+            .invoice-header-right,
+            .invoice-meta-box,
+            .meta-table {
+                width: 100% !important;
+            }
+            .invoice-billing-grid {
+                grid-template-columns: 1fr !important;
+                gap: 14px !important;
+                padding: 14px !important;
+            }
+            .fulfillment-col {
+                border-left: none !important;
+                border-top: 1px dashed var(--gray-300) !important;
+                padding-left: 0 !important;
+                padding-top: 14px !important;
+            }
+            .summary-words-grid {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+            .notes-declaration-grid {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+            .signatures-grid {
+                grid-template-columns: 1fr !important;
+                gap: 28px !important;
+                margin-top: 24px !important;
+            }
+        }
+
         /* Print Specific Styles */
         @media print {
             @page {
@@ -522,14 +556,31 @@
                 margin: 10mm 12mm;
             }
 
+            .admin-sidebar,
+            .admin-global-header,
+            .admin-mobile-header,
+            .admin-sidebar-backdrop,
+            .no-print-bar,
+            .flash-container,
+            header,
+            nav,
+            footer {
+                display: none !important;
+            }
+
             body {
                 background: #ffffff !important;
                 color: #000000 !important;
                 padding: 0 !important;
+                margin: 0 !important;
             }
 
-            .no-print-bar {
-                display: none !important;
+            .admin-main {
+                margin: 0 !important;
+                margin-left: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                background: #ffffff !important;
             }
 
             .invoice-container {
@@ -569,8 +620,10 @@
             }
         }
     </style>
-</head>
-<body>
+@endpush
+
+@section('content')
+<div class="invoice-body-reset">
 
 <!-- Interactive Header Action Bar (Screen Only) -->
 <div class="no-print-bar">
@@ -702,37 +755,39 @@
     </div>
 
     <!-- 3. Items Table -->
-    <table class="items-table">
-        <thead>
-            <tr>
-                <th class="col-no">No.</th>
-                <th class="col-desc">Description</th>
-                <th class="col-qty">Qty</th>
-                <th class="col-price">Price</th>
-                <th class="col-disc">Discount</th>
-                <th class="col-amount">Amount<br><span style="font-size:0.65rem;font-weight:600;opacity:0.85">RM</span></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($order->items as $index => $item)
-            <tr>
-                <td class="col-no">{{ $index + 1 }}</td>
-                <td class="col-desc">
-                    <div class="item-name">{{ $item->product_name }}</div>
-                    @if($item->product && $item->product->weight)
-                        <div class="item-spec">Spec: {{ $item->product->weight }} {{ $item->product->unit ?? 'KG' }}</div>
-                    @endif
-                </td>
-                <td class="col-qty">
-                    {{ number_format($item->quantity, 2) }} {{ strtoupper($item->product->unit ?? 'KG') }}
-                </td>
-                <td class="col-price">{{ number_format($item->unit_price, 2) }}</td>
-                <td class="col-disc">0.00</td>
-                <td class="col-amount">{{ number_format($item->subtotal, 2) }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="table-wrapper" style="width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:18px">
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th class="col-no">No.</th>
+                    <th class="col-desc">Description</th>
+                    <th class="col-qty">Qty</th>
+                    <th class="col-price">Price</th>
+                    <th class="col-disc">Discount</th>
+                    <th class="col-amount">Amount<br><span style="font-size:0.65rem;font-weight:600;opacity:0.85">RM</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($order->items as $index => $item)
+                <tr>
+                    <td class="col-no">{{ $index + 1 }}</td>
+                    <td class="col-desc">
+                        <div class="item-name">{{ $item->product_name }}</div>
+                        @if($item->product && $item->product->weight)
+                            <div class="item-spec">Spec: {{ $item->product->weight }} {{ $item->product->unit ?? 'KG' }}</div>
+                        @endif
+                    </td>
+                    <td class="col-qty">
+                        {{ number_format($item->quantity, 2) }} {{ strtoupper($item->product->unit ?? 'KG') }}
+                    </td>
+                    <td class="col-price">{{ number_format($item->unit_price, 2) }}</td>
+                    <td class="col-disc">0.00</td>
+                    <td class="col-amount">{{ number_format($item->subtotal, 2) }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 
     <!-- 4. Ringgit In Words & Totals Summary -->
     <div class="summary-words-grid">
@@ -801,8 +856,6 @@
             <div class="signature-title">CUSTOMER SIGNATURE &amp; STAMP</div>
         </div>
     </div>
-
 </div>
-
-</body>
-</html>
+</div>
+@endsection

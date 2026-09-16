@@ -17,11 +17,36 @@ class EnsurePendingUserRestricted
         if (auth()->check()) {
             $user = auth()->user();
 
+            // Admins are never restricted
+            if ($user->isAdmin()) {
+                return $next($request);
+            }
+
+            // 1. Rejected users: restrict to /account-rejected
+            if ($user->isRejected()) {
+                if (
+                    $request->routeIs('approval.rejected') ||
+                    $request->routeIs('approval.check_status') ||
+                    $request->routeIs('logout') ||
+                    $request->is('account-rejected') ||
+                    $request->is('logout') ||
+                    $request->is('api/check-approval-status')
+                ) {
+                    return $next($request);
+                }
+
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'error'    => 'Account application was not approved.',
+                        'redirect' => route('approval.rejected'),
+                    ], 403);
+                }
+
+                return redirect()->route('approval.rejected');
+            }
+
+            // 2. Pending users: restrict to /pending-approval
             if ($user->isPending()) {
-                // Allowed paths and routes for pending users:
-                // 1. The pending approval page
-                // 2. Logout route (POST /logout)
-                // 3. API polling endpoint to check approval status
                 if (
                     $request->routeIs('approval.pending') ||
                     $request->routeIs('approval.check_status') ||

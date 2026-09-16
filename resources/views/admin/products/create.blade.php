@@ -252,6 +252,30 @@
                                        value="{{ old('wholesale_price_usd') }}" placeholder="Optional">
                             </div>
                         </div>
+
+                        <!-- Trading SGD -->
+                        <div class="form-group mb-0" style="background:#f8fafc;padding:12px 14px;border-radius:10px;border:1px solid #e2e8f0;">
+                            <label class="form-label" style="font-weight:600;font-size:0.8rem;color:var(--text-primary);margin-bottom:4px;">
+                                🇸🇬 Trading Price (SGD)
+                            </label>
+                            <div class="currency-input-group">
+                                <span class="currency-badge" style="background:#e0f2fe;color:#0369a1;font-weight:700;">S$</span>
+                                <input type="number" name="trading_price_sgd" step="0.01" min="0" class="form-control"
+                                       value="{{ old('trading_price_sgd') }}" placeholder="Optional">
+                            </div>
+                        </div>
+
+                        <!-- Trading USD -->
+                        <div class="form-group mb-0" style="background:#f8fafc;padding:12px 14px;border-radius:10px;border:1px solid #e2e8f0;">
+                            <label class="form-label" style="font-weight:600;font-size:0.8rem;color:var(--text-primary);margin-bottom:4px;">
+                                🇺🇸 Trading Price (USD)
+                            </label>
+                            <div class="currency-input-group">
+                                <span class="currency-badge" style="background:#ecfdf5;color:#047857;font-weight:700;">$</span>
+                                <input type="number" name="trading_price_usd" step="0.01" min="0" class="form-control"
+                                       value="{{ old('trading_price_usd') }}" placeholder="Optional">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

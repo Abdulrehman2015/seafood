@@ -32,44 +32,46 @@ class HomeController extends Controller
 
     public function approvalPending(Request $request)
     {
-        // 1. Non-logged-in users -> redirect to homepage
         if (!auth()->check()) {
-            return redirect()->route('home');
+            return redirect()->route('login');
         }
 
         $user = auth()->user()->fresh();
 
-        // 2. Once an admin approves their account, when user refreshes, redirect to Dashboard
+        // 1. If approved -> redirect straight to Dashboard
         if ($user->isApproved()) {
-            if (session('was_on_pending_approval') || str_contains($request->headers->get('referer', ''), 'pending-approval')) {
-                session()->forget('was_on_pending_approval');
-                return redirect()->route($user->isAdmin() ? 'admin.dashboard' : 'account.dashboard')
-                    ->with('success', 'Your account has been approved! Welcome to your dashboard.');
-            }
-
-            // Users with approved accounts accessing /pending-approval by default redirect to homepage
-            return redirect()->route('home');
+            return redirect()->route($user->isAdmin() ? 'admin.dashboard' : 'account.dashboard')
+                ->with('success', 'Your account has been approved! Welcome to your dashboard.');
         }
 
-        // 3. If rejected -> redirect to rejection page
+        // 2. If rejected -> redirect to rejection page
         if ($user->isRejected()) {
             return redirect()->route('approval.rejected');
         }
 
-        // 4. Any other non-pending status -> redirect to homepage
-        if (!$user->isPending()) {
-            return redirect()->route('home');
-        }
-
-        // 5. Logged-in user with Pending Approval account -> allowed to view pending approval page
-        session(['was_on_pending_approval' => true]);
-
         return view('auth.approval-pending', compact('user'));
     }
 
-    public function approvalRejected()
+    public function approvalRejected(Request $request)
     {
-        return view('auth.approval-rejected');
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        $user = auth()->user()->fresh();
+
+        // 1. If approved -> redirect straight to Dashboard
+        if ($user->isApproved()) {
+            return redirect()->route($user->isAdmin() ? 'admin.dashboard' : 'account.dashboard')
+                ->with('success', 'Your account has been approved! Welcome to your dashboard.');
+        }
+
+        // 2. If pending -> redirect to pending approval page
+        if ($user->isPending()) {
+            return redirect()->route('approval.pending');
+        }
+
+        return view('auth.approval-rejected', compact('user'));
     }
 
     public function about()

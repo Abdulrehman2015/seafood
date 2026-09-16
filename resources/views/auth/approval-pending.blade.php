@@ -139,7 +139,7 @@ function handleManualRefresh() {
     window.location.reload();
 }
 
-// Live polling: Check status every 6 seconds. Once approved, automatically redirect to Dashboard!
+// Live polling: Check status every 4 seconds. Redirect immediately when admin changes status!
 (function() {
     var pollInterval = setInterval(function() {
         fetch('{{ route("approval.check_status") }}', {
@@ -150,15 +150,19 @@ function handleManualRefresh() {
         })
         .then(function(response) { return response.json(); })
         .then(function(data) {
-            if (data && data.approved) {
+            if (!data) return;
+            if (data.approved) {
                 clearInterval(pollInterval);
                 window.location.href = data.redirect || '{{ route("account.dashboard") }}';
+            } else if (data.rejected) {
+                clearInterval(pollInterval);
+                window.location.href = '{{ route("approval.rejected") }}';
             }
         })
         .catch(function() {
             // Silently ignore network hiccups
         });
-    }, 6000);
+    }, 4000);
 })();
 </script>
 @endsection

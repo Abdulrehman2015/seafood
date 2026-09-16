@@ -1142,6 +1142,26 @@ if (btnBuyNow) {
     });
 }
 
+// Reset button states when user navigates back (bfcache restore)
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        const btnBuyNowEl = document.getElementById('btnBuyNowAjax');
+        if (btnBuyNowEl) {
+            btnBuyNowEl.disabled = false;
+            btnBuyNowEl.innerHTML = origBuyHtml;
+            btnBuyNowEl.style.background = '';
+            btnBuyNowEl.style.boxShadow = '';
+        }
+        const btnAddEl = document.getElementById('btnAddToCartAjax');
+        if (btnAddEl) {
+            btnAddEl.disabled = false;
+            btnAddEl.innerHTML = origAddHtml;
+            btnAddEl.style.background = '';
+            btnAddEl.style.boxShadow = '';
+        }
+    }
+});
+
 function showDetailToast(msg) {
     let toast = document.getElementById('productDetailToast');
     if (!toast) {

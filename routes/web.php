@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\Admin;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 // ─── Public Routes ───────────────────────────────────────────────────────────
 
@@ -47,14 +48,28 @@ Route::get('/pending-approval', [HomeController::class, 'approvalPending'])->nam
 Route::get('/account-rejected', [HomeController::class, 'approvalRejected'])->name('approval.rejected');
 Route::get('/api/check-approval-status', function () {
     if (!auth()->check()) {
-        return response()->json(['logged_in' => false, 'approved' => false]);
+        return response()->json([
+            'logged_in' => false,
+            'status'    => 'guest',
+            'redirect'  => route('login'),
+        ]);
     }
     $user = auth()->user()->fresh();
+
+    $redirect = match ($user->approval_status) {
+        'approved' => route($user->isAdmin() ? 'admin.dashboard' : 'account.dashboard'),
+        'pending'  => route('approval.pending'),
+        'rejected' => route('approval.rejected'),
+        default    => route('home'),
+    };
+
     return response()->json([
         'logged_in' => true,
         'approved'  => $user->isApproved(),
+        'pending'   => $user->isPending(),
+        'rejected'  => $user->isRejected(),
         'status'    => $user->approval_status,
-        'redirect'  => $user->isApproved() ? route($user->isAdmin() ? 'admin.dashboard' : 'account.dashboard') : null,
+        'redirect'  => $redirect,
     ]);
 })->name('approval.check_status');
 
@@ -123,6 +138,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 
     Route::get('/', [Admin\DashboardController::class, 'index'])->name('dashboard');
 
+    // Admin Profile
+    Route::get('profile', [Admin\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('profile', [Admin\ProfileController::class, 'update'])->name('profile.update');
+
     // Products
     Route::resource('products', Admin\ProductController::class);
     Route::post('products/{id}/restore', [Admin\ProductController::class, 'restore'])->name('products.restore');
@@ -135,7 +154,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
     Route::get('customers', [Admin\CustomerController::class, 'index'])->name('customers.index');
     Route::get('customers/{user}', [Admin\CustomerController::class, 'show'])->name('customers.show');
     Route::patch('customers/{user}', [Admin\CustomerController::class, 'update'])->name('customers.update');
+    Route::delete('customers/{user}', [Admin\CustomerController::class, 'destroy'])->name('customers.destroy');
     Route::post('customers/{user}/approve', [Admin\CustomerController::class, 'approve'])->name('customers.approve');
+    Route::post('customers/{user}/unblock', [Admin\CustomerController::class, 'unblock'])->name('customers.unblock');
     Route::post('customers/{user}/reject', [Admin\CustomerController::class, 'reject'])->name('customers.reject');
 
     // Orders
@@ -166,6 +187,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
     Route::post('settings/test-email', [Admin\SettingController::class, 'testEmail'])->name('settings.testEmail');
     Route::post('settings/test-stripe', [Admin\SettingController::class, 'testStripe'])->name('settings.testStripe');
     Route::post('settings/currency/sync', [\App\Http\Controllers\CurrencyController::class, 'syncRates'])->name('settings.currency.sync');
+
+    // Cache Clear
+    Route::post('cache/clear', function () {
+        Artisan::call('cache:clear');
+        Artisan::call('config:clear');
+        Artisan::call('route:clear');
+        Artisan::call('view:clear');
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+        return response()->json(['success' => true, 'message' => 'All caches cleared successfully.']);
+    })->name('cache.clear');
 
     // Email Templates & Notifications
     Route::get('emails', [Admin\EmailTemplateController::class, 'index'])->name('emails.index');
@@ -202,28 +235,33 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
     // Walk-in QR Code
     Route::get('walkin-qr', [WalkInController::class, 'generateQr'])->name('walkin.qr');
 
-    // Database Dump Download (Admin only) - Streams .mysql dump
+    // Database Dump Download (Admin only) - Streams .sql dump
     Route::get('database/download/{filename?}', function ($filename = null) {
         $backupDir = storage_path('app/backups');
-        if (!is_dir($backupDir)) {
-            @mkdir($backupDir, 0750, true);
+        $tempDir = storage_path('app/temp');
+        if (!is_dir($tempDir)) {
+            @mkdir($tempDir, 0755, true);
         }
 
-        // If a specific backup file was requested, validate and serve it with .mysql extension
+        // If a specific existing backup file from server storage was requested, validate and serve it
         if ($filename) {
             $cleanName = basename($filename);
             $targetPath = "{$backupDir}/{$cleanName}";
             if (file_exists($targetPath)) {
-                $downloadName = preg_replace('/\.(sql|mysql)$/i', '', $cleanName) . '.mysql';
+                $downloadName = preg_replace('/\.(sql|mysql)$/i', '', $cleanName) . '.sql';
                 return response()->download($targetPath, $downloadName, [
-                    'Content-Type'        => 'application/x-mysql',
-                    'Content-Disposition' => 'attachment; filename="' . $downloadName . '"',
+                    'Content-Type' => 'application/octet-stream',
                 ]);
             }
         }
 
-        $newFilename = 'mst_mysql_backup_' . date('Y-m-d_His') . '.mysql';
-        $dumpPath = "{$backupDir}/{$newFilename}";
+        // Generate a fresh on-the-fly database snapshot in temp directory (NOT storage/app/backups)
+        // so it downloads directly to user's device without cluttering or appearing in server backup archives
+        $newFilename = ($filename && str_ends_with(strtolower($filename), '.sql')) 
+            ? basename($filename) 
+            : ('mst_mysql_backup_' . date('Y-m-d_His') . '.sql');
+
+        $dumpPath = "{$tempDir}/{$newFilename}";
 
         // Candidate mysqldump locations across Windows, Linux, and custom servers
         $mysqldumpCandidates = [
@@ -257,15 +295,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 
         @exec($cmd);
 
-        // If newly generated file is valid and non-empty, download it with .mysql extension
+        // If newly generated file is valid and non-empty, download it with .sql extension and auto-delete from temp
         if (file_exists($dumpPath) && filesize($dumpPath) > 500) {
             return response()->download($dumpPath, $newFilename, [
-                'Content-Type'        => 'application/x-mysql',
-                'Content-Disposition' => 'attachment; filename="' . $newFilename . '"',
-            ]);
+                'Content-Type' => 'application/octet-stream',
+            ])->deleteFileAfterSend(true);
         }
 
-        // Secondary Fallback: Pure PHP PDO SQL/MySQL Dumper
+        // Secondary Fallback: Pure PHP PDO SQL Dumper into temp directory
         try {
             $pdo = \Illuminate\Support\Facades\DB::connection()->getPdo();
             $tables = [];
@@ -276,7 +313,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 
             if (!empty($tables)) {
                 $handle = fopen($dumpPath, 'w');
-                fwrite($handle, "-- MST Seafood MySQL Database Dump (.mysql)\n");
+                fwrite($handle, "-- MST Seafood MySQL Database Dump (.sql)\n");
                 fwrite($handle, "-- Generated: " . date('Y-m-d H:i:s') . "\n");
                 fwrite($handle, "-- Database: `{$dbName}`\n\n");
                 fwrite($handle, "SET FOREIGN_KEY_CHECKS=0;\n");
@@ -306,29 +343,38 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 
                 if (file_exists($dumpPath) && filesize($dumpPath) > 500) {
                     return response()->download($dumpPath, $newFilename, [
-                        'Content-Type'        => 'application/x-mysql',
-                        'Content-Disposition' => 'attachment; filename="' . $newFilename . '"',
-                    ]);
+                        'Content-Type' => 'application/octet-stream',
+                    ])->deleteFileAfterSend(true);
                 }
             }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::warning('PDO MySQL dump fallback failed: ' . $e->getMessage());
         }
 
-        // Final Fallback: check if existing backup exists in backups directory and serve as .mysql
-        $existing = array_merge(glob("{$backupDir}/*.mysql"), glob("{$backupDir}/*.sql"));
-        if (!empty($existing)) {
-            usort($existing, fn($a, $b) => filemtime($b) <=> filemtime($a));
-            $fallbackFile = $existing[0];
-            $downloadName = 'mst_mysql_backup_' . date('Y-m-d') . '.mysql';
-            return response()->download($fallbackFile, $downloadName, [
-                'Content-Type'        => 'application/x-mysql',
-                'Content-Disposition' => 'attachment; filename="' . $downloadName . '"',
-            ]);
+        return back()->with('error', 'Unable to generate MySQL dump. Ensure MySQL service is running.');
+    })->where('filename', '[A-Za-z0-9_.\-]+')->name('database.download');
+
+    // Delete Database Backup (Admin only)
+    Route::match(['delete', 'post'], 'database/backup/{filename}', function ($filename) {
+        $backupDir = storage_path('app/backups');
+        $cleanName = basename($filename);
+        $targetPath = "{$backupDir}/{$cleanName}";
+
+        if (file_exists($targetPath) && preg_match('/\.(sql|mysql)$/i', $cleanName)) {
+            @unlink($targetPath);
+            $msg = "Database backup '{$cleanName}' deleted successfully.";
+            if (request()->wantsJson() || request()->ajax()) {
+                return response()->json(['success' => true, 'message' => $msg]);
+            }
+            return redirect()->route('admin.settings.index', ['tab' => 'database'])->with('success', $msg);
         }
 
-        return back()->with('error', 'Unable to generate MySQL dump. Ensure MySQL service is running.');
-    })->name('database.download');
+        $errMsg = 'Backup file not found or could not be deleted.';
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json(['success' => false, 'message' => $errMsg], 404);
+        }
+        return redirect()->route('admin.settings.index', ['tab' => 'database'])->with('error', $errMsg);
+    })->where('filename', '[A-Za-z0-9_.\-]+')->name('database.destroy');
 
 });
 

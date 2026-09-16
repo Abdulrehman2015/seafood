@@ -1210,6 +1210,33 @@
         {!! $settings['footer_tags'] !!}
     @endif
 
+    @if(auth()->check() && !auth()->user()->isAdmin() && !request()->routeIs('approval.*'))
+    <script>
+    (function() {
+        var approvalCheckTimer = setInterval(function() {
+            fetch('{{ route("approval.check_status") }}', {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (!data) return;
+                if (data.rejected) {
+                    clearInterval(approvalCheckTimer);
+                    window.location.href = '{{ route("approval.rejected") }}';
+                } else if (data.pending) {
+                    clearInterval(approvalCheckTimer);
+                    window.location.href = '{{ route("approval.pending") }}';
+                }
+            })
+            .catch(function() {});
+        }, 4000);
+    })();
+    </script>
+    @endif
+
     @stack('scripts')
 </body>
 

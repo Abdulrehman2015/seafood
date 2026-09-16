@@ -61,38 +61,20 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        // Dispatch Welcome / Application Email & Admin Notification
+        // Generate and dispatch 6-digit Email OTP
+        $otp = $user->generateEmailOtp();
         \App\Models\Setting::configureMailer();
 
-        // 1. Dispatch Customer Welcome / Application Received Email
         try {
-            \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\UserRegistered($user));
-            \Illuminate\Support\Facades\Log::info("Registration email sent to user: {$user->email}");
+            \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\SendEmailOtp($user, $otp));
+            \Illuminate\Support\Facades\Log::info("Registration OTP sent to user: {$user->email}");
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error("Registration email dispatch error for user {$user->email}: " . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error("Registration OTP dispatch error for {$user->email}: " . $e->getMessage());
         }
 
-        // 2. Dispatch Admin Notification to configured store recipients
-        try {
-            $adminEmails = \App\Models\Setting::getAdminNotificationEmails();
-            if (!empty($adminEmails)) {
-                \Illuminate\Support\Facades\Mail::to($adminEmails)->send(new \App\Mail\AdminNewUserRegistered($user));
-                \Illuminate\Support\Facades\Log::info("Admin registration alert sent to: " . implode(', ', $adminEmails));
-            }
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error("Admin registration alert dispatch error for {$user->email}: " . $e->getMessage());
-        }
+        // Store user identifier in session for OTP verification
+        session(['otp_verify_user_id' => $user->id]);
 
-        // If pending, log in user and redirect to pending approval page
-        if ($user->isPending()) {
-            Auth::login($user);
-            return redirect()->route('approval.pending')->with('new_registration', true);
-        }
-
-        // Retail: log in immediately and migrate cart
-        Auth::login($user);
-        app(CartService::class)->migrateToUser($user->id);
-
-        return redirect(route('shop.index'));
+        return redirect()->route('otp.verify')->with('status', 'We have sent a 6-digit verification code to ' . $user->email . '. Please enter it below to complete your registration.');
     }
 }

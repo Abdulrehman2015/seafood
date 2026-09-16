@@ -1325,9 +1325,9 @@
                             </p>
                         </div>
                         <div>
-                            <a href="{{ route('admin.database.download') }}" class="btn btn-primary" style="background:#2563eb;border-color:#2563eb;padding:12px 24px;font-size:0.95rem;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,0.25);border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:8px">
+                            <a href="{{ route('admin.database.download', ['filename' => 'mst_mysql_backup_' . date('Y-m-d_His') . '.sql']) }}" download="mst_mysql_backup_{{ date('Y-m-d_His') }}.sql" class="btn btn-primary" style="background:#2563eb;border-color:#2563eb;padding:12px 24px;font-size:0.95rem;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,0.25);border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:8px">
                                 <span>📥</span>
-                                <span>Download MySQL (.mysql)</span>
+                                <span>Download MySQL (.sql)</span>
                             </a>
                         </div>
                     </div>
@@ -1335,13 +1335,13 @@
 
                 <!-- Existing Backups Info -->
                 @php
-                    $backupFiles = array_merge(glob(storage_path('app/backups/*.mysql')), glob(storage_path('app/backups/*.sql')));
+                    $backupFiles = array_merge(glob(storage_path('app/backups/*.sql')), glob(storage_path('app/backups/*.mysql')));
                     if (!empty($backupFiles)) {
                         usort($backupFiles, fn($a, $b) => filemtime($b) <=> filemtime($a));
                     }
                 @endphp
                 @if(!empty($backupFiles))
-                <div style="margin-top:16px">
+                <div id="databaseBackupsCard" style="margin-top:16px">
                     <div style="font-size:0.85rem;font-weight:700;color:#334155;margin-bottom:10px">Stored Backup Archives in Server Storage</div>
                     <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
                         <table class="table" style="margin:0;width:100%;font-size:0.82rem">
@@ -1353,9 +1353,9 @@
                                     <th style="padding:10px 14px;text-align:right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach(array_slice($backupFiles, 0, 5) as $bFile)
-                                <tr>
+                            <tbody id="databaseBackupsTbody">
+                                @foreach(array_slice($backupFiles, 0, 20) as $bFile)
+                                <tr id="backup-row-{{ md5(basename($bFile)) }}" style="transition: all 0.3s ease;">
                                     <td style="padding:10px 14px;font-weight:600;color:#0f172a">
                                         📄 {{ basename($bFile) }}
                                     </td>
@@ -1366,15 +1366,24 @@
                                         {{ date('d M Y, h:i A', filemtime($bFile)) }}
                                     </td>
                                     <td style="padding:10px 14px;text-align:right">
-                                        <a href="{{ route('admin.database.download', ['filename' => basename($bFile)]) }}" class="btn btn-secondary btn-sm" style="font-size:0.75rem;padding:4px 10px">
-                                            Download
-                                        </a>
+                                        <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px">
+                                            <button type="button" class="btn btn-sm" onclick="openDeleteBackupModal('{{ basename($bFile) }}', '{{ route('admin.database.destroy', ['filename' => basename($bFile)]) }}', 'backup-row-{{ md5(basename($bFile)) }}', '{{ number_format(filesize($bFile) / 1024, 1) }} KB')" style="background:#ffffff;border:1.5px solid #ef4444;color:#ef4444;font-size:0.75rem;padding:4px 10px;border-radius:6px;font-weight:700;transition:all 0.15s ease;cursor:pointer" onmouseover="this.style.background='#ef4444';this.style.color='#ffffff'" onmouseout="this.style.background='#ffffff';this.style.color='#ef4444'">
+                                                Delete
+                                            </button>
+                                            <a href="{{ route('admin.database.download', ['filename' => basename($bFile)]) }}" download="{{ preg_replace('/\.(sql|mysql)$/i', '', basename($bFile)) }}.sql" class="btn btn-secondary btn-sm" style="font-size:0.75rem;padding:4px 10px;border-radius:6px;font-weight:600">
+                                                Download
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
+                </div>
+                @else
+                <div id="noBackupsMessage" style="margin-top:16px;padding:24px;text-align:center;color:#64748b;font-size:0.875rem;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px">
+                    No backup archives currently stored on server.
                 </div>
                 @endif
 
@@ -1408,6 +1417,33 @@
                 <button type="submit" class="btn btn-primary btn-sm" style="background:#5b5bf0;border-color:#5b5bf0">Send Test Email</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal: Database Backup Delete Confirmation -->
+<div id="deleteBackupModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.6);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(3px);padding:16px;">
+    <div style="background:white;border-radius:14px;width:100%;max-width:440px;padding:24px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1),0 10px 10px -5px rgba(0,0,0,0.04);">
+        <div style="width:48px;height:48px;border-radius:50%;background:#fee2e2;color:#ef4444;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:14px;">
+            🗑️
+        </div>
+        <h3 style="font-size:1.15rem;font-weight:700;color:#0f172a;margin:0 0 6px;">Delete Database Backup</h3>
+        <p style="font-size:0.875rem;color:#64748b;line-height:1.5;margin:0 0 16px;">
+            Are you sure you want to permanently delete this database backup? This action cannot be undone.
+        </p>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;margin-bottom:20px;">
+            <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;color:#94a3b8;font-weight:700;margin-bottom:4px">Backup File</div>
+            <div id="deleteBackupFilename" style="font-size:0.85rem;font-weight:700;color:#0f172a;word-break:break-all;font-family:monospace"></div>
+            <div id="deleteBackupFilesize" style="font-size:0.75rem;color:#64748b;margin-top:4px"></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
+            <button type="button" onclick="closeDeleteBackupModal()" class="btn btn-secondary" style="flex:1;min-width:100px;">
+                Cancel
+            </button>
+            <button type="button" id="confirmDeleteBackupBtn" onclick="executeDeleteBackup()" class="btn btn-danger" style="flex:1;min-width:140px;font-weight:700;background:#ef4444;border-color:#ef4444;color:#ffffff;display:inline-flex;align-items:center;justify-content:center;gap:6px">
+                <span id="deleteBackupBtnSpinner" style="display:none">⏳</span>
+                <span id="deleteBackupBtnText">Yes, Delete</span>
+            </button>
+        </div>
     </div>
 </div>
 
@@ -1713,6 +1749,162 @@ function initAppearanceTab() {
         });
     }
 }
+
+// Database Backup Delete Functions
+let pendingDeleteBackup = null;
+
+function openDeleteBackupModal(filename, actionUrl, rowId, fileSize) {
+    pendingDeleteBackup = { filename, actionUrl, rowId };
+    const modal = document.getElementById('deleteBackupModal');
+    const nameEl = document.getElementById('deleteBackupFilename');
+    const sizeEl = document.getElementById('deleteBackupFilesize');
+    
+    if (modal && nameEl) {
+        nameEl.textContent = filename;
+        if (sizeEl) sizeEl.textContent = fileSize ? 'File Size: ' + fileSize : '';
+        modal.style.display = 'flex';
+    }
+}
+
+function closeDeleteBackupModal() {
+    const modal = document.getElementById('deleteBackupModal');
+    if (modal) modal.style.display = 'none';
+    pendingDeleteBackup = null;
+    const btn = document.getElementById('confirmDeleteBackupBtn');
+    const spinner = document.getElementById('deleteBackupBtnSpinner');
+    const text = document.getElementById('deleteBackupBtnText');
+    if (btn) btn.disabled = false;
+    if (spinner) spinner.style.display = 'none';
+    if (text) text.textContent = 'Yes, Delete';
+}
+
+function executeDeleteBackup() {
+    if (!pendingDeleteBackup) return;
+    const { filename, actionUrl, rowId } = pendingDeleteBackup;
+    
+    const btn = document.getElementById('confirmDeleteBackupBtn');
+    const spinner = document.getElementById('deleteBackupBtnSpinner');
+    const text = document.getElementById('deleteBackupBtnText');
+    if (btn) btn.disabled = true;
+    if (spinner) spinner.style.display = 'inline-block';
+    if (text) text.textContent = 'Deleting...';
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') 
+        || document.querySelector('input[name="_token"]')?.value 
+        || '';
+
+    fetch(actionUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ _method: 'DELETE' })
+    })
+    .then(async response => {
+        const data = await response.json().catch(() => ({}));
+        if (response.ok && data.success) {
+            closeDeleteBackupModal();
+            showAdminToast(data.message || `Database backup '${filename}' deleted successfully.`, 'success');
+            
+            // Smoothly remove row from table without reloading
+            const row = document.getElementById(rowId);
+            if (row) {
+                row.style.transition = 'all 0.35s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(20px)';
+                setTimeout(() => {
+                    row.remove();
+                    const tbody = document.getElementById('databaseBackupsTbody');
+                    if (tbody && tbody.querySelectorAll('tr').length === 0) {
+                        const tableCard = document.getElementById('databaseBackupsCard');
+                        if (tableCard) {
+                            tableCard.outerHTML = '<div id="noBackupsMessage" style="margin-top:16px;padding:24px;text-align:center;color:#64748b;font-size:0.875rem;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px">No backup archives currently stored on server.</div>';
+                        }
+                    }
+                }, 350);
+            }
+        } else {
+            throw new Error(data.message || 'Failed to delete backup file.');
+        }
+    })
+    .catch(err => {
+        if (btn) btn.disabled = false;
+        if (spinner) spinner.style.display = 'none';
+        if (text) text.textContent = 'Yes, Delete';
+        showAdminToast(err.message || 'An error occurred while deleting backup.', 'error');
+    });
+}
+
+function showAdminToast(message, type = 'success') {
+    let container = document.getElementById('adminToastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'adminToastContainer';
+        container.style.cssText = 'position:fixed;top:24px;right:24px;z-index:100000;display:flex;flex-direction:column;gap:10px;max-width:440px;width:calc(100% - 48px);pointer-events:none;';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    const isSuccess = type === 'success';
+    toast.style.cssText = `
+        background: ${isSuccess ? '#ffffff' : '#ffffff'};
+        border: 1px solid ${isSuccess ? '#bbf7d0' : '#fecaca'};
+        border-left: 4px solid ${isSuccess ? '#16a34a' : '#dc2626'};
+        color: ${isSuccess ? '#15803d' : '#b91c1c'};
+        padding: 14px 18px;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.12), 0 8px 10px -6px rgba(0,0,0,0.08);
+        pointer-events: auto;
+        transform: translateY(-12px);
+        opacity: 0;
+        transition: all 0.25s ease-out;
+    `;
+
+    toast.innerHTML = `
+        <span style="display:flex;align-items:center;gap:10px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:${isSuccess ? '#dcfce7' : '#fee2e2'};color:${isSuccess ? '#16a34a' : '#dc2626'};font-size:0.8rem;flex-shrink:0">${isSuccess ? '✓' : '⚠️'}</span>
+            <span>${message}</span>
+        </span>
+        <button type="button" style="background:transparent;border:none;color:#94a3b8;cursor:pointer;font-size:1.1rem;padding:0;line-height:1;margin-left:8px" onmouseover="this.style.color='#0f172a'" onmouseout="this.style.color='#94a3b8'">✕</button>
+    `;
+
+    const closeBtn = toast.querySelector('button');
+    closeBtn.onclick = () => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.remove(), 250);
+    };
+
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+    });
+
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-10px)';
+            setTimeout(() => toast.remove(), 250);
+        }
+    }, 4000);
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDeleteBackupModal();
+    }
+});
 </script>
 @endpush
 
@@ -1891,7 +2083,7 @@ function initAppearanceTab() {
 }
 
 /* Breakpoints */
-@media (max-width: 860px) {
+@media (max-width: 1024px) {
     .settings-layout-grid {
         grid-template-columns: 1fr !important;
     }

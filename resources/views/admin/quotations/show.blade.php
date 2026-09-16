@@ -10,7 +10,7 @@
     <a href="{{ route('admin.quotations.index') }}" class="btn btn-secondary">← Back to RFQs</a>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 340px;gap:var(--space-6);align-items:start">
+<div class="quotation-detail-grid" style="display:grid;grid-template-columns:1fr 340px;gap:var(--space-6);align-items:start">
 
     <!-- Left: Items & Respond -->
     <div>
@@ -69,7 +69,7 @@
                         {{ $item->product?->name ?? $item->product_name }}
                         <span class="text-xs text-muted">(Requested: {{ $item->quantity_requested }} units)</span>
                     </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)">
+                    <div class="quotation-price-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)">
                         <div class="form-group mb-0">
                             <label class="form-label">Quoted Price (RM/unit) <span class="required">*</span></label>
                             <input type="number" name="items[{{ $index }}][quoted_price]" step="0.01" min="0"
@@ -136,4 +136,17 @@
         @endif
     </div>
 </div>
+
+<style>
+@media (max-width: 960px) {
+    .quotation-detail-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+@media (max-width: 640px) {
+    .quotation-price-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
 @endsection

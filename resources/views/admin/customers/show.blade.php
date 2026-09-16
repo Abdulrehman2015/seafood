@@ -117,6 +117,11 @@
                         🛒 Retail (B2C)
                     @endif
                 </span>
+                @if($user->isOtpBlocked())
+                    <span style="background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;border:1px solid #fca5a5;">
+                        🔒 OTP Blocked
+                    </span>
+                @endif
                 @if($user->approval_status === 'approved')
                     <span style="background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;border:1px solid #bbf7d0;">
                         ✓ Approved
@@ -188,6 +193,31 @@
         <div class="kpi-icon" style="background:#fffbeb;color:#d97706;">📅</div>
     </div>
 </div>
+
+<!-- OTP Security Lock Alert Banner -->
+@if($user->isOtpBlocked())
+    <div class="card mb-6" style="border-left:4px solid #ef4444;background:#fef2f2;border-radius:12px;padding:16px 20px;border-top:1px solid #fecaca;border-right:1px solid #fecaca;border-bottom:1px solid #fecaca;margin-bottom:22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+            <div style="flex:1;min-width:260px;">
+                <h3 style="font-size:1.02rem;font-weight:700;color:#991b1b;margin:0 0 4px;display:flex;align-items:center;gap:6px;">
+                    <span>🔒</span> Account Blocked (Failed OTP Verification)
+                </h3>
+                <p class="text-xs text-muted" style="margin:0;color:#7f1d1d;line-height:1.4;">
+                    This customer was blocked on {{ $user->email_otp_blocked_at ? $user->email_otp_blocked_at->format('d M Y, h:i A') : 'recently' }} after repeated failed OTP verification attempts.
+                    Click <strong>"Unblock &amp; Verify Email"</strong> to instantly clear the block, verify their email address, and grant access to their dashboard.
+                </p>
+            </div>
+            <div>
+                <form action="{{ route('admin.customers.unblock', $user) }}" method="POST" style="margin:0;">
+                    @csrf
+                    <button type="submit" class="btn btn-primary btn-sm" style="background:#15803d;border-color:#15803d;padding:9px 20px;font-weight:700;border-radius:8px;display:inline-flex;align-items:center;gap:6px;">
+                        <span>🔓</span> Unblock &amp; Verify Email
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+@endif
 
 <!-- B2B Approval Action Banner (if Wholesale or Trading) -->
 @if(in_array($user->customer_group, ['wholesale', 'trading']))
@@ -372,6 +402,34 @@
                     <div class="text-xs text-muted" style="color:#64748b;font-weight:600;">Registered Date</div>
                     <div style="color:#334155;margin-top:2px;">
                         {{ $user->created_at->format('d M Y, h:i A') }}
+                    </div>
+                </div>
+
+                <div>
+                    <div class="text-xs text-muted" style="color:#64748b;font-weight:600;">Email Verification</div>
+                    <div style="margin-top:2px;font-weight:600;">
+                        @if($user->isEmailVerified())
+                            <span style="color:#15803d;">✓ Verified ({{ $user->email_verified_at->format('d M Y') }})</span>
+                        @else
+                            <span style="color:#b91c1c;">⚠️ Unverified</span>
+                        @endif
+                    </div>
+                </div>
+
+                <div>
+                    <div class="text-xs text-muted" style="color:#64748b;font-weight:600;">OTP Security Status</div>
+                    <div style="margin-top:2px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        @if($user->isOtpBlocked())
+                            <span style="color:#b91c1c;font-weight:700;">🔒 Blocked</span>
+                            <form action="{{ route('admin.customers.unblock', $user) }}" method="POST" style="margin:0;display:inline;">
+                                @csrf
+                                <button type="submit" style="background:#15803d;color:#ffffff;font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:6px;border:none;cursor:pointer;">
+                                    Unblock
+                                </button>
+                            </form>
+                        @else
+                            <span style="color:#15803d;font-weight:600;">✓ Normal ({{ $user->email_otp_attempts }} attempts)</span>
+                        @endif
                     </div>
                 </div>
 
