@@ -372,12 +372,12 @@
         top: calc(100% + 6px);
         left: 0;
         right: 0;
-        background: #ffffff;
+        background: #ffffff !important;
         border: 1px solid #cbd5e1;
         border-radius: 12px;
-        box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.16), 0 6px 14px rgba(15, 23, 42, 0.08);
+        box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.22), 0 6px 14px rgba(15, 23, 42, 0.12);
         padding: 10px;
-        z-index: 1050;
+        z-index: 3500 !important;
         animation: fadeInSelect 0.15s ease-out;
     }
     .multi-select-container.open .multi-select-dropdown-panel {
@@ -599,13 +599,21 @@
     .searchable-select-container.open {
         z-index: 2200 !important;
     }
+    .form-group-interests {
+        position: relative;
+        z-index: 25;
+    }
+    .form-group-interests.has-open-dropdown,
+    .form-group-custom:has(.multi-select-container.open) {
+        z-index: 3500 !important;
+    }
     .multi-select-container {
         position: relative;
         width: 100%;
-        z-index: 20;
+        z-index: 25;
     }
     .multi-select-container.open {
-        z-index: 1250 !important;
+        z-index: 3500 !important;
     }
     .searchable-trigger {
         width: 100%;
@@ -700,7 +708,7 @@
     .searchable-search-input {
         width: 100%;
         height: 38px;
-        padding: 0 10px 0 32px;
+        padding: 0 10px 0 34px !important;
         border: 1px solid #e2e8f0;
         border-radius: 7px;
         background: #f8fafc;
@@ -1408,7 +1416,7 @@
                 </div>
 
                 <!-- Row 2: Multi-select Interests Dropdown -->
-                <div class="form-group-custom">
+                <div class="form-group-custom form-group-interests" id="interestsFormGroup">
                     <label class="form-label-custom" for="interestsMultiSelectTrigger">
                         I am interested in: <span style="font-weight:400;color:#64748b">(Select multiple from dropdown)</span>
                     </label>
@@ -1863,6 +1871,8 @@
             if (catCol) catCol.classList.remove('is-dropdown-open');
             if (prodCol) prodCol.classList.remove('is-dropdown-open');
             if (formGrid2) formGrid2.classList.remove('has-open-dropdown');
+            const interestsGroup = document.getElementById('interestsFormGroup');
+            if (interestsGroup) interestsGroup.classList.remove('has-open-dropdown');
         }
 
         // --- Category Dropdown Logic ---
@@ -2156,6 +2166,8 @@
                 closeAllDropdowns();
                 if (!wasOpen) {
                     interestsContainer.classList.add('open');
+                    const interestsGroup = document.getElementById('interestsFormGroup');
+                    if (interestsGroup) interestsGroup.classList.add('has-open-dropdown');
                     interestsSearchInput.value = '';
                     filterMultiSelectOptions('');
                     setTimeout(() => interestsSearchInput.focus(), 50);
