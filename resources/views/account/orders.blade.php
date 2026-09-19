@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'My Orders — ' . ($settings['store_name'] ?? 'Mika Import and Export SDN Bhd'))
+@section('title', 'My Orders — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd'))
 
 @section('content')
 <!-- Page Header -->

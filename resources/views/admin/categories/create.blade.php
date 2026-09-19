@@ -43,18 +43,401 @@
                     @error('name')<div class="form-error" style="color:#ef4444;font-size:0.8rem;margin-top:4px">{{ $message }}</div>@enderror
                 </div>
 
-                <div class="form-group" style="margin-bottom:18px">
-                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block">
-                        Parent Category <span class="text-muted" style="font-weight:400">(Optional for subcategories)</span>
+@push('styles')
+<style>
+/* ─── Custom Searchable Select (Parent Category) ─── */
+.custom-searchable-select {
+    position: relative;
+    width: 100%;
+}
+.searchable-trigger-box {
+    width: 100%;
+    min-height: 42px;
+    height: 42px;
+    padding: 0 12px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    box-sizing: border-box;
+}
+.searchable-trigger-box:hover {
+    border-color: #94a3b8;
+    background: #f8fafc;
+}
+.searchable-trigger-box:focus,
+.custom-searchable-select.is-open .searchable-trigger-box {
+    outline: none;
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+.searchable-selected-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+.selected-icon {
+    font-size: 1rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.selected-text {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.searchable-trigger-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.searchable-clear-btn {
+    border: none;
+    background: #e2e8f0;
+    color: #475569;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    padding: 0;
+}
+.searchable-clear-btn:hover {
+    background: #fee2e2;
+    color: #ef4444;
+}
+.searchable-chevron-icon {
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.custom-searchable-select.is-open .searchable-chevron-icon {
+    transform: rotate(180deg);
+    color: #2563eb;
+}
+.searchable-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.18), 0 6px 14px -2px rgba(15, 23, 42, 0.08);
+    padding: 8px;
+    z-index: 1050;
+    display: none;
+    box-sizing: border-box;
+    animation: searchDropdownFade 0.15s ease-out;
+}
+@keyframes searchDropdownFade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.custom-searchable-select.is-open .searchable-panel {
+    display: block;
+}
+.searchable-search-box {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    margin-bottom: 6px !important;
+}
+.searchable-search-box .search-icon {
+    position: absolute !important;
+    left: 12px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    color: #94a3b8 !important;
+    pointer-events: none !important;
+    z-index: 5 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+.searchable-filter-input {
+    width: 100% !important;
+    height: 38px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 7px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 38px !important;
+    padding-right: 32px !important;
+    font-size: 0.88rem !important;
+    color: #0f172a !important;
+    outline: none !important;
+    background: #f8fafc !important;
+    transition: all 0.15s ease !important;
+    box-sizing: border-box !important;
+}
+.searchable-filter-input:focus {
+    border-color: #2563eb !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 2.5px rgba(37, 99, 235, 0.12) !important;
+}
+.searchable-search-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: #e2e8f0;
+    color: #64748b;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.15s;
+}
+.searchable-search-clear:hover {
+    background: #cbd5e1;
+    color: #1e293b;
+}
+.searchable-count-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 6px 6px;
+    font-size: 0.74rem;
+    color: #64748b;
+    font-weight: 600;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 4px;
+}
+.searchable-options-scroll {
+    max-height: 230px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    scrollbar-width: thin;
+    overscroll-behavior: contain;
+}
+.searchable-options-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+.searchable-options-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+.searchable-option-item {
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.12s ease;
+    border: 1px solid transparent;
+    user-select: none;
+}
+.searchable-option-item:hover,
+.searchable-option-item.is-focused {
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+}
+.searchable-option-item.is-selected {
+    background: #eff6ff !important;
+    border-color: #bfdbfe !important;
+}
+.searchable-option-item.is-selected .option-title {
+    color: #1d4ed8 !important;
+    font-weight: 700 !important;
+}
+.searchable-option-item.is-selected:hover,
+.searchable-option-item.is-selected.is-focused {
+    background: #dbeafe !important;
+    border-color: #93c5fd !important;
+}
+.option-left {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    flex: 1;
+}
+.option-icon {
+    font-size: 1rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.option-text-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.option-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.option-desc {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    line-height: 1.1;
+    margin-top: 1px;
+}
+.option-check {
+    display: none;
+    color: #2563eb;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+.searchable-option-item.is-selected .option-check {
+    display: inline-flex;
+}
+.searchable-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 4px 0;
+}
+.searchable-empty-state {
+    padding: 22px 12px;
+    text-align: center;
+}
+</style>
+@endpush
+
+                <div class="form-group" style="margin-bottom:18px;position:relative">
+                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
+                        <span>Parent Category <span class="text-muted" style="font-weight:400">(Optional for subcategories)</span></span>
+                        <span id="parentCategorySelectedBadge" class="badge" style="font-size:0.75rem;padding:2px 8px;border-radius:6px;background:#e0f2fe;color:#0284c7;display:none;font-weight:600">
+                            Subcategory
+                        </span>
                     </label>
-                    <select name="parent_id" class="form-control" style="width:100%;height:42px;border-radius:8px;font-size:0.9rem">
-                        <option value="">None (Top-Level Category)</option>
-                        @foreach($parents as $parent)
-                            <option value="{{ $parent->id }}" {{ old('parent_id') == $parent->id ? 'selected' : '' }}>
-                                📁 {{ $parent->name }}
-                            </option>
-                        @endforeach
-                    </select>
+
+                    <!-- Hidden Input for Form Submission -->
+                    <input type="hidden" name="parent_id" id="parentIdInput" value="{{ old('parent_id') }}">
+
+                    <!-- Custom Searchable Select Element -->
+                    <div class="custom-searchable-select" id="parentCategorySelect">
+                        <div class="searchable-trigger-box" id="parentCategoryTrigger" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox">
+                            <div class="searchable-selected-content">
+                                <span class="selected-icon" id="parentCategoryIcon">📁</span>
+                                <span class="selected-text" id="parentCategoryLabel">None (Top-Level Category)</span>
+                            </div>
+                            <div class="searchable-trigger-actions">
+                                <button type="button" class="searchable-clear-btn" id="parentCategoryClearBtn" title="Clear selection (Set as Top-Level Category)" style="display:none">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                                <span class="searchable-chevron-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Dropdown Panel -->
+                        <div class="searchable-panel" id="parentCategoryPanel">
+                            <!-- Search Bar -->
+                            <div class="searchable-search-box" style="position:relative;display:flex;align-items:center;margin-bottom:6px">
+                                <span class="search-icon" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);display:flex;align-items:center;pointer-events:none;color:#94a3b8;z-index:5">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                </span>
+                                <input type="text" 
+                                       class="searchable-filter-input" 
+                                       id="parentCategoryFilterInput" 
+                                       placeholder="Type to search parent category..." 
+                                       autocomplete="off" 
+                                       spellcheck="false"
+                                       style="padding-left:38px !important;padding-right:32px !important;width:100% !important;height:38px !important;box-sizing:border-box !important">
+                                <button type="button" class="searchable-search-clear" id="parentCategoryFilterClear" style="display:none" title="Clear search">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+
+                            <!-- Summary info -->
+                            <div class="searchable-count-header">
+                                <span id="parentCategoryCount">{{ count($parents) }} categories available</span>
+                                <span class="text-muted" style="font-size:0.75rem">↑↓ keys &amp; Enter to select</span>
+                            </div>
+
+                            <!-- Options List -->
+                            <div class="searchable-options-scroll" id="parentCategoryOptionsList" role="listbox">
+                                <!-- Top-Level None Option -->
+                                <div class="searchable-option-item {{ !old('parent_id') ? 'is-selected' : '' }}" 
+                                     data-value="" 
+                                     data-label="None (Top-Level Category)"
+                                     data-icon="🌐"
+                                     role="option">
+                                    <div class="option-left">
+                                        <span class="option-icon">🌐</span>
+                                        <div class="option-text-group">
+                                            <span class="option-title">None (Top-Level Category)</span>
+                                            <span class="option-desc">This category will be displayed at the root level</span>
+                                        </div>
+                                    </div>
+                                    <span class="option-check">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    </span>
+                                </div>
+
+                                <div class="searchable-divider"></div>
+
+                                @foreach($parents as $parent)
+                                    <div class="searchable-option-item {{ old('parent_id') == $parent->id ? 'is-selected' : '' }}" 
+                                         data-value="{{ $parent->id }}" 
+                                         data-label="{{ $parent->name }}"
+                                         data-icon="📁"
+                                         role="option">
+                                        <div class="option-left">
+                                            <span class="option-icon">📁</span>
+                                            <div class="option-text-group">
+                                                <span class="option-title">{{ $parent->name }}</span>
+                                                <span class="option-desc">Slug: /{{ $parent->slug }}</span>
+                                            </div>
+                                        </div>
+                                        <span class="option-check">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        </span>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <!-- Empty Search Results State -->
+                            <div class="searchable-empty-state" id="parentCategoryEmpty" style="display:none">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 6px">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <div style="font-weight:600;color:#64748b;font-size:0.88rem">No matching categories found</div>
+                                <div style="color:#94a3b8;font-size:0.78rem">Try searching with a different keyword</div>
+                            </div>
+                        </div>
+                    </div>
                     @error('parent_id')<div class="form-error" style="color:#ef4444;font-size:0.8rem;margin-top:4px">{{ $message }}</div>@enderror
                 </div>
 
@@ -307,5 +690,269 @@ function clearCatImgSelection() {
     document.getElementById('catPlaceholder').style.display = 'block';
     document.getElementById('catClearBtn').style.display = 'none';
 }
+
+// ─── Searchable Parent Category Dropdown Logic ───
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('parentCategorySelect');
+    if (!container) return;
+
+    const trigger = document.getElementById('parentCategoryTrigger');
+    const panel = document.getElementById('parentCategoryPanel');
+    const label = document.getElementById('parentCategoryLabel');
+    const icon = document.getElementById('parentCategoryIcon');
+    const clearBtn = document.getElementById('parentCategoryClearBtn');
+    const filterInput = document.getElementById('parentCategoryFilterInput');
+    const filterClear = document.getElementById('parentCategoryFilterClear');
+    const hiddenInput = document.getElementById('parentIdInput');
+    const countEl = document.getElementById('parentCategoryCount');
+    const emptyEl = document.getElementById('parentCategoryEmpty');
+    const badgeEl = document.getElementById('parentCategorySelectedBadge');
+    const optionsList = document.getElementById('parentCategoryOptionsList');
+    const options = Array.from(optionsList.querySelectorAll('.searchable-option-item'));
+
+    let focusedIndex = -1;
+
+    // Initialize display from current hidden input value
+    function syncFromValue() {
+        const currentVal = hiddenInput.value ? String(hiddenInput.value).trim() : '';
+        let matched = null;
+
+        options.forEach((opt, idx) => {
+            const val = opt.getAttribute('data-value') ? String(opt.getAttribute('data-value')).trim() : '';
+            if (val === currentVal) {
+                opt.classList.add('is-selected');
+                matched = opt;
+                focusedIndex = idx;
+            } else {
+                opt.classList.remove('is-selected');
+            }
+        });
+
+        if (matched && currentVal !== '') {
+            label.textContent = matched.getAttribute('data-label') || 'Selected Category';
+            icon.textContent = matched.getAttribute('data-icon') || '📁';
+            clearBtn.style.display = 'inline-flex';
+            if (badgeEl) badgeEl.style.display = 'inline-block';
+        } else {
+            // None / Top-Level
+            label.textContent = 'None (Top-Level Category)';
+            icon.textContent = '🌐';
+            clearBtn.style.display = 'none';
+            if (badgeEl) badgeEl.style.display = 'none';
+            const noneOpt = options.find(o => !o.getAttribute('data-value'));
+            if (noneOpt) noneOpt.classList.add('is-selected');
+        }
+    }
+
+    syncFromValue();
+
+    function openDropdown() {
+        container.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+        filterInput.value = '';
+        if (filterClear) filterClear.style.display = 'none';
+        filterOptions('');
+        setTimeout(() => {
+            filterInput.focus();
+            // Scroll selected item into view
+            const selectedOpt = optionsList.querySelector('.searchable-option-item.is-selected');
+            if (selectedOpt) {
+                selectedOpt.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
+        }, 60);
+    }
+
+    function closeDropdown() {
+        container.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+        clearHighlight();
+    }
+
+    function toggleDropdown(e) {
+        if (e) e.stopPropagation();
+        if (container.classList.contains('is-open')) {
+            closeDropdown();
+        } else {
+            openDropdown();
+        }
+    }
+
+    trigger.addEventListener('click', toggleDropdown);
+
+    trigger.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (!container.classList.contains('is-open')) {
+                openDropdown();
+            }
+        }
+    });
+
+    // Clear selection back to None
+    clearBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        selectOption('', 'None (Top-Level Category)', '🌐');
+    });
+
+    // Filter clear
+    if (filterClear) {
+        filterClear.addEventListener('click', function(e) {
+            e.stopPropagation();
+            filterInput.value = '';
+            filterClear.style.display = 'none';
+            filterOptions('');
+            filterInput.focus();
+        });
+    }
+
+    // Filter typing
+    filterInput.addEventListener('input', function() {
+        const query = this.value.trim().toLowerCase();
+        if (filterClear) {
+            filterClear.style.display = query ? 'inline-flex' : 'none';
+        }
+        filterOptions(query);
+    });
+
+    filterInput.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    function getVisibleOptions() {
+        return options.filter(opt => opt.style.display !== 'none');
+    }
+
+    function clearHighlight() {
+        options.forEach(opt => opt.classList.remove('is-focused'));
+        focusedIndex = -1;
+    }
+
+    function setHighlight(index) {
+        const visible = getVisibleOptions();
+        if (visible.length === 0) return;
+        clearHighlight();
+        if (index < 0) index = 0;
+        if (index >= visible.length) index = visible.length - 1;
+        focusedIndex = index;
+        visible[focusedIndex].classList.add('is-focused');
+        visible[focusedIndex].scrollIntoView({ block: 'nearest' });
+    }
+
+    // Keyboard navigation in search input
+    filterInput.addEventListener('keydown', function(e) {
+        const visible = getVisibleOptions();
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            let nextIndex = focusedIndex + 1;
+            if (nextIndex >= visible.length) nextIndex = 0;
+            setHighlight(nextIndex);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            let prevIndex = focusedIndex - 1;
+            if (prevIndex < 0) prevIndex = visible.length - 1;
+            setHighlight(prevIndex);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (visible.length > 0 && focusedIndex >= 0 && visible[focusedIndex]) {
+                const opt = visible[focusedIndex];
+                selectOption(opt.getAttribute('data-value') || '', opt.getAttribute('data-label'), opt.getAttribute('data-icon') || '📁');
+            } else if (visible.length > 0) {
+                // Select first visible
+                const opt = visible[0];
+                selectOption(opt.getAttribute('data-value') || '', opt.getAttribute('data-label'), opt.getAttribute('data-icon') || '📁');
+            }
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            closeDropdown();
+            trigger.focus();
+        } else if (e.key === 'Tab') {
+            closeDropdown();
+        }
+    });
+
+    function filterOptions(query) {
+        let matchCount = 0;
+        options.forEach(opt => {
+            const val = opt.getAttribute('data-value') || '';
+            const lbl = (opt.getAttribute('data-label') || '').toLowerCase();
+            const descEl = opt.querySelector('.option-desc');
+            const desc = descEl ? descEl.textContent.toLowerCase() : '';
+
+            // If empty query, show all
+            if (!query) {
+                opt.style.display = 'flex';
+                matchCount++;
+                return;
+            }
+
+            // Match if label or desc contains query, or if searching "none"/"top" and it's the root option
+            const isNoneOption = val === '';
+            const isMatch = lbl.includes(query) || desc.includes(query) || (isNoneOption && ('none'.includes(query) || 'top'.includes(query) || 'root'.includes(query)));
+
+            if (isMatch) {
+                opt.style.display = 'flex';
+                matchCount++;
+            } else {
+                opt.style.display = 'none';
+            }
+        });
+
+        // Update count & empty state
+        if (countEl) {
+            if (query) {
+                countEl.textContent = matchCount + (matchCount === 1 ? ' category match' : ' category matches');
+            } else {
+                countEl.textContent = (options.length - 1) + ' categories available';
+            }
+        }
+
+        if (emptyEl) {
+            emptyEl.style.display = matchCount === 0 ? 'block' : 'none';
+        }
+
+        // Highlight first matching
+        const visible = getVisibleOptions();
+        if (visible.length > 0) {
+            setHighlight(0);
+        } else {
+            clearHighlight();
+        }
+    }
+
+    function selectOption(value, labelText, iconText) {
+        hiddenInput.value = value;
+        syncFromValue();
+        closeDropdown();
+        trigger.focus();
+
+        // Dispatch change event on hidden input in case listeners exist
+        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    // Option click listener
+    options.forEach(opt => {
+        opt.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const val = this.getAttribute('data-value') || '';
+            const lbl = this.getAttribute('data-label') || 'Selected Category';
+            const ic = this.getAttribute('data-icon') || '📁';
+            selectOption(val, lbl, ic);
+        });
+
+        opt.addEventListener('mouseenter', function() {
+            clearHighlight();
+            this.classList.add('is-focused');
+            const visible = getVisibleOptions();
+            focusedIndex = visible.indexOf(this);
+        });
+    });
+
+    // Close when clicked outside
+    document.addEventListener('click', function(e) {
+        if (!container.contains(e.target)) {
+            closeDropdown();
+        }
+    });
+});
 </script>
 @endpush

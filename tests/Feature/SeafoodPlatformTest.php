@@ -112,7 +112,7 @@ class SeafoodPlatformTest extends TestCase
             'postcode'              => '59100',
         ]);
 
-        $response->assertRedirect(route('approval.pending'));
+        $response->assertRedirect(route('otp.verify'));
         $this->assertDatabaseHas('users', [
             'email'           => 'roberto@searestaurant.com',
             'customer_group'  => 'wholesale',

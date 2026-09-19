@@ -126,7 +126,7 @@
 
             <!-- Admin Response Notes -->
             <div class="card">
-                <div class="card-header"><div class="card-title">Mika Commercial Response</div></div>
+                <div class="card-header"><div class="card-title">MST Commercial Response</div></div>
                 @if($quotation->admin_notes)
                     <p class="text-sm text-secondary leading-relaxed">
                         {{ $quotation->admin_notes }}

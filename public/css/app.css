@@ -782,6 +782,7 @@ p {
     color: var(--text-muted);
     max-width: 580px;
     margin: 0 auto;
+    text-align: center;
 }
 
 /* ─── Product Cards (White & Sea Green) ──────────────────────────────────── */

@@ -42,7 +42,7 @@
 
     <title>@yield('title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import and Export Sdn Bhd'))</title>
     <meta name="description"
-        content="@yield('meta_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export Sdn Bhd — Johor Bahru frozen seafood trading and wholesale company serving Malaysia and Singapore.'))">
+        content="@yield('meta_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export Sdn Bhd — Johor-based frozen food sourcing, trading and distribution company serving commercial customers across regional and international markets.'))">
 
     @php
         $keywords = $activePageSeo?->meta_keywords ?? ($settings['meta_keywords'] ?? '');

@@ -29,13 +29,29 @@ class RegisteredUserController extends Controller
             'customer_group'  => ['required', 'in:retail,wholesale,trading'],
             'phone'           => ['required', 'string', 'max:20'],
             'company_name'    => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:255'],
-            'company_reg_no'  => ['nullable', 'string', 'max:100'],
-            'business_type'   => ['nullable', 'string', 'max:255'],
+            'company_reg_no'  => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:100'],
+            'business_type'   => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:255'],
             'address'         => ['required', 'string', 'max:500'],
             'city'            => ['required', 'string', 'max:100'],
             'state'           => ['required', 'string', 'max:100'],
             'postcode'        => ['required', 'string', 'max:10'],
+        ], [
+            'company_name.required_if'   => 'Company Name is required for wholesale and trading accounts.',
+            'company_reg_no.required_if' => 'Company Registration Number (SSM) is required for wholesale and trading accounts.',
+            'business_type.required_if'  => 'Business Nature / Type is required for wholesale and trading accounts.',
         ]);
+
+        // Check for duplicate company registration if applicable
+        if (in_array($request->customer_group, ['wholesale', 'trading']) && $request->filled('company_reg_no')) {
+            $existingCompany = User::where('company_reg_no', trim($request->company_reg_no))
+                ->where('id', '!=', auth()->id() ?? 0)
+                ->first();
+            if ($existingCompany) {
+                return back()->withInput()->withErrors([
+                    'company_reg_no' => 'An account with this Company Registration Number (SSM: ' . e($request->company_reg_no) . ') is already registered. Please contact support or log in to your existing account.'
+                ]);
+            }
+        }
 
         // Retail customers are auto-approved; wholesale/trading need approval
         $approvalStatus = match ($request->customer_group) {

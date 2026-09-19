@@ -1,146 +1,543 @@
 @extends('layouts.app')
-@section('title', 'Contact Us — MST Import and Export Sdn Bhd')
-@section('meta_description', 'Get in touch with MST Import and Export Sdn Bhd. Reach out for retail inquiries, wholesale seafood orders, or customer support across Malaysia and Singapore.')
+@section('title', 'Contact Us & RFQ Sourcing — MST Import and Export Sdn Bhd')
+@section('meta_description', 'Contact MST Import and Export Sdn Bhd. Request a quote for frozen seafood, meats, frozen foods, food ingredients, or customised sourcing across Malaysia, Singapore, and regional markets.')
 
 @section('content')
 <!-- Local Leaflet CSS (Same-Origin for strict CSP & ad-blocker compliance) -->
 <link rel="stylesheet" href="{{ asset('css/leaflet.css') }}" />
 
 <style>
+    /* Base Container & Typography */
     .contact-page-container {
-        max-width: 1200px;
+        max-width: 1240px;
         margin: 0 auto;
-        padding: 48px 20px 80px;
+        padding: 44px 24px 80px;
+        box-sizing: border-box;
     }
-    
-    /* 1. Top 4 Cards Grid */
+
+    /* ─── Hero Section Polish ─────────────────────────────────────────────── */
+    .contact-hero-section {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #07152b 0%, #0c234b 45%, #1d4ed8 100%);
+        color: #ffffff;
+        border-bottom: 1px solid rgba(37, 99, 235, 0.35);
+        padding-top: calc(75px + 28px);
+        padding-bottom: 36px;
+    }
+    .contact-hero-grid-pattern {
+        position: absolute;
+        inset: 0;
+        opacity: 0.08;
+        background-image: radial-gradient(#38bdf8 1.5px, transparent 1.5px);
+        background-size: 24px 24px;
+        pointer-events: none;
+    }
+    .contact-hero-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(56, 189, 248, 0.16);
+        border: 1px solid rgba(186, 230, 253, 0.35);
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #7dd3fc;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .contact-hero-badge-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.84rem;
+        padding: 8px 16px;
+        border-radius: 999px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+        background: rgba(9, 26, 54, 0.85);
+        color: #7dd3fc;
+        border: 1px solid rgba(59, 130, 246, 0.6);
+        backdrop-filter: blur(8px);
+    }
+
+    /* ─── 1. Top 4 Contact Action Cards ───────────────────────────────────── */
     .contact-top-cards {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 24px;
-        margin-bottom: 50px;
+        gap: 20px;
+        margin-bottom: 48px;
     }
     .contact-top-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
         border-radius: 20px;
-        padding: 32px 22px;
+        padding: 26px 18px;
         text-align: center;
         box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+        position: relative;
     }
     .contact-top-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 30px rgba(37, 99, 235, 0.08);
-        border-color: #bfdbfe;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(37, 99, 235, 0.1);
+        border-color: #93c5fd;
     }
     .contact-icon-bubble {
-        width: 52px;
-        height: 52px;
+        width: 48px;
+        height: 48px;
         border-radius: 14px;
         background: #eff6ff;
         color: #2563eb;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 18px;
+        margin-bottom: 14px;
         transition: all 0.2s ease;
+        flex-shrink: 0;
     }
     .contact-top-card:hover .contact-icon-bubble {
         background: #2563eb;
         color: #ffffff;
+        transform: scale(1.05);
     }
     .contact-card-title {
-        font-size: 1.12rem;
+        font-size: 1rem;
         font-weight: 700;
         color: #0f172a;
-        margin: 0 0 8px;
+        margin: 0 0 4px;
     }
     .contact-card-main-title {
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         font-weight: 800;
         color: #0f172a;
         margin-bottom: 4px;
+        line-height: 1.3;
     }
     .contact-card-main-link {
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-weight: 800;
         color: #2563eb;
         margin-bottom: 4px;
         text-decoration: none;
         display: inline-block;
+        transition: color 0.15s ease;
+        word-break: break-word;
+    }
+    .contact-card-main-link:hover {
+        color: #1d4ed8;
+        text-decoration: underline;
     }
     .contact-card-sub {
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         color: #64748b;
         line-height: 1.45;
+        width: 100%;
     }
 
-    /* 2. Main Consultation Split Section */
+    /* ─── 2. Main Sourcing & Consultation Split Section ─────────────────── */
     .consultation-split-wrapper {
         border-radius: 24px;
-        overflow: hidden;
-        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.06);
         border: 1px solid #e2e8f0;
         background: #ffffff;
         display: grid;
         grid-template-columns: 1fr 1.35fr;
-        margin-bottom: 90px;
+        margin-bottom: 72px;
+        box-shadow: 0 16px 40px rgba(6, 21, 43, 0.07);
+        overflow: visible;
     }
     .consultation-blue-panel {
-        background: linear-gradient(150deg, #1d4ed8 0%, #2563eb 55%, #3b82f6 100%);
-        padding: 48px 42px;
+        background: linear-gradient(135deg, #07152b 0%, #0e2246 45%, #15386f 80%, #1e4ed8 100%);
+        padding: 44px 38px;
         color: #ffffff;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         position: relative;
+        overflow: hidden;
+        border-radius: 24px 0 0 24px;
     }
-    .consultation-blue-panel::after {
-        content: '';
+    .consultation-blue-panel .panel-orb-1 {
         position: absolute;
-        bottom: -50px;
-        right: -50px;
-        width: 220px;
-        height: 220px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 70%);
+        width: 340px;
+        height: 340px;
         border-radius: 50%;
+        background: radial-gradient(circle, rgba(37, 99, 235, 0.4) 0%, transparent 70%);
+        top: -80px;
+        right: -80px;
         pointer-events: none;
     }
+    .consultation-blue-panel .panel-orb-2 {
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(96, 165, 250, 0.25) 0%, transparent 70%);
+        bottom: -40px;
+        left: -40px;
+        pointer-events: none;
+    }
+    .consultation-blue-panel .panel-grid-overlay {
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+        background-size: 36px 36px;
+        pointer-events: none;
+    }
+    .sourcing-step-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(12px);
+        border-radius: 999px;
+        padding: 5px 14px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #93c5fd;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 2;
+    }
+    .step-live-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #22d3ee;
+        box-shadow: 0 0 8px rgba(34, 211, 238, 0.8);
+        flex-shrink: 0;
+    }
+    .sourcing-panel-title {
+        font-family: 'Outfit', 'Inter', -apple-system, sans-serif;
+        color: #ffffff;
+        font-size: clamp(1.65rem, 2.8vw, 2.1rem);
+        font-weight: 800;
+        line-height: 1.22;
+        margin: 0 0 28px;
+        letter-spacing: -0.02em;
+        position: relative;
+        z-index: 2;
+    }
+    .sourcing-gradient-text {
+        background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 50%, #bfdbfe 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
     .consultation-white-panel {
-        padding: 48px 46px;
+        padding: 44px 40px;
         background: #ffffff;
+        border-radius: 0 24px 24px 0;
+        position: relative;
+        overflow: visible;
     }
     .consultation-step-item {
         display: flex;
         align-items: flex-start;
-        gap: 16px;
+        gap: 15px;
+        position: relative;
+        z-index: 2;
     }
-    .step-icon-box {
-        width: 42px;
-        height: 42px;
-        border-radius: 12px;
-        background: #ffffff;
-        color: #1d4ed8;
+    .step-number-box {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(10px);
+        color: #60a5fa;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        font-size: 0.95rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    }
+    .sourcing-trust-box {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(12px);
+        border-radius: 14px;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        position: relative;
+        z-index: 2;
+        margin-top: 24px;
+    }
+    .sourcing-trust-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: rgba(34, 211, 238, 0.15);
+        border: 1px solid rgba(34, 211, 238, 0.3);
+        color: #22d3ee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
     }
 
-    /* Form Elements */
+    /* ─── Multi-select Dropdown Styles ────────────────────────────────────── */
+    .multi-select-container {
+        position: relative;
+        width: 100%;
+    }
+    .multi-select-trigger {
+        min-height: 46px;
+        height: auto;
+        padding: 6px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        cursor: pointer;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 9px;
+        background: #ffffff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .multi-select-trigger:hover {
+        border-color: #93c5fd;
+    }
+    .multi-select-container.open .multi-select-trigger {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .multi-select-display {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+        min-width: 0;
+    }
+    .selected-tag-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1d4ed8;
+        padding: 3px 8px 3px 10px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        line-height: 1.4;
+        animation: fadeInSelect 0.15s ease-out;
+    }
+    .selected-tag-remove {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        color: #60a5fa;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 700;
+        transition: background 0.15s, color 0.15s;
+    }
+    .selected-tag-remove:hover {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    .multi-select-badge-count {
+        background: #2563eb;
+        color: #ffffff;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 999px;
+        letter-spacing: 0.02em;
+    }
+    .multi-select-dropdown-panel {
+        max-height: 340px;
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.16), 0 6px 14px rgba(15, 23, 42, 0.08);
+        padding: 10px;
+        z-index: 1050;
+        animation: fadeInSelect 0.15s ease-out;
+    }
+    .multi-select-container.open .multi-select-dropdown-panel {
+        display: flex;
+    }
+    .multi-select-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 6px;
+    }
+    .multi-select-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.78rem;
+        flex-shrink: 0;
+    }
+    .multi-select-action-btn {
+        background: none;
+        border: none;
+        color: #2563eb;
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 2px 4px;
+        border-radius: 4px;
+        transition: background 0.15s, color 0.15s;
+    }
+    .multi-select-action-btn:hover {
+        background: #eff6ff;
+        color: #1d4ed8;
+        text-decoration: underline;
+    }
+    .multi-select-options-list {
+        max-height: 220px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    .multi-select-option-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        user-select: none;
+        border: 1px solid transparent;
+    }
+    .multi-select-option-item:hover {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+    }
+    .multi-select-option-item.selected {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+    }
+    .multi-select-checkbox-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .multi-select-checkbox-wrapper input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        margin: 0;
+        z-index: 2;
+    }
+    .custom-checkbox-indicator {
+        width: 18px;
+        height: 18px;
+        border-radius: 5px;
+        border: 1.5px solid #cbd5e1;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        transition: all 0.15s ease;
+    }
+    .multi-select-checkbox-wrapper input[type="checkbox"]:checked + .custom-checkbox-indicator,
+    .multi-select-option-item.selected .custom-checkbox-indicator {
+        background: #2563eb;
+        border-color: #2563eb;
+    }
+    .multi-select-checkbox-wrapper input[type="checkbox"]:focus + .custom-checkbox-indicator {
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+    .multi-select-item-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 0;
+    }
+    .multi-select-item-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+    .multi-select-option-item.selected .multi-select-item-label {
+        color: #1d4ed8;
+    }
+    .multi-select-item-desc {
+        font-size: 0.74rem;
+        color: #64748b;
+        margin-top: 1px;
+    }
+    .multi-select-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 8px;
+        margin-top: 6px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    /* ─── Form Elements & Responsive Grids ────────────────────────────────── */
+    .consultation-form-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 18px;
+    }
     .consultation-form-grid-2 {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 18px;
+        gap: 16px;
         margin-bottom: 18px;
+        position: relative;
+        z-index: 50;
+    }
+    .consultation-form-grid-2.has-open-dropdown {
+        z-index: 2000 !important;
+    }
+    .consultation-form-grid-2 > div {
+        position: relative;
+        z-index: 1;
+    }
+    .consultation-form-grid-2 > div.is-dropdown-open,
+    .consultation-form-grid-2 > div:has(.searchable-select-container.open) {
+        z-index: 2000 !important;
     }
     .form-group-custom {
+        position: relative;
+        z-index: 10;
         margin-bottom: 18px;
     }
     .form-label-custom {
@@ -152,13 +549,15 @@
     }
     .form-control-custom {
         width: 100%;
-        height: 44px;
-        border-radius: 8px;
-        border: 1px solid #cbd5e1;
+        height: 46px;
+        border-radius: 9px;
+        border: 1.5px solid #cbd5e1;
         padding: 0 14px;
         font-size: 0.92rem;
+        font-weight: 400;
         color: #0f172a;
         background: #ffffff;
+        box-sizing: border-box;
         transition: border-color 0.2s, box-shadow 0.2s;
     }
     .form-control-custom:focus {
@@ -168,21 +567,52 @@
     }
     textarea.form-control-custom {
         height: auto;
+        min-height: 105px;
         padding: 12px 14px;
         resize: vertical;
+        line-height: 1.5;
+        font-weight: 400 !important;
+        font-size: 0.90rem;
+    }
+    textarea.form-control-custom::placeholder,
+    textarea.form-control-custom::-webkit-input-placeholder,
+    textarea.form-control-custom::-moz-placeholder,
+    textarea.form-control-custom:-ms-input-placeholder,
+    .form-control-custom::placeholder,
+    .form-control-custom::-webkit-input-placeholder,
+    .form-control-custom::-moz-placeholder,
+    .form-control-custom:-ms-input-placeholder {
+        font-size: 0.78rem !important;
+        font-weight: 400 !important;
+        color: #94a3b8 !important;
+        line-height: 1.45 !important;
+        opacity: 1 !important;
+        -webkit-text-fill-color: #94a3b8 !important;
     }
 
-    /* ─── Custom Searchable Select Styles ─── */
+    /* ─── Custom Searchable Select Styles ─────────────────────────────────── */
     .searchable-select-container {
         position: relative;
         width: 100%;
+        z-index: 15;
+    }
+    .searchable-select-container.open {
+        z-index: 2200 !important;
+    }
+    .multi-select-container {
+        position: relative;
+        width: 100%;
+        z-index: 20;
+    }
+    .multi-select-container.open {
+        z-index: 1250 !important;
     }
     .searchable-trigger {
         width: 100%;
-        height: 44px;
+        height: 46px;
         padding: 0 14px;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 9px;
         background: #ffffff;
         font-size: 0.92rem;
         color: #0f172a;
@@ -192,6 +622,7 @@
         cursor: pointer;
         transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
         user-select: none;
+        box-sizing: border-box;
     }
     .searchable-trigger:hover {
         border-color: #93c5fd;
@@ -203,7 +634,7 @@
         background: #ffffff;
     }
     .searchable-select-container.disabled .searchable-trigger {
-        background: #f1f5f9;
+        background: #f8fafc;
         border-color: #e2e8f0;
         color: #94a3b8;
         cursor: not-allowed;
@@ -213,9 +644,12 @@
         overflow: hidden;
         text-overflow: ellipsis;
         padding-right: 8px;
+        font-size: 0.92rem;
     }
     .searchable-selected-text.placeholder {
         color: #94a3b8;
+        font-weight: 400 !important;
+        font-size: 0.88rem !important;
     }
     .searchable-arrow {
         color: #64748b;
@@ -236,9 +670,9 @@
         background: #ffffff;
         border: 1px solid #cbd5e1;
         border-radius: 12px;
-        box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(15, 23, 42, 0.08);
+        box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.22), 0 6px 14px rgba(15, 23, 42, 0.12);
         padding: 8px;
-        z-index: 1000;
+        z-index: 2500 !important;
         display: none;
         animation: fadeInSelect 0.15s ease-out;
     }
@@ -265,15 +699,16 @@
     }
     .searchable-search-input {
         width: 100%;
-        height: 36px;
+        height: 38px;
         padding: 0 10px 0 32px;
         border: 1px solid #e2e8f0;
-        border-radius: 6px;
+        border-radius: 7px;
         background: #f8fafc;
-        font-size: 0.85rem;
+        font-size: 0.86rem;
         color: #0f172a;
         outline: none;
         transition: border-color 0.15s, box-shadow 0.15s;
+        box-sizing: border-box;
     }
     .searchable-search-input:focus {
         background: #ffffff;
@@ -287,6 +722,7 @@
         flex-direction: column;
         gap: 2px;
         scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
     }
     .searchable-option-item {
         padding: 8px 12px;
@@ -335,6 +771,38 @@
     .searchable-option-item.selected .searchable-check-icon {
         display: inline-flex;
     }
+
+    /* ─── Submit Button ───────────────────────────────────────────────────── */
+    .contact-submit-btn {
+        width: 100%;
+        height: 52px;
+        position: relative;
+        z-index: 5;
+        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1.02rem;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 4px 16px rgba(29, 78, 216, 0.35);
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .contact-submit-btn:hover {
+        background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+        box-shadow: 0 8px 24px rgba(29, 78, 216, 0.45);
+        transform: translateY(-1px);
+    }
+    .contact-submit-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(29, 78, 216, 0.3);
+    }
+
+    /* ─── 3. Location & Map Section ───────────────────────────────────────── */
     .location-split-grid {
         display: grid;
         grid-template-columns: 1fr 1.35fr;
@@ -375,211 +843,341 @@
     }
     .map-overlay-badge {
         position: absolute;
-        top: 20px;
-        left: 20px;
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+        top: 18px;
+        left: 18px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 14px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
         padding: 14px 18px;
         z-index: 500;
-        border: 1px solid #e2e8f0;
+        border: 1px solid rgba(226, 232, 240, 0.9);
         display: flex;
         flex-direction: column;
         gap: 2px;
+        max-width: 300px;
     }
 
-    /* Responsive Queries */
+    /* ─── TABLET RESPONSIVE (1024px and below) ────────────────────────────── */
     @media (max-width: 1024px) {
         .contact-page-container {
-            display: flex;
-            flex-direction: column;
-            padding-top: 36px;
-            padding-bottom: 60px;
+            padding: 36px 20px 64px;
         }
-        /* Mobile: Form section will be on TOP after 1st section (Hero) */
+        /* Top cards keep natural order at top */
+        .contact-top-cards {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        .contact-top-card {
+            padding: 24px 16px;
+        }
+
+        /* Split wrapper stacks naturally: Process on top, RFQ form on bottom */
         .consultation-split-wrapper {
-            order: 1;
             display: flex;
             flex-direction: column;
-            margin-bottom: 48px;
             border-radius: 20px;
-        }
-        .consultation-white-panel {
-            order: 1; /* Form inputs appear at the top */
-            padding: 36px 28px;
+            margin-bottom: 56px;
         }
         .consultation-blue-panel {
-            order: 2; /* Informational steps appear below the form */
-            padding: 36px 28px;
+            padding: 36px 30px;
+            border-radius: 20px 20px 0 0;
         }
-        /* 4 Contact cards appear after the consultation section on mobile */
-        .contact-top-cards {
-            order: 2;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-            margin-bottom: 50px;
+        .consultation-white-panel {
+            padding: 36px 30px;
+            border-radius: 0 0 20px 20px;
         }
-        /* Location & Map section appears after contact cards */
-        .contact-location-section {
-            order: 3;
+
+        /* Tablet Form inputs layout: 2 cols for name/email, full width for phone */
+        .consultation-form-grid-3 {
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
         }
+        .consultation-form-grid-3 > div:nth-child(3) {
+            grid-column: span 2;
+        }
+        .consultation-form-grid-2 {
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        /* Map and Office stack */
         .location-split-grid {
             grid-template-columns: 1fr;
-            gap: 24px;
+            gap: 22px;
+            margin-bottom: 56px;
+        }
+        .office-info-card {
+            padding: 28px 24px;
+            border-radius: 18px;
+        }
+        .map-embed-wrapper {
+            min-height: 420px;
+            height: 420px;
+            border-radius: 18px;
+        }
+        #contactMap {
+            min-height: 420px;
+            height: 420px;
         }
     }
 
+    /* ─── TABLET PORTRAIT / INTERMEDIATE (860px and below) ────────────────── */
+    @media (max-width: 860px) {
+        .consultation-form-grid-2 {
+            grid-template-columns: 1fr !important;
+            gap: 14px;
+        }
+    }
+
+    /* ─── MOBILE RESPONSIVE (640px and below) ─────────────────────────────── */
     @media (max-width: 640px) {
-        .page-header {
-            padding-top: calc(70px + 20px) !important;
-            padding-bottom: 24px !important;
-        }
-        .page-title {
-            font-size: 1.75rem !important;
-            line-height: 1.25 !important;
-            margin-bottom: 8px !important;
-        }
-        .page-subtitle {
-            font-size: 0.92rem !important;
-            line-height: 1.5 !important;
+        .contact-hero-section {
+            padding-top: calc(65px + 18px);
+            padding-bottom: 24px;
         }
         .contact-page-container {
-            padding-left: 14px;
-            padding-right: 14px;
-            padding-top: 20px;
-            padding-bottom: 50px;
+            padding: 20px 14px 48px;
         }
+
+        /* Top 4 Cards in 2x2 grid for mobile - compact, tap-friendly */
+        .contact-top-cards {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 26px;
+        }
+        .contact-top-card {
+            padding: 18px 10px;
+            border-radius: 16px;
+        }
+        .contact-icon-bubble {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .contact-card-title {
+            font-size: 0.88rem;
+            margin-bottom: 3px;
+        }
+        .contact-card-main-title {
+            font-size: 0.82rem;
+            line-height: 1.25;
+            margin-bottom: 2px;
+        }
+        .contact-card-main-link {
+            font-size: 0.84rem;
+            line-height: 1.25;
+            margin-bottom: 2px;
+        }
+        .contact-card-sub {
+            font-size: 0.72rem;
+            line-height: 1.35;
+        }
+
+        /* Split wrapper on mobile */
         .consultation-split-wrapper {
-            margin-bottom: 36px;
             border-radius: 18px;
-        }
-        .consultation-white-panel {
-            padding: 24px 16px;
-        }
-        .consultation-white-panel h3 {
-            font-size: 1.75rem !important;
+            margin-bottom: 36px;
         }
         .consultation-blue-panel {
-            padding: 28px 18px;
+            padding: 24px 16px;
+            border-radius: 18px 18px 0 0;
         }
-        .consultation-blue-panel h2 {
-            font-size: 1.65rem !important;
-            margin-bottom: 22px !important;
+        .sourcing-step-badge {
+            font-size: 0.68rem;
+            padding: 4px 12px;
+            margin-bottom: 16px;
+        }
+        .sourcing-panel-title {
+            font-size: 1.55rem;
+            margin-bottom: 20px;
         }
         .consultation-step-item {
             gap: 12px;
         }
-        .step-icon-box {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+        .step-number-box {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            font-size: 0.88rem;
         }
+        .sourcing-trust-box {
+            padding: 12px 14px;
+            gap: 10px;
+            border-radius: 12px;
+            margin-top: 18px;
+        }
+        .sourcing-trust-icon {
+            width: 34px;
+            height: 34px;
+        }
+
+        /* White Form Panel on mobile */
+        .consultation-white-panel {
+            padding: 24px 16px;
+            border-radius: 0 0 18px 18px;
+        }
+        .consultation-white-panel h3 {
+            font-size: 1.6rem !important;
+            margin-bottom: 4px !important;
+        }
+
+        /* Form grids single column on mobile */
+        .consultation-form-grid-3,
         .consultation-form-grid-2 {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr !important;
             gap: 14px;
             margin-bottom: 14px;
+        }
+        .consultation-form-grid-3 > div:nth-child(3) {
+            grid-column: auto;
         }
         .form-group-custom {
             margin-bottom: 14px;
         }
-        .form-control-custom, .searchable-trigger {
-            font-size: 16px; /* Prevents auto-zoom on iOS */
-            height: 46px;
+
+        /* Form Controls on mobile */
+        .form-control-custom,
+        .searchable-trigger {
+            font-size: 15px;
+            height: 48px;
+            border-radius: 9px;
+        }
+        .searchable-selected-text {
+            font-size: 0.90rem;
+        }
+        .searchable-selected-text.placeholder {
+            font-size: 0.86rem !important;
+            font-weight: 400 !important;
+            color: #94a3b8 !important;
+        }
+        textarea.form-control-custom {
+            font-size: 15px;
+            min-height: 95px;
+            font-weight: 400 !important;
+        }
+        textarea.form-control-custom::placeholder,
+        textarea.form-control-custom::-webkit-input-placeholder,
+        textarea.form-control-custom::-moz-placeholder,
+        textarea.form-control-custom:-ms-input-placeholder,
+        .form-control-custom::placeholder,
+        .form-control-custom::-webkit-input-placeholder,
+        .form-control-custom::-moz-placeholder,
+        .form-control-custom:-ms-input-placeholder {
+            font-size: 0.75rem !important;
+            font-weight: 400 !important;
+            color: #94a3b8 !important;
+            line-height: 1.4 !important;
+            opacity: 1 !important;
+            -webkit-text-fill-color: #94a3b8 !important;
         }
         .searchable-search-input {
-            font-size: 16px;
+            font-size: 15px;
             height: 40px;
         }
-        .searchable-dropdown-panel {
-            max-height: 260px;
+        .searchable-dropdown-panel,
+        .multi-select-dropdown-panel {
+            max-height: 270px;
             border-radius: 10px;
         }
-        .contact-top-cards {
-            grid-template-columns: 1fr;
-            gap: 14px;
-            margin-bottom: 36px;
+        .contact-submit-btn {
+            height: 50px;
+            font-size: 0.96rem;
+            border-radius: 9px;
         }
-        .contact-top-card {
-            padding: 24px 18px;
-            border-radius: 16px;
-        }
-        .contact-location-heading h2 {
-            font-size: 1.75rem !important;
-        }
-        .contact-location-heading p {
-            font-size: 0.9rem !important;
+
+        /* Office Card & Map on mobile */
+        .location-split-grid {
+            gap: 18px;
+            margin-bottom: 40px;
         }
         .office-info-card {
-            padding: 24px 18px;
+            padding: 20px 16px;
             border-radius: 16px;
         }
         .map-embed-wrapper {
-            min-height: 380px;
-            height: 380px;
+            min-height: 330px;
+            height: 330px;
             border-radius: 16px;
         }
         #contactMap {
-            min-height: 380px;
-            height: 380px;
+            min-height: 330px;
+            height: 330px;
         }
+        /* Sleek compact pill badge on mobile so map remains interactive */
         .map-overlay-badge {
             top: 10px;
             left: 10px;
             right: 10px;
-            max-width: calc(100% - 20px);
-            padding: 10px 14px;
+            max-width: none;
+            padding: 10px 12px;
             border-radius: 10px;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
         }
-        .map-overlay-badge div:first-child {
-            font-size: 0.92rem !important;
+        .map-overlay-badge .map-badge-desc {
+            display: none;
         }
-        .map-overlay-badge div:nth-child(2) {
-            font-size: 0.75rem !important;
-            margin-bottom: 6px !important;
+    }
+
+    /* ─── ULTRA-SMALL MOBILE (360px and below) ────────────────────────────── */
+    @media (max-width: 360px) {
+        .contact-top-cards {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .contact-top-card {
+            padding: 16px 14px;
         }
     }
 </style>
 
 <!-- ─── Page Header / Hero Section ──────────────────────────────────────── -->
-<div class="page-header" style="padding-top:calc(75px + var(--space-6));background:linear-gradient(135deg, #091a36 0%, #0f274a 45%, #1e3a8a 100%);color:#ffffff;border-bottom:1px solid #1e3a8a;padding-bottom:var(--space-8);position:relative;overflow:hidden">
-    <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:20px 20px"></div>
+<div class="page-header contact-hero-section">
+    <div class="contact-hero-grid-pattern"></div>
     <div class="container page-header-content" style="position:relative;z-index:2">
         <div class="breadcrumb" style="margin-bottom:var(--space-2)">
             <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 Home</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">Contact Us</span>
+            <span style="font-weight:600;color:#ffffff">Contact Us &amp; RFQ</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
             <div>
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-                    <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
-                        📍 Direct Customer Support
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap">
+                    <span class="contact-hero-pill">
+                        📍 Sourcing &amp; Customer Support
                     </span>
-                    <span style="color:#bae6fd;font-size:0.8rem">Iskandar Puteri, Johor Bahru · Malaysia &amp; Singapore</span>
+                    <span style="color:#bae6fd;font-size:0.8rem">Iskandar Puteri, Johor Bahru · Regional &amp; International Supply</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.75rem,3.5vw,2.4rem);margin-bottom:6px;letter-spacing:-0.02em">
                     Contact MST Import and Export Sdn Bhd
                 </h1>
-                <p class="page-subtitle" style="color:#e0f2fe;font-size:0.95rem;max-width:680px;line-height:1.5;margin:0">
-                    Have questions about our ocean catches, wholesale pallet distribution, or refrigerated logistics across Malaysia and Singapore? Reach out to our dedicated team and we'll assist you promptly.
+                <div style="color:#93c5fd;font-size:0.88rem;font-weight:700;margin-bottom:8px">
+                    镁嘉国际贸易有限公司 · MST IMPORT &amp; EXPORT SDN. BHD.
+                </div>
+                <p class="page-subtitle" style="color:#e0f2fe;font-size:0.95rem;max-width:720px;line-height:1.5;margin:0">
+                    Have questions about our frozen seafood, meats, food ingredients, customised sourcing, or cold-chain distribution? Reach out directly to our commercial team for prompt quotations and dedicated assistance.
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-                <div style="font-size:0.85rem;padding:6px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb">
-                    📞 Quick Response Assured
+                <div class="contact-hero-badge-tag">
+                    ⚡ Prompt Quote Response Within 24 Hours
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
 <div class="contact-page-container">
 
-    <!-- 1. Top 4 Contact Info Cards (Direct from Admin -> Settings -> Contact Page) -->
+    <!-- 1. Top 4 Contact Info Cards -->
     <div class="contact-top-cards">
         
-        <!-- Card 1: Our Store & Office -->
+        <!-- Card 1: Facility & Cold Storage Hub -->
         <div class="contact-top-card">
             <div class="contact-icon-bubble">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -587,45 +1185,43 @@
                     <circle cx="12" cy="10" r="3"></circle>
                 </svg>
             </div>
-            <h3 class="contact-card-title">Store & Office</h3>
+            <h3 class="contact-card-title">Facility &amp; Cold Hub</h3>
             <div class="contact-card-main-title">
-                {{ $settings['store_name'] ?? 'Mika Import and Export SDN Bhd' }}
+                MST Import and Export Sdn Bhd
+            </div>
+            <div style="font-size:0.78rem;color:#2563eb;font-weight:700;margin-bottom:4px">
+                镁嘉国际贸易有限公司
             </div>
             <div class="contact-card-sub">
-                {{ $settings['store_address'] ?? '7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia' }}
+                No. 7, Jalan SiLC 2/18, Kawasan Perindustrian SiLC, 79200 Iskandar Puteri, Johor, Malaysia
             </div>
-            @if(!empty($settings['store_map_url']))
-                <a href="{{ $settings['store_map_url'] }}" target="_blank" rel="noopener" 
-                   style="margin-top:8px;font-size:0.78rem;font-weight:700;color:#2563eb;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
-                    <span>View on Google Maps</span>
-                    <span>&rarr;</span>
-                </a>
-            @endif
+            <a href="https://maps.app.goo.gl/jLMaDYCNJ6vfk376A" target="_blank" rel="noopener" 
+               style="margin-top:8px;font-size:0.78rem;font-weight:700;color:#2563eb;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
+                <span>View on Google Maps</span>
+                <span>&rarr;</span>
+            </a>
         </div>
 
-        <!-- Card 2: Direct Call -->
+        <!-- Card 2: Direct Hotlines -->
         <div class="contact-top-card">
             <div class="contact-icon-bubble">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                 </svg>
             </div>
-            <h3 class="contact-card-title">Direct Call</h3>
-            <a href="tel:{{ preg_replace('/[^0-9+]/', '', $settings['store_phone'] ?? '013-2800168') }}" class="contact-card-main-link">
-                {{ $settings['store_phone'] ?? '013-2800168' }}
+            <h3 class="contact-card-title">Direct Hotlines</h3>
+            <a href="tel:0132800168" class="contact-card-main-link">
+                013-280 0168
             </a>
             <div class="contact-card-sub">
-                @if(!empty($settings['store_phone_2']))
-                    <div style="color:#1d4ed8;font-weight:600;font-size:0.8rem">Alt: {{ $settings['store_phone_2'] }}</div>
-                @endif
-                @if(!empty($settings['store_phone_3']))
-                    <div style="color:#1d4ed8;font-weight:600;font-size:0.8rem">Alt: {{ $settings['store_phone_3'] }}</div>
-                @endif
-                <div style="margin-top:2px">{{ $settings['store_hours'] ?? 'Mon – Sat: 8:00 AM – 6:00 PM' }}</div>
+                <div style="color:#1d4ed8;font-weight:600;font-size:0.82rem">Alt: 011-1436 0109</div>
+                <div style="color:#1d4ed8;font-weight:600;font-size:0.82rem">WhatsApp: 011-1271 0260</div>
+                <div style="margin-top:4px">Mon – Sat: 8:00 AM – 6:00 PM</div>
+                <div style="color:#94a3b8;font-size:0.75rem">Sunday &amp; PH: Closed</div>
             </div>
         </div>
 
-        <!-- Card 3: Email Us -->
+        <!-- Card 3: Email Contacts -->
         <div class="contact-top-card">
             <div class="contact-icon-bubble">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -634,14 +1230,12 @@
                 </svg>
             </div>
             <h3 class="contact-card-title">Email Us</h3>
-            <a href="mailto:{{ $settings['store_email'] ?? 'mikatrading15@gmail.com' }}" class="contact-card-main-link" style="word-break:break-all">
-                {{ $settings['store_email'] ?? 'mikatrading15@gmail.com' }}
+            <a href="mailto:mikatrading15@gmail.com" class="contact-card-main-link" style="word-break:break-all">
+                mikatrading15@gmail.com
             </a>
             <div class="contact-card-sub">
-                @if(!empty($settings['store_wholesale_email']))
-                    <div style="color:#1d4ed8;font-weight:600;font-size:0.8rem">B2B: {{ $settings['store_wholesale_email'] }}</div>
-                @endif
-                <div>Guaranteed Response Within 24 Hours</div>
+                <div style="color:#1d4ed8;font-weight:600;font-size:0.8rem">B2B Wholesale &amp; Custom RFQ</div>
+                <div style="margin-top:2px">Guaranteed Response Within 24 Hours</div>
             </div>
         </div>
 
@@ -654,133 +1248,117 @@
                 </svg>
             </div>
             <h3 class="contact-card-title">WhatsApp Support</h3>
-            @php
-                $waUrl = $settings['social_whatsapp'] ?? 'https://wa.me/601112710260';
-                preg_match('/(\d{7,})/', $waUrl, $waMatches);
-                $waDigits = $waMatches[1] ?? '601112710260';
-            @endphp
-            <a href="{{ $waUrl }}" target="_blank" rel="noopener" class="contact-card-main-link" style="word-break:break-all">
-                +{{ substr($waDigits, 0, 2) }} {{ substr($waDigits, 2, 3) }}-{{ substr($waDigits, 5) }}
+            <a href="https://wa.me/601112710260" target="_blank" rel="noopener" class="contact-card-main-link">
+                +60 11-1271 0260
             </a>
             <div class="contact-card-sub">
-                Fast Chat & Inquiries<br>
+                Fast Chat &amp; Inquiries<br>
                 Live Support Online
             </div>
         </div>
 
     </div>
 
-    <!-- 2. Main Consultation Split Card -->
+    <!-- 2. Main Consultation Split Section: 4-Step Process & RFQ Form -->
     <div class="consultation-split-wrapper">
         
-        <!-- Left Panel: Deep Blue with Feature Highlights -->
+        <!-- Left Panel: The 4-Step Sourcing Process (Section 7.1) -->
         <div class="consultation-blue-panel">
+            {{-- Background ambient glows & grid matching Homepage Hero --}}
+            <div class="panel-orb-1"></div>
+            <div class="panel-orb-2"></div>
+            <div class="panel-grid-overlay"></div>
+
             <div>
                 <!-- Badge -->
-                <div style="margin-bottom:18px">
-                    <span style="background:#ffffff;color:#1d4ed8;font-size:0.75rem;font-weight:800;letter-spacing:0.8px;padding:6px 16px;border-radius:30px;display:inline-block;text-transform:uppercase;box-shadow:0 2px 8px rgba(0,0,0,0.1)">
-                        SEAFOOD INQUIRY &amp; RFQ
-                    </span>
+                <div class="sourcing-step-badge">
+                    <span class="step-live-dot"></span>
+                    THE SOURCING PROCESS · 4 EASY STEPS
                 </div>
 
                 <!-- Title -->
-                <h2 style="color:#ffffff;font-size:2.3rem;font-weight:800;line-height:1.2;margin:0 0 34px;letter-spacing:-0.5px">
-                    Let's Discuss<br>Your Requirements
+                <h2 class="sourcing-panel-title">
+                    Streamlined Sourcing,<br>
+                    <span class="sourcing-gradient-text">From Inquiry to Supply</span>
                 </h2>
 
-                <!-- Feature Steps -->
-                <div style="display:flex;flex-direction:column;gap:24px;margin-bottom:36px">
+                <!-- 4 Steps Flow -->
+                <div style="display:flex;flex-direction:column;gap:24px;margin-bottom:36px;position:relative;z-index:2;">
                     
                     <!-- Step 1 -->
                     <div class="consultation-step-item">
-                        <div class="step-icon-box">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                            </svg>
-                        </div>
+                        <div class="step-number-box">01</div>
                         <div>
-                            <div style="font-weight:700;font-size:0.95rem;color:#ffffff;margin-bottom:2px">Select Category &amp; Product</div>
-                            <div style="font-size:0.82rem;color:#bfdbfe;line-height:1.4">Browse our premium ocean catches and choose what you need.</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">Select Requirement</div>
+                            <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
+                                Choose from our core categories (Seafood, Meat, Frozen Food, Food Ingredients, Cuisine Ingredients, Desserts) or specify a customised sourcing request.
+                            </div>
                         </div>
                     </div>
 
                     <!-- Step 2 -->
                     <div class="consultation-step-item">
-                        <div class="step-icon-box">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                        </div>
+                        <div class="step-number-box">02</div>
                         <div>
-                            <div style="font-weight:700;font-size:0.95rem;color:#ffffff;margin-bottom:2px">Specify Volume or Schedule</div>
-                            <div style="font-size:0.82rem;color:#bfdbfe;line-height:1.4">Retail packs, restaurant supply, or container bulk trading.</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">Tell Us Your Requirements</div>
+                            <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
+                                Specify your target volume (kg, cartons, pallets), pack size, origin preference, delivery frequency, or customized product specifications.
+                            </div>
                         </div>
                     </div>
 
                     <!-- Step 3 -->
                     <div class="consultation-step-item">
-                        <div class="step-icon-box">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                            </svg>
-                        </div>
+                        <div class="step-number-box">03</div>
                         <div>
-                            <div style="font-weight:700;font-size:0.95rem;color:#ffffff;margin-bottom:2px">Direct Tier Pricing</div>
-                            <div style="font-size:0.82rem;color:#bfdbfe;line-height:1.4">We respond within 24 hours with competitive, transparent pricing.</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">Receive a Quotation</div>
+                            <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
+                                Our commercial team evaluates availability or coordinates with our network, providing a transparent, competitive quotation within 24 hours.
+                            </div>
                         </div>
                     </div>
 
                     <!-- Step 4 -->
                     <div class="consultation-step-item">
-                        <div class="step-icon-box">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="1" y="3" width="15" height="13"></rect>
-                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                            </svg>
-                        </div>
+                        <div class="step-number-box">04</div>
                         <div>
-                            <div style="font-weight:700;font-size:0.95rem;color:#ffffff;margin-bottom:2px">Cold Chain Logistics</div>
-                            <div style="font-size:0.82rem;color:#bfdbfe;line-height:1.4">Doorstep delivery at -18&deg;C or instant store self-collection pass.</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">Arrange Supply &amp; Logistics</div>
+                            <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
+                                Scheduled temperature-controlled logistics (-18&deg;C to -25&deg;C) across Malaysia &amp; Singapore, regional export, or self-collection at our SILC facility.
+                            </div>
                         </div>
                     </div>
 
                 </div>
             </div>
 
-            <!-- Shield Trust Box -->
-            <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);backdrop-filter:blur(8px);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px">
-                <div style="width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;color:#ffffff;flex-shrink:0">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Cold Chain Trust Box -->
+            <div class="sourcing-trust-box">
+                <div class="sourcing-trust-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     </svg>
                 </div>
-                <div style="font-size:0.83rem;color:#ffffff;line-height:1.4">
-                    <strong>Halal &amp; HACCP Sourced:</strong> Quality inspected with unbroken cold chain assurance.
+                <div style="font-size:0.82rem;color:rgba(255,255,255,0.85);line-height:1.4">
+                    <strong style="color:#ffffff;">Cold-Chain &amp; HACCP Assurance:</strong> Stored at -18&deg;C to -25&deg;C with unbroken cold-chain integrity and certified handling.
                 </div>
             </div>
 
         </div>
 
-        <!-- Right Panel: White Card Form -->
+        <!-- Right Panel: White Card RFQ & Inquiry Form (Section 7.2) -->
         <div class="consultation-white-panel">
             
             <div style="font-size:0.75rem;font-weight:800;letter-spacing:1.2px;color:#2563eb;text-transform:uppercase;margin-bottom:6px">
-                CUSTOMER INQUIRY &amp; QUOTE
+                REQUEST FOR QUOTATION &amp; INQUIRY
             </div>
             
-            <h3 style="font-size:2.2rem;font-weight:800;color:#0f172a;margin:0 0 6px;letter-spacing:-0.5px">
-                Product Inquiry
+            <h3 style="font-size:2.1rem;font-weight:800;color:#0f172a;margin:0 0 6px;letter-spacing:-0.5px">
+                Submit Your Sourcing RFQ
             </h3>
 
-            <p style="font-size:0.92rem;color:#64748b;margin:0 0 28px;line-height:1.5">
-                Tell us about your seafood requirements. Our team will get back to you with pricing and details within 24 hours.
+            <p style="font-size:0.92rem;color:#64748b;margin:0 0 24px;line-height:1.5">
+                Tell us about your requirements. Whether you need standard catalog items, wholesale quantities, or tailored sourcing, our team will get back to you within 24 hours.
             </p>
 
             @if(session('success'))
@@ -796,8 +1374,8 @@
             <form method="POST" action="{{ route('contact.submit') }}">
                 @csrf
 
-                <!-- Row 1: Full Name & Email -->
-                <div class="consultation-form-grid-2">
+                <!-- Row 1: Contact Details (Name, Email, Phone/WhatsApp) -->
+                <div class="consultation-form-grid-3">
                     <div>
                         <label class="form-label-custom">
                             Full name <span style="color:#ef4444">*</span>
@@ -814,33 +1392,118 @@
                         </label>
                         <input type="email" name="email" class="form-control-custom" 
                                value="{{ old('email', auth()->user()?->email) }}" required 
-                               placeholder="you@example.com">
+                               placeholder="you@company.com">
                         @error('email')<div style="color:#ef4444;font-size:0.78rem;margin-top:4px">{{ $message }}</div>@enderror
                     </div>
-                </div>
 
-                <!-- Row 2: Phone & I'm interested in (All Categories from Admin Panel) -->
-                <div class="consultation-form-grid-2">
                     <div>
                         <label class="form-label-custom">
-                            Phone number <span style="font-weight:400;color:#94a3b8">(optional)</span>
+                            Phone / WhatsApp <span style="color:#ef4444">*</span>
                         </label>
                         <input type="tel" name="phone" class="form-control-custom" 
-                               value="{{ old('phone', auth()->user()?->phone) }}" 
+                               value="{{ old('phone', auth()->user()?->phone) }}" required
                                placeholder="+60 12-345 6789">
                         @error('phone')<div style="color:#ef4444;font-size:0.78rem;margin-top:4px">{{ $message }}</div>@enderror
                     </div>
+                </div>
 
-                    <div>
+                <!-- Row 2: Multi-select Interests Dropdown -->
+                <div class="form-group-custom">
+                    <label class="form-label-custom" for="interestsMultiSelectTrigger">
+                        I am interested in: <span style="font-weight:400;color:#64748b">(Select multiple from dropdown)</span>
+                    </label>
+                    <div class="searchable-select-container multi-select-container" id="interestsMultiSelectContainer">
+                        <div class="searchable-trigger multi-select-trigger" id="interestsMultiSelectTrigger" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+                            <div class="multi-select-display" id="interestsDisplay">
+                                <span class="searchable-selected-text placeholder" id="interestsPlaceholder">Select interested categories / services...</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0;">
+                                <span class="multi-select-badge-count" id="interestsCountBadge" style="display:none">0 selected</span>
+                                <span class="searchable-arrow">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="searchable-dropdown-panel multi-select-dropdown-panel" id="interestsDropdownPanel">
+                            <div class="multi-select-header">
+                                <div class="searchable-search-wrapper" style="margin-bottom:0;flex:1;">
+                                    <span class="searchable-search-icon">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
+                                    </span>
+                                    <input type="text" class="searchable-search-input" id="interestsSearchInput" placeholder="Filter interests..." autocomplete="off">
+                                </div>
+                                <div class="multi-select-actions">
+                                    <button type="button" class="multi-select-action-btn" id="selectAllInterests">Select All</button>
+                                    <span style="color:#cbd5e1">·</span>
+                                    <button type="button" class="multi-select-action-btn" id="clearAllInterests">Clear</button>
+                                </div>
+                            </div>
+
+                            <div class="searchable-options-list multi-select-options-list" id="interestsOptionsList" role="listbox" aria-multiselectable="true">
+                                @php
+                                    $interestOptions = [
+                                        'Seafood' => ['label' => 'Seafood', 'icon' => '🐟', 'desc' => 'Wild & farmed fresh-frozen seafood'],
+                                        'Meat' => ['label' => 'Meat', 'icon' => '🥩', 'desc' => 'Poultry, beef, lamb & speciality meats'],
+                                        'Frozen Food' => ['label' => 'Frozen Food', 'icon' => '❄️', 'desc' => 'Processed & ready-to-cook products'],
+                                        'Food Ingredients' => ['label' => 'Food Ingredients', 'icon' => '🧂', 'desc' => 'Commercial seasonings, pastes & bases'],
+                                        'Cuisine Ingredients' => ['label' => 'Cuisine Ingredients', 'icon' => '🌏', 'desc' => 'Regional & Asian culinary specialties'],
+                                        'Desserts & Snacks' => ['label' => 'Desserts & Snacks', 'icon' => '🍰', 'desc' => 'Pastries, dim sum & snack items'],
+                                        'Customised Sourcing' => ['label' => 'Customised Sourcing', 'icon' => '🔍', 'desc' => 'Tailored specs & bulk import services'],
+                                        'Wholesale Supply' => ['label' => 'Wholesale Supply', 'icon' => '🏭', 'desc' => 'B2B food service & contract supply'],
+                                        'Trading & Export' => ['label' => 'Trading & Export', 'icon' => '📦', 'desc' => 'Cross-border logistics & export trade'],
+                                        'Other' => ['label' => 'Other', 'icon' => '📋', 'desc' => 'Other specific inquiries & custom requests'],
+                                    ];
+                                    $oldInterests = (array) old('interests', []);
+                                @endphp
+                                @foreach($interestOptions as $val => $info)
+                                    @php $isChecked = in_array($val, $oldInterests); @endphp
+                                    <label class="multi-select-option-item {{ $isChecked ? 'selected' : '' }}" data-value="{{ $val }}" data-label="{{ $info['label'] }}" data-icon="{{ $info['icon'] }}">
+                                        <div class="multi-select-checkbox-wrapper">
+                                            <input type="checkbox" name="interests[]" value="{{ $val }}" class="interest-checkbox" {{ $isChecked ? 'checked' : '' }}>
+                                            <span class="custom-checkbox-indicator">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="multi-select-item-content">
+                                            <div class="multi-select-item-label">
+                                                <span class="multi-select-emoji">{{ $info['icon'] }}</span>
+                                                <span class="multi-select-name">{{ $info['label'] }}</span>
+                                            </div>
+                                            <span class="multi-select-item-desc">{{ $info['desc'] }}</span>
+                                        </div>
+                                    </label>
+                                @endforeach
+                                <div class="searchable-no-results" id="interestsNoResults" style="display:none">No matching category found</div>
+                            </div>
+
+                            <div class="multi-select-footer">
+                                <span id="interestsFooterCount" style="font-size:0.8rem;color:#64748b;font-weight:600">0 selected</span>
+                                <button type="button" class="btn btn-sm btn-primary" id="interestsDoneBtn" style="padding:4px 14px;font-size:0.8rem;border-radius:6px;background:#2563eb;color:#ffffff;border:none;cursor:pointer">Done</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Category & Product Selection -->
+                <div class="consultation-form-grid-2">
+                    <div class="field-col-category">
                         <label class="form-label-custom">
-                            I'm interested in <span style="color:#ef4444">*</span>
+                            Specific Category <span style="font-weight:400;color:#94a3b8">(optional)</span>
                         </label>
                         <!-- Custom Searchable Category Dropdown -->
                         <div class="searchable-select-container" id="categorySelectContainer">
-                            <input type="hidden" name="subject" id="categoryHiddenInput" value="{{ old('subject') }}" required>
+                            <input type="hidden" name="subject" id="categoryHiddenInput" value="{{ old('subject') }}">
                             <div class="searchable-trigger" id="categoryTrigger" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false">
                                 <span class="searchable-selected-text {{ old('subject') ? '' : 'placeholder' }}" id="categoryTriggerText">
-                                    {{ old('subject') ? old('subject') : 'Select a category...' }}
+                                    {{ old('subject') ? old('subject') : 'Select category (optional)...' }}
                                 </span>
                                 <span class="searchable-arrow">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -859,6 +1522,16 @@
                                     <input type="text" class="searchable-search-input" id="categorySearchInput" placeholder="Search categories..." autocomplete="off">
                                 </div>
                                 <div class="searchable-options-list" id="categoryOptionsList" role="listbox">
+                                    <div class="searchable-option-item {{ !old('subject') ? 'selected' : '' }}" 
+                                         data-value="" 
+                                         data-label="All Categories / Custom Sourcing">
+                                        <div style="display:flex;align-items:center;gap:6px">
+                                            <span>All Categories / Custom Sourcing</span>
+                                            <span class="searchable-check-icon">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            </span>
+                                        </div>
+                                    </div>
                                     @if(isset($categories) && $categories->count())
                                         @foreach($categories as $cat)
                                             <div class="searchable-option-item {{ old('subject') == $cat->name ? 'selected' : '' }}" 
@@ -874,21 +1547,11 @@
                                             </div>
                                         @endforeach
                                     @endif
-                                    <div class="searchable-option-item {{ old('subject') == 'General Wholesale & Custom RFQ' ? 'selected' : '' }}" 
-                                         data-value="General Wholesale & Custom RFQ" 
-                                         data-label="General Wholesale & Custom RFQ">
+                                    <div class="searchable-option-item {{ old('subject') == 'Customised Sourcing Request' ? 'selected' : '' }}" 
+                                         data-value="Customised Sourcing Request" 
+                                         data-label="Customised Sourcing Request">
                                         <div style="display:flex;align-items:center;gap:6px">
-                                            <span>General Wholesale &amp; Custom RFQ</span>
-                                            <span class="searchable-check-icon">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="searchable-option-item {{ old('subject') == 'General Business Inquiry' ? 'selected' : '' }}" 
-                                         data-value="General Business Inquiry" 
-                                         data-label="General Business Inquiry">
-                                        <div style="display:flex;align-items:center;gap:6px">
-                                            <span>General Business Inquiry</span>
+                                            <span>🔍 Customised Sourcing Request</span>
                                             <span class="searchable-check-icon">
                                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                             </span>
@@ -900,69 +1563,63 @@
                                 </div>
                             </div>
                         </div>
-                        @error('subject')<div style="color:#ef4444;font-size:0.78rem;margin-top:4px">{{ $message }}</div>@enderror
                     </div>
-                </div>
 
-                <!-- Row 3: Product of selected category -->
-                <div class="form-group-custom">
-                    <label class="form-label-custom">
-                        Product <span style="font-weight:400;color:#94a3b8">(optional &mdash; select category first)</span>
-                    </label>
-                    <!-- Custom Searchable Product Dropdown -->
-                    <div class="searchable-select-container disabled" id="productSelectContainer">
-                        <input type="hidden" name="product" id="productHiddenInput" value="{{ old('product') }}">
-                        <div class="searchable-trigger" id="productTrigger" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false">
-                            <span class="searchable-selected-text {{ old('product') ? '' : 'placeholder' }}" id="productTriggerText">
-                                {{ old('product') ? old('product') : 'Select a category first...' }}
-                            </span>
-                            <span class="searchable-arrow">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="searchable-dropdown-panel" id="productDropdownPanel">
-                            <div class="searchable-search-wrapper">
-                                <span class="searchable-search-icon">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="11" cy="11" r="8"></circle>
-                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    <div class="field-col-product">
+                        <label class="form-label-custom">
+                            Product / Item <span style="font-weight:400;color:#94a3b8">(optional)</span>
+                        </label>
+                        <!-- Custom Searchable Product Dropdown -->
+                        <div class="searchable-select-container disabled" id="productSelectContainer">
+                            <input type="hidden" name="product" id="productHiddenInput" value="{{ old('product') }}">
+                            <div class="searchable-trigger" id="productTrigger" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+                                <span class="searchable-selected-text {{ old('product') ? '' : 'placeholder' }}" id="productTriggerText">
+                                    {{ old('product') ? old('product') : 'Select product (optional)...' }}
+                                </span>
+                                <span class="searchable-arrow">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
                                     </svg>
                                 </span>
-                                <input type="text" class="searchable-search-input" id="productSearchInput" placeholder="Search products in category..." autocomplete="off">
                             </div>
-                            <div class="searchable-options-list" id="productOptionsList" role="listbox">
-                                <div class="searchable-no-results" id="productNoResults" style="display:none">
-                                    No matching product found
+                            <div class="searchable-dropdown-panel" id="productDropdownPanel">
+                                <div class="searchable-search-wrapper">
+                                    <span class="searchable-search-icon">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
+                                    </span>
+                                    <input type="text" class="searchable-search-input" id="productSearchInput" placeholder="Search products..." autocomplete="off">
+                                </div>
+                                <div class="searchable-options-list" id="productOptionsList" role="listbox">
+                                    <div class="searchable-no-results" id="productNoResults" style="display:none">
+                                        No matching product found
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    @error('product')<div style="color:#ef4444;font-size:0.78rem;margin-top:4px">{{ $message }}</div>@enderror
                 </div>
 
-                <!-- Row 4: Description (formerly About your project) -->
+                <!-- Row 4: Requirements / Description (Section 7.2) -->
                 <div class="form-group-custom" style="margin-bottom:24px">
                     <label class="form-label-custom">
-                        Description <span style="color:#ef4444">*</span>
+                        Requirements / Description <span style="color:#ef4444">*</span>
                     </label>
                     <textarea name="message" class="form-control-custom" rows="4" required 
-                              placeholder="Please describe your inquiry, volume requirements, delivery destination, or questions...">{{ old('message') }}</textarea>
+                              placeholder="Please describe your requirements in detail: target volume (e.g. 500kg, cartons), preferred pack size, origin specifications, delivery frequency or location...">{{ old('message') }}</textarea>
                     @error('message')<div style="color:#ef4444;font-size:0.78rem;margin-top:4px">{{ $message }}</div>@enderror
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" 
-                        style="width:100%;height:50px;background:#1d4ed8;color:#ffffff;font-weight:700;font-size:1.02rem;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s, transform 0.1s"
-                        onmouseover="this.style.background='#1e40af'" 
-                        onmouseout="this.style.background='#1d4ed8'">
-                    <span>Send Message</span>
-                    <span style="font-size:1.15rem">&rarr;</span>
+                <button type="submit" class="contact-submit-btn">
+                    <span>Submit Sourcing RFQ &amp; Inquiry</span>
+                    <span style="font-size:1.2rem">&rarr;</span>
                 </button>
 
                 <p style="text-align:center;font-size:0.8rem;color:#64748b;margin:14px 0 0">
-                    Our team will review your inquiry and get in touch within 24 hours.
+                    Our procurement and commercial team will review your specifications and get in touch within 24 hours.
                 </p>
             </form>
 
@@ -970,189 +1627,189 @@
 
     </div>
 
-    <!-- 3. Bottom Office & Interactive Location Map Section (From Admin -> Settings -> Contact Page) -->
+    <!-- 3. Facility & SILC Cold Storage Location (Section 7.3) -->
     <div class="contact-location-section">
         <div class="contact-location-heading" style="text-align:center;margin-bottom:36px">
-        <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.75rem;font-weight:800;letter-spacing:0.8px;padding:6px 16px;border-radius:30px;display:inline-flex;align-items:center;gap:6px;text-transform:uppercase;margin-bottom:12px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-            STORE &amp; COLD STORAGE LOCATION
-        </span>
+            <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.75rem;font-weight:800;letter-spacing:0.8px;padding:6px 16px;border-radius:30px;display:inline-flex;align-items:center;gap:6px;text-transform:uppercase;margin-bottom:12px">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                FACILITY &amp; COLLECTION CENTRE
+            </span>
 
-        <h2 style="font-size:2.4rem;font-weight:800;color:#0f172a;margin:0 0 10px;letter-spacing:-0.5px">
-            Visit Our Store &amp; Cold Hub
-        </h2>
+            <h2 style="font-size:2.3rem;font-weight:800;color:#0f172a;margin:0 0 10px;letter-spacing:-0.5px">
+                Visit Our SILC Cold Hub
+            </h2>
 
-        <p style="font-size:0.95rem;color:#64748b;max-width:650px;margin:0 auto;line-height:1.5">
-            Drop by our central distribution facility or contact our sales team for walk-in wholesale collection.
-        </p>
-    </div>
+            <p style="font-size:0.95rem;color:#64748b;max-width:680px;margin:0 auto;line-height:1.5">
+                Centrally located at SiLC Iskandar Puteri, Johor. Open for customer visits, pre-arranged wholesale inspections, and walk-in counter collections.
+            </p>
+        </div>
 
-    <div class="location-split-grid">
-        
-        <!-- Left Column: Detailed Office Card (Dynamically configured from Admin) -->
-        <div class="office-info-card">
-            <div>
-                <!-- Card Header -->
-                <div style="display:flex;align-items:center;gap:16px;margin-bottom:22px">
-                    <div style="width:50px;height:50px;border-radius:14px;background:#eff6ff;color:#2563eb;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
-                            <line x1="9" y1="22" x2="9" y2="22.01"></line>
-                            <line x1="15" y1="22" x2="15" y2="22.01"></line>
-                            <line x1="9" y1="6" x2="9" y2="6.01"></line>
-                            <line x1="15" y1="6" x2="15" y2="6.01"></line>
-                            <line x1="9" y1="10" x2="9" y2="10.01"></line>
-                            <line x1="15" y1="10" x2="15" y2="10.01"></line>
-                            <line x1="9" y1="14" x2="9" y2="14.01"></line>
-                            <line x1="15" y1="14" x2="15" y2="14.01"></line>
-                            <line x1="9" y1="18" x2="9" y2="18.01"></line>
-                            <line x1="15" y1="18" x2="15" y2="18.01"></line>
-                        </svg>
+        <div class="location-split-grid">
+            
+            <!-- Left Column: Detailed Office & Facility Card -->
+            <div class="office-info-card">
+                <div>
+                    <!-- Card Header -->
+                    <div style="display:flex;align-items:center;gap:16px;margin-bottom:22px">
+                        <div style="width:52px;height:52px;border-radius:14px;background:#eff6ff;color:#2563eb;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                                <line x1="9" y1="22" x2="9" y2="22.01"></line>
+                                <line x1="15" y1="22" x2="15" y2="22.01"></line>
+                                <line x1="9" y1="6" x2="9" y2="6.01"></line>
+                                <line x1="15" y1="6" x2="15" y2="6.01"></line>
+                                <line x1="9" y1="10" x2="9" y2="10.01"></line>
+                                <line x1="15" y1="10" x2="15" y2="10.01"></line>
+                                <line x1="9" y1="14" x2="9" y2="14.01"></line>
+                                <line x1="15" y1="14" x2="15" y2="14.01"></line>
+                                <line x1="9" y1="18" x2="9" y2="18.01"></line>
+                                <line x1="15" y1="18" x2="15" y2="18.01"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <div style="font-size:1.2rem;font-weight:800;color:#0f172a;line-height:1.2;margin-bottom:2px">
+                                MST Import and Export Sdn Bhd
+                            </div>
+                            <div style="font-size:0.82rem;font-weight:700;color:#1d4ed8;margin-bottom:4px">
+                                镁嘉国际贸易有限公司
+                            </div>
+                            <div style="color:#64748b;font-weight:600;font-size:0.83rem">
+                                Central Cold Storage &amp; Logistics Distribution Hub
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="border-top:1px solid #f1f5f9;margin-bottom:22px"></div>
+
+                    <!-- 4 Contact Points -->
+                    <div style="display:flex;flex-direction:column;gap:20px">
+                        
+                        <!-- 1. Facility Address -->
+                        <div style="display:flex;align-items:flex-start;gap:14px">
+                            <div style="color:#2563eb;margin-top:2px">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div>
+                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">Facility &amp; Hub Address</div>
+                                <div style="font-size:0.85rem;color:#64748b;line-height:1.45">
+                                    No. 7, Jalan SiLC 2/18, Kawasan Perindustrian SiLC, 79200 Iskandar Puteri, Johor, Malaysia
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Operating Hours -->
+                        <div style="display:flex;align-items:flex-start;gap:14px">
+                            <div style="color:#2563eb;margin-top:2px">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">Operating Hours</div>
+                                <div style="font-size:0.85rem;color:#0f172a;font-weight:600;line-height:1.4">
+                                    Monday – Saturday: 8:00 AM – 6:00 PM
+                                </div>
+                                <div style="font-size:0.8rem;color:#64748b;margin-top:2px">
+                                    Sunday &amp; Public Holidays: Closed
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Direct Email -->
+                        <div style="display:flex;align-items:flex-start;gap:14px">
+                            <div style="color:#2563eb;margin-top:2px">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">Email Contacts</div>
+                                <div style="font-size:0.85rem">
+                                    <a href="mailto:mikatrading15@gmail.com" style="color:#2563eb;text-decoration:none;word-break:break-all;font-weight:600">
+                                        mikatrading15@gmail.com
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Phone Hotlines -->
+                        <div style="display:flex;align-items:flex-start;gap:14px">
+                            <div style="color:#2563eb;margin-top:2px">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">Phone Hotlines</div>
+                                <div style="font-size:0.85rem;display:flex;flex-direction:column;gap:3px">
+                                    <div>
+                                        <a href="tel:0132800168" style="color:#2563eb;font-weight:700;text-decoration:none">
+                                            013-280 0168
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a href="tel:01114360109" style="color:#2563eb;font-weight:600;text-decoration:none">
+                                            011-1436 0109
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a href="https://wa.me/601112710260" target="_blank" rel="noopener" style="color:#2563eb;font-weight:600;text-decoration:none">
+                                            011-1271 0260 (WhatsApp)
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Walk-In Collection Info Banner -->
+                <div style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;padding:14px 18px;border-radius:12px;font-size:0.85rem;font-weight:600;display:flex;align-items:center;gap:10px;margin-top:24px">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>Walk-in wholesale counter with QR instant collection tokens available during business hours.</span>
+                </div>
+            </div>
+
+            <!-- Right Column: Interactive Map Container -->
+            <div class="map-embed-wrapper">
+                
+                <!-- Map Floating Card -->
+                <div class="map-overlay-badge">
+                    <div>
+                        <div style="font-weight:800;font-size:0.98rem;color:#0f172a;line-height:1.25">MST Import and Export Sdn Bhd</div>
+                        <div style="font-size:0.75rem;font-weight:700;color:#2563eb">镁嘉国际贸易有限公司</div>
+                        <div class="map-badge-desc" style="font-size:0.78rem;color:#64748b;margin:4px 0 10px;line-height:1.35">No. 7, Jalan SiLC 2/18, SiLC Johor</div>
                     </div>
                     <div>
-                        <div style="font-size:1.2rem;font-weight:800;color:#0f172a;line-height:1.2;margin-bottom:4px">
-                            {{ $settings['store_name'] ?? 'Mika Import and Export SDN Bhd' }}
-                        </div>
-                        <div style="color:#2563eb;font-weight:600;font-size:0.85rem">
-                            {{ $settings['store_tagline'] ?? 'Central Cold Storage & Distribution Facility' }}
-                        </div>
+                        <a href="https://maps.app.goo.gl/jLMaDYCNJ6vfk376A" target="_blank" rel="noopener"
+                           style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#ffffff;padding:7px 14px;border-radius:8px;font-size:0.78rem;font-weight:700;text-decoration:none;box-shadow:0 2px 8px rgba(37,99,235,0.3);white-space:nowrap">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                            <span>Open in Google Maps</span>
+                        </a>
                     </div>
                 </div>
 
-                <div style="border-top:1px solid #f1f5f9;margin-bottom:22px"></div>
-
-                <!-- 4 Contact Points -->
-                <div style="display:flex;flex-direction:column;gap:20px">
-                    
-                    <!-- 1. Office Address -->
-                    <div style="display:flex;align-items:flex-start;gap:14px">
-                        <div style="color:#2563eb;margin-top:2px">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                        </div>
-                        <div>
-                            <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">Store Address</div>
-                            <div style="font-size:0.85rem;color:#64748b;line-height:1.4">
-                                {{ $settings['store_address'] ?? '7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia' }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 2. Working Hours -->
-                    <div style="display:flex;align-items:flex-start;gap:14px">
-                        <div style="color:#2563eb;margin-top:2px">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                        </div>
-                        <div>
-                            <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">Working Hours</div>
-                            <div style="font-size:0.85rem;color:#64748b;line-height:1.4">
-                                {{ $settings['store_hours'] ?? 'Mon – Sat: 8:00 AM – 6:00 PM' }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 3. Direct Email -->
-                    <div style="display:flex;align-items:flex-start;gap:14px">
-                        <div style="color:#2563eb;margin-top:2px">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                <polyline points="22,6 12,13 2,6"></polyline>
-                            </svg>
-                        </div>
-                        <div>
-                            <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">Email Contacts</div>
-                            <div style="font-size:0.85rem">
-                                <a href="mailto:{{ $settings['store_email'] ?? 'mikatrading15@gmail.com' }}" style="color:#2563eb;text-decoration:none;word-break:break-all;font-weight:600">
-                                    {{ $settings['store_email'] ?? 'mikatrading15@gmail.com' }}
-                                </a>
-                                @if(!empty($settings['store_wholesale_email']))
-                                    <div style="margin-top:4px">
-                                        <a href="mailto:{{ $settings['store_wholesale_email'] }}" style="color:#2563eb;text-decoration:none;font-weight:600">
-                                            {{ $settings['store_wholesale_email'] }} (Wholesale)
-                                        </a>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 4. Phone Support -->
-                    <div style="display:flex;align-items:flex-start;gap:14px">
-                        <div style="color:#2563eb;margin-top:2px">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">Phone Hotlines</div>
-                            <div style="font-size:0.85rem">
-                                <a href="tel:{{ preg_replace('/[^0-9+]/', '', $settings['store_phone'] ?? '013-2800168') }}" style="color:#2563eb;font-weight:700;text-decoration:none">
-                                    {{ $settings['store_phone'] ?? '013-2800168' }}
-                                </a>
-                                @if(!empty($settings['store_phone_2']))
-                                    <div style="margin-top:2px">
-                                        <a href="tel:{{ preg_replace('/[^0-9+]/', '', $settings['store_phone_2']) }}" style="color:#2563eb;font-weight:600;text-decoration:none">
-                                            {{ $settings['store_phone_2'] }}
-                                        </a>
-                                    </div>
-                                @endif
-                                @if(!empty($settings['store_phone_3']))
-                                    <div style="margin-top:2px">
-                                        <a href="tel:{{ preg_replace('/[^0-9+]/', '', $settings['store_phone_3']) }}" style="color:#2563eb;font-weight:600;text-decoration:none">
-                                            {{ $settings['store_phone_3'] }}
-                                        </a>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                <!-- Interactive Map Container -->
+                <div id="contactMap"></div>
             </div>
 
-            <!-- In-Store Collection Pass Badge -->
-            <div style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;padding:12px 16px;border-radius:10px;font-size:0.84rem;font-weight:600;display:flex;align-items:center;gap:10px;margin-top:24px">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                <span>Walk-in showroom collection ready &middot; QR Instant Collection Tokens</span>
-            </div>
         </div>
-
-        <!-- Right Column: Interactive Map Container -->
-        <div class="map-embed-wrapper">
-            
-            <!-- Map Floating Card -->
-            <div class="map-overlay-badge">
-                <div style="font-weight:800;font-size:1.05rem;color:#0f172a">{{ $settings['store_name'] ?? 'Mika Import and Export SDN Bhd' }}</div>
-                <div style="font-size:0.8rem;color:#64748b;margin-bottom:10px">{{ Str::limit($settings['store_address'] ?? '7, Jalan SILC 2/18, Kawasan Perindustrian SILC, Johor', 48) }}</div>
-                <div style="display:flex;gap:8px">
-                    <a href="{{ $settings['store_map_url'] ?? 'https://maps.app.goo.gl/jLMaDYCNJ6vfk376A' }}" target="_blank" rel="noopener"
-                       style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#ffffff;padding:6px 12px;border-radius:6px;font-size:0.78rem;font-weight:700;text-decoration:none;box-shadow:0 2px 8px rgba(37,99,235,0.3)">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                            <polyline points="15 3 21 3 21 9"></polyline>
-                            <line x1="10" y1="14" x2="21" y2="3"></line>
-                        </svg>
-                        <span>Open in Google Maps</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Interactive Map Container -->
-            <div id="contactMap"></div>
-        </div>
-
-    </div>
     </div>
 
 </div>
@@ -1194,10 +1851,18 @@
         const prodHiddenInput = document.getElementById('productHiddenInput');
         const prodNoResults = document.getElementById('productNoResults');
 
+        const formGrid2 = document.querySelector('.consultation-form-grid-2');
+        const catCol = document.querySelector('.field-col-category');
+        const prodCol = document.querySelector('.field-col-product');
+
         // Close all dropdowns
         function closeAllDropdowns() {
             if (catContainer) catContainer.classList.remove('open');
             if (prodContainer) prodContainer.classList.remove('open');
+            if (interestsContainer) interestsContainer.classList.remove('open');
+            if (catCol) catCol.classList.remove('is-dropdown-open');
+            if (prodCol) prodCol.classList.remove('is-dropdown-open');
+            if (formGrid2) formGrid2.classList.remove('has-open-dropdown');
         }
 
         // --- Category Dropdown Logic ---
@@ -1208,6 +1873,8 @@
                 closeAllDropdowns();
                 if (!wasOpen) {
                     catContainer.classList.add('open');
+                    if (catCol) catCol.classList.add('is-dropdown-open');
+                    if (formGrid2) formGrid2.classList.add('has-open-dropdown');
                     catSearchInput.value = '';
                     filterOptions(catOptionsList, '', catNoResults);
                     setTimeout(() => catSearchInput.focus(), 50);
@@ -1242,8 +1909,12 @@
 
         function selectCategory(value, label) {
             catHiddenInput.value = value;
-            catTriggerText.textContent = label;
-            catTriggerText.classList.remove('placeholder');
+            catTriggerText.textContent = label || 'Select category (optional)...';
+            if (value) {
+                catTriggerText.classList.remove('placeholder');
+            } else {
+                catTriggerText.classList.add('placeholder');
+            }
 
             // Mark selected
             catOptionsList.querySelectorAll('.searchable-option-item').forEach(el => {
@@ -1267,6 +1938,8 @@
                 closeAllDropdowns();
                 if (!wasOpen) {
                     prodContainer.classList.add('open');
+                    if (prodCol) prodCol.classList.add('is-dropdown-open');
+                    if (formGrid2) formGrid2.classList.add('has-open-dropdown');
                     prodSearchInput.value = '';
                     filterOptions(prodOptionsList, '', prodNoResults);
                     setTimeout(() => prodSearchInput.focus(), 50);
@@ -1302,9 +1975,11 @@
         }
 
         function populateProductDropdown(categoryName, preselectedProduct = '') {
-            if (!categoryName) {
+            if (!categoryName || categoryName === 'Customised Sourcing Request') {
                 prodContainer.classList.add('disabled');
-                prodTriggerText.textContent = 'Select a category first...';
+                prodTriggerText.textContent = categoryName === 'Customised Sourcing Request' 
+                    ? 'Describe custom sourcing below' 
+                    : 'Select product (optional)...';
                 prodTriggerText.classList.add('placeholder');
                 prodHiddenInput.value = '';
                 prodOptionsList.innerHTML = '<div class="searchable-no-results" id="productNoResults" style="display:none">No matching product found</div>';
@@ -1316,9 +1991,8 @@
 
             let html = '';
             
-            // General / All option
             const defaultLabel = products.length > 0 
-                ? 'All products in ' + categoryName + ' / General Inquiry' 
+                ? 'All products in ' + categoryName + ' / General RFQ' 
                 : 'General Inquiry for ' + categoryName;
             
             const isAllSelected = !preselectedProduct || preselectedProduct === defaultLabel;
@@ -1393,11 +2067,191 @@
             if (!str) return '';
             return str
                 .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
+                .replace(/&/g, "&lt;")
                 .replace(/>/g, "&gt;")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
+
+        // --- Multi-Select Interests Dropdown Logic ---
+        const interestsContainer = document.getElementById('interestsMultiSelectContainer');
+        const interestsTrigger = document.getElementById('interestsMultiSelectTrigger');
+        const interestsDisplay = document.getElementById('interestsDisplay');
+        const interestsPlaceholder = document.getElementById('interestsPlaceholder');
+        const interestsCountBadge = document.getElementById('interestsCountBadge');
+        const interestsSearchInput = document.getElementById('interestsSearchInput');
+        const interestsOptionsList = document.getElementById('interestsOptionsList');
+        const interestsNoResults = document.getElementById('interestsNoResults');
+        const interestsFooterCount = document.getElementById('interestsFooterCount');
+        const selectAllBtn = document.getElementById('selectAllInterests');
+        const clearAllBtn = document.getElementById('clearAllInterests');
+        const doneBtn = document.getElementById('interestsDoneBtn');
+
+        function updateInterestsDisplay() {
+            const checkedItems = interestsOptionsList.querySelectorAll('.multi-select-option-item input[type="checkbox"]:checked');
+            const count = checkedItems.length;
+
+            interestsFooterCount.textContent = count + ' selected';
+
+            if (count === 0) {
+                interestsDisplay.innerHTML = '<span class="searchable-selected-text placeholder">Select interested categories / services...</span>';
+                interestsCountBadge.style.display = 'none';
+                return;
+            }
+
+            interestsCountBadge.style.display = 'inline-block';
+            interestsCountBadge.textContent = count + ' selected';
+
+            let pillsHtml = '';
+            const maxVisible = 2;
+
+            checkedItems.forEach((cb, idx) => {
+                const item = cb.closest('.multi-select-option-item');
+                const val = item.getAttribute('data-value');
+                const label = item.getAttribute('data-label');
+                const icon = item.getAttribute('data-icon') || '📦';
+
+                if (idx < maxVisible) {
+                    pillsHtml += `
+                        <span class="selected-tag-pill">
+                            <span>${icon} ${escapeHtml(label)}</span>
+                            <span class="selected-tag-remove" data-val="${escapeHtml(val)}" title="Remove">&times;</span>
+                        </span>
+                    `;
+                }
+            });
+
+            if (count > maxVisible) {
+                pillsHtml += `
+                    <span class="selected-tag-pill" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd;">
+                        +${count - maxVisible} more
+                    </span>
+                `;
+            }
+
+            interestsDisplay.innerHTML = pillsHtml;
+
+            // Bind tag remove buttons
+            interestsDisplay.querySelectorAll('.selected-tag-remove').forEach(rmBtn => {
+                rmBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const removeVal = this.getAttribute('data-val');
+                    const targetOption = interestsOptionsList.querySelector(`.multi-select-option-item[data-value="${removeVal}"]`);
+                    if (targetOption) {
+                        const targetCb = targetOption.querySelector('input[type="checkbox"]');
+                        if (targetCb) {
+                            targetCb.checked = false;
+                            targetOption.classList.remove('selected');
+                            updateInterestsDisplay();
+                        }
+                    }
+                });
+            });
+        }
+
+        if (interestsTrigger) {
+            interestsTrigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const wasOpen = interestsContainer.classList.contains('open');
+                closeAllDropdowns();
+                if (!wasOpen) {
+                    interestsContainer.classList.add('open');
+                    interestsSearchInput.value = '';
+                    filterMultiSelectOptions('');
+                    setTimeout(() => interestsSearchInput.focus(), 50);
+                }
+            });
+        }
+
+        if (interestsSearchInput) {
+            interestsSearchInput.addEventListener('input', function() {
+                filterMultiSelectOptions(this.value.trim().toLowerCase());
+            });
+            interestsSearchInput.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+
+        function filterMultiSelectOptions(query) {
+            const items = interestsOptionsList.querySelectorAll('.multi-select-option-item');
+            let visibleCount = 0;
+            items.forEach(item => {
+                const label = (item.getAttribute('data-label') || '').toLowerCase();
+                const desc = (item.querySelector('.multi-select-item-desc')?.textContent || '').toLowerCase();
+                if (!query || label.includes(query) || desc.includes(query)) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            interestsNoResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        // Option checkbox click handling
+        interestsOptionsList.querySelectorAll('.multi-select-option-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                // If clicked directly on the input checkbox, change event handles it
+                if (e.target.tagName.toLowerCase() !== 'input') {
+                    const cb = this.querySelector('input[type="checkbox"]');
+                    if (cb) {
+                        cb.checked = !cb.checked;
+                        if (cb.checked) {
+                            this.classList.add('selected');
+                        } else {
+                            this.classList.remove('selected');
+                        }
+                        updateInterestsDisplay();
+                    }
+                }
+            });
+
+            const cb = item.querySelector('input[type="checkbox"]');
+            if (cb) {
+                cb.addEventListener('change', function() {
+                    if (this.checked) {
+                        item.classList.add('selected');
+                    } else {
+                        item.classList.remove('selected');
+                    }
+                    updateInterestsDisplay();
+                });
+            }
+        });
+
+        if (selectAllBtn) {
+            selectAllBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                interestsOptionsList.querySelectorAll('.multi-select-option-item').forEach(item => {
+                    const cb = item.querySelector('input[type="checkbox"]');
+                    if (cb) cb.checked = true;
+                    item.classList.add('selected');
+                });
+                updateInterestsDisplay();
+            });
+        }
+
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                interestsOptionsList.querySelectorAll('.multi-select-option-item').forEach(item => {
+                    const cb = item.querySelector('input[type="checkbox"]');
+                    if (cb) cb.checked = false;
+                    item.classList.remove('selected');
+                });
+                updateInterestsDisplay();
+            });
+        }
+
+        if (doneBtn) {
+            doneBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeAllDropdowns();
+            });
+        }
+
+        // Initialize display from initial checkboxes
+        updateInterestsDisplay();
 
         // Global document click to close dropdowns
         document.addEventListener('click', function() {
@@ -1410,20 +2264,6 @@
                 closeAllDropdowns();
             }
         });
-
-        // Form submission validation handling
-        const form = catContainer.closest('form');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                if (!catHiddenInput.value) {
-                    e.preventDefault();
-                    catTrigger.style.borderColor = '#ef4444';
-                    catTrigger.focus();
-                    catContainer.classList.add('open');
-                    setTimeout(() => catSearchInput.focus(), 50);
-                }
-            });
-        }
 
         // Initialize state if old values exist
         const initialCategory = "{{ old('subject') }}";
@@ -1444,7 +2284,6 @@
                 zoomControl: true 
             }).setView([lat, lng], 16);
 
-            // Same-origin tile proxy: fully compliant with CSP img-src 'self' & ad-blocker immune
             L.tileLayer('/map-tile/{z}/{x}/{y}', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
                 maxZoom: 19
@@ -1471,17 +2310,18 @@
 
             const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
             marker.bindPopup(`
-                <div style="font-family:sans-serif;padding:6px;min-width:210px">
-                    <div style="font-weight:800;font-size:0.95rem;color:#0f172a;margin-bottom:4px">{{ addslashes($settings['store_name'] ?? 'Mika Import and Export SDN Bhd') }}</div>
-                    <div style="color:#64748b;font-size:0.82rem;line-height:1.4">{{ addslashes($settings['store_address'] ?? '7, Jalan SILC 2/18, Kawasan Perindustrian SILC, Johor, Malaysia') }}</div>
+                <div style="font-family:sans-serif;padding:6px;min-width:220px">
+                    <div style="font-weight:800;font-size:0.95rem;color:#0f172a;margin-bottom:2px">MST Import and Export Sdn Bhd</div>
+                    <div style="font-size:0.78rem;font-weight:700;color:#2563eb;margin-bottom:4px">镁嘉国际贸易有限公司</div>
+                    <div style="color:#64748b;font-size:0.82rem;line-height:1.4">No. 7, Jalan SiLC 2/18, Kawasan Perindustrian SiLC, 79200 Iskandar Puteri, Johor</div>
                     <div style="margin-top:8px">
-                        <a href="{{ $settings['store_map_url'] ?? 'https://maps.app.goo.gl/jLMaDYCNJ6vfk376A' }}" target="_blank" rel="noopener" style="color:#2563eb;font-weight:700;font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
+                        <a href="https://maps.app.goo.gl/jLMaDYCNJ6vfk376A" target="_blank" rel="noopener" style="color:#2563eb;font-weight:700;font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
                             <span>Get Directions</span>
                             <span>&rarr;</span>
                         </a>
                     </div>
                 </div>
-            `).openPopup();
+            `).bindTooltip("MST Import & Export (SiLC Hub)", { direction: "top", offset: [0, -36] });
 
             setTimeout(() => {
                 map.invalidateSize();

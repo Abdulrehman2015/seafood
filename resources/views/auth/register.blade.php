@@ -150,21 +150,22 @@
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label" for="company_name">Company Name <span class="required">*</span></label>
-                            <input type="text" name="company_name" id="company_name" class="form-control"
+                            <input type="text" name="company_name" id="company_name" class="form-control {{ $errors->has('company_name') ? 'is-invalid' : '' }}"
                                    value="{{ old('company_name') }}" placeholder="e.g. MST Seafood Trading Sdn Bhd">
                             @error('company_name')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="company_reg_no">Company Reg. No. (SSM)</label>
-                            <input type="text" name="company_reg_no" id="company_reg_no" class="form-control"
+                            <label class="form-label" for="company_reg_no">Company Reg. No. (SSM) <span class="required">*</span></label>
+                            <input type="text" name="company_reg_no" id="company_reg_no" class="form-control {{ $errors->has('company_reg_no') ? 'is-invalid' : '' }}"
                                    value="{{ old('company_reg_no') }}" placeholder="202301012345 (1234567-X)">
+                            @error('company_reg_no')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="business_type">Business Type</label>
+                        <label class="form-label" for="business_type">Business Nature / Type <span class="required">*</span></label>
                         <div class="custom-select-wrapper">
-                            <select name="business_type" id="business_type" class="form-control custom-select">
+                            <select name="business_type" id="business_type" class="form-control custom-select {{ $errors->has('business_type') ? 'is-invalid' : '' }}">
                                 <option value="">Select business type...</option>
                                 <option value="Restaurant & Catering"   {{ old('business_type')=='Restaurant & Catering'?'selected':'' }}>Restaurant & Catering</option>
                                 <option value="Seafood Retailer"        {{ old('business_type')=='Seafood Retailer'?'selected':'' }}>Seafood Retailer</option>
@@ -175,6 +176,7 @@
                                 <option value="Other"                   {{ old('business_type')=='Other'?'selected':'' }}>Other</option>
                             </select>
                         </div>
+                        @error('business_type')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
                 </div>
 

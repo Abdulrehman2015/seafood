@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Edit Product: ' . $product->name . ' — Mika Admin')
+@section('title', 'Edit ' . $product->name . ' — MST Admin')
 
 @section('content')
 <div class="admin-topbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--gray-200);">

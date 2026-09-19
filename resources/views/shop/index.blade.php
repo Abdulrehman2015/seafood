@@ -251,7 +251,7 @@
                             $displayPrice = $product->getDisplayPrice($group);
                             $price = $displayPrice['amount'];
                             $priceFormatted = $displayPrice['formatted'];
-                            $waMsg = 'Hello Mika Import & Export, I would like to inquire about ' . $product->name . ' (SKU: ' . ($product->sku ?? 'N/A') . ') for wholesale supply.';
+                            $waMsg = 'Hello MST Import & Export, I would like to inquire about ' . $product->name . ' (SKU: ' . ($product->sku ?? 'N/A') . ') for wholesale supply.';
                         @endphp
                         <div class="product-card" data-product-id="{{ $product->id }}">
                             <div class="product-card-img">

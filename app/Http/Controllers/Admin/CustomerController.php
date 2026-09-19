@@ -21,6 +21,18 @@ class CustomerController extends Controller
             $query->where('approval_status', $request->status);
         }
 
+        if ($request->boolean('duplicates')) {
+            $query->where(function ($q) {
+                $q->whereIn('phone', function ($sub) {
+                    $sub->select('phone')->from('users')->whereNotNull('phone')->where('phone', '!=', '')->groupBy('phone')->havingRaw('count(*) > 1');
+                })->orWhereIn('company_reg_no', function ($sub) {
+                    $sub->select('company_reg_no')->from('users')->whereNotNull('company_reg_no')->where('company_reg_no', '!=', '')->groupBy('company_reg_no')->havingRaw('count(*) > 1');
+                })->orWhereIn('company_name', function ($sub) {
+                    $sub->select('company_name')->from('users')->whereNotNull('company_name')->where('company_name', '!=', '')->groupBy('company_name')->havingRaw('count(*) > 1');
+                });
+            });
+        }
+
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
@@ -42,14 +54,35 @@ class CustomerController extends Controller
 
         $customers = $query->paginate(20)->withQueryString();
 
+        // Identify duplicate attributes across current page
+        $phones = $customers->pluck('phone')->filter()->toArray();
+        $regNos = $customers->pluck('company_reg_no')->filter()->toArray();
+        $companies = $customers->pluck('company_name')->filter()->toArray();
+
+        $dupPhones = !empty($phones) ? User::whereIn('phone', $phones)->groupBy('phone')->havingRaw('count(*) > 1')->pluck('phone')->toArray() : [];
+        $dupRegNos = !empty($regNos) ? User::whereIn('company_reg_no', $regNos)->groupBy('company_reg_no')->havingRaw('count(*) > 1')->pluck('company_reg_no')->toArray() : [];
+        $dupCompanies = !empty($companies) ? User::whereIn('company_name', $companies)->groupBy('company_name')->havingRaw('count(*) > 1')->pluck('company_name')->toArray() : [];
+
+        $duplicatesCount = User::where('customer_group', '!=', 'admin')
+            ->where(function ($q) {
+                $q->whereIn('phone', function ($sub) {
+                    $sub->select('phone')->from('users')->whereNotNull('phone')->where('phone', '!=', '')->groupBy('phone')->havingRaw('count(*) > 1');
+                })->orWhereIn('company_reg_no', function ($sub) {
+                    $sub->select('company_reg_no')->from('users')->whereNotNull('company_reg_no')->where('company_reg_no', '!=', '')->groupBy('company_reg_no')->havingRaw('count(*) > 1');
+                })->orWhereIn('company_name', function ($sub) {
+                    $sub->select('company_name')->from('users')->whereNotNull('company_name')->where('company_name', '!=', '')->groupBy('company_name')->havingRaw('count(*) > 1');
+                });
+            })->count();
+
         $stats = [
-            'total'     => User::where('customer_group', '!=', 'admin')->count(),
-            'pending'   => User::where('customer_group', '!=', 'admin')->where('approval_status', 'pending')->count(),
-            'approved'  => User::where('customer_group', '!=', 'admin')->where('approval_status', 'approved')->count(),
-            'wholesale' => User::whereIn('customer_group', ['wholesale', 'trading'])->count(),
+            'total'      => User::where('customer_group', '!=', 'admin')->count(),
+            'pending'    => User::where('customer_group', '!=', 'admin')->where('approval_status', 'pending')->count(),
+            'approved'   => User::where('customer_group', '!=', 'admin')->where('approval_status', 'approved')->count(),
+            'wholesale'  => User::whereIn('customer_group', ['wholesale', 'trading'])->count(),
+            'duplicates' => $duplicatesCount,
         ];
 
-        return view('admin.customers.index', compact('customers', 'stats'));
+        return view('admin.customers.index', compact('customers', 'stats', 'dupPhones', 'dupRegNos', 'dupCompanies'));
     }
 
     public function show(User $user)

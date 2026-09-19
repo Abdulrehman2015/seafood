@@ -23,7 +23,7 @@
         <div style="margin-bottom:24px">
             <img src="{{ asset('images/logo.webp') }}" alt="Meijia" style="height:80px;width:80px;object-fit:contain;margin-bottom:8px;">
             <div style="font-family:var(--font-heading);font-size:1.65rem;font-weight:800;color:#0f766e;letter-spacing:-0.02em">
-                Mika Import and Export SDN Bhd
+                MST Import and Export Sdn Bhd
             </div>
             <div style="font-size:0.75rem;font-weight:700;color:#0d9488;letter-spacing:0.12em;text-transform:uppercase;margin-top:4px">
                 In-Store Customer Catalogue

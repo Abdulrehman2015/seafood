@@ -21,11 +21,17 @@ class RegistrationTest extends TestCase
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'Password123!',
+            'password_confirmation' => 'Password123!',
+            'customer_group' => 'retail',
+            'phone' => '0123456789',
+            'address' => '123 Main Street',
+            'city' => 'Johor Bahru',
+            'state' => 'Johor',
+            'postcode' => '80000',
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('otp.verify'));
+        $this->assertEquals(session('otp_verify_user_id'), \App\Models\User::where('email', 'test@example.com')->first()->id);
     }
 }

@@ -116,7 +116,7 @@
             </div>
 
             <div style="margin-top:10px;border-top:1px solid #f1f5f9;padding-top:14px;">
-                <a href="mailto:{{ $message->email }}?subject={{ urlencode('Re: ' . ($message->subject ?? 'Your Inquiry to Mika Import and Export SDN Bhd')) }}" class="btn btn-primary btn-sm" style="width:100%;text-align:center;justify-content:center;font-weight:600;padding:9px 14px;border-radius:8px;">
+                <a href="mailto:{{ $message->email }}?subject={{ urlencode('Re: ' . ($message->subject ?? 'Your Inquiry to MST Import and Export Sdn Bhd')) }}" class="btn btn-primary btn-sm" style="width:100%;text-align:center;justify-content:center;font-weight:600;padding:9px 14px;border-radius:8px;">
                     ✉ Compose Email Reply
                 </a>
             </div>

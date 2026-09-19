@@ -35,26 +35,47 @@ class StaticController extends Controller
     public function contactSubmit(Request $request)
     {
         $request->validate([
-            'name'    => 'required|string|max:200',
-            'email'   => 'required|email|max:255',
-            'phone'   => 'nullable|string|max:30',
-            'subject' => 'nullable|string|max:200',
-            'product' => 'nullable|string|max:200',
-            'budget'  => 'nullable|string|max:200',
-            'message' => 'required|string|max:5000',
+            'name'        => 'required|string|max:200',
+            'email'       => 'required|email|max:255',
+            'phone'       => 'required|string|max:30',
+            'interests'   => 'nullable|array',
+            'interests.*' => 'string|max:100',
+            'subject'     => 'nullable|string|max:200',
+            'product'     => 'nullable|string|max:200',
+            'budget'      => 'nullable|string|max:200',
+            'message'     => 'required|string|max:5000',
         ]);
 
+        $interestsList = !empty($request->interests) && is_array($request->interests)
+            ? implode(', ', $request->interests)
+            : null;
+
         $product = $request->product ?: $request->budget;
-        $messageBody = $request->message;
+
+        $headerDetails = [];
+        if ($interestsList) {
+            $headerDetails[] = "Interests / Scope: " . $interestsList;
+        }
+        if (!empty($request->subject) && $request->subject !== 'General Inquiry') {
+            $headerDetails[] = "Category: " . $request->subject;
+        }
         if (!empty($product)) {
-            $messageBody = "[Selected Product: " . $product . "]\n\n" . $messageBody;
+            $headerDetails[] = "Product / Requirement: " . $product;
+        }
+
+        $formattedHeader = !empty($headerDetails) ? "[" . implode(" | ", $headerDetails) . "]\n\n" : "";
+        $messageBody = $formattedHeader . $request->message;
+
+        $inquirySubject = $request->subject;
+        if (empty($inquirySubject)) {
+            $inquirySubject = $interestsList ? "Sourcing RFQ: " . $interestsList : 'Sourcing & Product Inquiry';
         }
 
         ContactMessage::create([
             'name'       => $request->name,
             'email'      => $request->email,
             'phone'      => $request->phone,
-            'subject'    => $request->subject ?? 'General Inquiry',
+            'subject'    => $inquirySubject,
             'message'    => $messageBody,
             'ip_address' => $request->ip(),
         ]);
@@ -65,15 +86,16 @@ class StaticController extends Controller
                 $adminEmails = \App\Models\Setting::getAdminNotificationEmails();
                 if (!empty($adminEmails)) {
                     \Illuminate\Support\Facades\Mail::raw(
-                        "New Website Inquiry from {$request->name}\n\n" .
+                        "New Website Sourcing Inquiry from {$request->name}\n\n" .
                         "Email: {$request->email}\n" .
-                        "Phone: " . ($request->phone ?? 'N/A') . "\n" .
-                        "Subject: " . ($request->subject ?? 'General Inquiry') . "\n\n" .
-                        "Message:\n" . $messageBody . "\n\n" .
+                        "Phone / WhatsApp: " . ($request->phone ?? 'N/A') . "\n" .
+                        "Interests: " . ($interestsList ?? 'General') . "\n" .
+                        "Subject: " . $inquirySubject . "\n\n" .
+                        "Requirements & Message:\n" . $messageBody . "\n\n" .
                         "View in Admin Console: " . route('admin.messages.index'),
-                        function ($m) use ($adminEmails, $request) {
+                        function ($m) use ($adminEmails, $request, $inquirySubject) {
                             $m->to($adminEmails)
-                              ->subject("New Inquiry: " . ($request->subject ?? 'General Inquiry') . " from {$request->name} — " . config('app.name', 'MST Import & Export'));
+                              ->subject("New RFQ / Inquiry: {$inquirySubject} from {$request->name} — MST Import and Export Sdn Bhd");
                         }
                     );
                 }
@@ -82,6 +104,6 @@ class StaticController extends Controller
             }
         }
 
-        return back()->with('success', 'Thank you! Your message has been received. Our team will contact you within 24 hours.');
+        return back()->with('success', 'Thank you! Your sourcing inquiry has been received. Our team will review your requirements and contact you within 24 hours.');
     }
 }

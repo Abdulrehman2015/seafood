@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $settings['store_name'] ?? 'Mika Import and Export SDN Bhd' }}</title>
+    <title>{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</title>
 
     {{-- Dynamic Favicon --}}
     @if(!empty($settings['site_favicon']))
@@ -107,14 +107,14 @@
         <a href="{{ url('/') }}" class="guest-brand">
             @if(!empty($settings['site_logo']))
                 <img src="{{ asset('storage/' . $settings['site_logo']) }}"
-                     alt="{{ $settings['store_name'] ?? 'Mika Import and Export SDN Bhd' }}">
+                     alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}">
             @else
                 <img src="{{ asset('images/logo.webp') }}"
-                     alt="{{ $settings['store_name'] ?? 'Mika Import and Export SDN Bhd' }}">
+                     alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}">
             @endif
             <div class="guest-brand-text">
-                <span class="guest-brand-name">{{ $settings['store_name'] ?? 'Mika Import and Export SDN Bhd' }}</span>
-                <span class="guest-brand-sub">{{ $settings['store_tagline'] ?? 'Premium Frozen Seafood' }}</span>
+                <span class="guest-brand-name">{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</span>
+                <span class="guest-brand-sub">{{ $settings['store_tagline'] ?? 'Flow with Integrity, Grow with Strength' }}</span>
             </div>
         </a>
 

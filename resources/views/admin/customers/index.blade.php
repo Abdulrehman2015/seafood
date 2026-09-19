@@ -122,6 +122,14 @@
         </div>
         <div class="cat-metric-icon" style="background:#fff7ed;color:#ea580c;">🏭</div>
     </a>
+
+    <a href="{{ route('admin.customers.index', array_merge(request()->query(), ['duplicates' => request('duplicates') ? null : '1'])) }}" class="category-metric-card {{ request('duplicates') ? 'active' : '' }}" style="{{ request('duplicates') ? 'border-color:#ef4444;background:#fef2f2;' : '' }}">
+        <div>
+            <div class="cat-metric-value" style="color:{{ ($stats['duplicates'] ?? 0) > 0 ? '#dc2626' : '#64748b' }};">{{ number_format($stats['duplicates'] ?? 0) }}</div>
+            <div class="cat-metric-title">Duplicate Alerts</div>
+        </div>
+        <div class="cat-metric-icon" style="background:#fee2e2;color:#dc2626;">⚠️</div>
+    </a>
 </div>
 
 <!-- Search & Filtering Toolbar -->
@@ -194,17 +202,25 @@
                 </thead>
                 <tbody>
                     @foreach($customers as $customer)
-                    <tr id="customer-row-{{ $customer->id }}" class="customer-table-row" style="border-bottom:1px solid #f1f5f9;transition:all 0.3s ease;">
+                    @php
+                        $isDup = ($customer->phone && in_array($customer->phone, $dupPhones ?? []))
+                            || ($customer->company_reg_no && in_array($customer->company_reg_no, $dupRegNos ?? []))
+                            || ($customer->company_name && in_array($customer->company_name, $dupCompanies ?? []));
+                    @endphp
+                    <tr id="customer-row-{{ $customer->id }}" class="customer-table-row" style="border-bottom:1px solid #f1f5f9;transition:all 0.3s ease;{{ $isDup ? 'background:#fffbfb;' : '' }}">
                         <td style="padding:14px 18px;">
                             <div style="display:flex;align-items:center;gap:12px;">
                                 <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.88rem;flex-shrink:0;box-shadow:0 2px 4px rgba(37,99,235,0.2);">
                                     {{ strtoupper(substr($customer->name, 0, 1)) }}
                                 </div>
                                 <div style="min-width:0;">
-                                    <div style="font-weight:700;color:#0f172a;font-size:0.92rem;line-height:1.25;margin-bottom:2px;">
+                                    <div style="font-weight:700;color:#0f172a;font-size:0.92rem;line-height:1.25;margin-bottom:2px;display:flex;align-items:center;flex-wrap:wrap;gap:5px;">
                                         <a href="{{ route('admin.customers.show', $customer) }}" style="color:inherit;text-decoration:none;">
                                             {{ $customer->name }}
                                         </a>
+                                        @if($isDup)
+                                            <span style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;padding:1px 6px;border-radius:6px;font-size:0.68rem;font-weight:700;" title="Matches another customer's phone, SSM reg no, or company name">⚠️ Duplicate</span>
+                                        @endif
                                     </div>
                                     <div style="font-size:0.8rem;color:#64748b;display:flex;align-items:center;gap:4px;">
                                         <span>{{ $customer->email }}</span>
@@ -227,6 +243,9 @@
                             @if($customer->company_name)
                                 <div style="font-weight:600;color:#0f172a;margin-bottom:2px;display:flex;align-items:center;gap:5px;">
                                     <span style="font-size:0.8rem;">🏢</span> {{ $customer->company_name }}
+                                    @if($customer->company_reg_no)
+                                        <span style="font-size:0.75rem;color:#64748b;font-weight:400;">({{ $customer->company_reg_no }})</span>
+                                    @endif
                                 </div>
                             @endif
                             @if($customer->phone)
@@ -306,7 +325,12 @@
     <!-- ─── Mobile & Tablet Card View (< 992px) ─────────────────────────────── -->
     <div class="categories-cards-container">
         @foreach($customers as $customer)
-        <div id="customer-card-{{ $customer->id }}" class="category-item-card customer-card-item" style="box-shadow:0 1px 3px rgba(0,0,0,0.03);transition:all 0.3s ease;">
+        @php
+            $isDupMob = ($customer->phone && in_array($customer->phone, $dupPhones ?? []))
+                || ($customer->company_reg_no && in_array($customer->company_reg_no, $dupRegNos ?? []))
+                || ($customer->company_name && in_array($customer->company_name, $dupCompanies ?? []));
+        @endphp
+        <div id="customer-card-{{ $customer->id }}" class="category-item-card customer-card-item" style="box-shadow:0 1px 3px rgba(0,0,0,0.03);transition:all 0.3s ease;{{ $isDupMob ? 'border-left:4px solid #ef4444;' : '' }}">
             <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
                 <!-- Avatar -->
                 <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0;box-shadow:0 2px 5px rgba(37,99,235,0.25);">
@@ -316,9 +340,14 @@
                 <div style="flex:1;min-width:0;">
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px;">
                         <div style="min-width:0;">
-                            <a href="{{ route('admin.customers.show', $customer) }}" style="font-weight:700;color:#0f172a;font-size:0.98rem;text-decoration:none;display:block;line-height:1.25;">
-                                {{ $customer->name }}
-                            </a>
+                            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                <a href="{{ route('admin.customers.show', $customer) }}" style="font-weight:700;color:#0f172a;font-size:0.98rem;text-decoration:none;display:inline-block;line-height:1.25;">
+                                    {{ $customer->name }}
+                                </a>
+                                @if($isDupMob)
+                                    <span style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;padding:1px 6px;border-radius:6px;font-size:0.68rem;font-weight:700;">⚠️ Duplicate</span>
+                                @endif
+                            </div>
                             <div style="font-size:0.78rem;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;">
                                 {{ $customer->email }}
                             </div>

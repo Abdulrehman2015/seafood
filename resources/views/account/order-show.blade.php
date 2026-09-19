@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Order ' . $order->order_number . ' — ' . ($settings['store_name'] ?? 'Mika Import and Export SDN Bhd'))
+@section('title', 'Order ' . $order->order_number . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd'))
 
 @section('content')
     <div style="padding-top:80px;padding-bottom:var(--space-16);background:#f8fafc;min-height:calc(100vh - 80px)">
@@ -208,7 +208,7 @@
                                     </span>
                                 </div>
                                 <p class="text-sm text-secondary" style="line-height:1.6;margin-bottom:0">
-                                    <strong>Mika Import and Export SDN Bhd Counter</strong><br>
+                                    <strong>MST Import and Export Sdn Bhd Counter</strong><br>
                                     7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia<br>
                                     <span class="text-xs text-muted">Ready for pickup during store operating hours.</span>
                                 </p>

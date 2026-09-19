@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Add New Product — Mika Admin')
+@section('title', 'Add New Product — MST Admin')
 
 @section('content')
 <div class="admin-topbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--gray-200);">
@@ -317,7 +317,7 @@
                     </div>
                     <div class="form-group mb-0">
                         <label class="form-label">Brand / Producer</label>
-                        <input type="text" name="brand" class="form-control" value="{{ old('brand', 'Mika Seafood') }}" placeholder="e.g. Mika Brand">
+                        <input type="text" name="brand" class="form-control" value="{{ old('brand', 'MST') }}" placeholder="e.g. MST Brand">
                     </div>
                 </div>
             </div>

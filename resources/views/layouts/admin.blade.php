@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin') — Mika Import and Export SDN Bhd</title>
+    <title>@yield('title', 'Admin') — MST Import and Export Sdn Bhd</title>
     <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
     <link rel="shortcut icon" href="{{ asset('images/favicon.webp') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -573,6 +573,67 @@
             to { transform: rotate(360deg); }
         }
 
+        /* ─── Admin Global Header — Mobile Responsive ──────────────────── */
+        @media (max-width: 860px) {
+            /* Header becomes a tighter row */
+            .admin-global-header {
+                padding: 10px 14px;
+                gap: 10px;
+                margin-bottom: 16px;
+            }
+            .admin-header-right {
+                gap: 8px;
+            }
+            /* Hide text labels on "View Website" and "Clear Cache" — icons only */
+            .admin-view-site-btn span,
+            .admin-clear-cache-btn #cacheBtnLabel {
+                display: none !important;
+            }
+            /* Tighter icon-only button padding */
+            .admin-view-site-btn,
+            .admin-clear-cache-btn {
+                padding: 8px 10px !important;
+                gap: 0 !important;
+            }
+            /* Hide the trailing external-link icon on View Website button */
+            .admin-view-site-btn svg:last-child {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-global-header {
+                padding: 9px 12px;
+                gap: 8px;
+            }
+            .admin-header-right {
+                gap: 6px;
+            }
+            /* Also hide the "MST Online" text — show dot only */
+            .admin-header-pill span:last-child {
+                display: none !important;
+            }
+            .admin-header-pill {
+                padding: 6px 10px !important;
+                gap: 0 !important;
+            }
+            /* Hide profile name/role text — avatar pill only */
+            .admin-profile-meta,
+            .admin-profile-chevron {
+                display: none !important;
+            }
+            .admin-profile-trigger {
+                padding: 4px 6px 4px 4px !important;
+                gap: 0 !important;
+                border-radius: 50% !important;
+            }
+            /* Button sizing */
+            .admin-view-site-btn,
+            .admin-clear-cache-btn {
+                padding: 7px 9px !important;
+            }
+        }
+
         .admin-profile-wrapper {
             position: relative;
         }
@@ -769,9 +830,9 @@
                 <span></span><span></span><span></span>
             </button>
             <div style="display:flex;align-items:center;gap:8px">
-                <img src="{{ asset('images/logo.webp') }}" alt="Mika"
+                <img src="{{ asset('images/logo.webp') }}" alt="MST"
                     style="height:28px;width:28px;object-fit:contain;border-radius:6px;">
-                <span style="font-weight:700;color:#ffffff;font-size:0.95rem">Mika</span>
+                <span style="font-weight:700;color:#ffffff;font-size:0.95rem">MST</span>
                 <span style="font-size:0.65rem;background:rgba(255,255,255,0.15);color:#93c5fd;font-weight:700;padding:2px 7px;border-radius:4px;border:1px solid rgba(255,255,255,0.25)">ADMIN</span>
             </div>
         </div>
@@ -800,10 +861,10 @@
             <div class="admin-logo"
                 style="padding:4px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
                 <div style="display:flex;align-items:center;gap:10px">
-                    <img src="{{ asset('images/logo.webp') }}" alt="Mika"
+                    <img src="{{ asset('images/logo.webp') }}" alt="MST"
                         style="height:36px;width:36px;object-fit:contain;border-radius:8px;">
                     <div>
-                        <div style="font-weight:700;font-size:0.95rem;color:#ffffff;line-height:1.2">Mika</div>
+                        <div style="font-weight:700;font-size:0.95rem;color:#ffffff;line-height:1.2">MST</div>
                         <div style="font-size:0.68rem;color:#93c5fd;font-weight:500">Admin Console</div>
                     </div>
                 </div>
@@ -1027,7 +1088,7 @@
                 <div class="admin-header-left">
                     <span class="admin-header-pill">
                         <span class="admin-pulse-dot"></span>
-                        <span>Mika Online</span>
+                        <span>MST Online</span>
                     </span>
                 </div>
 

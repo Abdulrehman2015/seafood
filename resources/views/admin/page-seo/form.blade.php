@@ -141,7 +141,7 @@
                     </div>
                     <input type="text" name="meta_title" id="metaTitleInput" class="form-control seo-input"
                            value="{{ old('meta_title', $pageSeo->meta_title) }}"
-                           placeholder="e.g. Premium Frozen Seafood Exporter — Mika Seafood"
+                           placeholder="e.g. Premium Frozen Food & Sourcing — MST"
                            maxlength="80">
                     <div class="seo-hint">Recommended length: 50–60 characters. Shows as the main clickable headline in search engines.</div>
                 </div>
