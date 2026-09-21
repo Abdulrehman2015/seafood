@@ -382,6 +382,9 @@ Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function
     Route::get('/category', fn() => redirect()->route('categories.index'));
     Route::get('/shop/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
 
+    // Dynamic Policy & Custom Pages
+    Route::get('/policy/{slug}', [\App\Http\Controllers\PolicyController::class, 'show'])->name('policy.show');
+
     // Cart (session + user, public)
     Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
@@ -460,7 +463,7 @@ $unprefixedRedirects = [
     'about', 'contact', 'shop', 'categories', 'category', 'cart',
     'walkin', 'checkout', 'dashboard', 'account', 'quotations',
     'pending-approval', 'account-rejected', 'login', 'register',
-    'forgot-password', 'reset-password'
+    'forgot-password', 'reset-password', 'policy'
 ];
 foreach ($unprefixedRedirects as $uPath) {
     Route::any($uPath, function (\Illuminate\Http\Request $request) use ($uPath) {
@@ -563,6 +566,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 
     // Page SEO Module
     Route::resource('page-seo', Admin\PageSeoController::class);
+
+    // Policies & Dynamic Pages Module
+    Route::post('policies/{policy}/toggle-status', [Admin\PolicyController::class, 'toggleStatus'])->name('policies.toggle-status');
+    Route::resource('policies', Admin\PolicyController::class);
 
     // Sitemap Management Module (Dynamic Auto-Generate & Custom Upload)
     Route::get('sitemap', [Admin\SitemapController::class, 'index'])->name('sitemap.index');

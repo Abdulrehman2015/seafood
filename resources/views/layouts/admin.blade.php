@@ -1138,6 +1138,23 @@
                     <span>XML Sitemap</span>
                     <span class="sidebar-badge" style="background:#ecfdf5;color:#059669;border-color:#a7f3d0">Auto</span>
                 </a>
+                <!-- Policies & Dynamic Pages Link -->
+                <a href="{{ route('admin.policies.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.policies.*') ? 'active' : '' }}">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span>Policies & Pages</span>
+                    @php $publishedPoliciesCount = \App\Models\Policy::where('status', 'published')->count(); @endphp
+                    @if($publishedPoliciesCount > 0)
+                        <span class="sidebar-badge" style="background:#ecfdf5;color:#059669;border-color:#a7f3d0">{{ $publishedPoliciesCount }} Live</span>
+                    @endif
+                </a>
                 <!-- Multilingual Translations Link -->
                 <a href="{{ route('admin.translations.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.translations.*') ? 'active' : '' }}">

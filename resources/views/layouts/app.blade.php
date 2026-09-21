@@ -1222,6 +1222,12 @@
                         <li><a href="{{ route('walkin.entry') }}">@t('footer.walkin_store', 'Walk-in Store (QR)')</a></li>
                         <li><a href="{{ route('about') }}">@t('nav.about', 'About Us')</a></li>
                         <li><a href="{{ route('contact') }}">@t('nav.contact', 'Contact Us')</a></li>
+                        @php
+                            $publishedFooterPolicies = \App\Models\Policy::published()->get();
+                        @endphp
+                        @foreach($publishedFooterPolicies as $footerPolicy)
+                            <li><a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => $footerPolicy->slug]) }}">{{ $footerPolicy->title_for_locale }}</a></li>
+                        @endforeach
                     </ul>
                 </div>
                 <div class="footer-col">
@@ -1266,6 +1272,11 @@
                 <div class="footer-bottom-links">
                     <a href="{{ route('contact') }}">@t('footer.support', 'Support')</a>
                     <a href="{{ route('about') }}">@t('nav.about', 'About')</a>
+                    @if(isset($publishedFooterPolicies) && $publishedFooterPolicies->count())
+                        @foreach($publishedFooterPolicies->take(3) as $bPolicy)
+                            <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => $bPolicy->slug]) }}">{{ $bPolicy->title_for_locale }}</a>
+                        @endforeach
+                    @endif
                     <a href="{{ route('walkin.entry') }}">@t('footer.instore_pass', 'In-Store Pass')</a>
                 </div>
             </div>
