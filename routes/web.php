@@ -28,6 +28,40 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
 // XML Sitemap (Valid, standards-compliant, multilingual)
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
+// High-Performance Compressed Asset Delivery (Pingdom: GZIP, Expires & Cookie-free delivery)
+Route::get('/cdn-assets/css/{file}', function (string $file) {
+    $file = basename($file);
+    $path = public_path('css/' . $file);
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    $rawEncoding = strtolower(request()->header('Accept-Encoding', $_SERVER['HTTP_ACCEPT_ENCODING'] ?? ''));
+    $supportsGzip = ($rawEncoding === '' || str_contains($rawEncoding, 'gzip') || str_contains($rawEncoding, '*'))
+        && !str_contains($rawEncoding, 'identity');
+
+    $content = file_get_contents($path);
+    $headers = [
+        'Content-Type'  => 'text/css; charset=UTF-8',
+        'Cache-Control' => 'public, max-age=31536000, immutable',
+        'Expires'       => gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT',
+        'Vary'          => 'Accept-Encoding',
+    ];
+
+    if ($supportsGzip && function_exists('gzencode')) {
+        $gzPath = $path . '.gz';
+        if (file_exists($gzPath)) {
+            $content = file_get_contents($gzPath);
+        } else {
+            $content = gzencode($content, 6);
+        }
+        $headers['Content-Encoding'] = 'gzip';
+    }
+
+    $response = response($content, 200, $headers);
+    $response->headers->remove('Set-Cookie');
+    return $response;
+})->name('cdn.css')->withoutMiddleware('web');
+
 // Currency Switcher (RM, SGD, USD)
 Route::get('/currency/{code}', [\App\Http\Controllers\CurrencyController::class, 'switch'])->name('currency.switch');
 Route::match(['get', 'post'], '/currency/switch/{code?}', [\App\Http\Controllers\CurrencyController::class, 'switch'])->name('currency.switch.post');

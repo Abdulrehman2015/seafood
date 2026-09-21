@@ -16,10 +16,10 @@
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
     {{-- Fonts --}}
-    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
+    <link rel="stylesheet" href="{{ url('/cdn-assets/css/fonts.css') }}">
 
     {{-- Site CSS --}}
-    <link rel="stylesheet" href="{{ asset(file_exists(public_path('css/app.min.css')) ? 'css/app.min.css' : 'css/app.css') }}">
+    <link rel="stylesheet" href="{{ url('/cdn-assets/css/app.min.css') }}">
 
     <style>
         body {

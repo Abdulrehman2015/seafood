@@ -27,22 +27,24 @@ class PerformanceHeadersMiddleware
         $contentType = $response->headers->get('Content-Type', '');
 
         // 1. Static/Media asset routes served by PHP (e.g., map tiles)
-        if (str_starts_with($contentType, 'image/') || str_contains($contentType, 'font/')) {
+        // 1. Static/Media asset routes served by PHP (e.g., map tiles, CSS, fonts, icons)
+        if (str_starts_with($contentType, 'image/') || str_contains($contentType, 'font/') || str_contains($contentType, 'text/css')) {
             $response->headers->set('Cache-Control', 'public, max-age=31536000, immutable');
             $response->headers->set('Expires', gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT');
             $response->headers->remove('Set-Cookie');
-            return $response;
         }
 
         // 2. Dynamic GZIP Compression for HTML, JSON, JS, CSS, SVG, XML
-        $acceptEncoding = $request->header('Accept-Encoding', $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '');
+        $rawEncoding = strtolower($request->header('Accept-Encoding', $_SERVER['HTTP_ACCEPT_ENCODING'] ?? ''));
+        $supportsGzip = ($rawEncoding === '' || str_contains($rawEncoding, 'gzip') || str_contains($rawEncoding, '*'))
+            && !str_contains($rawEncoding, 'identity');
         $zlibActive = filter_var(ini_get('zlib.output_compression'), FILTER_VALIDATE_BOOLEAN);
 
         if (
             function_exists('gzencode')
             && !in_array('ob_gzhandler', ob_list_handlers())
             && !$zlibActive
-            && str_contains(strtolower($acceptEncoding), 'gzip')
+            && $supportsGzip
             && !$response->headers->has('Content-Encoding')
         ) {
             $isCompressible = str_contains($contentType, 'text/html')
@@ -56,7 +58,7 @@ class PerformanceHeadersMiddleware
 
             if ($isCompressible) {
                 $content = $response->getContent();
-                if ($content !== false && strlen($content) > 512) {
+                if ($content !== false && strlen($content) > 256) {
                     $compressed = gzencode($content, 6);
                     if ($compressed !== false && strlen($compressed) < strlen($content)) {
                         $response->setContent($compressed);

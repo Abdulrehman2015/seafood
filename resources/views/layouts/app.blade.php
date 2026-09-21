@@ -100,11 +100,8 @@
         content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.'))">
     <meta name="twitter:image" content="@yield('og_image', $resolvedOgImage)">
 
-    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
-    @php
-        $cssFile = file_exists(public_path('css/app.min.css')) ? 'css/app.min.css' : 'css/app.css';
-    @endphp
-    <link rel="stylesheet" href="{{ asset($cssFile) }}?v={{ file_exists(public_path($cssFile)) ? filemtime(public_path($cssFile)) : time() }}">
+    <link rel="stylesheet" href="{{ url('/cdn-assets/css/fonts.css') }}">
+    <link rel="stylesheet" href="{{ url('/cdn-assets/css/app.min.css') }}?v={{ file_exists(public_path('css/app.min.css')) ? filemtime(public_path('css/app.min.css')) : time() }}">
 
     @if(!empty($settings['tracking_ga4_id']))
         <!-- Google Analytics GA4 -->
