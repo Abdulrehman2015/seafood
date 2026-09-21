@@ -35,11 +35,14 @@ class PerformanceHeadersMiddleware
         }
 
         // 2. Dynamic GZIP Compression for HTML, JSON, JS, CSS, SVG, XML
+        $acceptEncoding = $request->header('Accept-Encoding', $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '');
+        $zlibActive = filter_var(ini_get('zlib.output_compression'), FILTER_VALIDATE_BOOLEAN);
+
         if (
             function_exists('gzencode')
             && !in_array('ob_gzhandler', ob_list_handlers())
-            && !ini_get('zlib.output_compression')
-            && str_contains($request->header('Accept-Encoding', ''), 'gzip')
+            && !$zlibActive
+            && str_contains(strtolower($acceptEncoding), 'gzip')
             && !$response->headers->has('Content-Encoding')
         ) {
             $isCompressible = str_contains($contentType, 'text/html')
@@ -58,7 +61,7 @@ class PerformanceHeadersMiddleware
                     if ($compressed !== false && strlen($compressed) < strlen($content)) {
                         $response->setContent($compressed);
                         $response->headers->set('Content-Encoding', 'gzip');
-                        $response->headers->set('Vary', 'Accept-Encoding', false);
+                        $response->headers->set('Vary', 'Accept-Encoding');
                         $response->headers->remove('Content-Length');
                     }
                 }

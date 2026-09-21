@@ -72,12 +72,8 @@
     <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
     <!-- Favicon & Apple Touch Icons -->
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
-    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     <meta name="apple-mobile-web-app-title" content="{{ $settings['store_name'] ?? 'MST Seafood' }}">
     <meta name="application-name" content="{{ $settings['store_name'] ?? 'MST Seafood' }}">
@@ -105,7 +101,10 @@
     <meta name="twitter:image" content="@yield('og_image', $resolvedOgImage)">
 
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ file_exists(public_path('css/app.css')) ? filemtime(public_path('css/app.css')) : time() }}">
+    @php
+        $cssFile = file_exists(public_path('css/app.min.css')) ? 'css/app.min.css' : 'css/app.css';
+    @endphp
+    <link rel="stylesheet" href="{{ asset($cssFile) }}?v={{ file_exists(public_path($cssFile)) ? filemtime(public_path($cssFile)) : time() }}">
 
     @if(!empty($settings['tracking_ga4_id']))
         <!-- Google Analytics GA4 -->

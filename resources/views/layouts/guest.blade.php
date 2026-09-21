@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
 
     {{-- Site CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset(file_exists(public_path('css/app.min.css')) ? 'css/app.min.css' : 'css/app.css') }}">
 
     <style>
         body {

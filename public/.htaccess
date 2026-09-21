@@ -23,10 +23,52 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # Serve pre-compressed GZIP CSS and JS if supported by client
+    RewriteCond %{HTTP:Accept-Encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}\.gz -f
+    RewriteRule ^(.*)\.(css|js)$ $1\.$2\.gz [L]
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+</IfModule>
+
+# ─── PRE-COMPRESSED STATIC ASSET HEADERS ────────────────────────────────────
+<IfModule mod_mime.c>
+    AddEncoding gzip .gz
+</IfModule>
+<FilesMatch "\.css\.gz$">
+    ForceType text/css
+    <IfModule mod_headers.c>
+        Header set Content-Encoding gzip
+        Header append Vary Accept-Encoding
+        Header set Cache-Control "public, max-age=31536000, immutable"
+        Header unset Set-Cookie
+    </IfModule>
+</FilesMatch>
+<FilesMatch "\.js\.gz$">
+    ForceType application/javascript
+    <IfModule mod_headers.c>
+        Header set Content-Encoding gzip
+        Header append Vary Accept-Encoding
+        Header set Cache-Control "public, max-age=31536000, immutable"
+        Header unset Set-Cookie
+    </IfModule>
+</FilesMatch>
+
+# ─── PHP NATIVE OUTPUT COMPRESSION ──────────────────────────────────────────
+<IfModule mod_php.c>
+    php_flag zlib.output_compression on
+    php_value zlib.output_compression_level 6
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag zlib.output_compression on
+    php_value zlib.output_compression_level 6
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag zlib.output_compression on
+    php_value zlib.output_compression_level 6
 </IfModule>
 
 # ─── SECURITY HEADERS (InspectWP / OWASP Best Practices) ─────────────────────
