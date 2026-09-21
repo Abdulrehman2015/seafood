@@ -3,7 +3,7 @@
 @section('title', 'Add New Policy / Page')
 
 @section('content')
-<div style="max-width:1000px;margin:0 auto">
+<div style="max-width:960px;margin:0 auto">
     <!-- Breadcrumb & Header -->
     <div style="margin-bottom:24px">
         <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#64748b;margin-bottom:8px">
@@ -13,14 +13,22 @@
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
             <div>
-                <h1 class="admin-page-title" style="margin:0 0 4px 0;font-size:1.4rem">✨ Create New Policy / Page</h1>
+                <h1 class="admin-page-title" style="margin:0 0 4px 0;font-size:1.4rem">✨ Add New Page (English Default)</h1>
                 <p style="margin:0;font-size:0.85rem;color:#64748b">
-                    Set up a custom policy or informational page. Set status to <strong>Published</strong> to make it live and visible in the footer.
+                    Enter the page content in <strong>English</strong>. You can add <strong>Chinese (ZH)</strong> and <strong>Malay (BM)</strong> translations directly from the list after saving.
                 </p>
             </div>
             <a href="{{ route('admin.policies.index') }}" class="btn btn-secondary">
                 ← Back to List
             </a>
+        </div>
+    </div>
+
+    <!-- Notification / Workflow Tip -->
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px">
+        <div style="font-size:1.4rem">🌐</div>
+        <div style="font-size:0.84rem;color:#1e40af">
+            <strong>English First Workflow:</strong> Fill in your primary English title and content here. Once published, click the <strong>+ ZH</strong> or <strong>+ BM</strong> buttons on the pages table to translate with a side-by-side reference!
         </div>
     </div>
 
@@ -39,21 +47,26 @@
         @csrf
 
         <div style="display:grid;grid-template-columns:2.5fr 1fr;gap:24px;align-items:start">
-            <!-- Left Column: Main Content -->
+            <!-- Left Column: English Content -->
             <div style="display:flex;flex-direction:column;gap:20px">
                 
                 <!-- Main Card -->
                 <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
-                    <h3 style="margin:0 0 16px 0;font-size:1rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
-                        📝 Page Information
-                    </h3>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;border-bottom:1px solid #f1f5f9;padding-bottom:10px">
+                        <h3 style="margin:0;font-size:1rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
+                            📝 Page Details (English)
+                        </h3>
+                        <span style="font-size:0.75rem;font-weight:700;background:#eff6ff;color:#2563eb;padding:3px 8px;border-radius:6px;border:1px solid #bfdbfe">
+                            🇺🇸 Default Language
+                        </span>
+                    </div>
 
                     <!-- Title -->
                     <div style="margin-bottom:16px">
                         <label style="display:block;font-size:0.84rem;font-weight:700;color:#334155;margin-bottom:6px">
-                            Page Title <span style="color:#ef4444">*</span>
+                            Page Title (English) <span style="color:#ef4444">*</span>
                         </label>
-                        <input type="text" name="title" id="pageTitle" value="{{ old('title') }}" required placeholder="e.g. Privacy Policy, Terms of Service, Wholesale Terms" class="form-control" style="font-size:0.95rem;font-weight:600">
+                        <input type="text" name="title" id="pageTitle" value="{{ old('title') }}" required placeholder="e.g. Privacy Policy, Terms & Conditions, Wholesale FAQ" class="form-control" style="font-size:0.95rem;font-weight:600">
                     </div>
 
                     <!-- Slug -->
@@ -65,7 +78,7 @@
                             <span style="font-size:0.84rem;color:#64748b;background:#f1f5f9;border:1px solid #cbd5e1;padding:8px 12px;border-radius:6px">/en/policy/</span>
                             <input type="text" name="slug" id="pageSlug" value="{{ old('slug') }}" placeholder="privacy-policy" class="form-control" style="flex:1">
                         </div>
-                        <span style="font-size:0.75rem;color:#94a3b8;margin-top:4px;display:block">Leave empty to auto-generate from title.</span>
+                        <span style="font-size:0.75rem;color:#94a3b8;margin-top:4px;display:block">Auto-generated from title if left blank.</span>
                     </div>
 
                     <!-- Summary / Excerpt -->
@@ -73,60 +86,30 @@
                         <label style="display:block;font-size:0.84rem;font-weight:700;color:#334155;margin-bottom:6px">
                             Brief Summary / Subtitle (Optional)
                         </label>
-                        <textarea name="summary" rows="2" placeholder="Short description of this policy that appears below the hero title on the page..." class="form-control">{{ old('summary') }}</textarea>
+                        <textarea name="summary" rows="2" placeholder="Short description of this policy shown under the title on the page..." class="form-control">{{ old('summary') }}</textarea>
                     </div>
 
-                    <!-- Language Tabs for Content -->
+                    <!-- Page Content (English) -->
                     <div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid #e2e8f0;padding-bottom:8px">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
                             <label style="font-size:0.88rem;font-weight:700;color:#0f172a;margin:0">
-                                Page Content <span style="color:#ef4444">*</span>
+                                Page Content (English HTML) <span style="color:#ef4444">*</span>
                             </label>
                             <div style="display:flex;gap:4px">
-                                <button type="button" class="lang-tab-btn active" onclick="switchLangTab('en')" id="tabBtn_en">🇺🇸 English</button>
-                                <button type="button" class="lang-tab-btn" onclick="switchLangTab('zh')" id="tabBtn_zh">🇨🇳 中文</button>
-                                <button type="button" class="lang-tab-btn" onclick="switchLangTab('bm')" id="tabBtn_bm">🇲🇾 Bahasa Melayu</button>
+                                <button type="button" class="editor-btn" onclick="insertTag('h2')" title="Section Heading">H2</button>
+                                <button type="button" class="editor-btn" onclick="insertTag('h3')" title="Subheading">H3</button>
+                                <button type="button" class="editor-btn" onclick="insertTag('strong')" title="Bold"><strong>B</strong></button>
+                                <button type="button" class="editor-btn" onclick="insertTag('em')" title="Italic"><em>I</em></button>
+                                <button type="button" class="editor-btn" onclick="insertTag('p')" title="Paragraph">&lt;p&gt;</button>
+                                <button type="button" class="editor-btn" onclick="insertTag('ul')" title="Bullet List">• List</button>
                             </div>
                         </div>
-
-                        <!-- Editor Toolbar Helper Buttons -->
-                        <div style="display:flex;gap:6px;flex-wrap:wrap;background:#f8fafc;border:1px solid #e2e8f0;border-bottom:none;border-top-left-radius:8px;border-top-right-radius:8px;padding:8px 10px">
-                            <button type="button" class="editor-btn" onclick="insertTag('h2')" title="Section Heading">H2</button>
-                            <button type="button" class="editor-btn" onclick="insertTag('h3')" title="Subheading">H3</button>
-                            <button type="button" class="editor-btn" onclick="insertTag('strong')" title="Bold"><strong>B</strong></button>
-                            <button type="button" class="editor-btn" onclick="insertTag('em')" title="Italic"><em>I</em></button>
-                            <button type="button" class="editor-btn" onclick="insertTag('p')" title="Paragraph">&lt;p&gt;</button>
-                            <button type="button" class="editor-btn" onclick="insertTag('ul')" title="Bullet List">• List</button>
-                            <button type="button" class="editor-btn" onclick="insertTag('li')" title="List Item">List Item</button>
-                        </div>
-
-                        <!-- English Tab -->
-                        <div id="langTab_en" class="lang-content-panel">
-                            <textarea name="content" id="content_en" rows="16" required placeholder="Write your page content here in HTML format (e.g. <h2>1. Introduction</h2><p>Policy text here...</p>)" class="form-control" style="border-top-left-radius:0;border-top-right-radius:0;font-family:monospace;font-size:0.86rem;line-height:1.6">{{ old('content') }}</textarea>
-                        </div>
-
-                        <!-- Chinese Tab -->
-                        <div id="langTab_zh" class="lang-content-panel" style="display:none">
-                            <div style="margin-bottom:12px">
-                                <label style="display:block;font-size:0.8rem;font-weight:600;color:#64748b;margin-bottom:4px">Chinese Page Title (Optional)</label>
-                                <input type="text" name="title_zh" value="{{ old('title_zh') }}" placeholder="e.g. 隐私政策 / 服务条款" class="form-control">
-                            </div>
-                            <textarea name="content_zh" id="content_zh" rows="14" placeholder="在此输入中文页面内容..." class="form-control" style="border-top-left-radius:0;border-top-right-radius:0;font-family:monospace;font-size:0.86rem;line-height:1.6">{{ old('content_zh') }}</textarea>
-                        </div>
-
-                        <!-- Malay Tab -->
-                        <div id="langTab_bm" class="lang-content-panel" style="display:none">
-                            <div style="margin-bottom:12px">
-                                <label style="display:block;font-size:0.8rem;font-weight:600;color:#64748b;margin-bottom:4px">Malay Page Title (Optional)</label>
-                                <input type="text" name="title_bm" value="{{ old('title_bm') }}" placeholder="e.g. Dasar Privasi / Terma & Syarat" class="form-control">
-                            </div>
-                            <textarea name="content_bm" id="content_bm" rows="14" placeholder="Masukkan kandungan halaman dalam Bahasa Melayu di sini..." class="form-control" style="border-top-left-radius:0;border-top-right-radius:0;font-family:monospace;font-size:0.86rem;line-height:1.6">{{ old('content_bm') }}</textarea>
-                        </div>
+                        <textarea name="content" id="pageContent" rows="18" required placeholder="<h2>1. Overview</h2>&#10;<p>Write your policy text here...</p>" class="form-control" style="font-family:monospace;font-size:0.86rem;line-height:1.6">{{ old('content') }}</textarea>
                     </div>
                 </div>
 
                 <!-- SEO Settings Card -->
-                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
+                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
                     <h3 style="margin:0 0 14px 0;font-size:0.95rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
                         🔍 Search Engine Optimization (SEO)
                     </h3>
@@ -180,15 +163,10 @@
                     </div>
                 </div>
 
-                <!-- Tips Card -->
-                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:16px">
-                    <div style="font-weight:700;font-size:0.85rem;color:#1e40af;margin-bottom:6px">💡 Quick Formatting Tips</div>
-                    <div style="font-size:0.78rem;color:#1e3a8a;line-height:1.5">
-                        • Use <code>&lt;h2&gt;</code> tags for major section headings.<br>
-                        • Use <code>&lt;p&gt;</code> tags for regular paragraphs.<br>
-                        • Use <code>&lt;ul&gt;</code> and <code>&lt;li&gt;</code> for bulleted lists.<br>
-                        • The page styling, typography, and ocean theme are automatically applied!
-                    </div>
+                <!-- Next Steps Card -->
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-size:0.8rem;color:#64748b;line-height:1.5">
+                    <div style="font-weight:700;color:#334155;margin-bottom:6px">📋 Next Step: Adding Translations</div>
+                    After creating this page, you can translate it into Chinese (中文) and Malay (Bahasa Melayu) by clicking the <strong>+ ZH</strong> and <strong>+ BM</strong> buttons on the pages list!
                 </div>
             </div>
         </div>
@@ -196,26 +174,6 @@
 </div>
 
 <style>
-    .lang-tab-btn {
-        background: transparent;
-        border: 1px solid transparent;
-        padding: 5px 12px;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: #64748b;
-        cursor: pointer;
-        transition: all 0.12s ease;
-    }
-    .lang-tab-btn:hover {
-        background: #f1f5f9;
-        color: #0f172a;
-    }
-    .lang-tab-btn.active {
-        background: #eff6ff;
-        color: #2563eb;
-        border-color: #bfdbfe;
-    }
     .editor-btn {
         background: #ffffff;
         border: 1px solid #cbd5e1;
@@ -253,20 +211,9 @@
         }
     });
 
-    // Language switcher
-    let activeLang = 'en';
-    function switchLangTab(lang) {
-        activeLang = lang;
-        document.querySelectorAll('.lang-tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.lang-content-panel').forEach(p => p.style.display = 'none');
-
-        document.getElementById(`tabBtn_${lang}`).classList.add('active');
-        document.getElementById(`langTab_${lang}`).style.display = 'block';
-    }
-
-    // Insert HTML formatting helper into active textarea
+    // Insert HTML formatting helper into textarea
     function insertTag(tag) {
-        const textarea = document.getElementById(`content_${activeLang}`);
+        const textarea = document.getElementById('pageContent');
         if (!textarea) return;
 
         const start = textarea.selectionStart;
@@ -276,8 +223,6 @@
 
         if (tag === 'ul') {
             replacement = `\n<ul>\n  <li>${selectedText || 'Item 1'}</li>\n  <li>Item 2</li>\n</ul>\n`;
-        } else if (tag === 'li') {
-            replacement = `<li>${selectedText || 'List item text'}</li>`;
         } else {
             replacement = `<${tag}>${selectedText || 'Text here'}</${tag}>`;
         }

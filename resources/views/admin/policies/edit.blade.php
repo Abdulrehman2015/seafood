@@ -273,5 +273,14 @@
         textarea.setRangeText(replacement, start, end, 'end');
         textarea.focus();
     }
+
+    // Check URL parameters on load for ?lang=zh or ?lang=bm or hash
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const langParam = urlParams.get('lang') || window.location.hash.replace('#', '');
+        if (langParam && ['zh', 'bm', 'en'].includes(langParam)) {
+            switchLangTab(langParam);
+        }
+    });
 </script>
 @endsection

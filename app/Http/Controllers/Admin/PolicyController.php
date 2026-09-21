@@ -137,6 +137,51 @@ class PolicyController extends Controller
     }
 
     /**
+     * Update specific language translation for a policy.
+     */
+    public function updateTranslation(Request $request, Policy $policy)
+    {
+        $validated = $request->validate([
+            'lang' => 'required|in:zh,bm,en',
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        $lang = $validated['lang'];
+        if ($lang === 'zh') {
+            $policy->update([
+                'title_zh' => $validated['title'],
+                'content_zh' => $validated['content'],
+            ]);
+            $langName = 'Chinese (中文)';
+        } elseif ($lang === 'bm') {
+            $policy->update([
+                'title_bm' => $validated['title'],
+                'content_bm' => $validated['content'],
+            ]);
+            $langName = 'Malay (Bahasa Melayu)';
+        } else {
+            $policy->update([
+                'title' => $validated['title'],
+                'content' => $validated['content'],
+            ]);
+            $langName = 'English';
+        }
+
+        $msg = "{$langName} translation for '{$policy->title}' saved successfully.";
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $msg,
+                'policy' => $policy->fresh(),
+            ]);
+        }
+
+        return redirect()->route('admin.policies.index')->with('success', $msg);
+    }
+
+    /**
      * Remove the specified policy/page from storage.
      */
     public function destroy(Policy $policy)

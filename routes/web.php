@@ -569,6 +569,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 
     // Policies & Dynamic Pages Module
     Route::post('policies/{policy}/toggle-status', [Admin\PolicyController::class, 'toggleStatus'])->name('policies.toggle-status');
+    Route::post('policies/{policy}/translation', [Admin\PolicyController::class, 'updateTranslation'])->name('policies.translation');
     Route::resource('policies', Admin\PolicyController::class);
 
     // Sitemap Management Module (Dynamic Auto-Generate & Custom Upload)
