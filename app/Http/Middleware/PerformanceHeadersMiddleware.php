@@ -87,13 +87,10 @@ class PerformanceHeadersMiddleware
             && !str_contains($rawEncoding, 'gzip')
             && !str_contains($rawEncoding, '*');
 
-        $zlibActive = filter_var(ini_get('zlib.output_compression'), FILTER_VALIDATE_BOOLEAN);
-
         if (
             !$clientWantsRaw
             && function_exists('gzencode')
             && !in_array('ob_gzhandler', ob_list_handlers())
-            && !$zlibActive
             && !$response->headers->has('Content-Encoding')
         ) {
             $isCompressible = str_contains($contentType, 'text/html')
@@ -113,7 +110,7 @@ class PerformanceHeadersMiddleware
                         $response->setContent($compressed);
                         $response->headers->set('Content-Encoding', 'gzip');
                         $response->headers->set('Vary', 'Accept-Encoding');
-                        $response->headers->remove('Content-Length');
+                        $response->headers->set('Content-Length', (string) strlen($compressed));
                     }
                 }
             }

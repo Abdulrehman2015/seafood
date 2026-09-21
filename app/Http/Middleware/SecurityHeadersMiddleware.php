@@ -89,20 +89,31 @@ class SecurityHeadersMiddleware
         // Allows same-site resources (CDN subdomains etc.) to be loaded.
         $response->headers->set('Cross-Origin-Resource-Policy', 'same-site');
 
-        // ── Cookie Security: Enforce proper flags on all outgoing cookies ───────
-        foreach ($response->headers->getCookies() as $cookie) {
-            // Force SameSite=Lax, HttpOnly=true; Secure only over HTTPS
-            $secure   = $isHttps ? true : $cookie->isSecure();
-            $sameSite = $cookie->getSameSite() ?: 'lax';
-            // XSRF-TOKEN must remain readable by JS for AJAX, keep HttpOnly=false for it
-            $httpOnly = ($cookie->getName() === 'XSRF-TOKEN') ? false : true;
+        // ── Cookie Security: Enforce proper flags on dynamic pages, strip on static assets ──
+        $uri = $request->getRequestUri();
+        $isStatic = str_starts_with($uri, '/cdn-assets/')
+            || str_starts_with($uri, '/fonts/')
+            || str_contains($uri, 'favicon')
+            || preg_match('/\.(css|js|jpe?g|png|gif|webp|svg|ico|woff|woff2|ttf|otf|eot|map)(\?.*)?$/i', $uri);
 
-            $updatedCookie = $cookie
-                ->withSecure($secure)
-                ->withHttpOnly($httpOnly)
-                ->withSameSite($sameSite);
+        if ($isStatic) {
+            $response->headers->remove('Set-Cookie');
+            $response->headers->remove('Cookie');
+        } else {
+            foreach ($response->headers->getCookies() as $cookie) {
+                // Force SameSite=Lax, HttpOnly=true; Secure only over HTTPS
+                $secure   = $isHttps ? true : $cookie->isSecure();
+                $sameSite = $cookie->getSameSite() ?: 'lax';
+                // XSRF-TOKEN must remain readable by JS for AJAX, keep HttpOnly=false for it
+                $httpOnly = ($cookie->getName() === 'XSRF-TOKEN') ? false : true;
 
-            $response->headers->setCookie($updatedCookie);
+                $updatedCookie = $cookie
+                    ->withSecure($secure)
+                    ->withHttpOnly($httpOnly)
+                    ->withSameSite($sameSite);
+
+                $response->headers->setCookie($updatedCookie);
+            }
         }
 
         return $response;

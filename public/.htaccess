@@ -114,7 +114,13 @@
 
 # ─── GZIP / DEFLATE COMPRESSION ──────────────────────────────────────────────
 <IfModule mod_deflate.c>
-    # Force compression for proxies that mangle headers
+    # Force deflate on all text, font, json, css, js and svg assets
+    SetOutputFilter DEFLATE
+    
+    # Don't compress images, archives and videos that are already compressed
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|webp|ico|zip|gz|tar|tgz|bz2|mp4|webm|mov|pdf)$ no-gzip dont-vary
+    
+    # Legacy fallbacks for proxies
     <IfModule mod_setenvif.c>
         <IfModule mod_headers.c>
             SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|deflate)\s*,?\s*)+|[X~-]{4,13}$ HAVE_Accept-Encoding
@@ -122,30 +128,30 @@
         </IfModule>
     </IfModule>
 
-    AddOutputFilterByType DEFLATE application/javascript \
+    AddOutputFilterByType DEFLATE text/html \
+                                  text/plain \
+                                  text/xml \
+                                  text/css \
+                                  text/javascript \
+                                  application/javascript \
+                                  application/x-javascript \
                                   application/json \
+                                  application/xml \
                                   application/rss+xml \
+                                  application/atom+xml \
                                   application/vnd.ms-fontobject \
                                   application/x-font \
                                   application/x-font-opentype \
                                   application/x-font-otf \
                                   application/x-font-truetype \
                                   application/x-font-ttf \
-                                  application/x-javascript \
-                                  application/xhtml+xml \
-                                  application/xml \
                                   font/opentype \
                                   font/otf \
                                   font/ttf \
                                   font/woff \
                                   font/woff2 \
                                   image/svg+xml \
-                                  image/x-icon \
-                                  text/css \
-                                  text/html \
-                                  text/javascript \
-                                  text/plain \
-                                  text/xml
+                                  image/x-icon
 </IfModule>
 
 # Brotli Compression (if available)
@@ -153,13 +159,14 @@
     AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml application/rss+xml image/svg+xml font/woff2
 </IfModule>
 
-# ─── EXPIRES & CACHE-CONTROL HEADERS ─────────────────────────────────────────
+# ─── EXPIRES & CACHE-CONTROL HEADERS (Pingdom: Add Expires headers) ───────────
 <IfModule mod_expires.c>
     ExpiresActive On
-    ExpiresDefault "access plus 1 month"
+    ExpiresDefault "access plus 1 year"
 
     # HTML (short cache for dynamic pages)
     ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType application/json "access plus 0 seconds"
 
     # CSS & JavaScript
     ExpiresByType text/css "access plus 1 year"
@@ -186,35 +193,24 @@
     ExpiresByType application/font-woff2 "access plus 1 year"
     ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
 
-    # Other
-    ExpiresByType video/mp4 "access plus 1 year"
-    ExpiresByType video/webm "access plus 1 year"
-    ExpiresByType application/json "access plus 0 seconds"
-    ExpiresByType application/xml "access plus 1 hour"
+    # Manifest
+    ExpiresByType application/manifest+json "access plus 1 day"
 </IfModule>
 
 # ─── COOKIE-FREE STATIC ASSETS (Pingdom: Use cookie-free domains) ─────────────
-# Strip ALL cookies from every static file served by Apache/Nginx directly
+# Strip ALL incoming and outgoing cookies from static assets
 <IfModule mod_headers.c>
-    <FilesMatch "\.(css|js|jpe?g|png|gif|webp|svg|ico|woff|woff2|ttf|otf|eot|map|gz)$">
+    <FilesMatch "\.(css|js|jpe?g|png|gif|webp|svg|ico|woff|woff2|ttf|otf|eot|map|gz|webmanifest)$">
+        Header always set Cache-Control "public, max-age=31536000, immutable"
         Header set Cache-Control "public, max-age=31536000, immutable"
+        Header always set Vary "Accept-Encoding"
         Header set Vary "Accept-Encoding"
+        Header always unset Set-Cookie
         Header unset Set-Cookie
+        Header always unset Cookie
         Header unset Cookie
         Header unset Pragma
         Header unset Last-Modified
-    </FilesMatch>
-
-    # Favicon: cacheable for 1 week
-    <FilesMatch "favicon\.(ico|png|svg)$">
-        Header set Cache-Control "public, max-age=604800, immutable"
-        Header unset Set-Cookie
-        Header unset Cookie
-    </FilesMatch>
-
-    # Site Manifest: cache for 1 day
-    <FilesMatch "site\.webmanifest$">
-        Header set Cache-Control "public, max-age=86400"
-        Header unset Set-Cookie
+        RequestHeader unset Cookie
     </FilesMatch>
 </IfModule>
