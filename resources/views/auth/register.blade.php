@@ -838,7 +838,15 @@ function togglePasswordVisibility(fieldId, btn) {
     }
 }
 
-// ─── Debounced Live Field Verification ─────────────────────────────────────────
+// ─── Debounced Live Field Verification & Translations ─────────────────────────
+const regI18n = {
+    emailTaken: @json(__t('auth.email_already_registered', 'This email address is already registered. One email can only register one account.')),
+    emailAvailable: @json(__t('auth.email_available', 'Email address is available')),
+    companyWarning: @json(__t('auth.company_similarity_warning', 'This company may already be registered. Please check if your company already has an account or contact MST.')),
+    ssmDuplicate: @json(__t('auth.ssm_duplicate_error', 'An account with this Company Registration Number (SSM) is already registered.')),
+    ssmAvailable: @json(__t('auth.ssm_available', 'SSM Number is available'))
+};
+
 function debounce(func, wait) {
     let timeout;
     return function (...args) {
@@ -898,7 +906,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     emailInput.classList.remove('is-valid');
                     if (emailFeedback) {
                         emailFeedback.className = 'field-live-feedback error';
-                        emailFeedback.innerHTML = `⚠️ ${res.message || 'This email address is already registered.'}`;
+                        emailFeedback.innerHTML = `⚠️ ${res.message || regI18n.emailTaken}`;
                         emailFeedback.style.display = 'flex';
                     }
                 } else {
@@ -906,7 +914,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     emailInput.classList.add('is-valid');
                     if (emailFeedback) {
                         emailFeedback.className = 'field-live-feedback success';
-                        emailFeedback.innerHTML = `✓ Email address is available`;
+                        emailFeedback.innerHTML = `✓ ${regI18n.emailAvailable}`;
                         emailFeedback.style.display = 'flex';
                     }
                 }
@@ -929,7 +937,7 @@ document.addEventListener('DOMContentLoaded', function () {
             verifyField('company_name', val, 'companySpinner', function (res) {
                 if (res.has_warning) {
                     if (companyWarningText) {
-                        companyWarningText.textContent = res.message || 'This company may already be registered. Please check if your company already has an account or contact MST.';
+                        companyWarningText.textContent = res.message || regI18n.companyWarning;
                     }
                     if (companyAlert) {
                         companyAlert.style.display = 'flex';
@@ -964,7 +972,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     ssmInput.classList.remove('is-valid');
                     if (ssmFeedback) {
                         ssmFeedback.className = 'field-live-feedback error';
-                        ssmFeedback.innerHTML = `⚠️ ${res.message || 'An account with this Company Registration Number (SSM) is already registered.'}`;
+                        ssmFeedback.innerHTML = `⚠️ ${res.message || regI18n.ssmDuplicate}`;
                         ssmFeedback.style.display = 'flex';
                     }
                 } else {
@@ -972,7 +980,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     ssmInput.classList.add('is-valid');
                     if (ssmFeedback) {
                         ssmFeedback.className = 'field-live-feedback success';
-                        ssmFeedback.innerHTML = `✓ SSM Number is available`;
+                        ssmFeedback.innerHTML = `✓ ${regI18n.ssmAvailable}`;
                         ssmFeedback.style.display = 'flex';
                     }
                 }
