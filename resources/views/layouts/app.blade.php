@@ -1415,10 +1415,10 @@
 
                 const baseRmEl = el.querySelector('.price-base-rm');
                 if (baseRmEl) {
-                    if ((targetCurrency !== 'MYR' || baseRmEl.classList.contains('show-always')) && res.baseRm) {
+                    if (targetCurrency !== 'MYR' && res.baseRm) {
                         baseRmEl.textContent = 'RM ' + res.baseRm.toFixed(2);
                         baseRmEl.style.display = 'block';
-                    } else if (targetCurrency === 'MYR' && !baseRmEl.classList.contains('show-always')) {
+                    } else {
                         baseRmEl.style.display = 'none';
                     }
                 }
