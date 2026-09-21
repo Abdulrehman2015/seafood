@@ -29,19 +29,36 @@ class WalkInController extends Controller
      */
     public function shop(Request $request)
     {
-        $products = Product::walkinAvailable()
-            ->with('category')
-            ->when($request->filled('search'), function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%');
-            })
-            ->when($request->filled('category'), function ($q) use ($request) {
-                $q->whereHas('category', fn($cat) => $cat->where('slug', $request->category));
-            })
+        $categories = \App\Models\Category::active()
+            ->withCount(['products' => fn($q) => $q->walkinAvailable()])
             ->orderBy('sort_order')
-            ->paginate(16)
-            ->withQueryString();
+            ->get();
 
-        $categories = \App\Models\Category::has('products')->orderBy('name')->get();
+        $query = Product::walkinAvailable()->with('category');
+
+        if ($request->filled('category')) {
+            $query->whereHas('category', fn($cat) => $cat->where('slug', $request->category));
+        }
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $sort = $request->get('sort', 'sort_order');
+        if ($sort === 'price_asc') {
+            $query->orderBy('retail_price', 'asc');
+        } elseif ($sort === 'price_desc') {
+            $query->orderBy('retail_price', 'desc');
+        } elseif ($sort === 'name') {
+            $query->orderBy('name', 'asc');
+        } else {
+            $query->orderBy('sort_order', 'asc');
+        }
+
+        $products = $query->paginate(16)->withQueryString();
 
         return view('walkin.shop', compact('products', 'categories'));
     }
