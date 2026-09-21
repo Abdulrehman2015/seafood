@@ -2,6 +2,10 @@
 
 @section('title', 'Policies & Dynamic Pages')
 
+@push('styles')
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+@endpush
+
 @section('content')
 <div style="max-width:1200px;margin:0 auto">
     <!-- Header -->
@@ -9,7 +13,7 @@
         <div>
             <h1 class="admin-page-title" style="margin:0 0 6px 0;font-size:1.45rem">📜 Policies & Dynamic Pages</h1>
             <p style="margin:0;font-size:0.85rem;color:#64748b">
-                Add your policy in <strong>English (Default)</strong>, and click any language badge (<strong>ZH</strong> / <strong>BM</strong>) to add translations anytime. Published pages appear in the footer under <strong>Quick Links</strong>.
+                Add pages in <strong>English (Default)</strong>, and click any language badge (<strong>ZH</strong> / <strong>BM</strong>) to open the <strong>CKEditor Translation Modal</strong>.
             </p>
         </div>
         <div style="display:flex;align-items:center;gap:10px">
@@ -123,7 +127,7 @@
                                     <!-- EN Badge (Default) -->
                                     <button type="button" class="policy-lang-pill active" 
                                             onclick="openTranslateModal({{ $policy->id }}, @js($policy->title), @js($policy->content), 'en', 'English 🇺🇸', @js($policy->title), @js($policy->content))"
-                                            title="English (Default) — Click to view/edit">
+                                            title="English (Default) — Click to view/edit with CKEditor">
                                         EN
                                     </button>
 
@@ -131,13 +135,13 @@
                                     @if(!empty($policy->content_zh))
                                         <button type="button" class="policy-lang-pill translated" 
                                                 onclick="openTranslateModal({{ $policy->id }}, @js($policy->title), @js($policy->content), 'zh', 'Chinese 🇨🇳 (中文)', @js($policy->title_zh), @js($policy->content_zh))"
-                                                title="Chinese Translation: Ready — Click to edit">
+                                                title="Chinese Translation: Ready — Click to edit with CKEditor">
                                             ZH ✓
                                         </button>
                                     @else
                                         <button type="button" class="policy-lang-pill missing" 
                                                 onclick="openTranslateModal({{ $policy->id }}, @js($policy->title), @js($policy->content), 'zh', 'Chinese 🇨🇳 (中文)', '', '')"
-                                                title="Add Chinese Translation (+)">
+                                                title="Add Chinese Translation with CKEditor (+)">
                                             + ZH
                                         </button>
                                     @endif
@@ -146,13 +150,13 @@
                                     @if(!empty($policy->content_bm))
                                         <button type="button" class="policy-lang-pill translated" 
                                                 onclick="openTranslateModal({{ $policy->id }}, @js($policy->title), @js($policy->content), 'bm', 'Malay 🇲🇾 (Bahasa Melayu)', @js($policy->title_bm), @js($policy->content_bm))"
-                                                title="Malay Translation: Ready — Click to edit">
+                                                title="Malay Translation: Ready — Click to edit with CKEditor">
                                             BM ✓
                                         </button>
                                     @else
                                         <button type="button" class="policy-lang-pill missing" 
                                                 onclick="openTranslateModal({{ $policy->id }}, @js($policy->title), @js($policy->content), 'bm', 'Malay 🇲🇾 (Bahasa Melayu)', '', '')"
-                                                title="Add Malay Translation (+)">
+                                                title="Add Malay Translation with CKEditor (+)">
                                             + BM
                                         </button>
                                     @endif
@@ -233,7 +237,7 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-<!-- QUICK TRANSLATION MODAL POPUP                                              -->
+<!-- CKEDITOR QUICK TRANSLATION MODAL POPUP                                      -->
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->
 <div id="translateModal" class="translate-modal-backdrop" style="display:none" onclick="if(event.target===this) closeTranslateModal()">
     <div class="translate-modal-card">
@@ -243,7 +247,7 @@
                 <div class="translate-modal-icon">🌐</div>
                 <div>
                     <h2 id="modalTitle" style="margin:0 0 2px 0;font-size:1.15rem;font-weight:800;color:#0f172a">Translate Policy</h2>
-                    <div id="modalSub" style="font-size:0.78rem;color:#64748b">Editing translation for selected language</div>
+                    <div id="modalSub" style="font-size:0.78rem;color:#64748b">Full CKEditor Translation Studio</div>
                 </div>
             </div>
             <button type="button" class="translate-modal-close" onclick="closeTranslateModal()" aria-label="Close">✕</button>
@@ -260,54 +264,46 @@
                     <!-- Left: Original English Reference -->
                     <div class="translate-col-ref">
                         <div class="translate-col-header">
-                            <span style="font-weight:700;color:#1e40af;font-size:0.8rem">🇺🇸 Original English (Reference)</span>
-                            <button type="button" class="translate-copy-btn" onclick="copyEnglishToEditor()" title="Copy English text structure into the translation editor">
-                                📋 Copy English HTML
+                            <span style="font-weight:700;color:#1e40af;font-size:0.82rem">🇺🇸 Original English (Reference)</span>
+                            <button type="button" class="translate-copy-btn" onclick="copyEnglishToModalEditor()" title="Copy English HTML into the translation CKEditor">
+                                📋 Copy English to Editor
                             </button>
                         </div>
                         <div style="margin-bottom:12px">
-                            <label style="font-size:0.76rem;font-weight:700;color:#64748b;text-transform:uppercase">Title</label>
-                            <div id="refEnglishTitle" style="font-weight:700;color:#0f172a;font-size:0.92rem;background:#f8fafc;border:1px solid #e2e8f0;padding:8px 12px;border-radius:6px;margin-top:4px">
+                            <label style="font-size:0.75rem;font-weight:700;color:#64748b;text-transform:uppercase">Title</label>
+                            <div id="refEnglishTitle" style="font-weight:700;color:#0f172a;font-size:0.92rem;background:#ffffff;border:1px solid #cbd5e1;padding:8px 12px;border-radius:6px;margin-top:4px">
                             </div>
                         </div>
                         <div>
-                            <label style="font-size:0.76rem;font-weight:700;color:#64748b;text-transform:uppercase">Content</label>
+                            <label style="font-size:0.75rem;font-weight:700;color:#64748b;text-transform:uppercase">Content Preview</label>
                             <div id="refEnglishContent" class="translate-ref-scroll">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Right: Translation Input Area -->
+                    <!-- Right: Translation Input Area with CKEditor -->
                     <div class="translate-col-edit">
                         <div class="translate-col-header">
-                            <span id="targetLangLabel" style="font-weight:700;color:#0f172a;font-size:0.82rem">🇨🇳 Translation Content</span>
-                            <span style="font-size:0.72rem;color:#059669;font-weight:600">● Live Editor</span>
+                            <span id="targetLangLabel" style="font-weight:700;color:#0f172a;font-size:0.84rem">🇨🇳 Translation Content</span>
+                            <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('modalTargetContent')">
+                                <strong>&lt;/&gt;</strong> Insert Custom HTML
+                            </button>
                         </div>
 
                         <!-- Target Title Input -->
-                        <div style="margin-bottom:12px">
+                        <div style="margin-bottom:14px">
                             <label style="font-size:0.76rem;font-weight:700;color:#334155;text-transform:uppercase;display:block;margin-bottom:4px">
                                 Translated Title <span style="color:#ef4444">*</span>
                             </label>
                             <input type="text" name="title" id="modalTargetTitle" required placeholder="e.g. 隐私政策 / Dasar Privasi" class="form-control" style="font-weight:700;font-size:0.92rem">
                         </div>
 
-                        <!-- Formatting Toolbar Buttons -->
+                        <!-- CKEditor Container -->
                         <div>
-                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-                                <label style="font-size:0.76rem;font-weight:700;color:#334155;text-transform:uppercase;margin:0">
-                                    Translated Content <span style="color:#ef4444">*</span>
-                                </label>
-                                <div style="display:flex;gap:4px">
-                                    <button type="button" class="editor-mini-btn" onclick="insertModalTag('h2')">H2</button>
-                                    <button type="button" class="editor-mini-btn" onclick="insertModalTag('h3')">H3</button>
-                                    <button type="button" class="editor-mini-btn" onclick="insertModalTag('strong')"><strong>B</strong></button>
-                                    <button type="button" class="editor-mini-btn" onclick="insertModalTag('em')"><em>I</em></button>
-                                    <button type="button" class="editor-mini-btn" onclick="insertModalTag('p')">&lt;p&gt;</button>
-                                    <button type="button" class="editor-mini-btn" onclick="insertModalTag('ul')">• List</button>
-                                </div>
-                            </div>
-                            <textarea name="content" id="modalTargetContent" rows="14" required placeholder="Enter translated HTML content here..." class="form-control" style="font-family:monospace;font-size:0.84rem;line-height:1.55"></textarea>
+                            <label style="font-size:0.76rem;font-weight:700;color:#334155;text-transform:uppercase;display:block;margin-bottom:6px">
+                                Translated Content (CKEditor) <span style="color:#ef4444">*</span>
+                            </label>
+                            <textarea name="content" id="modalTargetContent"></textarea>
                         </div>
                     </div>
                 </div>
@@ -316,11 +312,35 @@
             <!-- Modal Footer -->
             <div class="translate-modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeTranslateModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary" style="padding:8px 20px;font-weight:700">
+                <button type="submit" class="btn btn-primary" style="padding:9px 24px;font-weight:700">
                     💾 Save Translation
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- INSERT CUSTOM HTML POPUP MODAL                                              -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="insertHtmlModal" class="html-modal-backdrop" style="display:none" onclick="if(event.target===this) closeInsertHtmlModal()">
+    <div class="html-modal-card">
+        <div class="html-modal-header">
+            <h3 style="margin:0;font-size:1rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
+                <span>&lt;/&gt;</span> Insert Custom HTML Code
+            </h3>
+            <button type="button" class="html-modal-close" onclick="closeInsertHtmlModal()">✕</button>
+        </div>
+        <div style="padding:18px 20px">
+            <p style="margin:0 0 10px 0;font-size:0.82rem;color:#64748b">
+                Paste your custom HTML snippet below. It will be inserted into the active CKEditor at your current cursor position:
+            </p>
+            <textarea id="customHtmlInput" rows="8" placeholder="<div class='custom-box'>&#10;  <h3>Heading</h3>&#10;  <p>Content...</p>&#10;</div>" class="form-control" style="font-family:monospace;font-size:0.84rem;line-height:1.5"></textarea>
+        </div>
+        <div class="html-modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeInsertHtmlModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="executeInsertHtml()">Insert into Editor</button>
+        </div>
     </div>
 </div>
 
@@ -339,7 +359,6 @@
         line-height: 1.2;
     }
 
-    /* English active pill */
     .policy-lang-pill.active {
         background: #eff6ff;
         color: #2563eb;
@@ -350,7 +369,6 @@
         border-color: #3b82f6;
     }
 
-    /* Translated pill (ready) */
     .policy-lang-pill.translated {
         background: #eff6ff;
         color: #1d4ed8;
@@ -362,7 +380,6 @@
         box-shadow: 0 2px 5px rgba(29, 78, 216, 0.15);
     }
 
-    /* Missing translation pill (dashed invite to add) */
     .policy-lang-pill.missing {
         background: #f8fafc;
         color: #64748b;
@@ -396,8 +413,8 @@
         border-radius: 16px;
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
         width: 100%;
-        max-width: 1040px;
-        max-height: 90vh;
+        max-width: 1140px;
+        max-height: 94vh;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -454,12 +471,12 @@
 
     .translate-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 340px 1fr;
         gap: 20px;
         align-items: start;
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 900px) {
         .translate-grid {
             grid-template-columns: 1fr;
         }
@@ -490,7 +507,7 @@
     }
 
     .translate-ref-scroll {
-        max-height: 300px;
+        max-height: 360px;
         overflow-y: auto;
         background: #ffffff;
         border: 1px solid #e2e8f0;
@@ -509,7 +526,7 @@
         color: #2563eb;
         border: 1px solid #bfdbfe;
         border-radius: 6px;
-        padding: 3px 8px;
+        padding: 4px 8px;
         font-size: 0.72rem;
         font-weight: 700;
         cursor: pointer;
@@ -519,19 +536,24 @@
         background: #dbeafe;
     }
 
-    .editor-mini-btn {
-        background: #f1f5f9;
-        border: 1px solid #cbd5e1;
-        border-radius: 4px;
-        padding: 2px 6px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        color: #334155;
+    .insert-html-btn {
+        background: #f8fafc;
+        border: 1.5px solid #cbd5e1;
+        color: #1e40af;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 0.74rem;
+        font-weight: 700;
         cursor: pointer;
+        transition: all 0.12s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
     }
-    .editor-mini-btn:hover {
-        background: #e2e8f0;
-        color: #0f172a;
+    .insert-html-btn:hover {
+        background: #eff6ff;
+        border-color: #2563eb;
+        color: #2563eb;
     }
 
     .translate-modal-footer {
@@ -543,11 +565,83 @@
         justify-content: flex-end;
         gap: 10px;
     }
+
+    .html-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 21, 43, 0.65);
+        backdrop-filter: blur(4px);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .html-modal-card {
+        background: #ffffff;
+        border-radius: 14px;
+        width: 100%;
+        max-width: 600px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+    .html-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .html-modal-close {
+        border: none;
+        background: transparent;
+        font-size: 1.1rem;
+        color: #94a3b8;
+        cursor: pointer;
+    }
+    .html-modal-close:hover {
+        color: #ef4444;
+    }
+    .html-modal-footer {
+        padding: 12px 20px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+    }
 </style>
 
 <script>
     let currentEnglishTitle = '';
     let currentEnglishContent = '';
+    let modalEditorInstance = null;
+
+    const modalCkConfig = {
+        height: 320,
+        extraPlugins: 'sourcearea,format,font,colorbutton,justify,table',
+        removePlugins: 'exportpdf',
+        allowedContent: true, // Allow all HTML tags without stripping
+        toolbarGroups: [
+            { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+            { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+            { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
+            { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+            { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+            { name: 'links' },
+            { name: 'insert' },
+            { name: 'styles' },
+            { name: 'colors' },
+            { name: 'tools' }
+        ]
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof CKEDITOR !== 'undefined') {
+            modalEditorInstance = CKEDITOR.replace('modalTargetContent', modalCkConfig);
+        }
+    });
 
     function openTranslateModal(policyId, englishTitle, englishContent, targetLang, langDisplayName, existingTitle, existingContent) {
         currentEnglishTitle = englishTitle;
@@ -563,20 +657,20 @@
         // Set headers
         document.getElementById('modalTitle').textContent = `🌐 Translate: ${englishTitle}`;
         document.getElementById('modalSub').textContent = `Editing translation for ${langDisplayName}`;
-        document.getElementById('targetLangLabel').textContent = `${langDisplayName} Translation`;
+        document.getElementById('targetLangLabel').textContent = `${langDisplayName} Content`;
 
         // Fill English reference
         document.getElementById('refEnglishTitle').textContent = englishTitle;
         document.getElementById('refEnglishContent').textContent = englishContent;
 
-        // Fill target inputs (default to existing or empty)
+        // Fill target inputs
         document.getElementById('modalTargetTitle').value = existingTitle || '';
-        document.getElementById('modalTargetContent').value = existingContent || '';
-
-        // If target is empty, suggest English structure as starter
-        if (!existingContent && targetLang !== 'en') {
-            document.getElementById('modalTargetTitle').placeholder = `Enter ${langDisplayName} title...`;
-            document.getElementById('modalTargetContent').placeholder = `Enter ${langDisplayName} content...`;
+        
+        // Fill CKEditor
+        if (modalEditorInstance) {
+            modalEditorInstance.setData(existingContent || '');
+        } else {
+            document.getElementById('modalTargetContent').value = existingContent || '';
         }
 
         // Show modal
@@ -586,7 +680,7 @@
 
         setTimeout(() => {
             document.getElementById('modalTargetTitle').focus();
-        }, 100);
+        }, 150);
     }
 
     function closeTranslateModal() {
@@ -594,40 +688,52 @@
         document.body.style.overflow = '';
     }
 
-    function copyEnglishToEditor() {
+    function copyEnglishToModalEditor() {
         const titleInput = document.getElementById('modalTargetTitle');
-        const contentInput = document.getElementById('modalTargetContent');
-
         if (!titleInput.value) {
             titleInput.value = currentEnglishTitle;
         }
-        contentInput.value = currentEnglishContent;
-        contentInput.focus();
-    }
-
-    function insertModalTag(tag) {
-        const textarea = document.getElementById('modalTargetContent');
-        if (!textarea) return;
-
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const selectedText = textarea.value.substring(start, end);
-        let replacement = '';
-
-        if (tag === 'ul') {
-            replacement = `\n<ul>\n  <li>${selectedText || 'Item 1'}</li>\n  <li>Item 2</li>\n</ul>\n`;
-        } else {
-            replacement = `<${tag}>${selectedText || 'Text here'}</${tag}>`;
+        if (modalEditorInstance) {
+            modalEditorInstance.setData(currentEnglishContent);
         }
-
-        textarea.setRangeText(replacement, start, end, 'end');
-        textarea.focus();
     }
+
+    // Insert Custom HTML Modal Handler
+    let targetEditorId = 'modalTargetContent';
+    function openInsertHtmlModal(editorId) {
+        targetEditorId = editorId;
+        document.getElementById('customHtmlInput').value = '';
+        document.getElementById('insertHtmlModal').style.display = 'flex';
+        document.getElementById('customHtmlInput').focus();
+    }
+
+    function closeInsertHtmlModal() {
+        document.getElementById('insertHtmlModal').style.display = 'none';
+    }
+
+    function executeInsertHtml() {
+        const html = document.getElementById('customHtmlInput').value;
+        if (html && CKEDITOR.instances[targetEditorId]) {
+            CKEDITOR.instances[targetEditorId].insertHtml(html);
+        }
+        closeInsertHtmlModal();
+    }
+
+    // Form submit: sync CKEditor
+    document.getElementById('translateForm').addEventListener('submit', () => {
+        if (modalEditorInstance) {
+            modalEditorInstance.updateElement();
+        }
+    });
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.getElementById('translateModal').style.display !== 'none') {
-            closeTranslateModal();
+        if (e.key === 'Escape') {
+            if (document.getElementById('insertHtmlModal').style.display !== 'none') {
+                closeInsertHtmlModal();
+            } else if (document.getElementById('translateModal').style.display !== 'none') {
+                closeTranslateModal();
+            }
         }
     });
 </script>

@@ -2,8 +2,12 @@
 
 @section('title', 'Add New Policy / Page')
 
+@push('styles')
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+@endpush
+
 @section('content')
-<div style="max-width:960px;margin:0 auto">
+<div style="max-width:1050px;margin:0 auto">
     <!-- Breadcrumb & Header -->
     <div style="margin-bottom:24px">
         <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#64748b;margin-bottom:8px">
@@ -15,7 +19,7 @@
             <div>
                 <h1 class="admin-page-title" style="margin:0 0 4px 0;font-size:1.4rem">✨ Add New Page (English Default)</h1>
                 <p style="margin:0;font-size:0.85rem;color:#64748b">
-                    Enter the page content in <strong>English</strong>. You can add <strong>Chinese (ZH)</strong> and <strong>Malay (BM)</strong> translations directly from the list after saving.
+                    Compose your page using the full visual <strong>CKEditor</strong> with HTML Source editing and Insert HTML tools.
                 </p>
             </div>
             <a href="{{ route('admin.policies.index') }}" class="btn btn-secondary">
@@ -28,7 +32,7 @@
     <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px">
         <div style="font-size:1.4rem">🌐</div>
         <div style="font-size:0.84rem;color:#1e40af">
-            <strong>English First Workflow:</strong> Fill in your primary English title and content here. Once published, click the <strong>+ ZH</strong> or <strong>+ BM</strong> buttons on the pages table to translate with a side-by-side reference!
+            <strong>English First Workflow:</strong> Create your primary English page here using CKEditor. Once saved, click the <strong>+ ZH</strong> or <strong>+ BM</strong> buttons on the pages list to add Chinese & Malay translations!
         </div>
     </div>
 
@@ -47,14 +51,14 @@
         @csrf
 
         <div style="display:grid;grid-template-columns:2.5fr 1fr;gap:24px;align-items:start">
-            <!-- Left Column: English Content -->
+            <!-- Left Column: Content with CKEditor -->
             <div style="display:flex;flex-direction:column;gap:20px">
                 
                 <!-- Main Card -->
                 <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;border-bottom:1px solid #f1f5f9;padding-bottom:10px">
                         <h3 style="margin:0;font-size:1rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
-                            📝 Page Details (English)
+                            📝 Page Content (English)
                         </h3>
                         <span style="font-size:0.75rem;font-weight:700;background:#eff6ff;color:#2563eb;padding:3px 8px;border-radius:6px;border:1px solid #bfdbfe">
                             🇺🇸 Default Language
@@ -89,22 +93,20 @@
                         <textarea name="summary" rows="2" placeholder="Short description of this policy shown under the title on the page..." class="form-control">{{ old('summary') }}</textarea>
                     </div>
 
-                    <!-- Page Content (English) -->
+                    <!-- CKEditor Content Area -->
                     <div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px">
                             <label style="font-size:0.88rem;font-weight:700;color:#0f172a;margin:0">
-                                Page Content (English HTML) <span style="color:#ef4444">*</span>
+                                Page Content <span style="color:#ef4444">*</span>
                             </label>
-                            <div style="display:flex;gap:4px">
-                                <button type="button" class="editor-btn" onclick="insertTag('h2')" title="Section Heading">H2</button>
-                                <button type="button" class="editor-btn" onclick="insertTag('h3')" title="Subheading">H3</button>
-                                <button type="button" class="editor-btn" onclick="insertTag('strong')" title="Bold"><strong>B</strong></button>
-                                <button type="button" class="editor-btn" onclick="insertTag('em')" title="Italic"><em>I</em></button>
-                                <button type="button" class="editor-btn" onclick="insertTag('p')" title="Paragraph">&lt;p&gt;</button>
-                                <button type="button" class="editor-btn" onclick="insertTag('ul')" title="Bullet List">• List</button>
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('pageContent')">
+                                    <strong>&lt;/&gt;</strong> Insert Custom HTML
+                                </button>
                             </div>
                         </div>
-                        <textarea name="content" id="pageContent" rows="18" required placeholder="<h2>1. Overview</h2>&#10;<p>Write your policy text here...</p>" class="form-control" style="font-family:monospace;font-size:0.86rem;line-height:1.6">{{ old('content') }}</textarea>
+
+                        <textarea name="content" id="pageContent" required>{{ old('content', '<h2>1. Overview</h2><p>Write your policy content here...</p>') }}</textarea>
                     </div>
                 </div>
 
@@ -166,32 +168,131 @@
                 <!-- Next Steps Card -->
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-size:0.8rem;color:#64748b;line-height:1.5">
                     <div style="font-weight:700;color:#334155;margin-bottom:6px">📋 Next Step: Adding Translations</div>
-                    After creating this page, you can translate it into Chinese (中文) and Malay (Bahasa Melayu) by clicking the <strong>+ ZH</strong> and <strong>+ BM</strong> buttons on the pages list!
+                    After saving, you can translate this page into Chinese (中文) and Malay (Bahasa Melayu) with full CKEditor support by clicking <strong>+ ZH</strong> and <strong>+ BM</strong> on the pages list!
                 </div>
             </div>
         </div>
     </form>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- INSERT CUSTOM HTML POPUP MODAL                                              -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="insertHtmlModal" class="html-modal-backdrop" style="display:none" onclick="if(event.target===this) closeInsertHtmlModal()">
+    <div class="html-modal-card">
+        <div class="html-modal-header">
+            <h3 style="margin:0;font-size:1rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
+                <span>&lt;/&gt;</span> Insert Custom HTML Code
+            </h3>
+            <button type="button" class="html-modal-close" onclick="closeInsertHtmlModal()">✕</button>
+        </div>
+        <div style="padding:18px 20px">
+            <p style="margin:0 0 10px 0;font-size:0.82rem;color:#64748b">
+                Paste your custom HTML snippet below (tables, styled divs, buttons, banners, or embeds). It will be inserted into the CKEditor at your current cursor position:
+            </p>
+            <textarea id="customHtmlInput" rows="8" placeholder="<div class='custom-box'>&#10;  <h3>Heading</h3>&#10;  <p>Content...</p>&#10;</div>" class="form-control" style="font-family:monospace;font-size:0.84rem;line-height:1.5"></textarea>
+        </div>
+        <div class="html-modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeInsertHtmlModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="executeInsertHtml()">Insert into Editor</button>
+        </div>
+    </div>
+</div>
+
 <style>
-    .editor-btn {
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 4px;
-        padding: 3px 8px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #334155;
+    .insert-html-btn {
+        background: #f8fafc;
+        border: 1.5px solid #cbd5e1;
+        color: #1e40af;
+        border-radius: 6px;
+        padding: 5px 12px;
+        font-size: 0.78rem;
+        font-weight: 700;
         cursor: pointer;
-        transition: all 0.1s ease;
+        transition: all 0.12s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
     }
-    .editor-btn:hover {
-        background: #e2e8f0;
-        color: #0f172a;
+    .insert-html-btn:hover {
+        background: #eff6ff;
+        border-color: #2563eb;
+        color: #2563eb;
+    }
+
+    .html-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 21, 43, 0.65);
+        backdrop-filter: blur(4px);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .html-modal-card {
+        background: #ffffff;
+        border-radius: 14px;
+        width: 100%;
+        max-width: 600px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+    .html-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .html-modal-close {
+        border: none;
+        background: transparent;
+        font-size: 1.1rem;
+        color: #94a3b8;
+        cursor: pointer;
+    }
+    .html-modal-close:hover {
+        color: #ef4444;
+    }
+    .html-modal-footer {
+        padding: 12px 20px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
     }
 </style>
 
 <script>
+    // Initialize CKEditor on pageContent
+    let editorInstance = null;
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof CKEDITOR !== 'undefined') {
+            editorInstance = CKEDITOR.replace('pageContent', {
+                height: 380,
+                extraPlugins: 'sourcearea,format,font,colorbutton,justify,table',
+                removePlugins: 'exportpdf',
+                allowedContent: true, // Allow all HTML tags without stripping
+                toolbarGroups: [
+                    { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+                    { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+                    { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
+                    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                    { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+                    { name: 'links' },
+                    { name: 'insert' },
+                    { name: 'styles' },
+                    { name: 'colors' },
+                    { name: 'tools' }
+                ]
+            });
+        }
+    });
+
     // Auto-generate slug from title
     const titleInput = document.getElementById('pageTitle');
     const slugInput = document.getElementById('pageSlug');
@@ -211,24 +312,32 @@
         }
     });
 
-    // Insert HTML formatting helper into textarea
-    function insertTag(tag) {
-        const textarea = document.getElementById('pageContent');
-        if (!textarea) return;
-
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const selectedText = textarea.value.substring(start, end);
-        let replacement = '';
-
-        if (tag === 'ul') {
-            replacement = `\n<ul>\n  <li>${selectedText || 'Item 1'}</li>\n  <li>Item 2</li>\n</ul>\n`;
-        } else {
-            replacement = `<${tag}>${selectedText || 'Text here'}</${tag}>`;
-        }
-
-        textarea.setRangeText(replacement, start, end, 'end');
-        textarea.focus();
+    // Insert Custom HTML Modal Handler
+    let targetEditorId = 'pageContent';
+    function openInsertHtmlModal(editorId) {
+        targetEditorId = editorId;
+        document.getElementById('customHtmlInput').value = '';
+        document.getElementById('insertHtmlModal').style.display = 'flex';
+        document.getElementById('customHtmlInput').focus();
     }
+
+    function closeInsertHtmlModal() {
+        document.getElementById('insertHtmlModal').style.display = 'none';
+    }
+
+    function executeInsertHtml() {
+        const html = document.getElementById('customHtmlInput').value;
+        if (html && CKEDITOR.instances[targetEditorId]) {
+            CKEDITOR.instances[targetEditorId].insertHtml(html);
+        }
+        closeInsertHtmlModal();
+    }
+
+    // Ensure CKEditor syncs with form submit
+    document.getElementById('policyForm').addEventListener('submit', () => {
+        for (let instance in CKEDITOR.instances) {
+            CKEDITOR.instances[instance].updateElement();
+        }
+    });
 </script>
 @endsection

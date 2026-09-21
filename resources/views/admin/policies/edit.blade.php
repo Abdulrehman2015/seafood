@@ -2,8 +2,12 @@
 
 @section('title', 'Edit Page — ' . $policy->title)
 
+@push('styles')
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+@endpush
+
 @section('content')
-<div style="max-width:1000px;margin:0 auto">
+<div style="max-width:1050px;margin:0 auto">
     <!-- Breadcrumb & Header -->
     <div style="margin-bottom:24px">
         <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#64748b;margin-bottom:8px">
@@ -15,7 +19,7 @@
             <div>
                 <h1 class="admin-page-title" style="margin:0 0 4px 0;font-size:1.4rem">✏️ Edit: {{ $policy->title }}</h1>
                 <p style="margin:0;font-size:0.85rem;color:#64748b">
-                    Update content and translations. Changes take effect immediately across the website and footer.
+                    Edit content in visual <strong>CKEditor</strong> mode or HTML source mode with live translation tabs.
                 </p>
             </div>
             <div style="display:flex;gap:8px">
@@ -56,13 +60,13 @@
                 <!-- Main Card -->
                 <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
                     <h3 style="margin:0 0 16px 0;font-size:1rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
-                        📝 Page Information
+                        📝 Page Information & Content
                     </h3>
 
                     <!-- Title -->
                     <div style="margin-bottom:16px">
                         <label style="display:block;font-size:0.84rem;font-weight:700;color:#334155;margin-bottom:6px">
-                            Page Title <span style="color:#ef4444">*</span>
+                            Page Title (English) <span style="color:#ef4444">*</span>
                         </label>
                         <input type="text" name="title" id="pageTitle" value="{{ old('title', $policy->title) }}" required placeholder="e.g. Privacy Policy" class="form-control" style="font-size:0.95rem;font-weight:600">
                     </div>
@@ -88,49 +92,60 @@
 
                     <!-- Language Tabs for Content -->
                     <div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid #e2e8f0;padding-bottom:8px">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid #e2e8f0;padding-bottom:10px;flex-wrap:wrap;gap:8px">
                             <label style="font-size:0.88rem;font-weight:700;color:#0f172a;margin:0">
-                                Page Content <span style="color:#ef4444">*</span>
+                                Page Content Editor
                             </label>
                             <div style="display:flex;gap:4px">
                                 <button type="button" class="lang-tab-btn active" onclick="switchLangTab('en')" id="tabBtn_en">🇺🇸 English</button>
-                                <button type="button" class="lang-tab-btn" onclick="switchLangTab('zh')" id="tabBtn_zh">🇨🇳 中文</button>
-                                <button type="button" class="lang-tab-btn" onclick="switchLangTab('bm')" id="tabBtn_bm">🇲🇾 Bahasa Melayu</button>
+                                <button type="button" class="lang-tab-btn" onclick="switchLangTab('zh')" id="tabBtn_zh">
+                                    🇨🇳 中文 @if(!empty($policy->content_zh)) ✓ @endif
+                                </button>
+                                <button type="button" class="lang-tab-btn" onclick="switchLangTab('bm')" id="tabBtn_bm">
+                                    🇲🇾 Bahasa Melayu @if(!empty($policy->content_bm)) ✓ @endif
+                                </button>
                             </div>
-                        </div>
-
-                        <!-- Editor Toolbar Helper Buttons -->
-                        <div style="display:flex;gap:6px;flex-wrap:wrap;background:#f8fafc;border:1px solid #e2e8f0;border-bottom:none;border-top-left-radius:8px;border-top-right-radius:8px;padding:8px 10px">
-                            <button type="button" class="editor-btn" onclick="insertTag('h2')" title="Section Heading">H2</button>
-                            <button type="button" class="editor-btn" onclick="insertTag('h3')" title="Subheading">H3</button>
-                            <button type="button" class="editor-btn" onclick="insertTag('strong')" title="Bold"><strong>B</strong></button>
-                            <button type="button" class="editor-btn" onclick="insertTag('em')" title="Italic"><em>I</em></button>
-                            <button type="button" class="editor-btn" onclick="insertTag('p')" title="Paragraph">&lt;p&gt;</button>
-                            <button type="button" class="editor-btn" onclick="insertTag('ul')" title="Bullet List">• List</button>
-                            <button type="button" class="editor-btn" onclick="insertTag('li')" title="List Item">List Item</button>
                         </div>
 
                         <!-- English Tab -->
                         <div id="langTab_en" class="lang-content-panel">
-                            <textarea name="content" id="content_en" rows="18" required placeholder="Write your page content here in HTML format..." class="form-control" style="border-top-left-radius:0;border-top-right-radius:0;font-family:monospace;font-size:0.86rem;line-height:1.6">{{ old('content', $policy->content) }}</textarea>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                                <span style="font-size:0.8rem;font-weight:700;color:#2563eb">🇺🇸 English Content (Default)</span>
+                                <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('content_en')">
+                                    <strong>&lt;/&gt;</strong> Insert Custom HTML
+                                </button>
+                            </div>
+                            <textarea name="content" id="content_en" required>{{ old('content', $policy->content) }}</textarea>
                         </div>
 
                         <!-- Chinese Tab -->
                         <div id="langTab_zh" class="lang-content-panel" style="display:none">
-                            <div style="margin-bottom:12px">
-                                <label style="display:block;font-size:0.8rem;font-weight:600;color:#64748b;margin-bottom:4px">Chinese Page Title (Optional)</label>
-                                <input type="text" name="title_zh" value="{{ old('title_zh', $policy->title_zh) }}" placeholder="e.g. 隐私政策 / 服务条款" class="form-control">
+                            <div style="margin-bottom:14px">
+                                <label style="display:block;font-size:0.82rem;font-weight:700;color:#475569;margin-bottom:5px">Chinese Page Title (Optional)</label>
+                                <input type="text" name="title_zh" value="{{ old('title_zh', $policy->title_zh) }}" placeholder="e.g. 隐私政策 / 服务条款" class="form-control" style="font-weight:600">
                             </div>
-                            <textarea name="content_zh" id="content_zh" rows="16" placeholder="在此输入中文页面内容..." class="form-control" style="border-top-left-radius:0;border-top-right-radius:0;font-family:monospace;font-size:0.86rem;line-height:1.6">{{ old('content_zh', $policy->content_zh) }}</textarea>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                                <span style="font-size:0.8rem;font-weight:700;color:#059669">🇨🇳 Chinese Content (中文)</span>
+                                <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('content_zh')">
+                                    <strong>&lt;/&gt;</strong> Insert Custom HTML
+                                </button>
+                            </div>
+                            <textarea name="content_zh" id="content_zh">{{ old('content_zh', $policy->content_zh) }}</textarea>
                         </div>
 
                         <!-- Malay Tab -->
                         <div id="langTab_bm" class="lang-content-panel" style="display:none">
-                            <div style="margin-bottom:12px">
-                                <label style="display:block;font-size:0.8rem;font-weight:600;color:#64748b;margin-bottom:4px">Malay Page Title (Optional)</label>
-                                <input type="text" name="title_bm" value="{{ old('title_bm', $policy->title_bm) }}" placeholder="e.g. Dasar Privasi / Terma & Syarat" class="form-control">
+                            <div style="margin-bottom:14px">
+                                <label style="display:block;font-size:0.82rem;font-weight:700;color:#475569;margin-bottom:5px">Malay Page Title (Optional)</label>
+                                <input type="text" name="title_bm" value="{{ old('title_bm', $policy->title_bm) }}" placeholder="e.g. Dasar Privasi / Terma & Syarat" class="form-control" style="font-weight:600">
                             </div>
-                            <textarea name="content_bm" id="content_bm" rows="16" placeholder="Masukkan kandungan halaman dalam Bahasa Melayu di sini..." class="form-control" style="border-top-left-radius:0;border-top-right-radius:0;font-family:monospace;font-size:0.86rem;line-height:1.6">{{ old('content_bm', $policy->content_bm) }}</textarea>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                                <span style="font-size:0.8rem;font-weight:700;color:#d97706">🇲🇾 Malay Content (Bahasa Melayu)</span>
+                                <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('content_bm')">
+                                    <strong>&lt;/&gt;</strong> Insert Custom HTML
+                                </button>
+                            </div>
+                            <textarea name="content_bm" id="content_bm">{{ old('content_bm', $policy->content_bm) }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -202,6 +217,30 @@
     </form>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- INSERT CUSTOM HTML POPUP MODAL                                              -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="insertHtmlModal" class="html-modal-backdrop" style="display:none" onclick="if(event.target===this) closeInsertHtmlModal()">
+    <div class="html-modal-card">
+        <div class="html-modal-header">
+            <h3 style="margin:0;font-size:1rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
+                <span>&lt;/&gt;</span> Insert Custom HTML Code
+            </h3>
+            <button type="button" class="html-modal-close" onclick="closeInsertHtmlModal()">✕</button>
+        </div>
+        <div style="padding:18px 20px">
+            <p style="margin:0 0 10px 0;font-size:0.82rem;color:#64748b">
+                Paste your custom HTML snippet below. It will be inserted into the active CKEditor at your current cursor position:
+            </p>
+            <textarea id="customHtmlInput" rows="8" placeholder="<div class='custom-box'>&#10;  <h3>Heading</h3>&#10;  <p>Content...</p>&#10;</div>" class="form-control" style="font-family:monospace;font-size:0.84rem;line-height:1.5"></textarea>
+        </div>
+        <div class="html-modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeInsertHtmlModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="executeInsertHtml()">Insert into Editor</button>
+        </div>
+    </div>
+</div>
+
 <style>
     .lang-tab-btn {
         background: transparent;
@@ -223,25 +262,111 @@
         color: #2563eb;
         border-color: #bfdbfe;
     }
-    .editor-btn {
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 4px;
-        padding: 3px 8px;
+
+    .insert-html-btn {
+        background: #f8fafc;
+        border: 1.5px solid #cbd5e1;
+        color: #1e40af;
+        border-radius: 6px;
+        padding: 4px 10px;
         font-size: 0.75rem;
-        font-weight: 600;
-        color: #334155;
+        font-weight: 700;
         cursor: pointer;
-        transition: all 0.1s ease;
+        transition: all 0.12s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
     }
-    .editor-btn:hover {
-        background: #e2e8f0;
-        color: #0f172a;
+    .insert-html-btn:hover {
+        background: #eff6ff;
+        border-color: #2563eb;
+        color: #2563eb;
+    }
+
+    .html-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 21, 43, 0.65);
+        backdrop-filter: blur(4px);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .html-modal-card {
+        background: #ffffff;
+        border-radius: 14px;
+        width: 100%;
+        max-width: 600px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+    .html-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .html-modal-close {
+        border: none;
+        background: transparent;
+        font-size: 1.1rem;
+        color: #94a3b8;
+        cursor: pointer;
+    }
+    .html-modal-close:hover {
+        color: #ef4444;
+    }
+    .html-modal-footer {
+        padding: 12px 20px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
     }
 </style>
 
 <script>
-    // Language switcher
+    const ckConfig = {
+        height: 380,
+        extraPlugins: 'sourcearea,format,font,colorbutton,justify,table',
+        removePlugins: 'exportpdf',
+        allowedContent: true, // Allow all HTML tags without stripping
+        toolbarGroups: [
+            { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+            { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+            { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
+            { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+            { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+            { name: 'links' },
+            { name: 'insert' },
+            { name: 'styles' },
+            { name: 'colors' },
+            { name: 'tools' }
+        ]
+    };
+
+    // Initialize CKEditor for all language content textareas
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof CKEDITOR !== 'undefined') {
+            CKEDITOR.replace('content_en', ckConfig);
+            CKEDITOR.replace('content_zh', ckConfig);
+            CKEDITOR.replace('content_bm', ckConfig);
+        }
+
+        // Auto switch tab if URL has ?lang=zh or ?lang=bm
+        const urlParams = new URLSearchParams(window.location.search);
+        const langParam = urlParams.get('lang') || window.location.hash.replace('#', '');
+        if (langParam && ['zh', 'bm', 'en'].includes(langParam)) {
+            switchLangTab(langParam);
+        }
+    });
+
+    // Language tab switcher
     let activeLang = 'en';
     function switchLangTab(lang) {
         activeLang = lang;
@@ -252,34 +377,31 @@
         document.getElementById(`langTab_${lang}`).style.display = 'block';
     }
 
-    // Insert HTML formatting helper into active textarea
-    function insertTag(tag) {
-        const textarea = document.getElementById(`content_${activeLang}`);
-        if (!textarea) return;
-
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const selectedText = textarea.value.substring(start, end);
-        let replacement = '';
-
-        if (tag === 'ul') {
-            replacement = `\n<ul>\n  <li>${selectedText || 'Item 1'}</li>\n  <li>Item 2</li>\n</ul>\n`;
-        } else if (tag === 'li') {
-            replacement = `<li>${selectedText || 'List item text'}</li>`;
-        } else {
-            replacement = `<${tag}>${selectedText || 'Text here'}</${tag}>`;
-        }
-
-        textarea.setRangeText(replacement, start, end, 'end');
-        textarea.focus();
+    // Insert Custom HTML Modal Handler
+    let targetEditorId = 'content_en';
+    function openInsertHtmlModal(editorId) {
+        targetEditorId = editorId;
+        document.getElementById('customHtmlInput').value = '';
+        document.getElementById('insertHtmlModal').style.display = 'flex';
+        document.getElementById('customHtmlInput').focus();
     }
 
-    // Check URL parameters on load for ?lang=zh or ?lang=bm or hash
-    document.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const langParam = urlParams.get('lang') || window.location.hash.replace('#', '');
-        if (langParam && ['zh', 'bm', 'en'].includes(langParam)) {
-            switchLangTab(langParam);
+    function closeInsertHtmlModal() {
+        document.getElementById('insertHtmlModal').style.display = 'none';
+    }
+
+    function executeInsertHtml() {
+        const html = document.getElementById('customHtmlInput').value;
+        if (html && CKEDITOR.instances[targetEditorId]) {
+            CKEDITOR.instances[targetEditorId].insertHtml(html);
+        }
+        closeInsertHtmlModal();
+    }
+
+    // Ensure all CKEditor instances update their underlying textarea on form submit
+    document.getElementById('policyForm').addEventListener('submit', () => {
+        for (let instance in CKEDITOR.instances) {
+            CKEDITOR.instances[instance].updateElement();
         }
     });
 </script>
