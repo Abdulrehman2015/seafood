@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(\App\Http\Middleware\SecurityHeadersMiddleware::class);
 
         $middleware->redirectGuestsTo(function (\Illuminate\Http\Request $request) {
-            $locale = session('locale', $request->cookie('locale', config('app.locale', 'en')));
+            $locale = session('locale', $request->cookie('app_lang', $request->cookie('locale', config('app.locale', 'en'))));
             if (!in_array($locale, ['en', 'zh', 'bm'])) {
                 $locale = 'en';
             }
@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return route('admin.dashboard');
             }
 
-            $locale = session('locale', $request->cookie('locale', config('app.locale', 'en')));
+            $locale = session('locale', $request->cookie('app_lang', $request->cookie('locale', config('app.locale', 'en'))));
             if (!in_array($locale, ['en', 'zh', 'bm'])) {
                 $locale = 'en';
             }

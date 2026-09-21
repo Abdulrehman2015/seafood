@@ -840,33 +840,30 @@
 
 /* ════════════════════════════════════════
    FEATURED PRODUCTS CARD (HOMEPAGE)
-   Responsive for Desktop, Tablet, Mobile
+   Matches Shop Page Cards Exactly
    ════════════════════════════════════════ */
 .featured-products-section .products-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 22px;
-    align-items: stretch;
 }
 
+/* Product Cards & Badges */
 .featured-products-section .product-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 18px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
     display: flex;
     flex-direction: column;
     height: 100%;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
-
 .featured-products-section .product-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.04);
     border-color: #bfdbfe;
-    box-shadow: 0 16px 32px -4px rgba(37, 99, 235, 0.12), 0 6px 12px -2px rgba(15, 23, 42, 0.04);
 }
-
 .featured-products-section .product-card-img {
     position: relative;
     aspect-ratio: 4 / 3;
@@ -875,21 +872,13 @@
     background: #f8fafc;
     flex-shrink: 0;
 }
-
-.featured-products-section .product-card-img a {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
 .featured-products-section .product-card-img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.35s ease;
+    transition: transform 0.3s ease;
 }
-
 .featured-products-section .product-card:hover .product-card-img img {
     transform: scale(1.05);
 }
@@ -907,9 +896,9 @@
 /* Card Badges: Flex group so badges never collide */
 .featured-products-section .card-badges-top {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
+    top: 8px;
+    left: 8px;
+    right: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -917,48 +906,49 @@
     z-index: 3;
     pointer-events: none;
 }
-
+.featured-products-section .card-badges-top .product-badge {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
 .featured-products-section .card-badges-top .badge-featured {
     background: rgba(254, 243, 199, 0.95);
     color: #92400e;
     border: 1px solid #fde68a;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 700;
-    padding: 3px 9px;
+    padding: 3px 8px;
     border-radius: 999px;
     white-space: nowrap;
     backdrop-filter: blur(4px);
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
 }
-
 .featured-products-section .card-badges-top .badge-origin {
     margin-left: auto;
     background: rgba(255, 255, 255, 0.94);
     color: #0f172a;
     border: 1px solid #e2e8f0;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 700;
-    padding: 3px 9px;
+    padding: 3px 8px;
     border-radius: 999px;
     white-space: nowrap;
     backdrop-filter: blur(4px);
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
 }
-
 .featured-products-section .product-badge-temp {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    bottom: 8px;
+    left: 8px;
     background: rgba(10, 25, 47, 0.88);
     backdrop-filter: blur(4px);
     color: #7dd3fc;
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 700;
     padding: 3px 8px;
     border-radius: 6px;
@@ -967,9 +957,38 @@
     pointer-events: none;
     white-space: nowrap;
 }
+.featured-products-section .btn-card-quickview {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+    pointer-events: none;
+    background: rgba(10, 25, 47, 0.88);
+    backdrop-filter: blur(6px);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 4;
+}
+.featured-products-section .product-card:hover .btn-card-quickview {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+}
+.featured-products-section .btn-card-quickview:hover {
+    background: #1e40af;
+    border-color: #3b82f6;
+}
 
+/* Card Body */
 .featured-products-section .product-card-body {
-    padding: 16px 18px 18px 18px;
+    padding: 14px 16px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -981,12 +1000,11 @@
     align-items: center;
     justify-content: space-between;
     gap: 6px;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
-
 .featured-products-section .product-category {
-    font-size: 0.74rem;
-    font-weight: 800;
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: #0284c7;
@@ -994,317 +1012,362 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 .featured-products-section .product-sku {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     color: #94a3b8;
     font-family: monospace;
-    font-weight: 600;
     white-space: nowrap;
 }
 
+/* Title strictly clamped to 2 lines so cards stay 100% equal height */
 .featured-products-section .product-name {
-    margin: 2px 0 8px 0;
-    font-size: 1rem;
+    margin: 2px 0 6px 0;
+    font-size: 0.95rem;
     line-height: 1.35;
-    font-weight: 800;
+    font-weight: 700;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     height: 2.7em;
 }
-
 .featured-products-section .product-name a {
     color: #0f172a;
     text-decoration: none;
     transition: color 0.15s ease;
 }
-
 .featured-products-section .product-card:hover .product-name a {
     color: #1d4ed8;
 }
 
+/* Metadata Chips */
 .featured-products-section .product-meta {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     flex-wrap: wrap;
-    margin-bottom: 12px;
-    min-height: 24px;
+    margin-bottom: 8px;
+    min-height: 22px;
 }
-
 .featured-products-section .product-meta-item {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 600;
     color: #475569;
     background: #f1f5f9;
     border: 1px solid #e2e8f0;
-    padding: 2px 7px;
+    padding: 2px 6px;
     border-radius: 6px;
     white-space: nowrap;
 }
 
-.featured-products-section .product-price-block {
+/* Price Row — ONLY element with margin-top: auto to guarantee bottom pinning */
+.featured-products-section .product-price-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
     margin-top: auto !important;
-    margin-bottom: 14px;
-    min-height: 48px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    margin-bottom: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #f1f5f9;
 }
-
 .featured-products-section .product-price {
-    font-family: inherit;
-    font-size: 1.35rem;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
     font-weight: 800;
     color: #1e40af;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    border: none;
-    padding: 0;
 }
-
-.featured-products-section .price-amount {
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: #1e40af;
-    line-height: 1.1;
+.featured-products-section .product-price.rfq {
+    font-size: 0.9rem;
+    color: #d97706;
 }
-
-.featured-products-section .price-base-rm {
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: #64748b;
-    margin-top: 2px;
-}
-
 .featured-products-section .product-moq {
-    margin-top: 4px;
     font-size: 0.72rem;
-    font-weight: 600;
+    font-weight: 700;
     color: #475569;
     background: #f1f5f9;
     padding: 2px 6px;
     border-radius: 4px;
-    display: inline-block;
-    align-self: flex-start;
 }
 
+/* Full Width Actions */
 .featured-products-section .product-card-actions {
     display: flex;
+    gap: 6px;
+    align-items: stretch;
     width: 100%;
-    margin: 0;
+    margin-top: 0 !important;
 }
-
-.featured-products-section .card-cart-form {
+.featured-products-section .product-cart-form {
+    flex: 1;
     width: 100%;
-    margin: 0;
     display: flex;
+    margin: 0;
 }
-
-.featured-products-section .btn-card-cart {
+.featured-products-section .btn-card-add-cart {
     width: 100%;
-    height: 42px;
-    background: #1d4ed8;
-    border: none;
-    border-radius: 12px;
-    color: #ffffff;
-    font-size: 0.92rem;
-    font-weight: 700;
+    height: 38px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-sizing: border-box;
-    box-shadow: 0 2px 6px rgba(29, 78, 216, 0.2);
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
-.featured-products-section .btn-card-cart:hover {
-    background: #1e40af;
-    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.35);
+    background: #1d4ed8;
     color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(29, 78, 216, 0.2);
+    transition: all 0.15s ease;
+}
+.featured-products-section .btn-card-add-cart:hover {
+    background: #1e40af;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.35);
+}
+.featured-products-section .btn-card-details {
+    flex: 1;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+.featured-products-section .btn-card-details:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+.featured-products-section .btn-card-rfq {
+    background: #1e40af;
+    color: #ffffff;
+    border-radius: 10px;
+    height: 38px;
+    padding: 0 12px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
 }
 
-/* ── Tablet Breakpoint (641px to 1024px) ── */
-@media (max-width: 1024px) {
+/* Quick View Modal Card */
+.quickview-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 25, 47, 0.75);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.quickview-modal-backdrop.show {
+    display: flex;
+}
+.quickview-modal-card {
+    background: #ffffff;
+    border-radius: 20px;
+    max-width: 820px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 24px 48px rgba(10, 25, 47, 0.25);
+    animation: qvPop 0.25s ease-out;
+}
+@keyframes qvPop {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+.quickview-close-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #475569;
+    transition: all 0.15s ease;
+}
+.quickview-close-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+.quickview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+}
+@media(max-width:768px) {
+    .quickview-grid { grid-template-columns: 1fr; }
+    .quickview-media { height: 240px !important; }
+}
+.quickview-media {
+    position: relative;
+    background: #f8fafc;
+    height: 100%;
+    min-height: 360px;
+}
+.quickview-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.quickview-origin-tag {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    background: rgba(10, 25, 47, 0.88);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+.quickview-details {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+}
+.quickview-category {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #1d4ed8;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+}
+.quickview-title {
+    font-family: var(--font-heading);
+    font-size: 1.45rem;
+    color: #0f172a;
+    line-height: 1.25;
+    margin: 0 0 10px 0;
+}
+.quickview-sku-bar {
+    display: flex;
+    gap: 14px;
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+}
+.quickview-price-box {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.qv-current-price {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #1e40af;
+}
+.qv-weight {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+.quickview-desc {
+    font-size: 0.85rem;
+    color: #475569;
+    line-height: 1.5;
+    margin-bottom: 18px;
+}
+.quickview-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+/* ─── Responsive Breakpoints ─── */
+@media (max-width: 1180px) {
     .featured-products-section .products-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 18px;
     }
 }
 
-/* ── Mobile Breakpoint (<= 640px) ── */
-@media (max-width: 640px) {
+@media (max-width: 860px) {
     .featured-products-section .products-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
     }
-    .featured-products-section .product-card {
-        border-radius: 14px;
+    .featured-products-section .product-card-body {
+        padding: 10px 12px !important;
+    }
+    .featured-products-section .product-name {
+        font-size: 0.88rem !important;
+        height: 2.6em !important;
+        margin-bottom: 4px !important;
+    }
+    .featured-products-section .product-price {
+        font-size: 1.12rem !important;
+    }
+    .featured-products-section .btn-card-add-cart,
+    .featured-products-section .btn-card-details {
+        height: 35px !important;
+        font-size: 0.8rem !important;
+        border-radius: 8px !important;
     }
     .featured-products-section .card-badges-top {
-        top: 6px;
-        left: 6px;
-        right: 6px;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+        right: auto !important;
     }
     .featured-products-section .card-badges-top .badge-featured,
     .featured-products-section .card-badges-top .badge-origin {
-        font-size: 0.62rem;
-        padding: 2px 6px;
+        font-size: 0.62rem !important;
+        padding: 2px 6px !important;
+        margin-left: 0 !important;
     }
     .featured-products-section .product-badge-temp {
-        bottom: 6px;
-        left: 6px;
-        font-size: 0.62rem;
-        padding: 2px 5px;
+        font-size: 0.62rem !important;
+        padding: 2px 6px !important;
+        bottom: 6px !important;
+        left: 6px !important;
+    }
+    .featured-products-section .btn-card-quickview {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .featured-products-section .products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
     }
     .featured-products-section .product-card-body {
-        padding: 10px 10px 12px 10px;
-    }
-    .featured-products-section .product-category {
-        font-size: 0.65rem;
-    }
-    .featured-products-section .product-sku {
-        font-size: 0.62rem;
+        padding: 8px 10px !important;
     }
     .featured-products-section .product-name {
-        font-size: 0.84rem;
-        height: 2.6em;
-        margin-bottom: 6px;
+        font-size: 0.82rem !important;
     }
-    .featured-products-section .product-meta {
-        gap: 4px;
-        margin-bottom: 8px;
-        min-height: 20px;
+    .featured-products-section .product-price {
+        font-size: 1.05rem !important;
     }
-    .featured-products-section .product-meta-item {
-        font-size: 0.64rem;
-        padding: 1px 5px;
-    }
-    .featured-products-section .price-amount {
-        font-size: 1.15rem;
-    }
-    .featured-products-section .price-base-rm {
-        font-size: 0.72rem;
-    }
-    .featured-products-section .product-price-block {
-        margin-bottom: 10px;
-        min-height: 38px;
-    }
-    .featured-products-section .btn-card-cart {
-        height: 36px;
-        font-size: 0.8rem;
-        border-radius: 9px;
-    }
-}
-
-/* ── Extra Small Mobile (< 380px) ── */
-@media (max-width: 380px) {
-    .featured-products-section .products-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
-    }
-    .featured-products-section .product-card-body {
-        padding: 14px;
-    }
-}
-
-/* ── Tablet Breakpoint (641px to 1024px) ── */
-@media (max-width: 1024px) {
-    .featured-products-section .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 18px;
-    }
-    .featured-products-section .product-card-img {
-        height: 180px;
-    }
-}
-
-/* ── Mobile Breakpoint (<= 640px) ── */
-@media (max-width: 640px) {
-    .featured-products-section .products-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-    }
-    .featured-products-section .product-card {
-        border-radius: 14px;
-    }
-    .featured-products-section .product-card-img {
-        height: 140px;
-    }
-    .featured-products-section .badge-featured {
-        top: 8px;
-        left: 8px;
-        padding: 3px 7px;
-        font-size: 0.68rem;
-    }
-    .featured-products-section .badge-low-stock {
-        bottom: 8px;
-        left: 8px;
-        padding: 2px 6px;
-        font-size: 0.65rem;
-    }
-    .featured-products-section .product-card-body {
-        padding: 12px 10px 14px 10px;
-    }
-    .featured-products-section .product-category {
-        font-size: 0.68rem;
-        margin-bottom: 3px;
-    }
-    .featured-products-section .product-name {
-        font-size: 0.88rem;
-        line-height: 1.3;
-        min-height: 2.6em;
-        margin-bottom: 8px;
-    }
-    .featured-products-section .product-meta {
-        gap: 4px;
-        margin-bottom: 10px;
-    }
-    .featured-products-section .product-meta-item {
-        font-size: 0.68rem;
-        padding: 2px 6px;
-    }
-    .featured-products-section .price-amount {
-        font-size: 1.25rem;
-    }
-    .featured-products-section .price-base-rm {
-        font-size: 0.75rem;
-    }
-    .featured-products-section .product-price-block {
-        margin-bottom: 10px;
-        min-height: 40px;
-    }
-    .featured-products-section .product-card-actions {
-        gap: 6px;
-    }
+    .featured-products-section .btn-card-add-cart,
     .featured-products-section .btn-card-details {
-        font-size: 0.78rem;
-        padding: 7px 8px;
-        border-radius: 9px;
-    }
-    .featured-products-section .btn-card-cart {
-        font-size: 0.82rem;
-        padding: 9px 8px;
-        border-radius: 9px;
-    }
-}
-
-/* ── Extra Small Mobile (< 380px) ── */
-@media (max-width: 380px) {
-    .featured-products-section .products-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
-    }
-    .featured-products-section .product-card-img {
-        height: 180px;
-    }
-    .featured-products-section .product-card-body {
-        padding: 14px;
+        height: 33px !important;
+        font-size: 0.78rem !important;
     }
 }
 </style>
@@ -1417,14 +1480,19 @@
         </div>
 
         <div class="products-grid">
+            @php
+                $currentCurrency = session('currency', 'MYR');
+                $group = $group ?? (auth()->user()?->customer_group ?? 'retail');
+            @endphp
             @foreach($featuredProducts as $product)
                 @php
                     $displayPrice = $product->getDisplayPrice($group);
                     $price = $displayPrice['amount'];
+                    $priceFormatted = $displayPrice['formatted'];
                 @endphp
-                <div class="product-card">
+                <div class="product-card" data-product-id="{{ $product->id }}">
                     <div class="product-card-img">
-                        <a href="{{ route('shop.show', $product) }}">
+                        <a href="{{ route('shop.show', $product) }}" style="display:block;width:100%;height:100%">
                             @if($product->thumbnail)
                                 <img src="{{ cdn_storage($product->thumbnail) }}" alt="{{ $product->name }}" loading="lazy">
                             @else
@@ -1432,24 +1500,43 @@
                             @endif
                         </a>
 
-                        {{-- Top Badges: Featured Left, Origin Right --}}
+                        <!-- Top Badges Container: stacks vertically on mobile so badges never collide -->
                         <div class="card-badges-top">
                             @if($product->is_featured)
-                                <span class="product-badge badge-featured">⭐ @t('product.featured', 'Featured')</span>
+                                <span class="product-badge badge-featured">⭐ @t('shop.badge_featured', 'Featured')</span>
                             @endif
                             @if($product->origin)
                                 <span class="product-badge badge-origin">🌍 {{ $product->origin }}</span>
                             @endif
                         </div>
 
-                        {{-- Bottom Left: Storage Temp IQF --}}
                         @if($product->storage_temp)
                             <span class="product-badge-temp">❄️ {{ $product->storage_temp }} IQF</span>
                         @endif
+
+                        <!-- Quick View Hover Overlay Button (Desktop Only) -->
+                        <button type="button" class="btn-card-quickview" onclick="openQuickViewModal({{ json_encode([
+                            'id' => $product->id,
+                            'name' => $product->name,
+                            'category' => $product->category?->name ?? 'Seafood',
+                            'sku' => $product->sku,
+                            'origin' => $product->origin,
+                            'weight' => $product->weight,
+                            'unit' => $product->unit,
+                            'storage_temp' => $product->storage_temp,
+                            'price_formatted' => $priceFormatted,
+                            'moq' => $product->getMoqForGroup($group) > 1 ? ($product->getMoqForGroup($group) . ' ' . $product->unit) : null,
+                            'short_desc' => $product->short_description ?? $product->description,
+                            'image' => $product->thumbnail ? cdn_storage($product->thumbnail) : null,
+                            'url' => route('shop.show', $product),
+                            'rfq_url' => route('quotations.create', ['product' => $product->id]),
+                        ]) }})">
+                            👁️ @t('shop.quick_view', 'Quick View')
+                        </button>
                     </div>
                     <div class="product-card-body">
                         <div class="product-card-top-meta">
-                            <div class="product-category">{{ strtoupper($product->category?->name ?? 'Seafood') }}</div>
+                            <div class="product-category">{{ $product->category?->name ?? 'Seafood' }}</div>
                             @if($product->sku)
                                 <span class="product-sku">{{ $product->sku }}</span>
                             @endif
@@ -1460,14 +1547,10 @@
                             </a>
                         </h3>
                         <div class="product-meta">
-                            @if($product->weight)
-                                <span class="product-meta-item">⚖️ {{ $product->weight }}</span>
-                            @endif
-                            @if($product->storage_temp)
-                                <span class="product-meta-item">❄️ {{ $product->storage_temp }}</span>
-                            @endif
+                            @if($product->weight)<span class="product-meta-item">⚖️ {{ $product->weight }}</span>@endif
+                            @if($product->storage_temp)<span class="product-meta-item">❄️ {{ $product->storage_temp }}</span>@endif
                         </div>
-                        <div class="product-price-block">
+                        <div class="product-price-row">
                             @if($price !== null)
                                 <div class="product-price js-currency-price"
                                      data-base-rm="{{ $product->getPriceForGroup($group) ?? 0 }}"
@@ -1479,28 +1562,37 @@
                                      data-group="{{ $group }}"
                                      @endif
                                 >
-                                     <span class="price-amount">{{ $displayPrice['formatted'] }}</span>
-                                     <span class="price-base-rm" style="{{ session('currency', 'MYR') !== 'MYR' && !empty($displayPrice['base_rm']) ? '' : 'display:none' }};">RM {{ number_format($product->getPriceForGroup($group), 2) }}</span>
+                                    <span class="price-amount">{{ $priceFormatted }}</span>
+                                    <span class="price-base-rm" style="{{ $currentCurrency !== 'MYR' && !empty($displayPrice['base_rm']) ? '' : 'display:none' }};font-size:0.75rem;font-weight:500;color:#64748b;display:block">
+                                        RM {{ number_format($product->getPriceForGroup($group), 2) }}
+                                    </span>
                                 </div>
                             @else
-                                <div class="product-price rfq">@t('product.price_on_request', 'Price on Request')</div>
+                                <div class="product-price rfq">@t('shop.price_on_request', 'Price on Request')</div>
                             @endif
                             @if(in_array($group, ['wholesale','trading']) && $product->getMoqForGroup($group) > 1)
-                                <div class="product-moq">@t('product.moq', 'MOQ'): {{ $product->getMoqForGroup($group) }}</div>
+                                <div class="product-moq">@t('shop.moq_label', 'MOQ:') {{ $product->getMoqForGroup($group) }}</div>
                             @endif
                         </div>
                         <div class="product-card-actions">
                             @if($price !== null)
-                                <form action="{{ route('cart.add') }}" method="POST" class="card-cart-form">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <input type="hidden" name="quantity" value="{{ $product->getMoqForGroup($group) }}">
-                                    <button type="submit" class="btn-card-cart">@t('shop.add_to_cart', 'Add to Cart')</button>
-                                </form>
-                            @elseif(auth()->check() && auth()->user()->customer_group === 'trading' && auth()->user()->isApproved())
-                                <a href="{{ route('quotations.create', ['product' => $product->id]) }}" class="btn-card-cart">@t('shop.request_rfq', 'Request RFQ')</a>
+                                <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form">
+                                     @csrf
+                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                     <input type="hidden" name="quantity" value="{{ $product->getMoqForGroup($group) }}">
+                                     <button type="submit" class="btn-card-add-cart">
+                                         @t('shop.add_to_cart', 'Add to Cart')
+                                     </button>
+                                 </form>
                             @else
-                                <a href="{{ route('shop.show', $product) }}" class="btn-card-cart">@t('common.view_details', 'View Details')</a>
+                                <a href="{{ route('shop.show', $product) }}" class="btn-card-details">
+                                    @t('shop.details', 'Details')
+                                </a>
+                            @endif
+                            @if(auth()->check() && auth()->user()->customer_group === 'trading' && auth()->user()->isApproved())
+                                <a href="{{ route('quotations.create', ['product' => $product->id]) }}" class="btn-card-rfq" title="@t('shop.rfq', 'Request For Quotation')">
+                                    📋 @t('shop.rfq', 'RFQ')
+                                </a>
                             @endif
                         </div>
                     </div>
@@ -1516,6 +1608,56 @@
         </div>
     </div>
 </section>
+
+<!-- ─── Quick View Modal ──────────────────────────────────────────────────── -->
+<div class="quickview-modal-backdrop" id="quickViewBackdrop" onclick="handleQuickViewBackdropClick(event)">
+    <div class="quickview-modal-card" id="quickViewCard" role="dialog" aria-modal="true">
+        <button type="button" class="quickview-close-btn" onclick="closeQuickViewModal()" aria-label="Close Quick View">✕</button>
+        <div class="quickview-grid">
+            <div class="quickview-media">
+                <img src="" id="qvImg" alt="Product Image">
+                <span class="quickview-origin-tag" id="qvOriginTag"></span>
+            </div>
+            <div class="quickview-details">
+                <div class="quickview-category" id="qvCategory"></div>
+                <h2 class="quickview-title" id="qvTitle"></h2>
+                <div class="quickview-sku-bar">
+                    <span>@t('shop.sku_label', 'SKU:') <strong id="qvSku"></strong></span>
+                    <span>@t('shop.storage_label', 'Storage:') <strong id="qvStorage"></strong></span>
+                </div>
+                <div class="quickview-price-box">
+                    <div class="qv-current-price" id="qvPrice"></div>
+                    <div class="qv-weight" id="qvWeight"></div>
+                </div>
+
+                <p class="quickview-desc" id="qvDesc"></p>
+
+                <!-- Approved Customer Group Unit Pricing (Strict Tier Privacy) -->
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between">
+                    <div>
+                        <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#1e40af">@t('shop.approved_tier_title', 'Approved Customer Tier')</span>
+                        <div style="font-weight:800;color:#0f172a;font-size:0.95rem">{{ match($group ?? 'retail') {
+                            'retail' => __t('shop.retail_tier', 'Retail Tier'),
+                            'wholesale' => __t('shop.wholesale_tier', 'Wholesale Tier'),
+                            'trading' => __t('shop.trading_tier', 'Trading Tier'),
+                            default => ucfirst($group ?? 'retail') . ' Rate',
+                        } }}</div>
+                    </div>
+                    <div style="text-align:right">
+                        <div style="font-size:0.75rem;color:#64748b" id="qvMoqNotice"></div>
+                        <div style="font-weight:800;color:#1e40af;font-size:0.85rem">@t('shop.authorized_price_only', 'Authorized Price Only')</div>
+                    </div>
+                </div>
+
+                <div class="quickview-actions">
+                    <a href="#" id="qvViewLink" class="btn btn-primary" style="flex:1;text-align:center;padding:10px 18px;border-radius:10px;font-weight:700">
+                        @t('shop.view_full_details', 'View Full Details') →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endif
 
 <!-- ─── 4.4 How It Works ────────────────────────────────────────────────── -->
@@ -1836,6 +1978,58 @@
 
 @push('scripts')
 <script>
+// Quick View Modal
+function openQuickViewModal(data) {
+    const backdrop = document.getElementById('quickViewBackdrop');
+    if (!backdrop) return;
+
+    document.getElementById('qvTitle').textContent = data.name;
+    document.getElementById('qvCategory').textContent = data.category;
+    document.getElementById('qvSku').textContent = data.sku || 'N/A';
+    document.getElementById('qvStorage').textContent = (data.storage_temp || '-18°C') + ' IQF';
+    document.getElementById('qvPrice').textContent = data.price_formatted;
+    document.getElementById('qvWeight').textContent = data.weight ? '(' + data.weight + ' / ' + data.unit + ')' : '';
+    document.getElementById('qvDesc').textContent = data.short_desc || '';
+    document.getElementById('qvOriginTag').textContent = '🌍 ' + (data.origin || 'Imported');
+
+    const moqNotice = document.getElementById('qvMoqNotice');
+    if (moqNotice) {
+        moqNotice.textContent = data.moq ? 'MOQ: ' + data.moq : '';
+    }
+
+    const img = document.getElementById('qvImg');
+    if (img && data.image) {
+        img.src = data.image;
+        img.alt = data.name;
+    }
+
+    const viewLink = document.getElementById('qvViewLink');
+    if (viewLink) viewLink.href = data.url;
+
+    backdrop.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeQuickViewModal() {
+    const backdrop = document.getElementById('quickViewBackdrop');
+    if (backdrop) {
+        backdrop.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+}
+
+function handleQuickViewBackdropClick(e) {
+    if (e.target === document.getElementById('quickViewBackdrop')) {
+        closeQuickViewModal();
+    }
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeQuickViewModal();
+    }
+});
+
 async function handleNewsletterSubmit(e) {
     e.preventDefault();
     const emailInput = document.getElementById('newsletterEmail');

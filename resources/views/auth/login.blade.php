@@ -35,13 +35,10 @@
     </div>
 </div>
 
-<div style="min-height:60vh;padding:var(--space-10) var(--space-4) var(--space-16);display:flex;justify-content:center;background:#f8fafc">
-    <div style="width:100%;max-width:460px">
-        <div class="card" style="box-shadow:0 10px 25px -5px rgba(0,0,0,0.06), 0 8px 10px -6px rgba(0,0,0,0.04);border:1px solid #e2e8f0;border-radius:18px;padding:34px 28px;background:#ffffff">
-            <div class="text-center" style="margin-bottom:22px">
-                <div style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:50%;margin-bottom:12px;font-size:1.6rem">
-                    🌊
-                </div>
+<div class="login-page-wrapper" style="min-height:calc(100vh - 360px);display:flex;align-items:center;justify-content:center;padding:40px 16px 60px 16px;background:#f8fafc">
+    <div style="width:100%;max-width:460px;margin:0 auto">
+        <div class="card" style="box-shadow:0 10px 25px -5px rgba(0,0,0,0.06), 0 8px 10px -6px rgba(0,0,0,0.04);border:1px solid #e2e8f0;border-radius:18px;padding:32px 28px;background:#ffffff">
+            <div class="text-center" style="margin-bottom:18px">
                 <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;color:#0f274a;margin:0 0 6px">@t('auth.login_card_title', 'Welcome Back')</h2>
                 <p style="color:#64748b;font-size:0.88rem;margin:0">@t('auth.login_card_subtitle', 'Enter your credentials to access your account')</p>
             </div>
@@ -77,17 +74,9 @@
 
             <div class="divider" style="margin:22px 0;border-top:1px solid #e2e8f0"></div>
 
-            <p class="text-center" style="font-size:0.88rem;color:#64748b;margin:0 0 18px">
+            <p class="text-center" style="font-size:0.88rem;color:#64748b;margin:0">
                 @t('auth.no_account', "Don't have an account?") <a href="{{ route('register') }}" style="color:#2563eb;font-weight:700;text-decoration:none">@t('auth.register_here', 'Register here')</a>
             </p>
-
-            <div style="padding:14px;background:#f0f9ff;border-radius:12px;border:1px solid #bae6fd">
-                <p style="font-size:0.82rem;color:#0369a1;font-weight:700;text-align:center;margin:0 0 4px">@t('auth.walkin_title', 'Walk-in Customers')</p>
-                <p style="font-size:0.78rem;color:#0284c7;text-align:center;margin:0 0 10px">@t('auth.walkin_desc', 'No login needed! Scan the QR code at our store.')</p>
-                <div class="text-center">
-                    <a href="{{ route('walkin.entry') }}" class="btn btn-secondary btn-sm" style="border-radius:8px;font-size:0.8rem;padding:6px 12px">@t('auth.walkin_btn', '🏪 Walk-in Catalogue')</a>
-                </div>
-            </div>
         </div>
     </div>
 </div>

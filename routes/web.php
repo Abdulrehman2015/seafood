@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Artisan;
 
 // ─── Direct Root Homepage Route (Zero Redirects for Pingdom 100 Score) ────────
 Route::get('/', function (\Illuminate\Http\Request $request) {
-    $locale = session('locale', $request->cookie('locale', config('app.locale', 'en')));
+    $locale = session('locale', $request->cookie('app_lang', $request->cookie('locale', config('app.locale', 'en'))));
     if (!in_array($locale, ['en', 'zh', 'bm'])) {
         $locale = 'en';
     }
@@ -464,7 +464,7 @@ $unprefixedRedirects = [
 ];
 foreach ($unprefixedRedirects as $uPath) {
     Route::any($uPath, function (\Illuminate\Http\Request $request) use ($uPath) {
-        $locale = session('locale', $request->cookie('locale', config('app.locale', 'en')));
+        $locale = session('locale', $request->cookie('app_lang', $request->cookie('locale', config('app.locale', 'en'))));
         if (!in_array($locale, ['en', 'zh', 'bm'])) {
             $locale = 'en';
         }
@@ -473,7 +473,7 @@ foreach ($unprefixedRedirects as $uPath) {
         return redirect()->to($target . ($qs ? '?' . $qs : ''));
     });
     Route::any($uPath . '/{any}', function (\Illuminate\Http\Request $request, $any) use ($uPath) {
-        $locale = session('locale', $request->cookie('locale', config('app.locale', 'en')));
+        $locale = session('locale', $request->cookie('app_lang', $request->cookie('locale', config('app.locale', 'en'))));
         if (!in_array($locale, ['en', 'zh', 'bm'])) {
             $locale = 'en';
         }

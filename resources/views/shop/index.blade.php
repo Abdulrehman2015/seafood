@@ -168,7 +168,7 @@
                 <div class="filter-section">
                     <div class="shop-cat-list">
                         <a href="{{ route('shop.index', request()->except('category', 'page')) }}" class="shop-cat-item {{ !request('category') ? 'active' : '' }}">
-                            <span>🌊 @t('shop.all_categories', 'All Categories')</span>
+                            <span>🏷️ @t('shop.all_categories', 'All Categories')</span>
                             <span class="shop-cat-count">{{ $allCatCount }}</span>
                         </a>
                         @foreach($categories as $cat)
@@ -482,7 +482,7 @@
         <div class="cat-modal-body" id="catModalBody">
             <a href="{{ route('shop.index', request()->except('category', 'page')) }}" class="cat-modal-item {{ !request('category') ? 'active' : '' }}">
                 <div class="cat-modal-item-left">
-                    <span style="font-size:1.15rem">🌊</span>
+                    <span style="font-size:1.15rem">🏷️</span>
                     <span>@t('shop.all_categories', 'All Categories')</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:6px">

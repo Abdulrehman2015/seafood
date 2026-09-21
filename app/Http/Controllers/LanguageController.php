@@ -41,11 +41,17 @@ class LanguageController extends Controller
                 'native'       => $target['native'],
                 'flag'         => $target['flag'],
                 'message'      => $message,
-            ])->cookie('locale', $locale, 60 * 24 * 365, '/', null, $request->isSecure() || $request->header('X-Forwarded-Proto') === 'https' || app()->environment('production'), true, false, 'lax');
+            ])->cookie('app_lang', $locale, 60 * 24 * 365, '/', null,
+                $request->isSecure() || $request->header('X-Forwarded-Proto') === 'https' || app()->environment('production'),
+                true, false, 'strict'
+            )->withCookie(cookie()->forget('locale'));
         }
 
         $isSecure = $request->isSecure() || $request->header('X-Forwarded-Proto') === 'https' || app()->environment('production');
-        return redirect()->to($redirectUrl)->with('success', $message)->cookie('locale', $locale, 60 * 24 * 365, '/', null, $isSecure, true, false, 'lax');
+        return redirect()->to($redirectUrl)
+            ->with('success', $message)
+            ->cookie('app_lang', $locale, 60 * 24 * 365, '/', null, $isSecure, true, false, 'strict')
+            ->withCookie(cookie()->forget('locale'));
     }
 
     /**

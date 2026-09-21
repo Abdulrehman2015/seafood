@@ -17,7 +17,7 @@
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
                         @t('auth.register_tiers_badge', '⭐ Exclusive Partner Tiers')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.8rem">@t('auth.register_tiers_sub', 'Retail · Walk-in · Wholesale · Trading')</span>
+                    <span style="color:#bae6fd;font-size:0.8rem">@t('auth.register_tiers_sub', 'Retail · Wholesale · Trading')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.75rem,3.5vw,2.4rem);margin-bottom:6px;letter-spacing:-0.02em">
                     @t('auth.register_header_title', 'Create Your MST Account')
@@ -39,10 +39,7 @@
     <div class="register-container">
         <!-- Header -->
         <div class="register-header text-center">
-            <div class="brand-badge">
-                <span style="font-size:1.75rem">🌊</span>
-            </div>
-            <h2 class="register-title" style="font-size:1.5rem">@t('auth.register_form_title', 'Account Registration')</h2>
+            <h2 class="register-title">@t('auth.register_form_title', 'Account Registration')</h2>
             <p class="register-subtitle">@t('auth.register_form_subtitle', 'Choose your customer category below')</p>
         </div>
 
@@ -50,13 +47,12 @@
             <form method="POST" action="{{ route('register') }}" id="registerForm" novalidate>
                 @csrf
 
-                <!-- Customer Type Selection (Retail / Walk-in / Wholesale / Trading) -->
+                <!-- Customer Type Selection (Retail / Wholesale / Trading) -->
                 <div class="form-section-block">
                     <label class="form-label font-semibold">@t('auth.customer_type_label', 'Customer Type') <span class="required">*</span></label>
                     <div class="customer-types-grid">
                         @foreach([
                             ['value'=>'retail','label'=>__t('auth.type_retail_label', 'Retail'),'icon'=>'🛒','desc'=>__t('auth.type_retail_desc', 'General public & instant checkout')],
-                            ['value'=>'walkin','label'=>__t('auth.type_walkin_label', 'Walk-in'),'icon'=>'🏪','desc'=>__t('auth.type_walkin_desc', 'In-store pickup & direct shoppers')],
                             ['value'=>'wholesale','label'=>__t('auth.type_wholesale_label', 'Wholesale'),'icon'=>'🏭','desc'=>__t('auth.type_wholesale_desc', 'F&B business & verified tiers')],
                             ['value'=>'trading','label'=>__t('auth.type_trading_label', 'Trading'),'icon'=>'📦','desc'=>__t('auth.type_trading_desc', 'Bulk volume & container RFQ')],
                         ] as $type)
@@ -278,68 +274,55 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--space-8) 16px var(--space-16) 16px;
-    background: radial-gradient(circle at top, rgba(240, 253, 250, 0.9) 0%, #f8fafc 70%, #eff6ff 100%);
+    padding: 24px 16px 48px 16px;
+    background: #f8fafc;
     box-sizing: border-box;
 }
 
 .register-container {
     width: 100%;
-    max-width: 660px;
+    max-width: 640px;
     margin: 0 auto;
     box-sizing: border-box;
 }
 
 .register-header {
-    margin-bottom: var(--space-6);
-}
-
-.brand-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 58px;
-    height: 58px;
-    background: #ffffff;
-    border: 1px solid rgba(13, 148, 136, 0.2);
-    border-radius: 50%;
-    box-shadow: 0 8px 16px -4px rgba(13, 148, 136, 0.15);
-    margin-bottom: var(--space-3);
+    margin-bottom: 14px;
 }
 
 .register-title {
     font-family: var(--font-heading);
-    font-size: 1.85rem;
+    font-size: 1.6rem;
     font-weight: 800;
-    color: var(--text-primary);
-    margin: 0 0 var(--space-2);
+    color: #0f274a;
+    margin: 0 0 4px;
     letter-spacing: -0.02em;
 }
 
 .register-subtitle {
-    font-size: 0.92rem;
+    font-size: 0.88rem;
     color: var(--text-muted);
     max-width: 440px;
     margin: 0 auto;
-    line-height: 1.45;
+    line-height: 1.4;
 }
 
-/* Card Styling */
+/* Card Styling (matching login card elevation) */
 .register-card {
     background: #ffffff;
-    border: 1px solid rgba(226, 232, 240, 0.95);
-    border-radius: 20px;
-    padding: 34px 30px;
-    box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.07), 0 2px 6px rgba(0, 0, 0, 0.02);
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 34px 28px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.06), 0 8px 10px -6px rgba(0,0,0,0.04);
     box-sizing: border-box;
     width: 100%;
 }
 
-/* Customer Type Radio Cards (4 Grid Columns) */
+/* Customer Type Radio Cards (3 Grid Columns) */
 .customer-types-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
     margin-top: var(--space-2);
 }
 
@@ -348,7 +331,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 14px 8px;
+    padding: 16px 10px;
     background: #ffffff;
     border: 2px solid #e2e8f0;
     border-radius: var(--radius-lg);
@@ -375,7 +358,7 @@
 }
 
 .ctype-icon {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     line-height: 1;
     margin-bottom: 6px;
     display: block;
@@ -384,14 +367,14 @@
 
 .ctype-label {
     font-weight: 700;
-    font-size: 0.88rem;
+    font-size: 0.92rem;
     color: var(--text-primary);
     line-height: 1.2;
     display: block;
 }
 
 .ctype-desc {
-    font-size: 0.70rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
     margin-top: 3px;
     line-height: 1.25;
@@ -723,46 +706,50 @@
 /* ─── Mobile Responsiveness ────────────────────────────────────────────────── */
 @media (max-width: 640px) {
     .register-page-wrapper {
-        padding: 95px 12px 40px 12px;
+        padding: 16px 12px 36px 12px;
         align-items: flex-start;
     }
 
+    .register-header {
+        margin-bottom: 10px;
+    }
+
     .register-card {
-        padding: 22px 16px;
+        padding: 20px 14px;
         border-radius: 16px;
         box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.06);
     }
 
     .register-title {
-        font-size: 1.5rem;
+        font-size: 1.35rem;
     }
 
     .register-subtitle {
-        font-size: 0.85rem;
+        font-size: 0.82rem;
     }
 
-    /* Customer types in 2x2 grid on mobile */
+    /* Customer types 3-col on mobile */
     .customer-types-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
     }
 
     .ctype-radio {
-        padding: 12px 6px;
+        padding: 10px 4px;
         border-radius: 10px;
     }
 
     .ctype-icon {
-        font-size: 1.35rem;
+        font-size: 1.3rem;
         margin-bottom: 4px;
     }
 
     .ctype-label {
-        font-size: 0.82rem;
+        font-size: 0.8rem;
     }
 
     .ctype-desc {
-        font-size: 0.68rem;
+        font-size: 0.65rem;
         margin-top: 2px;
         line-height: 1.2;
     }

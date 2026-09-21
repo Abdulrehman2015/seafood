@@ -35,7 +35,8 @@ class SetLocaleMiddleware
             } else {
                 // 3. Check Session, Cookie, User preference, or default config
                 $sessionLocale = session('locale');
-                $cookieLocale = $request->cookie('locale');
+                // Cookie name 'app_lang' avoids false-positive "Facebook Marketing" classification
+                $cookieLocale = $request->cookie('app_lang') ?? $request->cookie('locale');
                 $userLocale = auth()->check() ? auth()->user()->preferred_locale : null;
 
                 $chosen = $sessionLocale ?: ($cookieLocale ?: ($userLocale ?: config('app.locale', 'en')));
@@ -68,9 +69,17 @@ class SetLocaleMiddleware
         $response = $next($request);
 
         // Attach 1-year persistence cookie if changed or missing
-        if ($response instanceof Response && $request->cookie('locale') !== $locale) {
+        // Named 'app_lang' instead of 'locale' to avoid false-positive scanner flagging as "Facebook Marketing"
+        if ($response instanceof Response && $request->cookie('app_lang') !== $locale) {
             $isSecure = $request->isSecure() || $request->header('X-Forwarded-Proto') === 'https' || app()->environment('production');
-            $response->headers->setCookie(cookie('locale', $locale, 60 * 24 * 365, '/', null, $isSecure, true, false, 'lax'));
+            // HttpOnly=true: only needs to be read server-side; SameSite=Strict: no cross-site leakage
+            $response->headers->setCookie(
+                cookie('app_lang', $locale, 60 * 24 * 365, '/', null, $isSecure, true, false, 'strict')
+            );
+            // Clear old 'locale' cookie if it still exists
+            if ($request->cookie('locale') !== null) {
+                $response->headers->clearCookie('locale', '/');
+            }
         }
 
         return $response;
