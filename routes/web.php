@@ -302,6 +302,44 @@ Route::match(['get', 'post'], '/language/switch/{locale?}', [\App\Http\Controlle
 // Newsletter Subscription
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->middleware('throttle:15,1')->name('newsletter.subscribe');
 
+// Live Registration Field Verification (Company Similarity Warning, Unique SSM, Unique Email)
+Route::match(['get', 'post'], '/api/verify-registration-field', function (\Illuminate\Http\Request $request, \App\Services\CompanyVerificationService $verifier) {
+    $field = $request->input('field');
+    $value = trim($request->input('value', ''));
+
+    if ($field === 'company_name' && !empty($value)) {
+        $sim = $verifier->checkSimilarity($value);
+        return response()->json([
+            'field'              => 'company_name',
+            'has_warning'        => $sim['has_similarity'],
+            'matched_company'    => $sim['matched_company'],
+            'similarity_percent' => $sim['similarity_percent'],
+            'message'            => $sim['message'],
+        ]);
+    }
+
+    if ($field === 'company_reg_no' && !empty($value)) {
+        $ssm = $verifier->checkSsmUniqueness($value);
+        return response()->json([
+            'field'        => 'company_reg_no',
+            'is_duplicate' => $ssm['is_duplicate'],
+            'matched'      => $ssm['matched'],
+            'message'      => $ssm['message'],
+        ]);
+    }
+
+    if ($field === 'email' && !empty($value)) {
+        $em = $verifier->checkEmailUniqueness($value);
+        return response()->json([
+            'field'    => 'email',
+            'is_taken' => $em['is_taken'],
+            'message'  => $em['message'],
+        ]);
+    }
+
+    return response()->json(['valid' => true]);
+})->name('register.verify_field');
+
 // Approval status live API check
 Route::get('/api/check-approval-status', function () {
     if (!auth()->check()) {

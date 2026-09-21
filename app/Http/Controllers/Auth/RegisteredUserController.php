@@ -20,13 +20,13 @@ class RegisteredUserController extends Controller
         return view('auth.register');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, \App\Services\CompanyVerificationService $verifier): RedirectResponse
     {
         $request->validate([
             'name'            => ['required', 'string', 'max:255'],
             'email'           => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password'        => ['required', 'confirmed', Rules\Password::defaults()],
-            'customer_group'  => ['required', 'in:retail,wholesale,trading'],
+            'customer_group'  => ['required', 'in:retail,walkin,wholesale,trading'],
             'phone'           => ['required', 'string', 'max:20'],
             'company_name'    => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:255'],
             'company_reg_no'  => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:100'],
@@ -36,24 +36,31 @@ class RegisteredUserController extends Controller
             'state'           => ['required', 'string', 'max:100'],
             'postcode'        => ['required', 'string', 'max:10'],
         ], [
-            'company_name.required_if'   => 'Company Name is required for wholesale and trading accounts.',
-            'company_reg_no.required_if' => 'Company Registration Number (SSM) is required for wholesale and trading accounts.',
-            'business_type.required_if'  => 'Business Nature / Type is required for wholesale and trading accounts.',
+            'email.unique'               => __t('auth.email_already_registered', 'This email address is already registered. One email can only register one account.'),
+            'company_name.required_if'   => __t('auth.company_name_required', 'Company Name is required for wholesale and trading accounts.'),
+            'company_reg_no.required_if' => __t('auth.company_ssm_required', 'Company Registration Number (SSM) is required for wholesale and trading accounts.'),
+            'business_type.required_if'  => __t('auth.business_type_required', 'Business Nature / Type is required for wholesale and trading accounts.'),
         ]);
 
-        // Check for duplicate company registration if applicable
+        // 1. Strict SSM Uniqueness Check for business accounts
         if (in_array($request->customer_group, ['wholesale', 'trading']) && $request->filled('company_reg_no')) {
-            $existingCompany = User::where('company_reg_no', trim($request->company_reg_no))
-                ->where('id', '!=', auth()->id() ?? 0)
-                ->first();
-            if ($existingCompany) {
+            $ssmCheck = $verifier->checkSsmUniqueness($request->company_reg_no);
+            if ($ssmCheck['is_duplicate']) {
                 return back()->withInput()->withErrors([
-                    'company_reg_no' => 'An account with this Company Registration Number (SSM: ' . e($request->company_reg_no) . ') is already registered. Please contact support or log in to your existing account.'
+                    'company_reg_no' => $ssmCheck['message'] ?? 'An account with this Company Registration Number (SSM: ' . e($request->company_reg_no) . ') is already registered. Please check if your company already has an account or contact MST.'
                 ]);
             }
         }
 
-        // Retail customers are auto-approved; wholesale/trading need approval
+        // 2. Company Name Similarity Check (Non-blocking warning alert)
+        if (in_array($request->customer_group, ['wholesale', 'trading']) && $request->filled('company_name')) {
+            $similarityCheck = $verifier->checkSimilarity($request->company_name);
+            if ($similarityCheck['has_similarity']) {
+                session()->flash('company_similarity_warning', $similarityCheck['message']);
+            }
+        }
+
+        // Retail & Walk-in customers are auto-approved; wholesale/trading need approval
         $approvalStatus = match ($request->customer_group) {
             'wholesale', 'trading' => 'pending',
             default                => 'approved',

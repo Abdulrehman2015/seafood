@@ -111,6 +111,7 @@ class User extends Authenticatable
     {
         return match ($this->customer_group) {
             'retail'    => 'Retail Customer',
+            'walkin'    => 'Walk-in Customer',
             'wholesale' => 'Wholesale Customer',
             'trading'   => 'Trading Customer',
             'admin'     => 'Administrator',
@@ -122,6 +123,7 @@ class User extends Authenticatable
     {
         return match ($this->customer_group) {
             'retail'    => 'badge-retail',
+            'walkin'    => 'badge-walkin',
             'wholesale' => 'badge-wholesale',
             'trading'   => 'badge-trading',
             'admin'     => 'badge-admin',

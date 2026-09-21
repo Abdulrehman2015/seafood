@@ -17,7 +17,7 @@
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
                         @t('auth.register_tiers_badge', '⭐ Exclusive Partner Tiers')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.8rem">@t('auth.register_tiers_sub', 'Retail · Wholesale · Trading')</span>
+                    <span style="color:#bae6fd;font-size:0.8rem">@t('auth.register_tiers_sub', 'Retail · Walk-in · Wholesale · Trading')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.75rem,3.5vw,2.4rem);margin-bottom:6px;letter-spacing:-0.02em">
                     @t('auth.register_header_title', 'Create Your MST Account')
@@ -50,14 +50,15 @@
             <form method="POST" action="{{ route('register') }}" id="registerForm" novalidate>
                 @csrf
 
-                <!-- Customer Type Selection -->
+                <!-- Customer Type Selection (Retail / Walk-in / Wholesale / Trading) -->
                 <div class="form-section-block">
                     <label class="form-label font-semibold">@t('auth.customer_type_label', 'Customer Type') <span class="required">*</span></label>
                     <div class="customer-types-grid">
                         @foreach([
-                            ['value'=>'retail','label'=>__t('auth.type_retail_label', 'Retail'),'icon'=>'🛒','desc'=>__t('auth.type_retail_desc', 'General public, instant access')],
-                            ['value'=>'wholesale','label'=>__t('auth.type_wholesale_label', 'Wholesale'),'icon'=>'🏭','desc'=>__t('auth.type_wholesale_desc', 'Business & verified discounts')],
-                            ['value'=>'trading','label'=>__t('auth.type_trading_label', 'Trading'),'icon'=>'📦','desc'=>__t('auth.type_trading_desc', 'Bulk orders & RFQ pricing')],
+                            ['value'=>'retail','label'=>__t('auth.type_retail_label', 'Retail'),'icon'=>'🛒','desc'=>__t('auth.type_retail_desc', 'General public & instant checkout')],
+                            ['value'=>'walkin','label'=>__t('auth.type_walkin_label', 'Walk-in'),'icon'=>'🏪','desc'=>__t('auth.type_walkin_desc', 'In-store pickup & direct shoppers')],
+                            ['value'=>'wholesale','label'=>__t('auth.type_wholesale_label', 'Wholesale'),'icon'=>'🏭','desc'=>__t('auth.type_wholesale_desc', 'F&B business & verified tiers')],
+                            ['value'=>'trading','label'=>__t('auth.type_trading_label', 'Trading'),'icon'=>'📦','desc'=>__t('auth.type_trading_desc', 'Bulk volume & container RFQ')],
                         ] as $type)
                         <label class="ctype-radio {{ old('customer_group', request('type', 'retail')) == $type['value'] ? 'selected' : '' }}"
                                for="type_{{ $type['value'] }}" id="label_{{ $type['value'] }}">
@@ -96,11 +97,19 @@
                     </div>
                 </div>
 
+                <!-- Email (Strict Uniqueness: One email = One account) -->
                 <div class="form-group">
-                    <label class="form-label" for="email">@t('auth.field_email', 'Email Address') <span class="required">*</span></label>
-                    <input type="email" name="email" id="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
-                           value="{{ old('email') }}" placeholder="you@example.com" required>
-                    @error('email')<div class="form-error">{{ $message }}</div>@enderror
+                    <label class="form-label" for="email">
+                        @t('auth.field_email', 'Email Address') <span class="required">*</span>
+                        <span class="field-hint-tag">@t('auth.email_unique_note', '1 account per email')</span>
+                    </label>
+                    <div class="input-with-status">
+                        <input type="email" name="email" id="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
+                               value="{{ old('email') }}" placeholder="you@example.com" required autocomplete="email">
+                        <span id="emailSpinner" class="field-spinner" style="display:none"></span>
+                    </div>
+                    <div id="emailFeedback" class="field-live-feedback" style="display:none"></div>
+                    @error('email')<div class="form-error" id="emailServerError">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="section-divider">
@@ -137,7 +146,7 @@
                     </div>
                 </div>
 
-                <!-- Company Fields (wholesale/trading only) -->
+                <!-- Company Fields (Wholesale & Trading Accounts only) -->
                 <div id="companyFields" style="{{ in_array(old('customer_group', request('type', 'retail')), ['wholesale','trading']) ? '' : 'display:none' }}">
                     <div class="section-divider">
                         <span>@t('auth.section_company_info', 'Company Information')</span>
@@ -148,17 +157,45 @@
                     </div>
 
                     <div class="form-grid-2">
+                        <!-- Company Name with Live Similarity Check (Non-blocking alert) -->
                         <div class="form-group">
-                            <label class="form-label" for="company_name">@t('auth.field_company_name', 'Company Name') <span class="required">*</span></label>
-                            <input type="text" name="company_name" id="company_name" class="form-control {{ $errors->has('company_name') ? 'is-invalid' : '' }}"
-                                   value="{{ old('company_name') }}" placeholder="{{ __t('auth.placeholder_company_name', 'e.g. MST Seafood Trading Sdn Bhd') }}">
+                            <label class="form-label" for="company_name">
+                                @t('auth.field_company_name', 'Company Name') <span class="required">*</span>
+                            </label>
+                            <div class="input-with-status">
+                                <input type="text" name="company_name" id="company_name" class="form-control {{ $errors->has('company_name') ? 'is-invalid' : '' }}"
+                                       value="{{ old('company_name') }}" placeholder="{{ __t('auth.placeholder_company_name', 'e.g. MST Seafood Trading Sdn Bhd') }}">
+                                <span id="companySpinner" class="field-spinner" style="display:none"></span>
+                            </div>
+                            
+                            <!-- Non-blocking Company Similarity Warning Box -->
+                            <div id="companySimilarityAlert" class="company-warning-box" style="{{ session('company_similarity_warning') ? 'display:flex' : 'display:none' }}">
+                                <span class="warning-box-icon">⚠️</span>
+                                <div class="warning-box-content">
+                                    <div class="warning-box-title" id="companyWarningText">
+                                        {{ session('company_similarity_warning') ?? 'This company may already be registered. Please check if your company already has an account or contact MST.' }}
+                                    </div>
+                                    <div class="warning-box-sub">
+                                        @t('auth.company_warning_note', 'You can still proceed with registration if you are a branch, department, or authorized representative.')
+                                    </div>
+                                </div>
+                            </div>
                             @error('company_name')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
+
+                        <!-- Company Reg No. / SSM No. (Strict Uniqueness Check) -->
                         <div class="form-group">
-                            <label class="form-label" for="company_reg_no">@t('auth.field_company_ssm', 'Company Reg. No. (SSM)') <span class="required">*</span></label>
-                            <input type="text" name="company_reg_no" id="company_reg_no" class="form-control {{ $errors->has('company_reg_no') ? 'is-invalid' : '' }}"
-                                   value="{{ old('company_reg_no') }}" placeholder="202301012345 (1234567-X)">
-                            @error('company_reg_no')<div class="form-error">{{ $message }}</div>@enderror
+                            <label class="form-label" for="company_reg_no">
+                                @t('auth.field_company_ssm', 'Company Reg. No. (SSM)') <span class="required">*</span>
+                                <span class="field-hint-tag">@t('auth.ssm_unique_note', 'Unique ID')</span>
+                            </label>
+                            <div class="input-with-status">
+                                <input type="text" name="company_reg_no" id="company_reg_no" class="form-control {{ $errors->has('company_reg_no') ? 'is-invalid' : '' }}"
+                                       value="{{ old('company_reg_no') }}" placeholder="202301012345 (1234567-X)">
+                                <span id="ssmSpinner" class="field-spinner" style="display:none"></span>
+                            </div>
+                            <div id="ssmFeedback" class="field-live-feedback" style="display:none"></div>
+                            @error('company_reg_no')<div class="form-error" id="ssmServerError">{{ $message }}</div>@enderror
                         </div>
                     </div>
 
@@ -187,11 +224,11 @@
 
                 <div class="form-group">
                     <label class="form-label" for="address">@t('auth.field_street_address', 'Street Address') <span class="required">*</span></label>
-                    <input type="text" name="address" id="address" class="form-control" value="{{ old('address') }}" placeholder="{{ __t('auth.placeholder_street_address', 'Unit / Street address, Taman / Area') }}" required>
+                    <input type="text" name="address" id="address" class="form-control {{ $errors->has('address') ? 'is-invalid' : '' }}" value="{{ old('address') }}" placeholder="{{ __t('auth.placeholder_street_address', 'Unit / Street address, Taman / Area') }}" required>
                     @error('address')<div class="form-error">{{ $message }}</div>@enderror
                 </div>
 
-                <!-- Responsive Address Grid: 3 cols on desktop, state full-width + city/postcode 2-col on mobile -->
+                <!-- Responsive Address Grid -->
                 <div class="register-address-grid">
                     <div class="form-group mb-0 grid-state-col">
                         <label class="form-label" for="state">@t('auth.field_state', 'State') <span class="required">*</span></label>
@@ -201,19 +238,19 @@
 
                     <div class="form-group mb-0 grid-city-col">
                         <label class="form-label" for="city">@t('auth.field_city', 'City') <span class="required">*</span></label>
-                        <input type="text" name="city" id="city" class="form-control" value="{{ old('city') }}" placeholder="{{ __t('auth.placeholder_city', 'e.g. Iskandar Puteri') }}" required>
+                        <input type="text" name="city" id="city" class="form-control {{ $errors->has('city') ? 'is-invalid' : '' }}" value="{{ old('city') }}" placeholder="{{ __t('auth.placeholder_city', 'e.g. Iskandar Puteri') }}" required>
                         @error('city')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="form-group mb-0 grid-postcode-col">
                         <label class="form-label" for="postcode">@t('auth.field_postcode', 'Postcode') <span class="required">*</span></label>
-                        <input type="text" name="postcode" id="postcode" class="form-control" value="{{ old('postcode') }}" placeholder="79200" maxlength="5" pattern="[0-9]*" inputmode="numeric" required>
+                        <input type="text" name="postcode" id="postcode" class="form-control {{ $errors->has('postcode') ? 'is-invalid' : '' }}" value="{{ old('postcode') }}" placeholder="79200" maxlength="5" pattern="[0-9]*" inputmode="numeric" required>
                         @error('postcode')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
                 <div class="submit-section">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block register-submit-btn">
+                    <button type="submit" id="submitBtn" class="btn btn-primary btn-lg btn-block register-submit-btn">
                         <span>@t('auth.btn_create_account', 'Create Account')</span>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -248,7 +285,7 @@
 
 .register-container {
     width: 100%;
-    max-width: 620px;
+    max-width: 660px;
     margin: 0 auto;
     box-sizing: border-box;
 }
@@ -298,11 +335,11 @@
     width: 100%;
 }
 
-/* Customer Type Radio Cards */
+/* Customer Type Radio Cards (4 Grid Columns) */
 .customer-types-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
     margin-top: var(--space-2);
 }
 
@@ -311,7 +348,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 16px 10px;
+    padding: 14px 8px;
     background: #ffffff;
     border: 2px solid #e2e8f0;
     border-radius: var(--radius-lg);
@@ -338,26 +375,26 @@
 }
 
 .ctype-icon {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     line-height: 1;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     display: block;
     transition: transform 0.2s ease;
 }
 
 .ctype-label {
     font-weight: 700;
-    font-size: 0.92rem;
+    font-size: 0.88rem;
     color: var(--text-primary);
     line-height: 1.2;
     display: block;
 }
 
 .ctype-desc {
-    font-size: 0.72rem;
+    font-size: 0.70rem;
     color: var(--text-muted);
-    margin-top: 4px;
-    line-height: 1.3;
+    margin-top: 3px;
+    line-height: 1.25;
     display: block;
 }
 
@@ -381,7 +418,7 @@
     color: var(--seagreen-700);
 }
 
-/* Subtle Section Dividers */
+/* Section Dividers */
 .section-divider {
     display: flex;
     align-items: center;
@@ -425,9 +462,11 @@
     flex-shrink: 0;
 }
 
-/* Form Controls & Floating feeling */
+/* Form Controls */
 .form-label {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-size: 0.86rem;
     font-weight: 600;
     color: #334155;
@@ -436,6 +475,22 @@
 
 .form-label .required {
     color: #ef4444;
+}
+
+.field-hint-tag {
+    font-size: 0.70rem;
+    font-weight: 600;
+    color: #0284c7;
+    background: #e0f2fe;
+    padding: 1px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.input-with-status {
+    position: relative;
+    width: 100%;
 }
 
 .form-control {
@@ -464,11 +519,101 @@
 }
 
 .form-control.is-invalid {
-    border-color: #ef4444;
-    background: #fef2f2;
+    border-color: #ef4444 !important;
+    background: #fef2f2 !important;
 }
 
-/* Password Toggle Wrapper */
+.form-control.is-valid {
+    border-color: #10b981;
+}
+
+/* Field Spinner */
+.field-spinner {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #cbd5e1;
+    border-top-color: var(--seagreen-600);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes spin {
+    to { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Live Field Feedback */
+.field-live-feedback {
+    font-size: 0.82rem;
+    line-height: 1.35;
+    margin-top: 5px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.field-live-feedback.error {
+    color: #b91c1c;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+}
+
+.field-live-feedback.success {
+    color: #065f46;
+    background: #d1fae5;
+    border: 1px solid #a7f3d0;
+}
+
+/* Non-blocking Company Similarity Warning Box */
+.company-warning-box {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1.5px solid #f59e0b;
+    border-radius: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    box-shadow: 0 4px 12px -2px rgba(245, 158, 11, 0.12);
+    animation: fadeInSlide 0.25s ease-out;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.warning-box-icon {
+    font-size: 1.25rem;
+    line-height: 1.2;
+    flex-shrink: 0;
+}
+
+.warning-box-content {
+    flex: 1;
+}
+
+.warning-box-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #92400e;
+    line-height: 1.35;
+    margin-bottom: 2px;
+}
+
+.warning-box-sub {
+    font-size: 0.76rem;
+    color: #b45309;
+    line-height: 1.3;
+}
+
+/* Password Toggle */
 .password-field-wrapper {
     position: relative;
     display: flex;
@@ -502,7 +647,7 @@
     background: #f1f5f9;
 }
 
-/* Custom Select Dropdowns */
+/* Select */
 .custom-select-wrapper {
     position: relative;
     width: 100%;
@@ -596,39 +741,37 @@
         font-size: 0.85rem;
     }
 
-    /* Customer types in compact 3-col on mobile */
+    /* Customer types in 2x2 grid on mobile */
     .customer-types-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
 
     .ctype-radio {
-        padding: 10px 4px;
+        padding: 12px 6px;
         border-radius: 10px;
     }
 
     .ctype-icon {
-        font-size: 1.3rem;
+        font-size: 1.35rem;
         margin-bottom: 4px;
     }
 
     .ctype-label {
-        font-size: 0.8rem;
+        font-size: 0.82rem;
     }
 
     .ctype-desc {
-        font-size: 0.65rem;
+        font-size: 0.68rem;
         margin-top: 2px;
         line-height: 1.2;
     }
 
-    /* iOS 16px font-size to prevent automatic Safari zooming */
     .form-control {
         font-size: 16px !important;
         height: 46px;
     }
 
-    /* Address Grid: State takes full width, City & Postcode side-by-side */
     .register-address-grid {
         grid-template-columns: 1fr 1fr;
         gap: 10px;
@@ -648,20 +791,6 @@
 
     .section-divider {
         margin: 20px 0 14px 0;
-    }
-}
-
-@media (max-width: 360px) {
-    .register-card {
-        padding: 18px 12px;
-    }
-    
-    .ctype-desc {
-        display: none; /* Hide description on extremely tiny 320px screens for perfect fit */
-    }
-
-    .ctype-radio {
-        padding: 8px 2px;
     }
 }
 </style>
@@ -691,7 +820,6 @@ function togglePasswordVisibility(fieldId, btn) {
     input.type = isCurrentlyPassword ? 'text' : 'password';
 
     if (isCurrentlyPassword) {
-        // Show slash-eye (hide password icon)
         btn.innerHTML = `
             <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
@@ -700,7 +828,6 @@ function togglePasswordVisibility(fieldId, btn) {
         `;
         btn.setAttribute('aria-label', 'Hide password');
     } else {
-        // Show eye icon
         btn.innerHTML = `
             <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -710,5 +837,152 @@ function togglePasswordVisibility(fieldId, btn) {
         btn.setAttribute('aria-label', 'Show password');
     }
 }
+
+// ─── Debounced Live Field Verification ─────────────────────────────────────────
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+async function verifyField(fieldName, val, spinnerId, callback) {
+    const spinner = document.getElementById(spinnerId);
+    if (spinner) spinner.style.display = 'inline-block';
+
+    try {
+        const response = await fetch(`{{ route('register.verify_field') }}?field=${encodeURIComponent(fieldName)}&value=${encodeURIComponent(val)}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+        const data = await response.json();
+        callback(data);
+    } catch (e) {
+        console.error('Field verification error:', e);
+    } finally {
+        if (spinner) spinner.style.display = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const emailInput = document.getElementById('email');
+    const emailFeedback = document.getElementById('emailFeedback');
+    const emailServerError = document.getElementById('emailServerError');
+
+    const companyInput = document.getElementById('company_name');
+    const companyAlert = document.getElementById('companySimilarityAlert');
+    const companyWarningText = document.getElementById('companyWarningText');
+
+    const ssmInput = document.getElementById('company_reg_no');
+    const ssmFeedback = document.getElementById('ssmFeedback');
+    const ssmServerError = document.getElementById('ssmServerError');
+
+    // 1. Live Email Check
+    if (emailInput) {
+        const checkEmail = debounce(function () {
+            const val = emailInput.value.trim();
+            if (!val || !val.includes('@') || val.length < 5) {
+                if (emailFeedback) emailFeedback.style.display = 'none';
+                emailInput.classList.remove('is-invalid', 'is-valid');
+                return;
+            }
+
+            verifyField('email', val, 'emailSpinner', function (res) {
+                if (emailServerError) emailServerError.style.display = 'none';
+
+                if (res.is_taken) {
+                    emailInput.classList.add('is-invalid');
+                    emailInput.classList.remove('is-valid');
+                    if (emailFeedback) {
+                        emailFeedback.className = 'field-live-feedback error';
+                        emailFeedback.innerHTML = `⚠️ ${res.message || 'This email address is already registered.'}`;
+                        emailFeedback.style.display = 'flex';
+                    }
+                } else {
+                    emailInput.classList.remove('is-invalid');
+                    emailInput.classList.add('is-valid');
+                    if (emailFeedback) {
+                        emailFeedback.className = 'field-live-feedback success';
+                        emailFeedback.innerHTML = `✓ Email address is available`;
+                        emailFeedback.style.display = 'flex';
+                    }
+                }
+            });
+        }, 400);
+
+        emailInput.addEventListener('input', checkEmail);
+        emailInput.addEventListener('blur', checkEmail);
+    }
+
+    // 2. Live Company Name Similarity Check (Non-blocking warning)
+    if (companyInput) {
+        const checkCompany = debounce(function () {
+            const val = companyInput.value.trim();
+            if (!val || val.length < 3) {
+                if (companyAlert) companyAlert.style.display = 'none';
+                return;
+            }
+
+            verifyField('company_name', val, 'companySpinner', function (res) {
+                if (res.has_warning) {
+                    if (companyWarningText) {
+                        companyWarningText.textContent = res.message || 'This company may already be registered. Please check if your company already has an account or contact MST.';
+                    }
+                    if (companyAlert) {
+                        companyAlert.style.display = 'flex';
+                    }
+                } else {
+                    if (companyAlert) {
+                        companyAlert.style.display = 'none';
+                    }
+                }
+            });
+        }, 450);
+
+        companyInput.addEventListener('input', checkCompany);
+        companyInput.addEventListener('blur', checkCompany);
+    }
+
+    // 3. Live SSM Number Uniqueness Check (Strict Blocking warning/error)
+    if (ssmInput) {
+        const checkSsm = debounce(function () {
+            const val = ssmInput.value.trim();
+            if (!val || val.length < 3) {
+                if (ssmFeedback) ssmFeedback.style.display = 'none';
+                ssmInput.classList.remove('is-invalid', 'is-valid');
+                return;
+            }
+
+            verifyField('company_reg_no', val, 'ssmSpinner', function (res) {
+                if (ssmServerError) ssmServerError.style.display = 'none';
+
+                if (res.is_duplicate) {
+                    ssmInput.classList.add('is-invalid');
+                    ssmInput.classList.remove('is-valid');
+                    if (ssmFeedback) {
+                        ssmFeedback.className = 'field-live-feedback error';
+                        ssmFeedback.innerHTML = `⚠️ ${res.message || 'An account with this Company Registration Number (SSM) is already registered.'}`;
+                        ssmFeedback.style.display = 'flex';
+                    }
+                } else {
+                    ssmInput.classList.remove('is-invalid');
+                    ssmInput.classList.add('is-valid');
+                    if (ssmFeedback) {
+                        ssmFeedback.className = 'field-live-feedback success';
+                        ssmFeedback.innerHTML = `✓ SSM Number is available`;
+                        ssmFeedback.style.display = 'flex';
+                    }
+                }
+            });
+        }, 400);
+
+        ssmInput.addEventListener('input', checkSsm);
+        ssmInput.addEventListener('blur', checkSsm);
+    }
+});
 </script>
 @endpush
+

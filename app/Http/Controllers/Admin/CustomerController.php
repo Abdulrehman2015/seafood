@@ -103,7 +103,7 @@ class CustomerController extends Controller
             'name'            => 'required|string|max:255',
             'email'           => 'required|email|unique:users,email,' . $user->id,
             'phone'           => 'nullable|string|max:30',
-            'customer_group'  => 'required|in:retail,wholesale,trading',
+            'customer_group'  => 'required|in:retail,walkin,wholesale,trading',
             'company_name'    => 'nullable|string|max:255',
             'company_reg_no'  => 'nullable|string|max:100',
             'business_type'   => 'nullable|string|max:100',
