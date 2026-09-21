@@ -1979,5 +1979,7 @@
     "auth.company_ssm_required": "Company Registration Number (SSM) is required for wholesale and trading accounts.",
     "company_ssm_required": "Company Registration Number (SSM) is required for wholesale and trading accounts.",
     "auth.business_type_required": "Business Nature \/ Type is required for wholesale and trading accounts.",
-    "business_type_required": "Business Nature \/ Type is required for wholesale and trading accounts."
+    "business_type_required": "Business Nature \/ Type is required for wholesale and trading accounts.",
+    "auth.ssm_already_registered": "An account with this Company Registration Number (SSM: :ssm) is already registered. Please check if your company already has an account or contact MST.",
+    "ssm_already_registered": "An account with this Company Registration Number (SSM: :ssm) is already registered. Please check if your company already has an account or contact MST."
 }

@@ -1979,5 +1979,7 @@
     "auth.company_ssm_required": "No. Pendaftaran Syarikat (SSM) diperlukan untuk akaun borong dan perdagangan.",
     "company_ssm_required": "No. Pendaftaran Syarikat (SSM) diperlukan untuk akaun borong dan perdagangan.",
     "auth.business_type_required": "Jenis \/ Sifat Perniagaan diperlukan untuk akaun borong dan perdagangan.",
-    "business_type_required": "Jenis \/ Sifat Perniagaan diperlukan untuk akaun borong dan perdagangan."
+    "business_type_required": "Jenis \/ Sifat Perniagaan diperlukan untuk akaun borong dan perdagangan.",
+    "auth.ssm_already_registered": "Akaun dengan No. Pendaftaran Syarikat (SSM: :ssm) ini telah didaftarkan. Sila semak jika syarikat anda sudah mempunyai akaun atau hubungi MST.",
+    "ssm_already_registered": "Akaun dengan No. Pendaftaran Syarikat (SSM: :ssm) ini telah didaftarkan. Sila semak jika syarikat anda sudah mempunyai akaun atau hubungi MST."
 }

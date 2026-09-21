@@ -1979,5 +1979,7 @@
     "auth.company_ssm_required": "批发与贸易会员必须填写公司注册号 (SSM No.)。",
     "company_ssm_required": "批发与贸易会员必须填写公司注册号 (SSM No.)。",
     "auth.business_type_required": "批发与贸易会员必须选择企业主营业务类型。",
-    "business_type_required": "批发与贸易会员必须选择企业主营业务类型。"
+    "business_type_required": "批发与贸易会员必须选择企业主营业务类型。",
+    "auth.ssm_already_registered": "已有使用此公司注册号 (SSM: :ssm) 注册的企业账户。请确认您的公司是否已有账号或联系 MST。",
+    "ssm_already_registered": "已有使用此公司注册号 (SSM: :ssm) 注册的企业账户。请确认您的公司是否已有账号或联系 MST。"
 }
