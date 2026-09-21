@@ -1,5 +1,9 @@
 @extends('emails.layout')
 
+@php
+    $mailLocale = 'en';
+@endphp
+
 @section('title', 'New Customer Registration: ' . $user->name)
 @section('preheader', 'New customer registration on MST Import & Export (' . ucfirst($user->customer_group) . ')')
 

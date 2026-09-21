@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Shop — MST Import and Export Sdn Bhd')
+@section('title', __t('shop.catalogue_title', 'Product Catalogue') . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd'))
 
 @section('content')
 <!-- Page Header -->
@@ -7,33 +7,52 @@
     <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:20px 20px"></div>
     <div class="container page-header-content" style="position:relative;z-index:2">
         <div class="breadcrumb" style="margin-bottom:var(--space-2)">
-            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 Home</a>
+            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 @t('nav.home', 'Home')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">Product Catalogue</span>
+            <span style="font-weight:600;color:#ffffff">@t('shop.catalogue_title', 'Product Catalogue')</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
             <div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
-                        ❄️ -18°C IQF Certified
+                        @t('shop.iqf_certified', '❄️ -18°C IQF Certified')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.8rem">Direct Port Import</span>
+                    <span style="color:#bae6fd;font-size:0.8rem">@t('shop.direct_port_import', 'Direct Port Import')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.75rem,3.5vw,2.4rem);margin-bottom:6px;letter-spacing:-0.02em">
-                    Seafood &amp; Frozen Food Catalogue
+                    @t('shop.catalogue_title', 'Seafood & Frozen Food Catalogue')
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.95rem;max-width:680px;line-height:1.5;margin:0">
                     @auth
-                        Showing live <strong style="color:#ffffff;text-decoration:underline">{{ ucfirst($group) }} tier prices</strong> for your verified account.
+                        @php
+                            $tierName = match($group) {
+                                'retail' => __t('shop.retail_tier', 'Retail Tier'),
+                                'wholesale' => __t('shop.wholesale_tier', 'Wholesale Tier'),
+                                'trading' => __t('shop.trading_tier', 'Trading Tier'),
+                                default => ucfirst($group) . ' Tier',
+                            };
+                        @endphp
+                        @if(current_locale() === 'zh')
+                            当前显示您认证账户的 <strong style="color:#ffffff;text-decoration:underline">{{ $tierName }} 实时价格</strong>。
+                        @elseif(current_locale() === 'bm')
+                            Menunjukkan harga langsung peringkat <strong style="color:#ffffff;text-decoration:underline">{{ $tierName }}</strong> untuk akaun anda yang disahkan.
+                        @else
+                            Showing live <strong style="color:#ffffff;text-decoration:underline">{{ ucfirst($group) }} tier prices</strong> for your verified account.
+                        @endif
                     @else
-                        Explore our full range of ocean catches, Meltique beef, dim sum &amp; steamboat goods. <a href="{{ route('login') }}" style="color:#7dd3fc;font-weight:700;text-decoration:underline">Sign in</a> for wholesale carton &amp; trading pricing.
+                        @t('shop.guest_subtitle', 'Explore our full range of ocean catches, Meltique beef, dim sum & steamboat goods.') <a href="{{ route('login') }}" style="color:#7dd3fc;font-weight:700;text-decoration:underline">@t('nav.signin', 'Sign in')</a> @t('shop.guest_signin_hint', 'for wholesale carton & trading pricing.')
                     @endguest
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 @auth
                     <div class="group-badge group-{{ $group }}" style="font-size:0.85rem;padding:6px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb">
-                        ⭐ {{ ucfirst($group) }} Tier
+                        ⭐ {{ match($group) {
+                            'retail' => __t('shop.retail_tier', 'Retail Tier'),
+                            'wholesale' => __t('shop.wholesale_tier', 'Wholesale Tier'),
+                            'trading' => __t('shop.trading_tier', 'Trading Tier'),
+                            default => ucfirst($group) . ' Tier',
+                        } }}
                     </div>
                 @endauth
             </div>
@@ -45,7 +64,7 @@
 
     @php
         $activeCat = $categories->firstWhere('slug', request('category'));
-        $activeCatName = $activeCat ? $activeCat->name : 'All Categories';
+        $activeCatName = $activeCat ? $activeCat->name : __t('shop.all_categories', 'All Categories');
         $allCatCount = $categories->sum(fn($c) => $c->products()->active()->count());
         $hasFilters = request('category') || request('search') || (request('sort') && request('sort') !== 'sort_order');
 
@@ -77,12 +96,12 @@
             <div class="mobile-cat-btn-left">
                 <span class="cat-btn-icon">🏷️</span>
                 <div class="cat-btn-text">
-                    <span class="cat-btn-sub">Category Filter</span>
+                    <span class="cat-btn-sub">@t('shop.category_filter', 'Category Filter')</span>
                     <span class="cat-btn-main">{{ $activeCatName }}</span>
                 </div>
             </div>
             <div class="mobile-cat-btn-right">
-                <span class="cat-count-pill">{{ request('category') ? ($activeCat ? $activeCat->products()->active()->count() : 0) : $allCatCount }} items</span>
+                <span class="cat-count-pill">{{ request('category') ? ($activeCat ? $activeCat->products()->active()->count() : 0) : $allCatCount }} @t('shop.items_count', 'items')</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
         </button>
@@ -98,7 +117,7 @@
                 <input type="hidden" name="sort" value="{{ request('sort') }}">
             @endif
             <span class="shop-search-icon">🔍</span>
-            <input type="text" name="search" class="shop-search-input" placeholder="Search seafood..." value="{{ request('search') }}" style="width:100%">
+            <input type="text" name="search" class="shop-search-input" placeholder="@t('shop.search_placeholder_short', 'Search seafood...')" value="{{ request('search') }}" style="width:100%">
             @if(request('search'))
                 <a href="{{ route('shop.index', request()->except('search', 'page')) }}" class="shop-search-clear">✕</a>
             @endif
@@ -106,10 +125,10 @@
 
         <div class="mobile-sort-wrapper">
             <select class="shop-sort-select mobile-sort-select" onchange="location.href=this.value" aria-label="Sort products">
-                <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'sort_order'])) }}" {{ request('sort','sort_order')=='sort_order' ? 'selected' : '' }}>Featured</option>
-                <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'price_asc'])) }}" {{ request('sort')=='price_asc' ? 'selected' : '' }}>Price: Low</option>
-                <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'price_desc'])) }}" {{ request('sort')=='price_desc' ? 'selected' : '' }}>Price: High</option>
-                <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'name'])) }}" {{ request('sort')=='name' ? 'selected' : '' }}>Name A–Z</option>
+                <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'sort_order'])) }}" {{ request('sort','sort_order')=='sort_order' ? 'selected' : '' }}>@t('shop.sort_featured_short', 'Featured')</option>
+                <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'price_asc'])) }}" {{ request('sort')=='price_asc' ? 'selected' : '' }}>@t('shop.sort_price_low_short', 'Price: Low')</option>
+                <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'price_desc'])) }}" {{ request('sort')=='price_desc' ? 'selected' : '' }}>@t('shop.sort_price_high_short', 'Price: High')</option>
+                <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'name'])) }}" {{ request('sort')=='name' ? 'selected' : '' }}>@t('shop.sort_name_az', 'Name A–Z')</option>
             </select>
         </div>
     </div>
@@ -120,11 +139,11 @@
         <aside class="shop-sidebar">
             <div class="shop-sidebar-header">
                 <div class="shop-sidebar-title">
-                    <span>Categories</span>
+                    <span>@t('shop.categories', 'Categories')</span>
                     <span style="font-size:0.75rem;font-weight:700;color:#1e40af;background:#dbeafe;padding:2px 8px;border-radius:999px;margin-left:6px">{{ $categories->count() }}</span>
                 </div>
                 @if($hasFilters)
-                    <a href="{{ route('shop.index') }}" class="shop-sidebar-clear">Clear all</a>
+                    <a href="{{ route('shop.index') }}" class="shop-sidebar-clear">@t('shop.clear_all', 'Clear all')</a>
                 @endif
             </div>
 
@@ -135,12 +154,12 @@
 
                 <!-- Search Filter -->
                 <div class="filter-section">
-                    <div class="filter-title">Search Products</div>
+                    <div class="filter-title">@t('shop.search_products', 'Search Products')</div>
                     <div class="shop-search-box">
                         <span class="shop-search-icon">🔍</span>
-                        <input type="text" name="search" class="shop-search-input" placeholder="Keyword, e.g. Salmon, Meltique..." value="{{ request('search') }}" autocomplete="off">
+                        <input type="text" name="search" class="shop-search-input" placeholder="@t('shop.search_placeholder', 'Keyword, e.g. Salmon, Meltique...')" value="{{ request('search') }}" autocomplete="off">
                         @if(request('search'))
-                            <a href="{{ route('shop.index', request()->except('search', 'page')) }}" class="shop-search-clear" title="Clear search">✕</a>
+                            <a href="{{ route('shop.index', request()->except('search', 'page')) }}" class="shop-search-clear" title="@t('shop.clear_all', 'Clear')">✕</a>
                         @endif
                     </div>
                 </div>
@@ -149,7 +168,7 @@
                 <div class="filter-section">
                     <div class="shop-cat-list">
                         <a href="{{ route('shop.index', request()->except('category', 'page')) }}" class="shop-cat-item {{ !request('category') ? 'active' : '' }}">
-                            <span>🌊 All Categories</span>
+                            <span>🌊 @t('shop.all_categories', 'All Categories')</span>
                             <span class="shop-cat-count">{{ $allCatCount }}</span>
                         </a>
                         @foreach($categories as $cat)
@@ -166,12 +185,12 @@
 
                 <!-- Sort Filter -->
                 <div class="filter-section">
-                    <div class="filter-title">Sort By</div>
+                    <div class="filter-title">@t('shop.sort_by', 'Sort By')</div>
                     <select name="sort" class="shop-sort-select" onchange="this.form.submit()">
-                        <option value="sort_order" {{ request('sort','sort_order')=='sort_order' ? 'selected' : '' }}>Featured Catches</option>
-                        <option value="price_asc"  {{ request('sort')=='price_asc' ? 'selected' : '' }}>Price: Low to High</option>
-                        <option value="price_desc" {{ request('sort')=='price_desc' ? 'selected' : '' }}>Price: High to Low</option>
-                        <option value="name"       {{ request('sort')=='name' ? 'selected' : '' }}>Name A–Z</option>
+                        <option value="sort_order" {{ request('sort','sort_order')=='sort_order' ? 'selected' : '' }}>@t('shop.sort_featured', 'Featured Catches')</option>
+                        <option value="price_asc"  {{ request('sort')=='price_asc' ? 'selected' : '' }}>@t('shop.sort_price_low', 'Price: Low to High')</option>
+                        <option value="price_desc" {{ request('sort')=='price_desc' ? 'selected' : '' }}>@t('shop.sort_price_high', 'Price: High to Low')</option>
+                        <option value="name"       {{ request('sort')=='name' ? 'selected' : '' }}>@t('shop.sort_name_az', 'Name A–Z')</option>
                     </select>
                 </div>
             </form>
@@ -179,17 +198,17 @@
             @if(auth()->check() && auth()->user()->customer_group === 'trading' && auth()->user()->isApproved())
             <!-- Trader RFQ Desk -->
             <div style="margin-top:16px;padding:14px;background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border-radius:14px;border:1px solid #bfdbfe">
-                <div style="font-weight:700;font-size:0.85rem;color:#1e3a8a;margin-bottom:4px">📋 Trading Partner Desk</div>
-                <p style="font-size:0.78rem;color:#1d4ed8;line-height:1.4;margin:0 0 10px 0">Need container pricing or FCL bulk export quotation?</p>
+                <div style="font-weight:700;font-size:0.85rem;color:#1e3a8a;margin-bottom:4px">@t('shop.trading_desk_title', '📋 Trading Partner Desk')</div>
+                <p style="font-size:0.78rem;color:#1d4ed8;line-height:1.4;margin:0 0 10px 0">@t('shop.trading_desk_desc', 'Need container pricing or FCL bulk export quotation?')</p>
                 <a href="{{ route('quotations.create') }}" class="btn btn-sm" style="background:#1e40af;color:white;width:100%;text-align:center;font-weight:700;border-radius:8px;padding:7px 12px;font-size:0.8rem;display:block;text-decoration:none">
-                    Submit Bulk RFQ
+                    @t('shop.submit_bulk_rfq', 'Submit Bulk RFQ')
                 </a>
             </div>
             @endif
 
             <!-- Cold Chain Trust -->
             <div style="margin-top:14px;padding:12px;background:#eff6ff;border-radius:12px;border:1px solid #bfdbfe;font-size:0.78rem;color:#1e40af;line-height:1.5">
-                ❄️ <strong>Cold-Chain Assured:</strong> Continuous -18°C temperature logs from SILC Iskandar Puteri to your freezer.
+                @t('shop.cold_chain_assured', '❄️ Continuous -18°C temperature logs from SILC Iskandar Puteri to your freezer.')
             </div>
         </aside>
 
@@ -198,24 +217,24 @@
             <!-- Shop Toolbar -->
             <div class="shop-toolbar">
                 <div class="shop-toolbar-info">
-                    <span>Showing <strong>{{ $products->total() }}</strong> {{ Str::plural('product', $products->total()) }}</span>
+                    <span>@t('shop.showing', 'Showing') <strong>{{ $products->total() }}</strong> @t('shop.products_count', 'products')</span>
                     @if(request('search'))
-                        <span class="text-muted">for "<strong>{{ request('search') }}</strong>"</span>
+                        <span class="text-muted">@t('shop.for_keyword', 'for') "<strong>{{ request('search') }}</strong>"</span>
                     @endif
                     @if(request('category'))
-                        <span style="font-size:0.8rem;color:#1e40af;font-weight:600">in {{ $activeCatName }}</span>
+                        <span style="font-size:0.8rem;color:#1e40af;font-weight:600">@t('shop.in_category', 'in') {{ $activeCatName }}</span>
                     @endif
                 </div>
 
                 <!-- Sort Select (Desktop) -->
                 <div class="desktop-sort-actions">
                     <div style="display:flex;align-items:center;gap:8px">
-                        <label for="topSortSelect" style="font-size:0.82rem;font-weight:600;color:var(--gray-600);white-space:nowrap">Sort:</label>
+                        <label for="topSortSelect" style="font-size:0.82rem;font-weight:600;color:var(--gray-600);white-space:nowrap">@t('shop.sort_label', 'Sort:')</label>
                         <select id="topSortSelect" class="shop-sort-select" style="padding:6px 28px 6px 10px;font-size:0.82rem;width:auto;min-width:140px" onchange="location.href=this.value">
-                            <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'sort_order'])) }}" {{ request('sort','sort_order')=='sort_order' ? 'selected' : '' }}>Featured</option>
-                            <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'price_asc'])) }}" {{ request('sort')=='price_asc' ? 'selected' : '' }}>Price: Low</option>
-                            <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'price_desc'])) }}" {{ request('sort')=='price_desc' ? 'selected' : '' }}>Price: High</option>
-                            <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'name'])) }}" {{ request('sort')=='name' ? 'selected' : '' }}>Name A–Z</option>
+                            <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'sort_order'])) }}" {{ request('sort','sort_order')=='sort_order' ? 'selected' : '' }}>@t('shop.sort_featured_short', 'Featured')</option>
+                            <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'price_asc'])) }}" {{ request('sort')=='price_asc' ? 'selected' : '' }}>@t('shop.sort_price_low_short', 'Price: Low')</option>
+                            <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'price_desc'])) }}" {{ request('sort')=='price_desc' ? 'selected' : '' }}>@t('shop.sort_price_high_short', 'Price: High')</option>
+                            <option value="{{ route('shop.index', array_merge(request()->except('page'), ['sort' => 'name'])) }}" {{ request('sort')=='name' ? 'selected' : '' }}>@t('shop.sort_name_az', 'Name A–Z')</option>
                         </select>
                     </div>
                 </div>
@@ -224,20 +243,20 @@
             <!-- Active Filter Badges -->
             @if(request('category') || request('search'))
             <div class="shop-active-filters">
-                <span style="font-size:0.78rem;font-weight:700;color:var(--gray-600);margin-right:2px">Filters:</span>
+                <span style="font-size:0.78rem;font-weight:700;color:var(--gray-600);margin-right:2px">@t('shop.filters_label', 'Filters:')</span>
                 @if(request('category'))
                     <a href="{{ route('shop.index', request()->except('category', 'page')) }}" class="shop-active-chip">
-                        <span>Category: <strong>{{ $activeCatName }}</strong></span>
+                        <span>@t('shop.filter_category', 'Category:') <strong>{{ $activeCatName }}</strong></span>
                         <span class="chip-remove">✕</span>
                     </a>
                 @endif
                 @if(request('search'))
                     <a href="{{ route('shop.index', request()->except('search', 'page')) }}" class="shop-active-chip">
-                        <span>Search: "<strong>{{ request('search') }}</strong>"</span>
+                        <span>@t('shop.filter_search', 'Search:') "<strong>{{ request('search') }}</strong>"</span>
                         <span class="chip-remove">✕</span>
                     </a>
                 @endif
-                <a href="{{ route('shop.index') }}" class="shop-clear-all-chip">Reset all</a>
+                <a href="{{ route('shop.index') }}" class="shop-clear-all-chip">@t('shop.reset_all', 'Reset all')</a>
             </div>
             @endif
 
@@ -266,7 +285,7 @@
                                 <!-- Top Badges Container: stacks vertically on mobile so badges never collide -->
                                 <div class="card-badges-top">
                                     @if($product->is_featured)
-                                        <span class="product-badge badge-featured">⭐ Featured</span>
+                                        <span class="product-badge badge-featured">⭐ @t('shop.badge_featured', 'Featured')</span>
                                     @endif
                                     @if($product->origin)
                                         <span class="product-badge badge-origin">🌍 {{ $product->origin }}</span>
@@ -294,7 +313,7 @@
                                     'url' => route('shop.show', $product),
                                     'rfq_url' => route('quotations.create', ['product' => $product->id]),
                                 ]) }})">
-                                    👁️ Quick View
+                                    👁️ @t('shop.quick_view', 'Quick View')
                                 </button>
                             </div>
                             <div class="product-card-body">
@@ -331,30 +350,30 @@
                                             </span>
                                         </div>
                                     @else
-                                        <div class="product-price rfq">Price on Request</div>
+                                        <div class="product-price rfq">@t('shop.price_on_request', 'Price on Request')</div>
                                     @endif
                                     @if(in_array($group, ['wholesale','trading']) && $product->getMoqForGroup($group) > 1)
-                                        <div class="product-moq">MOQ: {{ $product->getMoqForGroup($group) }}</div>
+                                        <div class="product-moq">@t('shop.moq_label', 'MOQ:') {{ $product->getMoqForGroup($group) }}</div>
                                     @endif
                                 </div>
                                 <div class="product-card-actions">
                                     @if($price !== null)
                                         <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form">
-                                            @csrf
-                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                            <input type="hidden" name="quantity" value="{{ $product->getMoqForGroup($group) }}">
-                                            <button type="submit" class="btn-card-add-cart">
-                                                Add to Cart
-                                            </button>
-                                        </form>
+                                             @csrf
+                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                             <input type="hidden" name="quantity" value="{{ $product->getMoqForGroup($group) }}">
+                                             <button type="submit" class="btn-card-add-cart">
+                                                 @t('shop.add_to_cart', 'Add to Cart')
+                                             </button>
+                                         </form>
                                     @else
                                         <a href="{{ route('shop.show', $product) }}" class="btn-card-details">
-                                            Details
+                                            @t('shop.details', 'Details')
                                         </a>
                                     @endif
                                     @if(auth()->check() && auth()->user()->customer_group === 'trading' && auth()->user()->isApproved())
-                                        <a href="{{ route('quotations.create', ['product' => $product->id]) }}" class="btn-card-rfq" title="Request For Quotation (RFQ)">
-                                            📋 RFQ
+                                        <a href="{{ route('quotations.create', ['product' => $product->id]) }}" class="btn-card-rfq" title="@t('shop.rfq', 'Request For Quotation')">
+                                            📋 @t('shop.rfq', 'RFQ')
                                         </a>
                                     @endif
                                 </div>
@@ -375,13 +394,13 @@
                 <div class="card" style="padding:var(--space-12) var(--space-6);text-align:center;border-radius:18px;border:1px dashed #cbd5e1;background:#f8fafc">
                     <div style="font-size:3rem;margin-bottom:12px">🔍</div>
                     <h2 style="font-family:var(--font-heading);font-size:1.4rem;color:var(--gray-900);margin-bottom:8px">
-                        No Products Found
+                        @t('shop.no_products_found', 'No Products Found')
                     </h2>
                     <p style="color:var(--gray-600);max-width:440px;margin:0 auto 20px;font-size:0.92rem;line-height:1.5">
-                        We couldn't find any products matching your current filters. Try changing your search keywords or browsing our departments.
+                        @t('shop.no_products_desc', "We couldn't find any products matching your current filters. Try changing your search keywords or browsing our departments.")
                     </p>
                     <a href="{{ route('shop.index') }}" class="btn btn-primary" style="padding:10px 22px;border-radius:10px;font-weight:700">
-                        View All Products
+                        @t('shop.view_all_products', 'View All Products')
                     </a>
                 </div>
             @endif
@@ -403,8 +422,8 @@
                 <div class="quickview-category" id="qvCategory"></div>
                 <h2 class="quickview-title" id="qvTitle"></h2>
                 <div class="quickview-sku-bar">
-                    <span>SKU: <strong id="qvSku"></strong></span>
-                    <span>Storage: <strong id="qvStorage"></strong></span>
+                    <span>@t('shop.sku_label', 'SKU:') <strong id="qvSku"></strong></span>
+                    <span>@t('shop.storage_label', 'Storage:') <strong id="qvStorage"></strong></span>
                 </div>
                 <div class="quickview-price-box">
                     <div class="qv-current-price" id="qvPrice"></div>
@@ -416,22 +435,27 @@
                 <!-- Approved Customer Group Unit Pricing (Strict Tier Privacy) -->
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between">
                     <div>
-                        <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#1e40af">Approved Customer Tier</span>
-                        <div style="font-weight:800;color:#0f172a;font-size:0.95rem">{{ ucfirst($group) }} Rate</div>
+                        <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#1e40af">@t('shop.approved_tier_title', 'Approved Customer Tier')</span>
+                        <div style="font-weight:800;color:#0f172a;font-size:0.95rem">{{ match($group) {
+                            'retail' => __t('shop.retail_tier', 'Retail Tier'),
+                            'wholesale' => __t('shop.wholesale_tier', 'Wholesale Tier'),
+                            'trading' => __t('shop.trading_tier', 'Trading Tier'),
+                            default => ucfirst($group) . ' Rate',
+                        } }}</div>
                     </div>
                     <div style="text-align:right">
                         <div style="font-size:0.75rem;color:#64748b" id="qvMoqNotice"></div>
-                        <div style="font-weight:800;color:#1e40af;font-size:0.85rem">Authorized Price Only</div>
+                        <div style="font-weight:800;color:#1e40af;font-size:0.85rem">@t('shop.authorized_price_only', 'Authorized Price Only')</div>
                     </div>
                 </div>
 
                 <div class="quickview-actions">
                     <a href="#" id="qvViewLink" class="btn btn-primary" style="flex:1;text-align:center;padding:12px;font-weight:700">
-                        View Full Specs &amp; Order
+                        @t('shop.view_full_specs', 'View Full Specs & Order')
                     </a>
                     @if(auth()->check() && auth()->user()->customer_group === 'trading' && auth()->user()->isApproved())
                     <a href="#" id="qvRfqLink" class="btn" style="background:#1e40af;color:white;font-weight:700;padding:12px 18px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;text-decoration:none">
-                        📋 Request RFQ
+                        📋 @t('shop.request_rfq', 'Request RFQ')
                     </a>
                     @endif
                 </div>
@@ -446,20 +470,20 @@
         <div class="cat-modal-handle"></div>
         <div class="cat-modal-header">
             <div class="cat-modal-title" id="catModalTitle">
-                <span>🏷️ Select Category</span>
+                <span>🏷️ @t('shop.select_category', 'Select Category')</span>
             </div>
             <button type="button" class="cat-modal-close-btn" onclick="closeCategoryModal()" aria-label="Close modal">✕</button>
         </div>
 
         <div class="cat-modal-search">
-            <input type="text" class="cat-modal-search-input" id="catModalSearchInput" placeholder="Filter categories..." oninput="filterCategoryModalList(this.value)" autocomplete="off">
+            <input type="text" class="cat-modal-search-input" id="catModalSearchInput" placeholder="@t('shop.filter_categories_placeholder', 'Filter categories...')" oninput="filterCategoryModalList(this.value)" autocomplete="off">
         </div>
 
         <div class="cat-modal-body" id="catModalBody">
             <a href="{{ route('shop.index', request()->except('category', 'page')) }}" class="cat-modal-item {{ !request('category') ? 'active' : '' }}">
                 <div class="cat-modal-item-left">
                     <span style="font-size:1.15rem">🌊</span>
-                    <span>All Categories</span>
+                    <span>@t('shop.all_categories', 'All Categories')</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:6px">
                     <span class="cat-modal-item-count">{{ $allCatCount }}</span>

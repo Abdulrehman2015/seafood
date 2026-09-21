@@ -1,18 +1,18 @@
 @if ($paginator->hasPages())
     <nav class="custom-pagination-nav" role="navigation" aria-label="Pagination">
         <div class="custom-pagination-info">
-            Showing <span class="fw-bold">{{ $paginator->firstItem() }}</span> to <span class="fw-bold">{{ $paginator->lastItem() }}</span> of <span class="fw-bold">{{ $paginator->total() }}</span> items
+            @t('shop.showing', 'Showing') <span class="fw-bold">{{ $paginator->firstItem() }}</span> - <span class="fw-bold">{{ $paginator->lastItem() }}</span> / <span class="fw-bold">{{ $paginator->total() }}</span> @t('shop.items_count', 'items')
         </div>
 
         <div class="custom-pagination-pages">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
                 <span class="pagination-btn disabled" aria-disabled="true" aria-label="@lang('pagination.previous')">
-                    &lsaquo; Prev
+                    &lsaquo; @t('common.prev', 'Prev')
                 </span>
             @else
                 <a href="{{ $paginator->previousPageUrl() }}" class="pagination-btn" rel="prev" aria-label="@lang('pagination.previous')">
-                    &lsaquo; Prev
+                    &lsaquo; @t('common.prev', 'Prev')
                 </a>
             @endif
 
@@ -38,11 +38,11 @@
             {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
                 <a href="{{ $paginator->nextPageUrl() }}" class="pagination-btn" rel="next" aria-label="@lang('pagination.next')">
-                    Next &rsaquo;
+                    @t('common.next', 'Next') &rsaquo;
                 </a>
             @else
                 <span class="pagination-btn disabled" aria-disabled="true" aria-label="@lang('pagination.next')">
-                    Next &rsaquo;
+                    @t('common.next', 'Next') &rsaquo;
                 </span>
             @endif
         </div>

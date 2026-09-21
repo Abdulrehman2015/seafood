@@ -68,7 +68,7 @@ class OtpVerificationController extends Controller
         $user = $this->resolveTargetUser($request);
 
         if (!$user) {
-            return redirect()->route('login')->with('error', 'Session expired. Please sign in or register.');
+            return redirect()->route('login', ['locale' => current_locale()])->with('error', __t('auth.session_expired', 'Session expired. Please sign in or register.'));
         }
 
         if ($user->isEmailVerified()) {
@@ -82,24 +82,25 @@ class OtpVerificationController extends Controller
                 return redirect()->route('admin.dashboard');
             }
             if ($user->isPending()) {
-                return redirect()->route('approval.pending');
+                return redirect()->route('approval.pending', ['locale' => current_locale()]);
             }
-            return redirect()->route('account.dashboard')->with('success', 'Your account has been verified and approved.');
+            return redirect()->route('account.dashboard', ['locale' => current_locale()])->with('success', __t('auth.account_verified_approved', 'Your account has been verified and approved.'));
         }
 
         $isBlocked = $user->isOtpBlocked();
         $hasUsedResend = $user->hasUsedOtpResend();
         $isLocked = $user->hasExceededOtpAttempts() || $isBlocked;
 
-        // If no OTP exists yet, not blocked, and not locked, generate initial one
-        if (empty($user->email_otp_code) && !$isLocked) {
+        // If no OTP exists yet, or if it expired, and user is not locked, generate fresh one
+        if ((empty($user->email_otp_code) || $user->isOtpExpired()) && !$isLocked) {
             $otp = $user->generateEmailOtp(false);
             Setting::configureMailer();
             try {
-                Mail::to($user->email)->send(new SendEmailOtp($user, $otp));
+                Mail::to($user->email)->send(new SendEmailOtp($user, $otp, $user->preferred_locale ?? current_locale()));
             } catch (\Throwable $e) {
                 Log::error("Failed to dispatch initial OTP to {$user->email}: " . $e->getMessage());
             }
+            $user->refresh();
         }
 
         $attemptsUsed = (int) $user->email_otp_attempts;
@@ -107,8 +108,8 @@ class OtpVerificationController extends Controller
         $isExpired = $user->isOtpExpired();
 
         $cooldownRemaining = 0;
-        if ($user->email_otp_sent_at) {
-            $elapsed = now()->diffInSeconds($user->email_otp_sent_at);
+        if ($user->email_otp_sent_at && !$isExpired) {
+            $elapsed = max(0, now()->timestamp - \Carbon\Carbon::parse($user->email_otp_sent_at)->timestamp);
             if ($elapsed < 60) {
                 $cooldownRemaining = 60 - $elapsed;
             }
@@ -135,7 +136,7 @@ class OtpVerificationController extends Controller
         $user = $this->resolveTargetUser($request);
 
         if (!$user) {
-            return redirect()->route('login')->with('error', 'Session expired. Please sign in or register.');
+            return redirect()->route('login', ['locale' => current_locale()])->with('error', __t('auth.session_expired', 'Session expired. Please sign in or register.'));
         }
 
         if ($user->isEmailVerified()) {
@@ -149,15 +150,15 @@ class OtpVerificationController extends Controller
                 return redirect()->route('admin.dashboard');
             }
             if ($user->isPending()) {
-                return redirect()->route('approval.pending');
+                return redirect()->route('approval.pending', ['locale' => current_locale()]);
             }
-            return redirect()->route('account.dashboard')->with('success', 'Your account has been verified and approved.');
+            return redirect()->route('account.dashboard', ['locale' => current_locale()])->with('success', __t('auth.account_verified_approved', 'Your account has been verified and approved.'));
         }
 
         // Check if account is blocked
         if ($user->isOtpBlocked()) {
             return back()->withErrors([
-                'otp' => 'Your account is blocked. Please contact support.',
+                'otp' => __t('auth.otp_error_blocked', 'Your account is blocked. Please contact support.'),
             ]);
         }
 
@@ -166,12 +167,12 @@ class OtpVerificationController extends Controller
             if ($user->hasUsedOtpResend()) {
                 $user->blockUserForOtpFailure();
                 return back()->withErrors([
-                    'otp' => 'Your account has been blocked due to multiple failed verification attempts. Please contact support.',
+                    'otp' => __t('auth.otp_error_blocked_attempts', 'Your account has been blocked due to multiple failed verification attempts. Please contact support.'),
                 ]);
             }
 
             return back()->withErrors([
-                'otp' => 'Maximum attempts reached (3/3). This code has been deactivated. Please click "Send Me a New Code" below.',
+                'otp' => __t('auth.otp_error_max_attempts', 'Maximum attempts reached (3/3). This code has been deactivated. Please click "Send Me a New Code" below.'),
             ]);
         }
 
@@ -179,23 +180,16 @@ class OtpVerificationController extends Controller
         $request->validate([
             'otp' => ['required', 'string', 'regex:/^[0-9]{6}$/'],
         ], [
-            'otp.required' => 'Please enter the 6-digit verification code.',
-            'otp.regex'    => 'The verification code must be exactly 6 numeric digits.',
+            'otp.required' => __t('auth.otp_error_required', 'Please enter the 6-digit verification code.'),
+            'otp.regex'    => __t('auth.otp_error_regex', 'The verification code must be exactly 6 numeric digits.'),
         ]);
 
         $inputOtp = trim($request->otp);
 
         // Check code expiration
         if ($user->isOtpExpired()) {
-            if ($user->hasUsedOtpResend()) {
-                $user->blockUserForOtpFailure();
-                return back()->withErrors([
-                    'otp' => 'This verification code has expired and your allowed resend limit has been reached. Your account has been blocked. Please contact support.',
-                ]);
-            }
-
             return back()->withErrors([
-                'otp' => 'This verification code has expired (valid for 10 minutes). Please request a new code below.',
+                'otp' => __t('auth.otp_error_expired', 'This verification code has expired (valid for 10 minutes). Please request a new code below.'),
             ]);
         }
 
@@ -207,18 +201,18 @@ class OtpVerificationController extends Controller
             // If account got blocked (failed on the resent OTP)
             if ($user->isOtpBlocked()) {
                 return back()->withErrors([
-                    'otp' => 'Your account has been blocked due to multiple failed verification attempts. Please contact support.',
+                    'otp' => __t('auth.otp_error_blocked_attempts', 'Your account has been blocked due to multiple failed verification attempts. Please contact support.'),
                 ]);
             }
 
             if ($remaining === 0) {
                 return back()->withErrors([
-                    'otp' => 'Incorrect verification code. You have reached the maximum of 3 failed attempts. Please click "Send Me a New Code" below.',
+                    'otp' => __t('auth.otp_error_max_attempts', 'Maximum attempts reached (3/3). This code has been deactivated. Please click "Send Me a New Code" below.'),
                 ]);
             }
 
             return back()->withErrors([
-                'otp' => "Incorrect verification code. You have {$remaining} attempt(s) remaining.",
+                'otp' => __t('auth.otp_error_incorrect', "Incorrect verification code. :remaining attempt(s) remaining.", ['remaining' => $remaining]),
             ]);
         }
 
@@ -244,8 +238,8 @@ class OtpVerificationController extends Controller
         // Dispatch Welcome Email & Admin Notification
         Setting::configureMailer();
         try {
-            Mail::to($user->email)->send(new UserRegistered($user));
-            Log::info("Registration welcome email dispatched to verified user: {$user->email}");
+            Mail::to($user->email)->send(new UserRegistered($user, $user->preferred_locale ?? current_locale()));
+            Log::info("Registration welcome email dispatched to verified user: {$user->email} in locale: " . ($user->preferred_locale ?? current_locale()));
         } catch (\Throwable $e) {
             Log::error("Failed to send welcome email to {$user->email}: " . $e->getMessage());
         }
@@ -261,11 +255,11 @@ class OtpVerificationController extends Controller
 
         // If commercial customer pending review, direct to approval pending
         if ($user->isPending()) {
-            return redirect()->route('approval.pending')->with('new_registration', true);
+            return redirect()->route('approval.pending', ['locale' => current_locale()])->with('new_registration', true);
         }
 
         // Retail customer: direct to shop with confirmation
-        return redirect()->route('shop.index')->with('success', 'Email verified successfully! Welcome to MST Seafood.');
+        return redirect()->route('shop.index', ['locale' => current_locale()])->with('success', __t('auth.email_verified_welcome', 'Email verified successfully! Welcome to MST Seafood.'));
     }
 
     /**
@@ -280,30 +274,34 @@ class OtpVerificationController extends Controller
         }
 
         if ($user->isEmailVerified()) {
-            return redirect()->route('shop.index');
+            return redirect()->route('shop.index', ['locale' => current_locale()]);
         }
 
         // Check if account is blocked
         if ($user->isOtpBlocked()) {
             return back()->withErrors([
-                'resend' => 'Your account has been blocked due to failed verification attempts. Please contact support.',
+                'resend' => __t('auth.otp_error_blocked_attempts', 'Your account has been blocked due to failed verification attempts. Please contact support.'),
             ]);
         }
 
-        // Rule 1: User can click "Send me a new code" only 1 time
-        if ($user->hasUsedOtpResend()) {
+        // If code has expired, reset resend counter so user can get a new code cycle
+        if ($user->isOtpExpired()) {
+            $user->email_otp_resends = 0;
+            $user->email_otp_attempts = 0;
+            $user->save();
+        } elseif ($user->hasUsedOtpResend()) {
             return back()->withErrors([
-                'resend' => 'You have already used your 1 allowed code resend. The resend option is now disabled.',
+                'resend' => __t('auth.otp_resend_limit_reached', 'You have already used your 1 allowed code resend. The resend option is now disabled.'),
             ]);
         }
 
-        // Enforce cooldown only if user is not in a locked state
-        if (!$user->hasExceededOtpAttempts() && $user->email_otp_sent_at) {
-            $elapsed = now()->diffInSeconds($user->email_otp_sent_at);
+        // Enforce cooldown only if user is not in a locked state and code has not expired
+        if (!$user->hasExceededOtpAttempts() && !$user->isOtpExpired() && $user->email_otp_sent_at) {
+            $elapsed = max(0, now()->timestamp - \Carbon\Carbon::parse($user->email_otp_sent_at)->timestamp);
             if ($elapsed < 30) {
                 $wait = 30 - $elapsed;
                 return back()->withErrors([
-                    'resend' => "Please wait {$wait} second(s) before requesting another verification code.",
+                    'resend' => __t('auth.otp_resend_cooldown', "Please wait :seconds second(s) before requesting another verification code.", ['seconds' => $wait]),
                 ]);
             }
         }
@@ -313,14 +311,14 @@ class OtpVerificationController extends Controller
 
         Setting::configureMailer();
         try {
-            Mail::to($user->email)->send(new SendEmailOtp($user, $otp));
-            Log::info("Fresh OTP code (resend 1/1) dispatched to user {$user->email}");
+            Mail::to($user->email)->send(new SendEmailOtp($user, $otp, $user->preferred_locale ?? current_locale()));
+            Log::info("Fresh OTP code (resend 1/1) dispatched to user {$user->email} in locale: " . ($user->preferred_locale ?? current_locale()));
         } catch (\Throwable $e) {
             Log::error("Failed to resend OTP to {$user->email}: " . $e->getMessage());
-            return back()->with('error', 'Unable to send email right now. Please check your SMTP settings or try again shortly.');
+            return back()->with('error', __t('auth.otp_email_send_failed', 'Unable to send email right now. Please check your SMTP settings or try again shortly.'));
         }
 
-        return back()->with('status', 'A new 6-digit verification code has been sent to your email. You have 3 attempts to verify. Note: this was your 1 allowed resend.');
+        return back()->with('status', __t('auth.otp_success_resent', 'A fresh 6-digit verification code has been dispatched to your email.'));
     }
 
     /**
@@ -343,7 +341,7 @@ class OtpVerificationController extends Controller
             'approved' => $user->isApproved(),
             'status'   => $user->approval_status,
             'redirect' => $user->isEmailVerified()
-                ? ($user->isAdmin() ? route('admin.dashboard') : ($user->isPending() ? route('approval.pending') : route('account.dashboard')))
+                ? ($user->isAdmin() ? route('admin.dashboard') : ($user->isPending() ? route('approval.pending', ['locale' => current_locale()]) : route('account.dashboard', ['locale' => current_locale()])))
                 : null,
         ]);
     }

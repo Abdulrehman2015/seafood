@@ -1,5 +1,9 @@
 @extends('emails.layout')
 
+@php
+    $mailLocale = 'en';
+@endphp
+
 @section('title', 'New Order Received #' . ($order->order_number ?? $order->id))
 @section('preheader', 'New order #' . ($order->order_number ?? $order->id) . ' placed by ' . ($order->customer_name ?? 'Customer') . ' (RM ' . number_format($order->total ?? 0, 2) . ')')
 
@@ -9,7 +13,7 @@
     <tr>
         <td>
             <div style="display: inline-block; background-color: #eff6ff; color: #1d4ed8; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 9999px; border: 1px solid #bfdbfe; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 12px;">
-                🔔 New Order Alert · 新订单通知
+                🔔 New Order Alert
             </div>
         </td>
     </tr>

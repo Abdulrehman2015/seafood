@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'MST Import and Export Sdn Bhd — Frozen Food Sourcing, Trading & Distribution')
-@section('meta_description', 'MST Import and Export Sdn Bhd provides frozen food sourcing, trading and distribution solutions for restaurants, food businesses, retailers, wholesalers and trading partners.')
+@section('title', 'MST Import & Export | Frozen Food Sourcing & Trading')
+@section('meta_description', 'MST Import and Export provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.')
 
 @section('content')
 
@@ -25,39 +25,49 @@
             {{-- Live badge --}}
             <div class="mika-live-badge">
                 <span class="mika-live-dot"></span>
-                🏆 ESTABLISHED IN 2014 · JOHOR BAHRU, MALAYSIA
+                @t('home.hero_badge', 'ESTABLISHED IN 2014 · JOHOR BAHRU, MALAYSIA')
             </div>
 
             <h1 class="mika-hero-h1">
-                MORE THAN A SUPPLIER.<br>
-                <span class="mika-hero-gradient">YOUR SOURCING &amp;</span><br>
-                <span class="mika-hero-gradient">SUPPLY PARTNER.</span>
+                @if(current_locale() === 'zh')
+                    不止是供货商。<br>
+                    <span class="mika-hero-gradient">更是您值得信赖的</span><br>
+                    <span class="mika-hero-gradient">全球采购与供应链战略伙伴。</span>
+                @elseif(current_locale() === 'bm')
+                    LEBIH DARIPADA PEMBEKAL.<br>
+                    <span class="mika-hero-gradient">RAKAN STRATEGIK</span><br>
+                    <span class="mika-hero-gradient">PEROLEHAN &amp; BEKALAN ANDA.</span>
+                @else
+                    MORE THAN A SUPPLIER.<br>
+                    <span class="mika-hero-gradient">YOUR SOURCING &amp;</span><br>
+                    <span class="mika-hero-gradient">SUPPLY PARTNER.</span>
+                @endif
             </h1>
 
             <div style="font-size:1.05rem;font-weight:700;color:#93c5fd;margin-bottom:12px;letter-spacing:0.02em;">
-                Frozen Seafood · Meat · Frozen Food
+                @t('home.popular_categories_desc', 'Frozen Seafood · Meat · Frozen Food')
             </div>
 
             <p class="mika-hero-sub">
-                MST Import and Export Sdn Bhd provides frozen food sourcing, trading and distribution solutions for restaurants, food businesses, retailers, wholesalers and trading partners. Can't find what you need? We source it. With our sourcing network, cold-chain infrastructure and supply capabilities, we help customers find the right products, manage supply requirements and build reliable long-term partnerships across regional and international markets.
+                @t('home.hero_subtitle', 'MST Import and Export Sdn Bhd provides frozen food sourcing, trading and distribution solutions for restaurants, food businesses, retailers, wholesalers and trading partners. Can\'t find what you need? We source it. With our sourcing network, cold-chain infrastructure and supply capabilities, we help customers find the right products, manage supply requirements and build reliable long-term partnerships across regional and international markets.')
             </p>
 
             {{-- Customer type pills --}}
             <div class="mika-type-pills">
-                <span class="mika-pill">🛒 Retail</span>
-                <span class="mika-pill">🏪 Walk-in</span>
-                <span class="mika-pill">🏭 Wholesale</span>
-                <span class="mika-pill">📦 Trading</span>
-                <span class="mika-pill">🌏 International</span>
+                <span class="mika-pill">🛒 @t('common.retail', 'Retail')</span>
+                <span class="mika-pill">🏪 @t('nav.walkin_mode', 'Walk-in')</span>
+                <span class="mika-pill">🏭 @t('home.b2b_banner_title', 'Wholesale')</span>
+                <span class="mika-pill">📦 @t('home.stat_clients', 'Trading')</span>
+                <span class="mika-pill">🌏 @t('about.global_sourcing', 'International')</span>
             </div>
 
             {{-- CTAs --}}
             <div class="mika-hero-cta">
                 <a href="{{ route('shop.index') }}" class="mika-btn-primary">
-                    Explore Our Products
+                    @t('home.hero_cta_shop', 'Explore Our Products')
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
-                <a href="{{ route('contact') }}#quote" class="mika-btn-ghost">Request a Quote</a>
+                <a href="{{ route('contact') }}#quote" class="mika-btn-ghost">@t('home.hero_cta_rfq', 'Request a Quote')</a>
             </div>
 
         </div>
@@ -65,22 +75,29 @@
         {{-- RIGHT: Hero Image (Vertically and horizontally centered) --}}
         <div class="mika-hero-right">
             <div class="mika-image-frame">
-                <img src="{{ asset('images/hero-banner.jpg') }}"
-                     alt="Premium frozen seafood — MST Import and Export Sdn Bhd"
-                     class="mika-hero-img">
+                <picture>
+                    <source srcset="{{ asset('images/hero-banner.webp') }}" type="image/webp">
+                    <img src="{{ asset('images/hero-banner.jpg') }}"
+                         alt="Premium frozen seafood — MST Import and Export Sdn Bhd"
+                         class="mika-hero-img"
+                         width="1376"
+                         height="768"
+                         fetchpriority="high"
+                         decoding="async">
+                </picture>
                 {{-- Floating feature cards --}}
                 <div class="mika-float-card mika-float-top">
                     <span style="font-size:1.4rem">🐟</span>
                     <div>
-                        <div style="font-weight:700;font-size:0.8rem;color:#0f172a">Fresh Catch Daily</div>
-                        <div style="font-size:0.7rem;color:#64748b">IQF Frozen at Source</div>
+                        <div style="font-weight:700;font-size:0.8rem;color:#0f172a">@t('home.float_fresh_catch', 'Fresh Catch Daily')</div>
+                        <div style="font-size:0.7rem;color:#64748b">@t('home.float_iqf_frozen', 'IQF Frozen at Source')</div>
                     </div>
                 </div>
                 <div class="mika-float-card mika-float-bottom">
                     <span style="font-size:1.4rem">❄️</span>
                     <div>
-                        <div style="font-weight:700;font-size:0.8rem;color:#0f172a">-18°C Cold Chain</div>
-                        <div style="font-size:0.7rem;color:#64748b">Maintained end-to-end</div>
+                        <div style="font-weight:700;font-size:0.8rem;color:#0f172a">@t('home.float_cold_chain', '-18°C Cold Chain')</div>
+                        <div style="font-size:0.7rem;color:#64748b">@t('home.float_maintained', 'Maintained end-to-end')</div>
                     </div>
                 </div>
             </div>
@@ -93,37 +110,37 @@
         <div class="mika-stats-bar">
             <div class="mika-stat-item">
                 <div class="mika-stat-num">2014</div>
-                <div class="mika-stat-lbl">Established</div>
+                <div class="mika-stat-lbl">@t('home.stat_established', 'Established')</div>
             </div>
             <div class="mika-stat-divider"></div>
             <div class="mika-stat-item">
-                <div class="mika-stat-num" style="font-size:1.35rem;">CUSTOMISED</div>
-                <div class="mika-stat-lbl">Sourcing</div>
+                <div class="mika-stat-num" style="font-size:1.35rem;">@t('home.stat_customised', 'CUSTOMISED')</div>
+                <div class="mika-stat-lbl">@t('home.stat_sourcing', 'Sourcing')</div>
             </div>
             <div class="mika-stat-divider"></div>
             <div class="mika-stat-item">
-                <div class="mika-stat-num" style="font-size:1.35rem;">COLD-CHAIN</div>
-                <div class="mika-stat-lbl">Storage &amp; Handling</div>
+                <div class="mika-stat-num" style="font-size:1.35rem;">@t('home.stat_coldchain', 'COLD-CHAIN')</div>
+                <div class="mika-stat-lbl">@t('home.stat_storage_handling', 'Storage & Handling')</div>
             </div>
             <div class="mika-stat-divider"></div>
             <div class="mika-stat-item">
-                <div class="mika-stat-num">B2B</div>
-                <div class="mika-stat-lbl">Supply &amp; Distribution</div>
+                <div class="mika-stat-num">@t('home.stat_b2b', 'B2B')</div>
+                <div class="mika-stat-lbl">@t('home.stat_supply_dist', 'Supply & Distribution')</div>
             </div>
         </div>
 
         {{-- Centered trust badges --}}
         <div class="mika-trust-row">
-            <div class="mika-trust-badge">✅ Quality Assured</div>
-            <div class="mika-trust-badge">🔬 HACCP &amp; GMP Aligned</div>
-            <div class="mika-trust-badge">❄️ -18°C to -25°C Cold Chain</div>
+            <div class="mika-trust-badge">✅ @t('home.trust_quality', 'Quality Assured')</div>
+            <div class="mika-trust-badge">🔬 @t('home.trust_haccp', 'HACCP & GMP Aligned')</div>
+            <div class="mika-trust-badge">❄️ @t('home.trust_coldchain', '-18°C to -25°C Cold Chain')</div>
         </div>
     </div>
 
     {{-- Scroll indicator --}}
     <div class="mika-scroll-hint">
         <div class="mika-scroll-line"></div>
-        <span>Scroll</span>
+        <span>@t('home.scroll', 'Scroll')</span>
     </div>
 
 </section>
@@ -820,6 +837,214 @@
         justify-content: center;
     }
 }
+
+/* ════════════════════════════════════════
+   FEATURED PRODUCTS CARD (HOMEPAGE)
+   Matching User Reference Design
+   ════════════════════════════════════════ */
+.featured-products-section .product-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.featured-products-section .product-card:hover {
+    transform: translateY(-5px);
+    border-color: #93c5fd;
+    box-shadow: 0 16px 32px rgba(37, 99, 235, 0.12);
+}
+.featured-products-section .product-card-img {
+    position: relative;
+    height: 200px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #f8fafc;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+.featured-products-section .product-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.featured-products-section .product-card:hover .product-card-img img {
+    transform: scale(1.04);
+}
+.featured-products-section .badge-featured {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    border-radius: 9999px;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 5px rgba(180, 83, 9, 0.12);
+    z-index: 2;
+}
+.featured-products-section .badge-low-stock {
+    position: absolute;
+    bottom: 10px;
+    left: 14px;
+    background: rgba(255, 247, 237, 0.95);
+    color: #c2410c;
+    border: 1px solid #ffedd5;
+    border-radius: 9999px;
+    padding: 3px 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    z-index: 2;
+}
+.featured-products-section .product-card-body {
+    padding: 18px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.featured-products-section .product-category {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #2563eb;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+    line-height: 1.2;
+}
+.featured-products-section .product-name {
+    font-family: inherit;
+    font-size: 1.06rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.35;
+    margin-bottom: 12px;
+    min-height: 2.7em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.featured-products-section .product-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+.featured-products-section .product-meta-item {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #475569;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #f8fafc;
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+.featured-products-section .product-price-block {
+    margin-top: auto;
+    margin-bottom: 18px;
+}
+.featured-products-section .product-price {
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border: none;
+    padding: 0;
+}
+.featured-products-section .price-amount {
+    font-size: 1.65rem;
+    font-weight: 900;
+    color: #1d4ed8;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+}
+.featured-products-section .price-base-rm {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #64748b;
+    margin-top: 2px;
+    display: block;
+}
+.featured-products-section .product-moq {
+    margin-top: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    align-self: flex-start;
+}
+.featured-products-section .product-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    width: 100%;
+}
+.featured-products-section .btn-card-details {
+    width: 100%;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    color: #1e293b;
+    font-size: 0.92rem;
+    font-weight: 700;
+    padding: 10px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+.featured-products-section .btn-card-details:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+.featured-products-section .card-cart-form {
+    width: 100%;
+    margin: 0;
+    display: block;
+}
+.featured-products-section .btn-card-cart {
+    width: 100%;
+    background: #2563eb;
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 12px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-sizing: border-box;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+    transition: all 0.2s ease;
+}
+.featured-products-section .btn-card-cart:hover {
+    background: #1d4ed8;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
 </style>
 
 
@@ -828,10 +1053,10 @@
 <section class="section category-section" style="padding-top: var(--space-16); padding-bottom: var(--space-12);">
     <div class="container">
         <div class="section-header" style="text-align:center;max-width:760px;margin:0 auto var(--space-10);">
-            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">BROWSE BY CATEGORY</div>
-            <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:10px;">What Are You Looking For?</h2>
+            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('home.categories_eyebrow', 'BROWSE BY CATEGORY')</div>
+            <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:10px;">@t('home.popular_categories_title', 'What Are You Looking For?')</h2>
             <p class="section-subtitle" style="font-size:0.95rem;color:var(--text-muted);line-height:1.6;margin:0 auto;text-align:center;">
-                From seafood and meat to frozen food, food ingredients and cuisine-specific products, explore our growing range of products for restaurants, food businesses, retailers, wholesalers and trading partners.
+                @t('home.popular_categories_desc', 'From seafood and meat to frozen food, food ingredients and cuisine-specific products, explore our growing range of products for restaurants, food businesses, retailers, wholesalers and trading partners.')
             </p>
         </div>
 
@@ -839,43 +1064,43 @@
             <!-- 1. Seafood -->
             <a href="{{ route('shop.index', ['category' => 'seafood-products']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
                 <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">🐟</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">SEAFOOD</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">Fish · Prawns · Squid · Crab · Shellfish &amp; More</div>
+                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.seafood', 'SEAFOOD')</div>
+                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.seafood_desc', 'Fish · Prawns · Squid · Crab · Shellfish & More')</div>
             </a>
 
             <!-- 2. Meat -->
             <a href="{{ route('shop.index', ['category' => 'meat-chicken']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
                 <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">🥩</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">MEAT</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">Chicken · Beef · Pork · Other Frozen Meat Products</div>
+                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.meat', 'MEAT')</div>
+                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.meat_desc', 'Chicken · Beef · Pork · Other Frozen Meat Products')</div>
             </a>
 
             <!-- 3. Frozen Food -->
             <a href="{{ route('shop.index', ['category' => 'frozen-product-food']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
                 <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">❄️</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">FROZEN FOOD</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">Processed Foods · Ready-to-Cook · Snacks · Foodservice Products</div>
+                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.frozen_food', 'FROZEN FOOD')</div>
+                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.frozen_food_desc', 'Processed Foods · Ready-to-Cook · Snacks · Foodservice Products')</div>
             </a>
 
             <!-- 4. Food Ingredients -->
             <a href="{{ route('shop.index', ['category' => 'steamboat']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
                 <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">🧂</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">FOOD INGREDIENTS</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">Raw Materials · Fish Paste · Sauces · Condiments · Cooking Ingredients</div>
+                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.food_ingredients', 'FOOD INGREDIENTS')</div>
+                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.food_ingredients_desc', 'Raw Materials · Fish Paste · Sauces · Condiments · Cooking Ingredients')</div>
             </a>
 
             <!-- 5. Cuisine Ingredients -->
             <a href="{{ route('shop.index', ['category' => 'dimsum']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
                 <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">🌏</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">CUISINE INGREDIENTS</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">Japanese · Korean · Chinese · Western Cuisine Ingredients</div>
+                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.cuisine_ingredients', 'CUISINE INGREDIENTS')</div>
+                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.cuisine_ingredients_desc', 'Japanese · Korean · Chinese · Western Cuisine Ingredients')</div>
             </a>
 
             <!-- 6. Desserts & Sweet Treats -->
             <a href="{{ route('shop.index', ['category' => 'dessert']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
                 <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">🍰</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">DESSERTS &amp; SWEET TREATS</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">Frozen Desserts · Pastries · Cakes · Sweet Products &amp; More</div>
+                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.desserts', 'DESSERTS & SWEET TREATS')</div>
+                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.desserts_desc', 'Frozen Desserts · Pastries · Cakes · Sweet Products & More')</div>
             </a>
 
             <!-- 7. Customised Sourcing (Special Card) -->
@@ -884,19 +1109,19 @@
                     <div class="sourcing-card-content">
                         <span style="font-size:2.8rem;flex-shrink:0;">📦</span>
                         <div>
-                            <div style="font-size:0.75rem;font-weight:700;color:#93c5fd;letter-spacing:0.08em;text-transform:uppercase;">YOU NEED IT. WE SOURCE IT.</div>
-                            <div style="font-size:1.3rem;font-weight:800;color:#ffffff;margin:2px 0 4px;">CUSTOMISED SOURCING SOLUTIONS</div>
+                            <div style="font-size:0.75rem;font-weight:700;color:#93c5fd;letter-spacing:0.08em;text-transform:uppercase;">@t('home.sourcing_tag', 'YOU NEED IT. WE SOURCE IT.')</div>
+                            <div style="font-size:1.3rem;font-weight:800;color:#ffffff;margin:2px 0 4px;">@t('home.sourcing_title', 'CUSTOMISED SOURCING SOLUTIONS')</div>
                             <p style="color:#dbeafe;font-size:0.92rem;margin:0;max-width:720px;line-height:1.5;">
-                                Can't find what you need? Tell us what you're looking for. We work with our sourcing network to identify suitable products and supply options based on your requirements.
+                                @t('home.sourcing_desc', 'Can\'t find what you need? Tell us what you\'re looking for. We work with our sourcing network to identify suitable products and supply options based on your requirements.')
                             </p>
                         </div>
                     </div>
                     <div class="sourcing-card-actions">
                         <a href="{{ route('shop.index') }}" class="btn btn-secondary" style="background:rgba(255,255,255,0.15);color:white;border-color:rgba(255,255,255,0.3);padding:10px 18px;font-size:0.88rem;font-weight:700;">
-                            EXPLORE PRODUCTS →
+                            @t('home.explore_products_btn', 'EXPLORE PRODUCTS →')
                         </a>
                         <a href="{{ route('contact') }}#quote" class="btn btn-primary" style="background:#3b82f6;border-color:#3b82f6;color:white;padding:10px 20px;font-size:0.88rem;font-weight:700;">
-                            REQUEST A QUOTE
+                            @t('home.request_quote_btn', 'REQUEST A QUOTE')
                         </a>
                     </div>
                 </div>
@@ -914,18 +1139,18 @@
         <div style="display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom: var(--space-8);">
             <div>
                 <div class="section-eyebrow" style="margin-bottom:8px;">
-                    ⭐ FEATURED PRODUCTS
+                    ⭐ @t('home.featured_eyebrow', 'FEATURED PRODUCTS')
                 </div>
                 <h2 style="font-family:var(--font-heading);font-size:clamp(1.6rem,4vw,2.25rem);font-weight:800;color:var(--text-primary);margin:0 0 8px;">
-                    PRODUCT HIGHLIGHTS
+                    @t('home.featured_title', 'PRODUCT HIGHLIGHTS')
                 </h2>
                 <p style="color:var(--text-muted);font-size:0.95rem;margin:0;max-width:760px;line-height:1.5;">
-                    Explore a selection of products from our current range of frozen seafood, meat and frozen food.<br>
-                    <span style="font-size:0.88rem;color:#64748b;">Retail prices are displayed for reference. Wholesale and trading customers can <a href="{{ route('register') }}" style="color:#1d4ed8;font-weight:600;">register</a> for account-based pricing or contact our team for customised quotations.</span>
+                    @t('home.featured_desc', 'Explore a selection of products from our current range of frozen seafood, meat and frozen food.')<br>
+                    <span style="font-size:0.88rem;color:#64748b;">@t('home.featured_notice', 'Retail prices are displayed for reference. Wholesale and trading customers can register for account-based pricing or contact our team for customised quotations.')</span>
                 </p>
             </div>
             <a href="{{ route('shop.index') }}" class="btn btn-secondary" style="white-space:nowrap;flex-shrink:0;">
-                View All Products →
+                @t('common.view_all_products', 'View All Products') →
             </a>
         </div>
 
@@ -943,24 +1168,24 @@
                             <div class="product-img-placeholder">🐟</div>
                         @endif
                         @if($product->is_featured)
-                            <span class="product-badge badge-featured">⭐ Featured</span>
+                            <span class="product-badge badge-featured">⭐ @t('product.featured', 'Featured')</span>
                         @endif
                         @if($product->stock_quantity <= 5 && $product->track_stock)
-                            <span class="product-badge badge-low-stock" style="top:auto;bottom:10px;left:10px;">Low Stock</span>
+                            <span class="product-badge badge-low-stock" style="top:auto;bottom:10px;left:10px;">@t('product.low_stock', 'Low Stock')</span>
                         @endif
                     </div>
                     <div class="product-card-body">
-                        <div class="product-category">{{ $product->category?->name ?? 'Seafood' }}</div>
+                        <div class="product-category">{{ strtoupper($product->category?->name ?? 'Seafood') }}</div>
                         <h3 class="product-name">{{ $product->name }}</h3>
                         <div class="product-meta">
                             @if($product->weight)
-                                <span class="product-meta-item">⚖ {{ $product->weight }}</span>
+                                <span class="product-meta-item">⚖️ {{ $product->weight }}</span>
                             @endif
                             @if($product->origin)
                                 <span class="product-meta-item">🌍 {{ $product->origin }}</span>
                             @endif
                         </div>
-                        <div class="product-price-row">
+                        <div class="product-price-block">
                             @if($price !== null)
                                 <div class="product-price js-currency-price"
                                      data-base-rm="{{ $product->getPriceForGroup($group) ?? 0 }}"
@@ -972,31 +1197,29 @@
                                      data-group="{{ $group }}"
                                      @endif
                                 >
-                                    <span class="price-amount">{{ $displayPrice['formatted'] }}</span>
-                                    <span class="price-base-rm" style="{{ $currentCurrency !== 'MYR' && !empty($displayPrice['base_rm']) ? '' : 'display:none' }};font-size:0.75rem;font-weight:500;color:#64748b;display:block">
-                                        RM {{ number_format($product->getPriceForGroup($group), 2) }}
-                                    </span>
+                                     <span class="price-amount">{{ $displayPrice['formatted'] }}</span>
+                                     <span class="price-base-rm show-always">RM {{ number_format($product->getPriceForGroup($group), 2) }}</span>
                                 </div>
                             @else
-                                <div class="product-price rfq">Price on Request</div>
+                                <div class="product-price rfq">@t('product.price_on_request', 'Price on Request')</div>
                             @endif
                             @if(in_array($group, ['wholesale','trading']) && $product->getMoqForGroup($group) > 1)
-                                <div class="product-moq">MOQ: {{ $product->getMoqForGroup($group) }}</div>
+                                <div class="product-moq">@t('product.moq', 'MOQ'): {{ $product->getMoqForGroup($group) }}</div>
                             @endif
                         </div>
                         <div class="product-card-actions">
-                            <a href="{{ route('shop.show', $product) }}" class="btn btn-secondary btn-sm action-btn-view">View</a>
+                            <a href="{{ route('shop.show', $product) }}" class="btn-card-details">@t('common.view_details', 'View Details')</a>
                             @if($price !== null)
-                                <form action="{{ route('cart.add') }}" method="POST" class="action-form-cart">
+                                <form action="{{ route('cart.add') }}" method="POST" class="card-cart-form">
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                                     <input type="hidden" name="quantity" value="{{ $product->getMoqForGroup($group) }}">
-                                    <button type="submit" class="btn btn-primary btn-sm btn-block">Add to Cart</button>
+                                    <button type="submit" class="btn-card-cart">@t('shop.add_to_cart', 'Add to Cart')</button>
                                 </form>
                             @elseif(auth()->check() && auth()->user()->customer_group === 'trading' && auth()->user()->isApproved())
-                                <a href="{{ route('quotations.create', ['product' => $product->id]) }}" class="btn btn-primary btn-sm action-btn-quote">Request RFQ</a>
+                                <a href="{{ route('quotations.create', ['product' => $product->id]) }}" class="btn-card-cart">@t('shop.request_rfq', 'Request RFQ')</a>
                             @else
-                                <a href="{{ route('shop.show', $product) }}" class="btn btn-secondary btn-sm action-btn-quote">View Product</a>
+                                <a href="{{ route('shop.show', $product) }}" class="btn-card-cart">@t('common.view_details', 'View Product')</a>
                             @endif
                         </div>
                     </div>
@@ -1007,7 +1230,7 @@
         {{-- Mobile-only bottom link --}}
         <div class="mobile-view-all" style="display:none;text-align:center;margin-top:20px;">
             <a href="{{ route('shop.index') }}" class="btn btn-secondary" style="width:100%;max-width:320px;">
-                View All Products →
+                @t('common.view_all_products', 'View All Products') →
             </a>
         </div>
     </div>
@@ -1018,45 +1241,44 @@
 <section class="section" style="background: linear-gradient(180deg, #f8fafc, #ffffff); padding: var(--space-16) 0;">
     <div class="container">
         <div class="section-header" style="text-align:center;max-width:720px;margin:0 auto var(--space-10);">
-            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">HOW IT WORKS</div>
-            <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:8px;">A Smarter Way to Buy</h2>
+            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('home.how_it_works_eyebrow', 'HOW IT WORKS')</div>
+            <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:8px;">@t('home.how_it_works_title', 'A Smarter Way to Buy')</h2>
             <p class="section-subtitle" style="font-size:0.95rem;color:var(--text-muted);margin:0 auto;line-height:1.6;text-align:center;">
-                Different customers. Different needs. One platform.<br>
-                Choose the account type that fits your business and access the products, pricing and purchasing options designed for you.
+                @t('home.how_it_works_subtitle', 'Different customers. Different needs. One platform. Choose the account type that fits your business and access the products, pricing and purchasing options designed for you.')
             </p>
         </div>
         <div class="how-it-works-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:22px;">
             <div class="glass-card p-6" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;padding:28px 22px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.02);">
                 <div style="font-size:2.6rem;margin-bottom:var(--space-3)">🛒</div>
-                <h3 style="font-family:var(--font-heading);margin-bottom:8px;font-size:1.15rem;font-weight:800;color:#0f172a;">RETAIL</h3>
+                <h3 style="font-family:var(--font-heading);margin-bottom:8px;font-size:1.15rem;font-weight:800;color:#0f172a;">@t('home.how_retail_title', 'RETAIL')</h3>
                 <p class="text-sm text-muted" style="line-height:1.6;font-size:0.88rem;color:#64748b;margin-bottom:8px;">
-                    Register for free, browse retail prices, add products to your cart and pay online.
+                    @t('home.how_retail_desc', 'Register for free, browse retail prices, add products to your cart and pay online.')
                 </p>
-                <div style="font-size:0.8rem;font-weight:600;color:#1d4ed8;">Delivery or self-collection available.</div>
+                <div style="font-size:0.8rem;font-weight:600;color:#1d4ed8;">@t('home.how_retail_foot', 'Delivery or self-collection available.')</div>
             </div>
             <div class="glass-card p-6" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;padding:28px 22px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.02);">
                 <div style="font-size:2.6rem;margin-bottom:var(--space-3)">📱</div>
-                <h3 style="font-family:var(--font-heading);margin-bottom:8px;font-size:1.15rem;font-weight:800;color:#0f172a;">WALK-IN</h3>
+                <h3 style="font-family:var(--font-heading);margin-bottom:8px;font-size:1.15rem;font-weight:800;color:#0f172a;">@t('home.how_walkin_title', 'WALK-IN')</h3>
                 <p class="text-sm text-muted" style="line-height:1.6;font-size:0.88rem;color:#64748b;margin-bottom:8px;">
-                    Scan our QR code in-store to access walk-in pricing.
+                    @t('home.how_walkin_desc', 'Scan our QR code in-store to access walk-in pricing.')
                 </p>
-                <div style="font-size:0.8rem;font-weight:600;color:#059669;">No registration required. Pay &amp; self-collect.</div>
+                <div style="font-size:0.8rem;font-weight:600;color:#059669;">@t('home.how_walkin_foot', 'No registration required. Pay & self-collect.')</div>
             </div>
             <div class="glass-card p-6" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;padding:28px 22px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.02);">
                 <div style="font-size:2.6rem;margin-bottom:var(--space-3)">🏭</div>
-                <h3 style="font-family:var(--font-heading);margin-bottom:8px;font-size:1.15rem;font-weight:800;color:#0f172a;">WHOLESALE</h3>
+                <h3 style="font-family:var(--font-heading);margin-bottom:8px;font-size:1.15rem;font-weight:800;color:#0f172a;">@t('home.how_wholesale_title', 'WHOLESALE')</h3>
                 <p class="text-sm text-muted" style="line-height:1.6;font-size:0.88rem;color:#64748b;margin-bottom:8px;">
-                    Register for a wholesale account. Once approved, access exclusive wholesale pricing and applicable MOQ requirements.
+                    @t('home.how_wholesale_desc', 'Register for a wholesale account. Once approved, access exclusive wholesale pricing and applicable MOQ requirements.')
                 </p>
-                <div style="font-size:0.8rem;font-weight:600;color:#d97706;">Built for restaurants, retailers &amp; bulk buyers.</div>
+                <div style="font-size:0.8rem;font-weight:600;color:#d97706;">@t('home.how_wholesale_foot', 'Built for restaurants, retailers & bulk buyers.')</div>
             </div>
             <div class="glass-card p-6" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;padding:28px 22px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.02);">
                 <div style="font-size:2.6rem;margin-bottom:var(--space-3)">📦</div>
-                <h3 style="font-family:var(--font-heading);margin-bottom:8px;font-size:1.15rem;font-weight:800;color:#0f172a;">TRADING</h3>
+                <h3 style="font-family:var(--font-heading);margin-bottom:8px;font-size:1.15rem;font-weight:800;color:#0f172a;">@t('home.how_trading_title', 'TRADING')</h3>
                 <p class="text-sm text-muted" style="line-height:1.6;font-size:0.88rem;color:#64748b;margin-bottom:8px;">
-                    Register for a trading account to access trading prices, bulk purchasing options and Request for Quotation (RFQ) for market-priced products.
+                    @t('home.how_trading_desc', 'Register for a trading account to access trading prices, bulk purchasing options and Request for Quotation (RFQ) for market-priced products.')
                 </p>
-                <div style="font-size:0.8rem;font-weight:600;color:#7c3aed;">For distributors, traders &amp; bulk volume.</div>
+                <div style="font-size:0.8rem;font-weight:600;color:#7c3aed;">@t('home.how_trading_foot', 'For distributors, traders & bulk volume.')</div>
             </div>
         </div>
     </div>
@@ -1066,10 +1288,10 @@
 <section class="section" style="padding:var(--space-16) 0;background:#ffffff;border-top:1px solid #e2e8f0;">
     <div class="container">
         <div class="section-header" style="text-align:center;max-width:760px;margin:0 auto var(--space-10);">
-            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">OUR COMMITMENT TO QUALITY</div>
-            <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:10px;">QUALITY. INTEGRITY. RELIABLE COLD-CHAIN.</h2>
+            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('home.quality_eyebrow', 'OUR COMMITMENT TO QUALITY')</div>
+            <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:10px;">@t('home.quality_title', 'QUALITY. INTEGRITY. RELIABLE COLD-CHAIN.')</h2>
             <p class="section-subtitle" style="font-size:0.95rem;color:var(--text-muted);line-height:1.6;margin:0 auto;text-align:center;">
-                At MST, product quality begins with responsible sourcing and continues through proper handling, temperature-controlled storage and reliable supply. We focus on maintaining product integrity from receiving and storage to order preparation and dispatch.
+                @t('home.quality_subtitle', 'At MST, product quality begins with responsible sourcing and continues through proper handling, temperature-controlled storage and reliable supply. We focus on maintaining product integrity from receiving and storage to order preparation and dispatch.')
             </p>
         </div>
 
@@ -1080,9 +1302,9 @@
                 <div style="width:52px;height:52px;border-radius:12px;background:#ecfdf5;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:var(--space-4);color:#059669">
                     ❄️
                 </div>
-                <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:8px">TEMPERATURE-CONTROLLED STORAGE</h3>
+                <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:8px">@t('home.quality_c1_title', 'TEMPERATURE-CONTROLLED STORAGE')</h3>
                 <p style="font-size:0.875rem;color:#64748b;line-height:1.65;margin:0">
-                    Our cold storage facilities are designed to maintain appropriate frozen temperatures (-18°C to -25°C) and protect product quality throughout storage.
+                    @t('home.quality_c1_desc', 'Our cold storage facilities are designed to maintain appropriate frozen temperatures (-18°C to -25°C) and protect product quality throughout storage.')
                 </p>
             </div>
 
@@ -1092,9 +1314,9 @@
                 <div style="width:52px;height:52px;border-radius:12px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:var(--space-4);color:#2563eb">
                     🔍
                 </div>
-                <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:8px">CAREFUL PRODUCT SOURCING</h3>
+                <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:8px">@t('home.quality_c2_title', 'CAREFUL PRODUCT SOURCING')</h3>
                 <p style="font-size:0.875rem;color:#64748b;line-height:1.65;margin:0">
-                    We work with our sourcing network to identify suitable seafood, meat and frozen food products according to customer requirements, specifications and supply needs.
+                    @t('home.quality_c2_desc', 'We work with our sourcing network to identify suitable seafood, meat and frozen food products according to customer requirements, specifications and supply needs.')
                 </p>
             </div>
 
@@ -1104,9 +1326,9 @@
                 <div style="width:52px;height:52px;border-radius:12px;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:var(--space-4);color:#d97706">
                     📦
                 </div>
-                <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:8px">HYGIENIC HANDLING &amp; PACKING</h3>
+                <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:8px">@t('home.quality_c3_title', 'HYGIENIC HANDLING & PACKING')</h3>
                 <p style="font-size:0.875rem;color:#64748b;line-height:1.65;margin:0">
-                    Structured receiving, handling, packing and order preparation processes help maintain product quality and operational consistency (following HACCP &amp; GMP principles).
+                    @t('home.quality_c3_desc', 'Structured receiving, handling, packing and order preparation processes help maintain product quality and operational consistency (following HACCP & GMP principles).')
                 </p>
             </div>
 
@@ -1116,19 +1338,19 @@
                 <div style="width:52px;height:52px;border-radius:12px;background:#f5f3ff;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:var(--space-4);color:#7c3aed">
                     🚚
                 </div>
-                <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:8px">RELIABLE SUPPLY</h3>
+                <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:8px">@t('home.quality_c4_title', 'RELIABLE SUPPLY')</h3>
                 <p style="font-size:0.875rem;color:#64748b;line-height:1.65;margin:0">
-                    From storage and order preparation to dispatch, our operations are designed to support consistent supply for retail, wholesale, trading and commercial customers.
+                    @t('home.quality_c4_desc', 'From storage and order preparation to dispatch, our operations are designed to support consistent supply for retail, wholesale, trading and commercial customers.')
                 </p>
             </div>
         </div>
 
         <div style="margin-top:32px;text-align:center;padding:18px 24px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;">
             <div style="font-size:1rem;font-weight:800;color:#0f172a;margin-bottom:4px;">
-                BUILT ON INTEGRITY. DELIVERED WITH CONSISTENCY.
+                @t('home.quality_banner_tag', 'BUILT ON INTEGRITY. DELIVERED WITH CONSISTENCY.')
             </div>
             <div style="font-size:0.85rem;color:#1d4ed8;font-weight:700;">
-                MST Import and Export Sdn Bhd · Flow with Integrity, Grow with Strength.
+                @t('home.quality_banner_sub', 'MST Import and Export Sdn Bhd · Flow with Integrity, Grow with Strength.')
             </div>
         </div>
     </div>
@@ -1139,23 +1361,23 @@
     <div class="container">
         <div style="max-width:820px;margin:0 auto 40px;text-align:center;">
             <span style="background:rgba(255,255,255,0.15);color:#93c5fd;font-size:0.75rem;font-weight:700;padding:4px 14px;border-radius:999px;text-transform:uppercase;letter-spacing:0.08em;display:inline-block;margin-bottom:12px;">
-                ✨ CUSTOMISED SOURCING
+                ✨ @t('home.spotlight_eyebrow', 'CUSTOMISED SOURCING')
             </span>
             <h2 style="font-family:var(--font-heading);font-size:clamp(1.6rem, 4vw, 2.3rem);color:#ffffff;margin-bottom:6px;line-height:1.25;">
-                CAN'T FIND WHAT YOU NEED?
+                @t('home.spotlight_title', "CAN'T FIND WHAT YOU NEED?")
             </h2>
             <div style="font-size:1.25rem;font-weight:800;color:#60a5fa;margin-bottom:16px;">
-                YOU NEED IT. WE SOURCE IT.
+                @t('home.spotlight_sub', 'YOU NEED IT. WE SOURCE IT.')
             </div>
             <p style="color:#dbeafe;font-size:0.95rem;line-height:1.7;margin:0 0 24px;">
-                Looking for a specific seafood, meat or frozen food product that is not currently listed in our catalogue? Tell us what you need — from product type and specifications to pack size, origin and quantity. Our team can work with our sourcing network to identify suitable products and supply options for your business. Whether you are a restaurant, food business, retailer, wholesaler or trading partner, we help simplify the sourcing process through one reliable supply partner.
+                @t('home.spotlight_desc', 'Looking for a specific seafood, meat or frozen food product that is not currently listed in our catalogue? Tell us what you need — from product type and specifications to pack size, origin and quantity. Our team can work with our sourcing network to identify suitable products and supply options for your business. Whether you are a restaurant, food business, retailer, wholesaler or trading partner, we help simplify the sourcing process through one reliable supply partner.')
             </p>
             <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                 <a href="{{ route('contact') }}#quote" class="btn btn-primary" style="background:#2563eb;border-color:#2563eb;font-weight:700;padding:12px 24px;">
-                    REQUEST A QUOTE →
+                    @t('home.spotlight_btn_quote', 'REQUEST A QUOTE →')
                 </a>
                 <a href="{{ route('contact') }}" class="btn btn-secondary" style="background:rgba(255,255,255,0.15);color:white;border-color:rgba(255,255,255,0.3);font-weight:700;padding:12px 22px;">
-                    TELL US WHAT YOU NEED →
+                    @t('home.spotlight_btn_tell', 'TELL US WHAT YOU NEED →')
                 </a>
             </div>
         </div>
@@ -1163,30 +1385,30 @@
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:20px;">
             <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 20px;backdrop-filter:blur(8px);">
                 <div style="font-size:2rem;margin-bottom:12px;">🔍</div>
-                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">PRODUCT-SPECIFIC SOURCING</h4>
+                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">@t('home.spotlight_f1_title', 'PRODUCT-SPECIFIC SOURCING')</h4>
                 <p style="font-size:0.85rem;color:#bfdbfe;line-height:1.6;margin:0;">
-                    Looking for a particular product or specification? Tell us your requirements.
+                    @t('home.spotlight_f1_desc', 'Looking for a particular product or specification? Tell us your requirements.')
                 </p>
             </div>
             <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 20px;backdrop-filter:blur(8px);">
                 <div style="font-size:2rem;margin-bottom:12px;">🌏</div>
-                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">MULTI-SOURCE NETWORK</h4>
+                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">@t('home.spotlight_f2_title', 'MULTI-SOURCE NETWORK')</h4>
                 <p style="font-size:0.85rem;color:#bfdbfe;line-height:1.6;margin:0;">
-                    We work with sourcing partners to identify suitable products and supply options.
+                    @t('home.spotlight_f2_desc', 'We work with sourcing partners to identify suitable products and supply options.')
                 </p>
             </div>
             <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 20px;backdrop-filter:blur(8px);">
                 <div style="font-size:2rem;margin-bottom:12px;">📦</div>
-                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">FLEXIBLE QUANTITY</h4>
+                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">@t('home.spotlight_f3_title', 'FLEXIBLE QUANTITY')</h4>
                 <p style="font-size:0.85rem;color:#bfdbfe;line-height:1.6;margin:0;">
-                    From regular supply to specific business requirements, we work around your needs.
+                    @t('home.spotlight_f3_desc', 'From regular supply to specific business requirements, we work around your needs.')
                 </p>
             </div>
             <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 20px;backdrop-filter:blur(8px);">
                 <div style="font-size:2rem;margin-bottom:12px;">🤝</div>
-                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">ONE RELIABLE PARTNER</h4>
+                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">@t('home.spotlight_f4_title', 'ONE RELIABLE PARTNER')</h4>
                 <p style="font-size:0.85rem;color:#bfdbfe;line-height:1.6;margin:0;">
-                    Source, coordinate and supply through one streamlined business relationship.
+                    @t('home.spotlight_f4_desc', 'Source, coordinate and supply through one streamlined business relationship.')
                 </p>
             </div>
         </div>
@@ -1197,10 +1419,10 @@
 <section class="section" style="padding:var(--space-16) 0;background:#ffffff;border-top:1px solid #e2e8f0;">
     <div class="container">
         <div class="section-header" style="text-align:center;max-width:760px;margin:0 auto var(--space-10);">
-            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">CUSTOMER TESTIMONIALS</div>
-            <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:10px;">What Our Customers Say</h2>
+            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('home.testi_eyebrow', 'CUSTOMER TESTIMONIALS')</div>
+            <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:10px;">@t('home.testi_title', 'What Our Customers Say')</h2>
             <p class="section-subtitle" style="font-size:0.95rem;color:var(--text-muted);line-height:1.6;margin:0 auto;text-align:center;">
-                Long-term relationships are at the heart of MST. From restaurants and food businesses to retailers, wholesalers and trading partners, we value the trust our customers place in us to support their day-to-day supply needs.
+                @t('home.testi_subtitle', 'Long-term relationships are at the heart of MST. From restaurants and food businesses to retailers, wholesalers and trading partners, we value the trust our customers place in us to support their day-to-day supply needs.')
             </p>
         </div>
 
@@ -1210,11 +1432,11 @@
                 <div>
                     <div style="color:#eab308;font-size:1.1rem;margin-bottom:12px;">★★★★★</div>
                     <blockquote style="margin:0 0 16px;color:#334155;font-size:0.95rem;line-height:1.7;font-style:italic;">
-                        “MST has been reliable in helping us source and supply the frozen food products we need. Their team is responsive and easy to work with.”
+                        @t('home.testi_q1', '“MST has been reliable in helping us source and supply the frozen food products we need. Their team is responsive and easy to work with.”')
                     </blockquote>
                 </div>
                 <div style="font-weight:700;color:#0f172a;font-size:0.88rem;border-top:1px solid #e2e8f0;padding-top:12px;">
-                    — Restaurant Customer
+                    @t('home.testi_a1', '— Restaurant Customer')
                 </div>
             </div>
 
@@ -1223,11 +1445,11 @@
                 <div>
                     <div style="color:#eab308;font-size:1.1rem;margin-bottom:12px;">★★★★★</div>
                     <blockquote style="margin:0 0 16px;color:#334155;font-size:0.95rem;line-height:1.7;font-style:italic;">
-                        “We appreciate the flexibility of their sourcing service. When we need a product that is not in the regular range, the team helps us look for suitable options.”
+                        @t('home.testi_q2', '“We appreciate the flexibility of their sourcing service. When we need a product that is not in the regular range, the team helps us look for suitable options.”')
                     </blockquote>
                 </div>
                 <div style="font-weight:700;color:#0f172a;font-size:0.88rem;border-top:1px solid #e2e8f0;padding-top:12px;">
-                    — F&amp;B Customer
+                    @t('home.testi_a2', '— F&B Customer')
                 </div>
             </div>
 
@@ -1236,22 +1458,22 @@
                 <div>
                     <div style="color:#eab308;font-size:1.1rem;margin-bottom:12px;">★★★★★</div>
                     <blockquote style="margin:0 0 16px;color:#334155;font-size:0.95rem;line-height:1.7;font-style:italic;">
-                        “Good communication, reliable supply and straightforward service. MST has become one of our regular suppliers.”
+                        @t('home.testi_q3', '“Good communication, reliable supply and straightforward service. MST has become one of our regular suppliers.”')
                     </blockquote>
                 </div>
                 <div style="font-weight:700;color:#0f172a;font-size:0.88rem;border-top:1px solid #e2e8f0;padding-top:12px;">
-                    — Wholesale Customer
+                    @t('home.testi_a3', '— Wholesale Customer')
                 </div>
             </div>
         </div>
 
         <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
             <div>
-                <div style="font-weight:800;color:#1e3a8a;font-size:1rem;margin-bottom:2px;">BUILDING LONG-TERM BUSINESS RELATIONSHIPS</div>
-                <div style="font-size:0.85rem;color:#3b82f6;font-weight:600;">Reliable Supply · Responsive Service · Flexible Sourcing</div>
+                <div style="font-weight:800;color:#1e3a8a;font-size:1rem;margin-bottom:2px;">@t('home.testi_cta_title', 'BUILDING LONG-TERM BUSINESS RELATIONSHIPS')</div>
+                <div style="font-size:0.85rem;color:#3b82f6;font-weight:600;">@t('home.testi_cta_sub', 'Reliable Supply · Responsive Service · Flexible Sourcing')</div>
             </div>
             <a href="{{ route('register') }}" class="btn btn-primary" style="font-weight:700;padding:10px 22px;">
-                BECOME A CUSTOMER →
+                @t('home.testi_cta_btn', 'BECOME A CUSTOMER →')
             </a>
         </div>
     </div>
@@ -1262,68 +1484,68 @@
     <div class="container">
         <div class="culinary-advisory-grid">
             <div class="tips-left-content">
-                <span class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;">SEAFOOD TIPS &amp; INSIGHTS</span>
+                <span class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;">@t('home.tips_eyebrow', 'SEAFOOD TIPS & INSIGHTS')</span>
                 <h2 style="font-family:var(--font-heading);font-size:clamp(1.5rem, 3.5vw, 2rem);color:var(--gray-900);margin:8px 0 12px">
-                    KNOW YOUR PRODUCT. BUY WITH CONFIDENCE.
+                    @t('home.tips_title', 'KNOW YOUR PRODUCT. BUY WITH CONFIDENCE.')
                 </h2>
                 <p style="color:var(--gray-600);line-height:1.7;margin-bottom:24px;font-size:0.95rem;">
-                    Useful information to help our customers make better decisions when sourcing, storing and handling frozen seafood and food products.
+                    @t('home.tips_subtitle', 'Useful information to help our customers make better decisions when sourcing, storing and handling frozen seafood and food products.')
                 </p>
 
                 <div class="tips-cards-grid">
                     <div class="tip-card">
                         <div style="font-size:1.5rem;margin-bottom:6px;">❄️</div>
-                        <h4 style="font-size:0.95rem;font-weight:700;color:#0f172a;margin-bottom:4px;">Frozen Food Handling</h4>
+                        <h4 style="font-size:0.95rem;font-weight:700;color:#0f172a;margin-bottom:4px;">@t('home.tip1_title', 'Frozen Food Handling')</h4>
                         <p style="font-size:0.8rem;color:#64748b;line-height:1.5;margin:0;">
-                            Learn practical tips for proper storage, thawing and handling of frozen seafood and other food products.
+                            @t('home.tip1_desc', 'Learn practical tips for proper storage, thawing and handling of frozen seafood and other food products.')
                         </p>
                     </div>
                     <div class="tip-card">
                         <div style="font-size:1.5rem;margin-bottom:6px;">📦</div>
-                        <h4 style="font-size:0.95rem;font-weight:700;color:#0f172a;margin-bottom:4px;">Product Knowledge</h4>
+                        <h4 style="font-size:0.95rem;font-weight:700;color:#0f172a;margin-bottom:4px;">@t('home.tip2_title', 'Product Knowledge')</h4>
                         <p style="font-size:0.8rem;color:#64748b;line-height:1.5;margin:0;">
-                            Understand product specifications, pack sizes, origins, grades and details that matter for your business.
+                            @t('home.tip2_desc', 'Understand product specifications, pack sizes, origins, grades and details that matter for your business.')
                         </p>
                     </div>
                     <div class="tip-card">
                         <div style="font-size:1.5rem;margin-bottom:6px;">🔍</div>
-                        <h4 style="font-size:0.95rem;font-weight:700;color:#0f172a;margin-bottom:4px;">Sourcing Insights</h4>
+                        <h4 style="font-size:0.95rem;font-weight:700;color:#0f172a;margin-bottom:4px;">@t('home.tip3_title', 'Sourcing Insights')</h4>
                         <p style="font-size:0.8rem;color:#64748b;line-height:1.5;margin:0;">
-                            Discover useful information about sourcing, product availability, market requirements and supply options.
+                            @t('home.tip3_desc', 'Discover useful information about sourcing, product availability, market requirements and supply options.')
                         </p>
                     </div>
                     <div class="tip-card">
                         <div style="font-size:1.5rem;margin-bottom:6px;">🚚</div>
-                        <h4 style="font-size:0.95rem;font-weight:700;color:#0f172a;margin-bottom:4px;">Cold-Chain Insights</h4>
+                        <h4 style="font-size:0.95rem;font-weight:700;color:#0f172a;margin-bottom:4px;">@t('home.tip4_title', 'Cold-Chain Insights')</h4>
                         <p style="font-size:0.8rem;color:#64748b;line-height:1.5;margin:0;">
-                            Learn more about temperature-controlled storage, handling and distribution, and why cold-chain integrity matters.
+                            @t('home.tip4_desc', 'Learn more about temperature-controlled storage, handling and distribution, and why cold-chain integrity matters.')
                         </p>
                     </div>
                 </div>
 
                 <a href="{{ route('about') }}" class="btn btn-secondary tips-view-btn" style="font-weight:700;padding:10px 20px;">
-                    VIEW ALL INSIGHTS →
+                    @t('home.tips_view_all', 'VIEW ALL INSIGHTS →')
                 </a>
             </div>
 
             <!-- Newsletter Box -->
             <div class="newsletter-box">
                 <div style="font-size:2rem;margin-bottom:10px">✉️</div>
-                <h3 style="font-size:1.3rem;font-weight:800;color:var(--gray-900);margin-bottom:6px">STAY CONNECTED</h3>
+                <h3 style="font-size:1.3rem;font-weight:800;color:var(--gray-900);margin-bottom:6px">@t('home.news_title', 'STAY CONNECTED')</h3>
                 <p style="font-size:0.88rem;color:var(--gray-500);line-height:1.6;margin-bottom:18px">
-                    Receive product updates, sourcing opportunities, new product announcements and selected business insights from MST.
+                    @t('home.news_sub', 'Receive product updates, sourcing opportunities, new product announcements and selected business insights from MST.')
                 </p>
                 
                 <form id="newsletterForm" onsubmit="handleNewsletterSubmit(event)" style="display:flex;flex-direction:column;gap:10px">
                     @csrf
                     <div style="position:relative">
-                        <input type="email" id="newsletterEmail" name="email" placeholder="Enter your email address..." required class="form-control" style="border-radius:8px;height:44px;font-size:0.9rem;width:100%">
+                        <input type="email" id="newsletterEmail" name="email" placeholder="@t('home.news_placeholder', 'Enter your email address...')" required class="form-control" style="border-radius:8px;height:44px;font-size:0.9rem;width:100%">
                     </div>
                     <button type="submit" id="newsletterBtn" class="btn btn-primary" style="height:44px;font-weight:700;border-radius:8px">
-                        SUBSCRIBE FOR UPDATES
+                        @t('home.news_btn', 'SUBSCRIBE FOR UPDATES')
                     </button>
                     <div id="newsletterMsg" style="display:none;font-size:0.85rem;padding:8px 12px;border-radius:6px;text-align:center"></div>
-                    <span style="font-size:0.75rem;color:var(--gray-400);text-align:center">We respect your privacy. Unsubscribe at any time.</span>
+                    <span style="font-size:0.75rem;color:var(--gray-400);text-align:center">@t('home.news_privacy', 'We respect your privacy. Unsubscribe at any time.')</span>
                 </form>
             </div>
         </div>

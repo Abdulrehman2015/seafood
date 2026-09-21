@@ -57,7 +57,7 @@ class QuotationController extends Controller
 
         // Notify customer
         try {
-            \Mail::to($quotation->user->email)->send(new \App\Mail\QuotationReady($quotation));
+            \Mail::to($quotation->user->email)->send(new \App\Mail\QuotationReady($quotation, $quotation->user?->preferred_locale));
         } catch (\Exception $e) {}
 
         return redirect()->route('admin.quotations.index')

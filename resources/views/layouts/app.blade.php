@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="{{ current_locale() === 'zh' ? 'zh-Hans' : (current_locale() === 'bm' ? 'ms' : 'en') }}">
 
 <head>
     <meta charset="UTF-8">
@@ -34,44 +34,77 @@
         $defaultOgImage = asset('images/og-default.jpg');
         $resolvedOgImage = $defaultOgImage;
         if (!empty($activePageSeo?->og_image)) {
-            $resolvedOgImage = str_starts_with($activePageSeo->og_image, 'http')
-                ? $activePageSeo->og_image
-                : asset('storage/' . $activePageSeo->og_image);
+            if (str_starts_with($activePageSeo->og_image, 'http')) {
+                $resolvedOgImage = $activePageSeo->og_image;
+            } elseif (file_exists(public_path($activePageSeo->og_image))) {
+                $resolvedOgImage = asset($activePageSeo->og_image);
+            } else {
+                $resolvedOgImage = asset('storage/' . ltrim($activePageSeo->og_image, '/'));
+            }
         }
+        $cleanCanonical = url()->current();
+        if (request()->path() === '/' || request()->path() === '') {
+            $cleanCanonical = url('/' . current_locale());
+        }
+        $resolvedCanonical = !empty($activePageSeo?->canonical_url)
+            ? $activePageSeo->canonical_url
+            : (!empty($settings['canonical_url']) ? $settings['canonical_url'] : $cleanCanonical);
     @endphp
 
-    <title>@yield('title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import and Export Sdn Bhd'))</title>
+    <title>@yield('title', (!empty($activePageSeo?->meta_title) ? $activePageSeo->meta_title : ($settings['site_name'] ?? 'MST Import & Export | Frozen Food Sourcing & Trading')))</title>
     <meta name="description"
-        content="@yield('meta_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export Sdn Bhd — Johor-based frozen food sourcing, trading and distribution company serving commercial customers across regional and international markets.'))">
+        content="@yield('meta_description', (!empty($activePageSeo?->meta_description) ? $activePageSeo->meta_description : ($settings['site_description'] ?? 'MST Import and Export provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.')))">
+
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
     @php
-        $keywords = $activePageSeo?->meta_keywords ?? ($settings['meta_keywords'] ?? '');
+        $keywords = !empty($activePageSeo?->meta_keywords) ? $activePageSeo->meta_keywords : ($settings['meta_keywords'] ?? 'fresh seafood, frozen salmon, king prawns, lobsters, seafood export, b2b seafood, cold-chain distribution, MST import export');
     @endphp
     @if(!empty($keywords))
         <meta name="keywords" content="{{ $keywords }}">
     @endif
 
     <link rel="canonical"
-        href="@yield('canonical_url', $activePageSeo?->canonical_url ?? ($settings['canonical_url'] ?? url()->current()))">
-    @if(!empty($settings['site_favicon']))
-        <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
-        <link rel="shortcut icon" href="{{ asset('images/favicon.webp') }}">
-    @else
-        <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
-        <link rel="shortcut icon" href="{{ asset('images/favicon.webp') }}">
-    @endif
+        href="@yield('canonical_url', $resolvedCanonical)">
+    <link rel="alternate" hreflang="en" href="{{ url()->current() }}?lang=en">
+    <link rel="alternate" hreflang="zh-Hans" href="{{ url()->current() }}?lang=zh">
+    <link rel="alternate" hreflang="ms" href="{{ url()->current() }}?lang=bm">
+    <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
+    <!-- Favicon & Apple Touch Icons -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    <meta name="apple-mobile-web-app-title" content="{{ $settings['store_name'] ?? 'MST Seafood' }}">
+    <meta name="application-name" content="{{ $settings['store_name'] ?? 'MST Seafood' }}">
+    <meta name="theme-color" content="#06152b">
+    <meta name="msapplication-TileColor" content="#06152b">
+    <meta name="msapplication-TileImage" content="{{ asset('apple-touch-icon.png') }}">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:site_name" content="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}">
     <meta property="og:title"
-        content="@yield('og_title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import and Export Sdn Bhd'))">
+        content="@yield('og_title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import & Export | Frozen Food Sourcing & Trading'))">
     <meta property="og:description"
-        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'Premium frozen seafood — shop online or visit our store.'))">
+        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.'))">
     <meta property="og:image" content="@yield('og_image', $resolvedOgImage)">
-    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:url" content="{{ $resolvedCanonical }}">
     <meta property="og:type" content="website">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet">
+    <meta property="og:locale" content="{{ current_locale() === 'zh' ? 'zh_CN' : (current_locale() === 'bm' ? 'ms_MY' : 'en_US') }}">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title"
+        content="@yield('og_title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import & Export | Frozen Food Sourcing & Trading'))">
+    <meta name="twitter:description"
+        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.'))">
+    <meta name="twitter:image" content="@yield('og_image', $resolvedOgImage)">
+
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ file_exists(public_path('css/app.css')) ? filemtime(public_path('css/app.css')) : time() }}">
 
     @if(!empty($settings['tracking_ga4_id']))
@@ -88,6 +121,43 @@
     @if(!empty($settings['schema_markup']))
         <!-- Schema Markup JSON-LD -->
         {!! str_starts_with(trim($settings['schema_markup']), '<script') ? $settings['schema_markup'] : '<script type="application/ld+json">' . $settings['schema_markup'] . '</script>' !!}
+    @else
+        <!-- Schema Markup JSON-LD (Organization & WebSite) -->
+        @php
+            $schemaOrg = [
+                '@context' => 'https://schema.org',
+                '@graph' => [
+                    [
+                        '@type' => 'Organization',
+                        '@id' => url('/') . '/#organization',
+                        'name' => $settings['store_name'] ?? 'MST Import and Export Sdn Bhd',
+                        'url' => url('/'),
+                        'logo' => [
+                            '@type' => 'ImageObject',
+                            'url' => asset('images/logo.webp'),
+                        ],
+                        'description' => 'MST Import and Export Sdn Bhd provides frozen food sourcing, trading and distribution solutions across regional and international markets.',
+                        'address' => [
+                            '@type' => 'PostalAddress',
+                            'addressLocality' => 'Johor Bahru',
+                            'addressCountry' => 'MY',
+                        ],
+                    ],
+                    [
+                        '@type' => 'WebSite',
+                        '@id' => url('/') . '/#website',
+                        'url' => url('/'),
+                        'name' => $settings['store_name'] ?? 'MST Import and Export Sdn Bhd',
+                        'publisher' => [
+                            '@id' => url('/') . '/#organization',
+                        ],
+                    ],
+                ],
+            ];
+        @endphp
+        <script type="application/ld+json">
+        {!! json_encode($schemaOrg, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+        </script>
     @endif
 
     @if(!empty($settings['header_tags']))
@@ -410,11 +480,341 @@
             font-size: 1rem;
             line-height: 1;
         }
+
+        /* ─── Oceanic & Frozen Seafood Cold-Chain Page Switch Loader ─── */
+        .page-switch-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999999;
+            background: radial-gradient(circle at 50% 38%, rgba(10, 36, 74, 0.95) 0%, rgba(4, 18, 38, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .page-switch-loader.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .ocean-backdrop {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        /* Underwater Caustic Sunbeam */
+        .ocean-caustic-light {
+            position: absolute;
+            top: -10%;
+            left: 20%;
+            width: 60%;
+            height: 55%;
+            background: radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.22) 0%, rgba(14, 116, 144, 0.12) 45%, transparent 75%);
+            filter: blur(50px);
+            animation: causticSway 8s ease-in-out infinite alternate;
+        }
+
+        .ocean-depth-glow {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 300px;
+            background: radial-gradient(ellipse, rgba(30, 64, 175, 0.3) 0%, transparent 70%);
+            filter: blur(70px);
+        }
+
+        /* Rising Ocean Air Bubbles */
+        .ocean-bubble {
+            position: absolute;
+            bottom: -40px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 32% 32%, rgba(255, 255, 255, 0.85) 0%, rgba(186, 230, 253, 0.45) 40%, rgba(56, 189, 248, 0.15) 80%, transparent 100%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.6), 0 0 8px rgba(56, 189, 248, 0.3);
+            animation: bubbleRise 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        .ocean-bubble.b1 { width: 14px; height: 14px; left: 15%; animation-duration: 6.5s; animation-delay: 0s; }
+        .ocean-bubble.b2 { width: 22px; height: 22px; left: 28%; animation-duration: 7.8s; animation-delay: 1.4s; }
+        .ocean-bubble.b3 { width: 10px; height: 10px; left: 52%; animation-duration: 5.8s; animation-delay: 0.7s; }
+        .ocean-bubble.b4 { width: 18px; height: 18px; left: 70%; animation-duration: 8.2s; animation-delay: 2.1s; }
+        .ocean-bubble.b5 { width: 12px; height: 12px; left: 84%; animation-duration: 6.9s; animation-delay: 3.2s; }
+        .ocean-bubble.b6 { width: 26px; height: 26px; left: 42%; animation-duration: 9.0s; animation-delay: 2.8s; }
+
+        @keyframes bubbleRise {
+            0% {
+                transform: translateY(0) translateX(0) scale(0.7);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.75;
+            }
+            50% {
+                transform: translateY(-50vh) translateX(16px) scale(0.95);
+            }
+            85% {
+                opacity: 0.75;
+            }
+            100% {
+                transform: translateY(-110vh) translateX(-12px) scale(1.1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes causticSway {
+            0% { transform: scale(1) translateX(0); opacity: 0.18; }
+            100% { transform: scale(1.12) translateX(25px); opacity: 0.28; }
+        }
+
+        /* Central Seafood Card */
+        .ocean-loader-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(9, 30, 62, 0.72);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: 28px;
+            padding: 38px 46px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 20px 50px rgba(2, 10, 24, 0.65), 0 0 45px rgba(2, 132, 199, 0.25);
+            transform: scale(0.95) translateY(6px);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-width: 310px;
+            max-width: 440px;
+            box-sizing: border-box;
+        }
+
+        .page-switch-loader.active .ocean-loader-card {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Mascot Floating Container & Expanding Water Ripples */
+        .ocean-mascot-wrap {
+            position: relative;
+            width: 136px;
+            height: 136px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .water-ripple {
+            position: absolute;
+            border: 2px solid rgba(56, 189, 248, 0.55);
+            border-radius: 50%;
+            inset: 8px;
+            pointer-events: none;
+            animation: waterRipple 2.8s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+        }
+
+        .water-ripple.r2 { animation-delay: 0.95s; }
+        .water-ripple.r3 { animation-delay: 1.9s; }
+
+        @keyframes waterRipple {
+            0% {
+                transform: scale(0.75);
+                opacity: 0.85;
+                border-color: rgba(125, 211, 252, 0.8);
+            }
+            100% {
+                transform: scale(1.55);
+                opacity: 0;
+                border-color: rgba(2, 132, 199, 0);
+            }
+        }
+
+        .ocean-mascot-badge {
+            position: relative;
+            width: 106px;
+            height: 106px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #ffffff 0%, #f0f9ff 70%, #e0f2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 28px rgba(2, 10, 24, 0.5), 0 0 30px rgba(56, 189, 248, 0.4);
+            padding: 8px;
+            box-sizing: border-box;
+            z-index: 2;
+            animation: oceanBob 2.8s ease-in-out infinite alternate;
+        }
+
+        .ocean-mascot-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 10px rgba(2, 132, 199, 0.3));
+        }
+
+        @keyframes oceanBob {
+            0% {
+                transform: translateY(-5px) rotate(-2deg);
+            }
+            100% {
+                transform: translateY(5px) rotate(2deg);
+            }
+        }
+
+        /* Brand Typography */
+        .ocean-brand-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+
+        .ocean-brand-title {
+            font-family: 'Outfit', 'Inter', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 900;
+            letter-spacing: 0.07em;
+            line-height: 1.15;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(2, 10, 24, 0.5);
+        }
+
+        .ocean-brand-tagline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #7dd3fc;
+            letter-spacing: 0.12em;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Seafood Status Pill */
+        .ocean-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 999px;
+            padding: 6px 18px;
+            margin-top: 16px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #e0f2fe;
+            letter-spacing: 0.02em;
+        }
+
+        .ocean-live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #38bdf8;
+            box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8);
+            animation: oceanPulse 1.8s infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes oceanPulse {
+            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8); }
+            70% { box-shadow: 0 0 0 9px rgba(56, 189, 248, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+        }
+
+        /* Ocean Wave Progress Track & Fill */
+        .ocean-wave-track {
+            width: 210px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 18px;
+            position: relative;
+        }
+
+        .ocean-wave-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #7dd3fc 100%);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.85);
+            border-radius: 999px;
+            transition: width 0.35s ease;
+        }
+
+        .main-content {
+            transition: opacity 0.24s cubic-bezier(0.4, 0, 0.2, 1), transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: opacity, transform;
+        }
+        .main-content.lang-transitioning {
+            opacity: 0.35;
+            transform: translateY(2px);
+        }
     </style>
     @stack('styles')
 </head>
 
 <body>
+    <!-- ─── Oceanic Frozen Seafood & Cold-Chain Page Switch Loader ─── -->
+    <div id="pageSwitchLoader" class="page-switch-loader" aria-hidden="true">
+        <div class="ocean-backdrop">
+            <div class="ocean-caustic-light"></div>
+            <div class="ocean-depth-glow"></div>
+            <!-- Rising Ocean Bubbles -->
+            <div class="ocean-bubble b1"></div>
+            <div class="ocean-bubble b2"></div>
+            <div class="ocean-bubble b3"></div>
+            <div class="ocean-bubble b4"></div>
+            <div class="ocean-bubble b5"></div>
+            <div class="ocean-bubble b6"></div>
+        </div>
+
+        <div class="ocean-loader-card">
+            {{-- Seafood Chef Mascot with Water Ripples --}}
+            <div class="ocean-mascot-wrap">
+                <div class="water-ripple r1"></div>
+                <div class="water-ripple r2"></div>
+                <div class="water-ripple r3"></div>
+                <div class="ocean-mascot-badge">
+                    <img src="{{ asset('images/logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}" class="ocean-mascot-img">
+                </div>
+            </div>
+
+            {{-- Brand Typography & Cold-Chain Identity --}}
+            <div class="ocean-brand-box">
+                <span class="ocean-brand-title">MST IMPORT &amp; EXPORT</span>
+                <span class="ocean-brand-tagline">
+                    <span>❄️</span>
+                    <span>PREMIUM FROZEN SEAFOOD &amp; COLD CHAIN</span>
+                    <span>🐟</span>
+                </span>
+            </div>
+
+            {{-- Fresh Catch / Loading Status --}}
+            <div class="ocean-status-pill">
+                <span class="ocean-live-dot"></span>
+                <span id="loaderStatusText" class="ocean-status-text">Updating...</span>
+            </div>
+
+            {{-- Wave Progress Line --}}
+            <div class="ocean-wave-track">
+                <div id="loaderProgressBar" class="ocean-wave-bar"></div>
+            </div>
+        </div>
+    </div>
 
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
@@ -423,11 +823,11 @@
                     style="height:44px;width:44px;object-fit:contain;border-radius:8px;">
                 <div class="logo-text">
                     <span class="logo-brand">MST</span>
-                    <span class="logo-sub">Import &amp; Export Sdn Bhd</span>
+                    <span class="logo-sub">@t('common.import_export_sdn_bhd', 'Import & Export Sdn Bhd')</span>
                 </div>
             </a>
             <div class="nav-links" id="navLinks">
-                <div class="mobile-drawer-header-hint">Navigation</div>
+                <div class="mobile-drawer-header-hint">@t('nav.navigation', 'Navigation')</div>
                 <div class="mobile-nav-group">
                     <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
                         <span class="nav-link-content">
@@ -436,7 +836,7 @@
                                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
                             </svg>
-                            <span>Home</span>
+                            <span>@t('nav.home', 'Home')</span>
                         </span>
                         <span class="mobile-chevron">›</span>
                     </a>
@@ -449,7 +849,7 @@
                                 <circle cx="20" cy="21" r="1"></circle>
                                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                             </svg>
-                            <span>Shop</span>
+                            <span>@t('nav.shop', 'Shop')</span>
                         </span>
                         <span class="mobile-chevron">›</span>
                     </a>
@@ -461,7 +861,7 @@
                                 <line x1="12" y1="16" x2="12" y2="12"></line>
                                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
                             </svg>
-                            <span>About</span>
+                            <span>@t('nav.about', 'About')</span>
                         </span>
                         <span class="mobile-chevron">›</span>
                     </a>
@@ -474,7 +874,7 @@
                                     d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
                                 </path>
                             </svg>
-                            <span>Contact</span>
+                            <span>@t('nav.contact', 'Contact')</span>
                         </span>
                         <span class="mobile-chevron">›</span>
                     </a>
@@ -491,7 +891,7 @@
                                         <line x1="16" y1="17" x2="8" y2="17"></line>
                                         <polyline points="10 9 9 9 8 9"></polyline>
                                     </svg>
-                                    <span>My RFQs</span>
+                                    <span>@t('nav.my_rfqs', 'My RFQs')</span>
                                 </span>
                                 <span class="mobile-chevron">›</span>
                             </a>
@@ -514,8 +914,8 @@
                         </div>
                         <div>
                             <div style="font-weight:700;font-size:0.95rem;color:var(--seagreen-900);line-height:1.2">
-                                Shopping Cart</div>
-                            <div style="font-size:0.75rem;color:#64748b;margin-top:2px">View items & checkout</div>
+                                @t('nav.shopping_cart', 'Shopping Cart')</div>
+                            <div style="font-size:0.75rem;color:#64748b;margin-top:2px">@t('nav.view_items_checkout', 'View items & checkout')</div>
                         </div>
                     </div>
                     <div style="display:flex;align-items:center;gap:8px">
@@ -553,21 +953,21 @@
                             <a href="{{ route('account.dashboard') }}" class="mobile-drawer-user-item">
                                 <div style="display:flex;align-items:center;gap:10px">
                                     <span class="drawer-icon">📊</span>
-                                    <span>Dashboard</span>
+                                    <span>@t('nav.dashboard', 'Dashboard')</span>
                                 </div>
                                 <span class="mobile-chevron">›</span>
                             </a>
                             <a href="{{ route('account.orders') }}" class="mobile-drawer-user-item">
                                 <div style="display:flex;align-items:center;gap:10px">
                                     <span class="drawer-icon">📦</span>
-                                    <span>My Orders</span>
+                                    <span>@t('nav.my_orders', 'My Orders')</span>
                                 </div>
                                 <span class="mobile-chevron">›</span>
                             </a>
                             <a href="{{ route('account.profile') }}" class="mobile-drawer-user-item">
                                 <div style="display:flex;align-items:center;gap:10px">
                                     <span class="drawer-icon">👤</span>
-                                    <span>Profile Settings</span>
+                                    <span>@t('nav.profile', 'Profile Settings')</span>
                                 </div>
                                 <span class="mobile-chevron">›</span>
                             </a>
@@ -575,7 +975,7 @@
                                 <a href="{{ route('admin.dashboard') }}" class="mobile-drawer-user-item admin-item">
                                     <div style="display:flex;align-items:center;gap:10px">
                                         <span class="drawer-icon">⚡</span>
-                                        <span>Admin Panel</span>
+                                        <span>@t('nav.admin_panel', 'Admin Panel')</span>
                                     </div>
                                     <span class="mobile-chevron" style="color:var(--seagreen-700)">›</span>
                                 </a>
@@ -590,34 +990,34 @@
                                     <polyline points="16 17 21 12 16 7"></polyline>
                                     <line x1="21" y1="12" x2="9" y2="12"></line>
                                 </svg>
-                                <span>Sign Out</span>
+                                <span>@t('nav.sign_out', 'Sign Out')</span>
                             </button>
                         </form>
                     </div>
                 @else
                 <div class="mobile-drawer-auth-card">
-                    <div class="mobile-drawer-auth-title">Welcome to {{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</div>
-                    <div class="mobile-drawer-auth-sub">Sign in to track orders or access wholesale rates</div>
+                    <div class="mobile-drawer-auth-title">@t('nav.welcome_to', 'Welcome to') {{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</div>
+                    <div class="mobile-drawer-auth-sub">@t('nav.signin_sub', 'Sign in to track orders or access wholesale rates')</div>
                     <div class="mobile-drawer-auth-buttons">
                         <a href="{{ route('login') }}" class="btn btn-primary"
-                            style="flex:1;text-align:center;font-weight:700;padding:11px;border-radius:10px">Sign In</a>
+                            style="flex:1;text-align:center;font-weight:700;padding:11px;border-radius:10px">@t('nav.sign_in', 'Sign In')</a>
                         <a href="{{ route('register') }}" class="btn btn-secondary"
-                            style="flex:1;text-align:center;font-weight:700;padding:11px;border-radius:10px">Register</a>
+                            style="flex:1;text-align:center;font-weight:700;padding:11px;border-radius:10px">@t('nav.register', 'Register')</a>
                     </div>
                 </div>
                 @endguest
 
                 <div class="mobile-drawer-footer-info">
-                    <span>📞 013-280 0168</span>
+                    <span>📞 {{ $settings['store_phone'] ?? '013-280 0168' }}</span>
                     <span>•</span>
-                    <span>📍 Johor Bahru, Malaysia</span>
+                    <span>📍 @t('common.location_jb', 'Johor Bahru, Malaysia')</span>
                 </div>
             </div>
             <div class="nav-actions">
                 @if(session('walkin_session'))
                     <div class="walkin-badge">
-                        <span>🏪 Walk-in Mode</span>
-                        <a href="{{ route('walkin.exit') }}" class="walkin-exit">Exit</a>
+                        <span>🏪 @t('common.walkin_mode', 'Walk-in Mode')</span>
+                        <a href="{{ route('walkin.exit') }}" class="walkin-exit">@t('common.exit', 'Exit')</a>
                     </div>
                 @endif
                 @auth
@@ -625,6 +1025,32 @@
                         {{ ucfirst(auth()->user()->customer_group) }}
                     </div>
                 @endauth
+
+                <!-- Multilingual Language Selector Circle Button (EN / ZH / BM) -->
+                <div class="currency-menu" id="languageMenu" style="margin-right:6px">
+                    <button type="button" class="currency-circle-btn" id="languageBtn" onclick="toggleLanguageMenu()" aria-label="Select Language" title="Select Language">
+                        <span class="currency-circle-code" id="activeLanguageCode">{{ $activeLocaleData['label'] ?? 'EN' }}</span>
+                    </button>
+                    <div class="currency-dropdown" id="languageDropdown">
+                        <div class="currency-dropdown-header">Select Language</div>
+                        @foreach($supportedLocales as $code => $loc)
+                            <a href="{{ route('language.switch', $code) }}" class="currency-option {{ $currentLocale === $code ? 'active' : '' }}" data-code="{{ $code }}" onclick="selectLanguage(event, '{{ $code }}', '{{ route('language.switch', $code) }}')">
+                                <span class="currency-option-pill">{{ $loc['label'] }}</span>
+                                <div class="currency-option-info">
+                                    <span class="currency-option-name">{{ $loc['native'] }}</span>
+                                    <span class="currency-option-rate">
+                                        @if($code === 'en')
+                                            Default Language
+                                        @else
+                                            {{ $loc['name'] }}
+                                        @endif
+                                    </span>
+                                </div>
+                                <span class="currency-option-check" style="{{ $currentLocale === $code ? '' : 'display:none' }}">✓</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
 
                 <!-- Currency Selector Circle Button (RM / SGD / USD) -->
                 <div class="currency-menu" id="currencyMenu">
@@ -661,8 +1087,8 @@
                     <span class="cart-count" id="cartCount" style="display:none">0</span>
                 </a>
                 @guest
-                    <a href="{{ route('login') }}" class="btn-ghost">Sign In</a>
-                    <a href="{{ route('register') }}" class="btn-primary-sm">Register</a>
+                    <a href="{{ route('login') }}" class="btn-ghost">@t('nav.sign_in', 'Sign In')</a>
+                    <a href="{{ route('register') }}" class="btn-primary-sm">@t('nav.register', 'Register')</a>
                 @else
                     <div class="user-menu" id="userMenu">
                         <button class="user-btn" onclick="toggleUserMenu()">
@@ -674,17 +1100,17 @@
                             </svg>
                         </button>
                         <div class="user-dropdown" id="userDropdown">
-                            <a href="{{ route('account.dashboard') }}" class="dropdown-item">Dashboard</a>
-                            <a href="{{ route('account.orders') }}" class="dropdown-item">My Orders</a>
-                            <a href="{{ route('account.profile') }}" class="dropdown-item">Profile</a>
+                            <a href="{{ route('account.dashboard') }}" class="dropdown-item">@t('nav.dashboard', 'Dashboard')</a>
+                            <a href="{{ route('account.orders') }}" class="dropdown-item">@t('nav.my_orders', 'My Orders')</a>
+                            <a href="{{ route('account.profile') }}" class="dropdown-item">@t('nav.profile', 'Profile')</a>
                             @if(auth()->user()->isAdmin())
                                 <div class="dropdown-divider"></div>
-                                <a href="{{ route('admin.dashboard') }}" class="dropdown-item dropdown-admin">Admin Panel</a>
+                                <a href="{{ route('admin.dashboard') }}" class="dropdown-item dropdown-admin">@t('nav.admin_panel', 'Admin Panel')</a>
                             @endif
                             <div class="dropdown-divider"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="dropdown-item dropdown-logout">Sign Out</button>
+                                <button type="submit" class="dropdown-item dropdown-logout">@t('nav.sign_out', 'Sign Out')</button>
                             </form>
                         </div>
                     </div>
@@ -733,11 +1159,11 @@
                             style="height:52px;width:52px;object-fit:contain;border-radius:10px;">
                         <div class="logo-text">
                             <span class="logo-brand">MST</span>
-                            <span class="logo-sub">Import &amp; Export Sdn Bhd</span>
+                            <span class="logo-sub">@t('common.import_export_sdn_bhd', 'Import & Export Sdn Bhd')</span>
                         </div>
                     </div>
                     <p class="footer-desc">
-                        {{ $settings['store_tagline'] ?? 'Premium frozen seafood for retail, wholesale, and trading customers across Malaysia. Quality you can trust, freshness you can taste.' }}
+                        @t('footer.tagline', $settings['store_tagline'] ?? 'Flow with Integrity, Grow with Strength')
                     </p>
                     <div class="footer-social"
                         style="display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap">
@@ -793,32 +1219,32 @@
                     </div>
                 </div>
                 <div class="footer-col">
-                    <h4 class="footer-heading">Quick Links</h4>
+                    <h4 class="footer-heading">@t('footer.quick_links', 'Quick Links')</h4>
                     <ul class="footer-links">
-                        <li><a href="{{ route('home') }}">Home</a></li>
-                        <li><a href="{{ route('shop.index') }}">Shop Catalogue</a></li>
-                        <li><a href="{{ route('walkin.entry') }}">Walk-in Store (QR)</a></li>
-                        <li><a href="{{ route('about') }}">About Us</a></li>
-                        <li><a href="{{ route('contact') }}">Contact Us</a></li>
+                        <li><a href="{{ route('home') }}">@t('nav.home', 'Home')</a></li>
+                        <li><a href="{{ route('shop.index') }}">@t('footer.shop_catalogue', 'Shop Catalogue')</a></li>
+                        <li><a href="{{ route('walkin.entry') }}">@t('footer.walkin_store', 'Walk-in Store (QR)')</a></li>
+                        <li><a href="{{ route('about') }}">@t('nav.about', 'About Us')</a></li>
+                        <li><a href="{{ route('contact') }}">@t('nav.contact', 'Contact Us')</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h4 class="footer-heading">Featured Categories</h4>
+                    <h4 class="footer-heading">@t('footer.featured_categories', 'Featured Categories')</h4>
                     <ul class="footer-links">
                         @if(isset($footerCategories) && $footerCategories->count())
                             @foreach($footerCategories as $fCat)
                                 <li><a href="{{ route('shop.index', ['category' => $fCat->slug]) }}">{{ $fCat->name }}</a></li>
                             @endforeach
                         @else
-                            <li><a href="{{ route('shop.index') }}">All Fresh Seafood</a></li>
+                            <li><a href="{{ route('shop.index') }}">@t('footer.all_fresh_seafood', 'All Fresh Seafood')</a></li>
                         @endif
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h4 class="footer-heading">Store Location & Contact</h4>
+                    <h4 class="footer-heading">@t('footer.location_contact', 'Store Location & Contact')</h4>
                     <div class="footer-contact">
                         <div class="contact-item">📍
-                            {{ $settings['store_address'] ?? '7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia' }}
+                            @t('footer.store_address', $settings['store_address'] ?? '7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia')
                         </div>
                         @php
                             $footerPhones = array_filter([
@@ -835,17 +1261,16 @@
                                 href="mailto:{{ $settings['store_email'] ?? 'mikatrading15@gmail.com' }}"
                                 style="color:inherit;text-decoration:none">{{ $settings['store_email'] ??
                                 'mikatrading15@gmail.com' }}</a></div>
-                        <div class="contact-item">🕐 {{ $settings['store_hours'] ?? 'Mon–Sat: 8am – 6pm' }}</div>
+                        <div class="contact-item">🕐 @t('footer.store_hours', $settings['store_hours'] ?? 'Monday - Saturday: 8:00am - 6:00pm (Sunday & Public Holidays: Closed)')</div>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>© {{ date('Y') }} {{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}. All
-                    rights reserved.</p>
+                <p>© {{ date('Y') }} @t('footer.company_name', rtrim($settings['store_name'] ?? 'MST Import and Export Sdn Bhd', '.')) · @t('footer.all_rights_reserved', 'All rights reserved.')</p>
                 <div class="footer-bottom-links">
-                    <a href="{{ route('contact') }}">Support</a>
-                    <a href="{{ route('about') }}">About</a>
-                    <a href="{{ route('walkin.entry') }}">In-Store Pass</a>
+                    <a href="{{ route('contact') }}">@t('footer.support', 'Support')</a>
+                    <a href="{{ route('about') }}">@t('nav.about', 'About')</a>
+                    <a href="{{ route('walkin.entry') }}">@t('footer.instore_pass', 'In-Store Pass')</a>
                 </div>
             </div>
         </div>
@@ -994,10 +1419,10 @@
 
                 const baseRmEl = el.querySelector('.price-base-rm');
                 if (baseRmEl) {
-                    if (targetCurrency !== 'MYR' && res.baseRm) {
+                    if ((targetCurrency !== 'MYR' || baseRmEl.classList.contains('show-always')) && res.baseRm) {
                         baseRmEl.textContent = 'RM ' + res.baseRm.toFixed(2);
                         baseRmEl.style.display = 'block';
-                    } else {
+                    } else if (targetCurrency === 'MYR' && !baseRmEl.classList.contains('show-always')) {
                         baseRmEl.style.display = 'none';
                     }
                 }
@@ -1063,6 +1488,8 @@
             document.getElementById('userDropdown')?.classList.toggle('open');
             document.getElementById('currencyDropdown')?.classList.remove('open');
             document.getElementById('currencyBtn')?.classList.remove('active');
+            document.getElementById('languageDropdown')?.classList.remove('open');
+            document.getElementById('languageBtn')?.classList.remove('active');
         }
         function toggleCurrencyMenu() {
             const dropdown = document.getElementById('currencyDropdown');
@@ -1070,7 +1497,357 @@
             const isOpen = dropdown?.classList.toggle('open');
             btn?.classList.toggle('active', isOpen);
             document.getElementById('userDropdown')?.classList.remove('open');
+            document.getElementById('languageDropdown')?.classList.remove('open');
+            document.getElementById('languageBtn')?.classList.remove('active');
         }
+        function toggleLanguageMenu() {
+            const dropdown = document.getElementById('languageDropdown');
+            const btn = document.getElementById('languageBtn');
+            const isOpen = dropdown?.classList.toggle('open');
+            btn?.classList.toggle('active', isOpen);
+            document.getElementById('userDropdown')?.classList.remove('open');
+            document.getElementById('currencyDropdown')?.classList.remove('open');
+            document.getElementById('currencyBtn')?.classList.remove('active');
+        }
+
+        let isLanguageSwitching = false;
+
+        function showPageLoader(message = 'Loading...') {
+            const loader = document.getElementById('pageSwitchLoader');
+            const statusText = document.getElementById('loaderStatusText');
+            const progressBar = document.getElementById('loaderProgressBar');
+            if (statusText && message) statusText.textContent = message;
+            if (progressBar) progressBar.style.width = '20%';
+            if (loader) {
+                loader.classList.add('active');
+                loader.setAttribute('aria-hidden', 'false');
+            }
+            if (progressBar) {
+                setTimeout(() => {
+                    if (loader && loader.classList.contains('active')) {
+                        progressBar.style.width = '75%';
+                    }
+                }, 100);
+            }
+        }
+
+        function hidePageLoader() {
+            const loader = document.getElementById('pageSwitchLoader');
+            const progressBar = document.getElementById('loaderProgressBar');
+            if (progressBar) progressBar.style.width = '100%';
+            setTimeout(() => {
+                if (loader) {
+                    loader.classList.remove('active');
+                    loader.setAttribute('aria-hidden', 'true');
+                }
+                if (progressBar) {
+                    setTimeout(() => { progressBar.style.width = '0%'; }, 250);
+                }
+            }, 260);
+        }
+
+        function updatePageLocaleHrefs(newLocale) {
+            if (!newLocale) return;
+            const supported = ['en', 'zh', 'bm'];
+            document.querySelectorAll('a[href]').forEach(link => {
+                try {
+                    const rawHref = link.getAttribute('href');
+                    if (!rawHref || rawHref.startsWith('#') || rawHref.startsWith('javascript:') || rawHref.startsWith('mailto:') || rawHref.startsWith('tel:')) {
+                        return;
+                    }
+                    const url = new URL(link.href, window.location.origin);
+                    if (url.origin === window.location.origin) {
+                        if (url.pathname.match(/^\/(admin|api|currency|language|newsletter)/)) {
+                            return;
+                        }
+                        const parts = url.pathname.split('/');
+                        if (parts.length > 1 && supported.includes(parts[1])) {
+                            if (parts[1] !== newLocale) {
+                                parts[1] = newLocale;
+                                url.pathname = parts.join('/');
+                                link.href = url.pathname + url.search + url.hash;
+                            }
+                        }
+                    }
+                } catch (e) {}
+            });
+        }
+
+        async function selectLanguage(event, code, switchUrl, directTargetUrl = null, updateHistory = true) {
+            if (event && typeof event.preventDefault === 'function') {
+                event.preventDefault();
+            }
+            if (isLanguageSwitching) return;
+
+            // 1. Immediately close language dropdown
+            const langDropdown = document.getElementById('languageDropdown');
+            const langBtn = document.getElementById('languageBtn');
+            langDropdown?.classList.remove('open');
+            langBtn?.classList.remove('active');
+
+            const targetCode = (code || 'en').trim().toLowerCase();
+            const currentCode = (document.getElementById('activeLanguageCode')?.textContent || '').trim().toUpperCase();
+            const langLabels = { en: 'EN', zh: 'ZH', bm: 'BM' };
+            const targetLabel = langLabels[targetCode] || targetCode.toUpperCase();
+
+            // If already on this language and no forced URL, do nothing
+            if (!directTargetUrl && currentCode === targetLabel) {
+                return;
+            }
+
+            // Immediately set cookie so subsequent requests / navigations maintain chosen locale
+            try {
+                document.cookie = 'locale=' + encodeURIComponent(targetCode) + '; path=/; max-age=31536000; SameSite=Lax';
+            } catch (e) {}
+
+            // 2. Immediate visual update of circular button and dropdown checkmarks
+            const activeCodeEl = document.getElementById('activeLanguageCode');
+            if (activeCodeEl) activeCodeEl.textContent = targetLabel;
+
+            document.querySelectorAll('#languageDropdown .currency-option').forEach(opt => {
+                const isMatch = opt.getAttribute('data-code') === targetCode;
+                opt.classList.toggle('active', isMatch);
+                const check = opt.querySelector('.currency-option-check');
+                if (check) check.style.display = isMatch ? 'inline-block' : 'none';
+            });
+
+            // 3. Show high-quality hero-themed page loader with localized message
+            isLanguageSwitching = true;
+            const startTime = Date.now();
+
+            const switchMsgs = {
+                zh: '🐟 正在切换语言至 简体中文 · 镁嘉水产冷链',
+                bm: '🐟 Menukar bahasa ke Bahasa Melayu · Makanan Laut Beku MST',
+                en: '🐟 Switching language to English · MST Frozen Seafood'
+            };
+            showPageLoader(switchMsgs[targetCode] || `Switching to ${targetLabel}...`);
+
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                mainContent.classList.add('lang-transitioning');
+            }
+
+            try {
+                let targetUrl = directTargetUrl;
+
+                if (!targetUrl) {
+                    // Call backend language switcher endpoint with current URL for accurate redirection
+                    const currentFullUrl = window.location.href;
+                    const endpoint = (switchUrl || ('/language/' + encodeURIComponent(targetCode))) + 
+                        (switchUrl && switchUrl.includes('?') ? '&' : '?') + 'current_url=' + encodeURIComponent(currentFullUrl);
+
+                    const switchRes = await fetch(endpoint, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    if (!switchRes.ok) throw new Error('Language switch endpoint failed');
+                    const switchData = await switchRes.json();
+                    targetUrl = switchData.redirect_url;
+                }
+
+                if (!targetUrl) throw new Error('No redirect URL resolved');
+
+                // 4. Fetch the target page in the new language
+                const pageRes = await fetch(targetUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (!pageRes.ok) throw new Error('Failed to fetch translated page: ' + pageRes.status);
+                const html = await pageRes.text();
+
+                // 5. Parse the returned HTML document
+                const parser = new DOMParser();
+                const newDoc = parser.parseFromString(html, 'text/html');
+
+                // 6. Update document title & html lang attribute
+                if (newDoc.title) {
+                    document.title = newDoc.title;
+                }
+                document.documentElement.lang = targetCode;
+
+                // 7. Update Navigation Logo (.nav-logo) so clicking it routes to new locale
+                const currentNavLogo = document.querySelector('.nav-logo');
+                const newNavLogo = newDoc.querySelector('.nav-logo');
+                if (currentNavLogo && newNavLogo) {
+                    currentNavLogo.href = newNavLogo.href;
+                    currentNavLogo.innerHTML = newNavLogo.innerHTML;
+                }
+
+                // 8. Update Navigation Links & Mobile Drawer
+                const currentNavLinks = document.getElementById('navLinks');
+                const newNavLinks = newDoc.getElementById('navLinks');
+                if (currentNavLinks && newNavLinks) {
+                    currentNavLinks.innerHTML = newNavLinks.innerHTML;
+                }
+
+                // 9. Update Cart Button (#cartBtn)
+                const currentCartBtn = document.getElementById('cartBtn');
+                const newCartBtn = newDoc.getElementById('cartBtn');
+                if (currentCartBtn && newCartBtn) {
+                    currentCartBtn.href = newCartBtn.href;
+                }
+
+                // 10. Update Guest Auth Buttons if present
+                const currentGhost = document.querySelector('.nav-actions .btn-ghost');
+                const newGhost = newDoc.querySelector('.nav-actions .btn-ghost');
+                if (currentGhost && newGhost) {
+                    currentGhost.href = newGhost.href;
+                    currentGhost.innerHTML = newGhost.innerHTML;
+                }
+                const currentPrimarySm = document.querySelector('.nav-actions .btn-primary-sm');
+                const newPrimarySm = newDoc.querySelector('.nav-actions .btn-primary-sm');
+                if (currentPrimarySm && newPrimarySm) {
+                    currentPrimarySm.href = newPrimarySm.href;
+                    currentPrimarySm.innerHTML = newPrimarySm.innerHTML;
+                }
+
+                // 11. Update Walkin Exit Button if present
+                const currentWalkinExit = document.querySelector('.walkin-exit');
+                const newWalkinExit = newDoc.querySelector('.walkin-exit');
+                if (currentWalkinExit && newWalkinExit) {
+                    currentWalkinExit.href = newWalkinExit.href;
+                    currentWalkinExit.innerHTML = newWalkinExit.innerHTML;
+                }
+
+                // 12. Update User Menu / Auth buttons
+                const currentUserMenu = document.getElementById('userMenu');
+                const newUserMenu = newDoc.getElementById('userMenu');
+                if (currentUserMenu && newUserMenu) {
+                    currentUserMenu.innerHTML = newUserMenu.innerHTML;
+                }
+
+                // 13. Update Language Dropdown options for next switch
+                const currentLangDropdown = document.getElementById('languageDropdown');
+                const newLangDropdown = newDoc.getElementById('languageDropdown');
+                if (currentLangDropdown && newLangDropdown) {
+                    currentLangDropdown.innerHTML = newLangDropdown.innerHTML;
+                }
+
+                // 14. Update Main Content (.main-content)
+                const newMain = newDoc.querySelector('.main-content');
+                if (mainContent && newMain) {
+                    mainContent.innerHTML = newMain.innerHTML;
+                    mainContent.className = newMain.className;
+                    mainContent.classList.add('lang-transitioning');
+                    executeInlineScripts(mainContent);
+                }
+
+                // 15. Update Footer (.footer)
+                const currentFooter = document.querySelector('.footer');
+                const newFooter = newDoc.querySelector('.footer');
+                if (currentFooter && newFooter) {
+                    currentFooter.innerHTML = newFooter.innerHTML;
+                }
+
+                // 16. Rewrite all links across the page to ensure all links retain target language
+                updatePageLocaleHrefs(targetCode);
+
+                // 17. Update Flash Notifications if any
+                const currentFlash = document.querySelector('.flash-container');
+                const newFlash = newDoc.querySelector('.flash-container');
+                if (currentFlash && newFlash) {
+                    currentFlash.innerHTML = newFlash.innerHTML;
+                } else if (!currentFlash && newFlash && newFlash.children.length > 0) {
+                    document.body.insertBefore(newFlash, mainContent);
+                }
+
+                // 13. Update Browser URL in Address Bar (pushState)
+                if (updateHistory) {
+                    window.history.pushState({ locale: targetCode, url: targetUrl }, newDoc.title || '', targetUrl);
+                }
+
+                // 14. Re-run currency formatting on newly swapped elements
+                if (window.AppCurrency && typeof updatePageCurrencies === 'function') {
+                    updatePageCurrencies(window.AppCurrency.current || 'MYR');
+                }
+
+                // 15. Re-check Cart Count
+                if (typeof updateCartCount === 'function') {
+                    updateCartCount();
+                }
+
+                // 16. Notify any listeners that language switched
+                window.dispatchEvent(new CustomEvent('app:locale-changed', {
+                    detail: { locale: targetCode, url: targetUrl }
+                }));
+
+            } catch (err) {
+                console.warn('Seamless switch error, falling back to standard navigation:', err);
+                window.location.href = switchUrl || ('/language/' + encodeURIComponent(targetCode));
+                return;
+            } finally {
+                // Ensure the high-quality loader displays for at least 420ms for a smooth, cinematic feel
+                const elapsed = Date.now() - startTime;
+                const remaining = Math.max(0, 420 - elapsed);
+                setTimeout(() => {
+                    hidePageLoader();
+                    if (mainContent) {
+                        setTimeout(() => {
+                            mainContent.classList.remove('lang-transitioning');
+                        }, 50);
+                    }
+                    isLanguageSwitching = false;
+                }, remaining);
+            }
+        }
+
+        function executeInlineScripts(container) {
+            if (!container) return;
+            const scripts = container.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                if (oldScript.src) {
+                    const alreadyLoaded = Array.from(document.scripts).some(s => s.src === oldScript.src);
+                    if (alreadyLoaded) return;
+                }
+                const newScript = document.createElement('script');
+                Array.from(oldScript.attributes).forEach(attr => {
+                    newScript.setAttribute(attr.name, attr.value);
+                });
+                let code = oldScript.textContent;
+                if (document.readyState !== 'loading' && code.includes('DOMContentLoaded')) {
+                    code = code.replace(/document\.addEventListener\s*\(\s*['"]DOMContentLoaded['"]\s*,\s*(\([^)]*\)\s*=>|\bfunction\s*\([^)]*\))\s*\{/g, '(function() {');
+                }
+                newScript.textContent = code;
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+        }
+
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.locale && e.state.url) {
+                selectLanguage(null, e.state.locale, null, e.state.url, false);
+            }
+        });
+
+        // Trigger page loader on internal link navigation
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (!link || !link.href) return;
+            // Ignore new tabs, anchors, javascript, mailto, tel
+            if (link.target === '_blank' || link.hasAttribute('download') || link.href.includes('#') || link.href.startsWith('javascript:') || link.href.startsWith('mailto:') || link.href.startsWith('tel:')) return;
+            // Ignore language and currency dropdown items which have their own handlers
+            if (link.closest('#languageDropdown') || link.closest('#currencyDropdown')) return;
+            // Ignore modal triggers, accordions, or buttons disguised as links
+            if (link.hasAttribute('onclick') || link.classList.contains('mobile-toggle')) return;
+            if (e.ctrlKey || e.metaKey || e.shiftKey || e.defaultPrevented) return;
+
+            // If same-origin link, display attractive page loader
+            if (link.origin === window.location.origin) {
+                const text = (link.textContent || '').trim();
+                const hint = text && text.length < 24 ? `Loading ${text}...` : 'Loading page...';
+                showPageLoader(hint);
+            }
+        });
+
+        // Hide loader when navigating via browser back/forward cache
+        window.addEventListener('pageshow', (e) => {
+            hidePageLoader();
+        });
         document.addEventListener('click', (e) => {
             const menu = document.getElementById('userMenu');
             if (menu && !menu.contains(e.target)) {
@@ -1080,6 +1857,11 @@
             if (curMenu && !curMenu.contains(e.target)) {
                 document.getElementById('currencyDropdown')?.classList.remove('open');
                 document.getElementById('currencyBtn')?.classList.remove('active');
+            }
+            const langMenu = document.getElementById('languageMenu');
+            if (langMenu && !langMenu.contains(e.target)) {
+                document.getElementById('languageDropdown')?.classList.remove('open');
+                document.getElementById('languageBtn')?.classList.remove('active');
             }
             const navLinks = document.getElementById('navLinks');
             const mobileToggle = document.getElementById('mobileToggle');
@@ -1236,6 +2018,8 @@
     })();
     </script>
     @endif
+
+    @include('partials.cookie-banner')
 
     @stack('scripts')
 </body>

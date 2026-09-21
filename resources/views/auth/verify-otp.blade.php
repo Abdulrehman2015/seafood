@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Verify Email Code — MST Import and Export Sdn Bhd')
+@section('title', app(\App\Services\TranslationService::class)->translate('auth.otp_page_title', 'Verify Email Code — MST Import and Export Sdn Bhd'))
 
 @section('content')
 <!-- Page Header -->
@@ -7,28 +7,28 @@
     <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:20px 20px"></div>
     <div class="container page-header-content" style="position:relative;z-index:2">
         <div class="breadcrumb" style="margin-bottom:var(--space-2)">
-            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 Home</a>
+            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 @t('nav.home', 'Home')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">Email Verification</span>
+            <span style="font-weight:600;color:#ffffff">@t('auth.otp_breadcrumb', 'Email Verification')</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
             <div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
-                        🔐 Two-Factor Security
+                        🔐 @t('auth.otp_badge_2fa', 'Two-Factor Security')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.8rem">Brute-Force Protected</span>
+                    <span style="color:#bae6fd;font-size:0.8rem">@t('auth.otp_badge_bruteforce', 'Brute-Force Protected')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.75rem,3.5vw,2.3rem);margin-bottom:6px;letter-spacing:-0.02em">
-                    Verify Your Email Address
+                    @t('auth.otp_header_title', 'Verify Your Email Address')
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.95rem;max-width:640px;line-height:1.5;margin:0">
-                    A secure 6-digit verification code has been dispatched to your email address to confirm ownership and activate your customer portal.
+                    @t('auth.otp_header_subtitle', 'A secure 6-digit verification code has been dispatched to your email address to confirm ownership and activate your customer portal.')
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 <div style="font-size:0.85rem;padding:6px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb">
-                    🛡️ Safe Onboarding
+                    🛡️ @t('auth.otp_badge_safe', 'Safe Onboarding')
                 </div>
             </div>
         </div>
@@ -43,9 +43,9 @@
                 <div style="display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:50%;margin-bottom:12px;font-size:1.8rem">
                     ✉️
                 </div>
-                <h2 style="font-family:var(--font-heading);font-size:1.4rem;font-weight:800;color:#0f274a;margin:0 0 6px">Check Your Email</h2>
+                <h2 style="font-family:var(--font-heading);font-size:1.4rem;font-weight:800;color:#0f274a;margin:0 0 6px">@t('auth.otp_check_email_title', 'Check Your Email')</h2>
                 <p style="color:#64748b;font-size:0.9rem;margin:0;line-height:1.5">
-                    We sent a 6-digit code to <br>
+                    @t('auth.otp_sent_to', 'We sent a 6-digit code to') <br>
                     <strong style="color:#0f172a;font-family:monospace;font-size:1rem">{{ $maskedEmail }}</strong>
                 </p>
             </div>
@@ -54,7 +54,7 @@
             @if(session('status'))
                 <div style="background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:12px 14px;border-radius:10px;font-size:0.85rem;margin-bottom:20px;display:flex;align-items:center;gap:8px">
                     <span>✓</span>
-                    <span>{{ session('status') }}</span>
+                    <span>{{ __t(session('status'), session('status')) }}</span>
                 </div>
             @endif
 
@@ -62,7 +62,7 @@
             @if(session('error'))
                 <div style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:12px 14px;border-radius:10px;font-size:0.85rem;margin-bottom:20px;display:flex;align-items:center;gap:8px">
                     <span>⚠️</span>
-                    <span>{{ session('error') }}</span>
+                    <span>{{ __t(session('error'), session('error')) }}</span>
                 </div>
             @endif
 
@@ -72,82 +72,82 @@
                     <div style="width:60px;height:60px;border-radius:50%;background:#fee2e2;color:#ef4444;font-size:1.8rem;display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px">
                         🛑
                     </div>
-                    <h3 style="font-size:1.3rem;font-weight:800;color:#991b1b;margin:0 0 8px">Your Account Is Blocked</h3>
+                    <h3 style="font-size:1.3rem;font-weight:800;color:#991b1b;margin:0 0 8px">@t('auth.otp_blocked_title', 'Your Account Is Blocked')</h3>
                     <p style="font-size:0.92rem;line-height:1.6;margin:0 0 16px;color:#7f1d1d;font-weight:600">
-                        Your account is blocked. Please contact support.
+                        @t('auth.otp_blocked_subtitle', 'Your account is blocked. Please contact support.')
                     </p>
                     <p style="font-size:0.85rem;line-height:1.5;margin:0 0 16px;color:#991b1b">
-                        You have failed to verify your email address after requesting a new code. To protect customer security and prevent brute-force attacks, your account has been blocked.
+                        @t('auth.otp_blocked_desc', 'You have failed to verify your email address after requesting a new code. To protect customer security and prevent brute-force attacks, your account has been blocked.')
                     </p>
                     <div style="background:#ffffff;border:1px solid #fecaca;border-radius:10px;padding:14px;margin-bottom:18px;font-size:0.86rem;color:#64748b">
-                        Customer Support:
+                        @t('auth.otp_support_label', 'Customer Support:')
                         <div style="margin-top:6px;font-weight:700;color:#0f172a;font-size:0.95rem">
                             ✉️ <a href="mailto:info@mst.my" style="color:#2563eb">info@mst.my</a> &nbsp;•&nbsp; 📞 +60 3-8958 2888
                         </div>
                     </div>
                     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
                         <a href="{{ route('contact') }}" class="btn btn-primary" style="background:#2563eb;border-color:#2563eb;padding:12px 24px;font-weight:700;font-size:0.92rem;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:8px">
-                            <span>💬 Contact Support</span>
+                            <span>💬 @t('auth.otp_btn_contact_support', 'Contact Support')</span>
                         </a>
                         <button type="button" onclick="window.location.reload();" class="btn btn-secondary" style="background:#f8fafc;border:1.5px solid #cbd5e1;color:#1e293b;padding:12px 20px;font-weight:700;font-size:0.92rem;border-radius:10px;display:inline-flex;align-items:center;gap:6px;cursor:pointer">
-                            <span>🔄 Check Approval Status</span>
+                            <span>🔄 @t('auth.otp_btn_check_status', 'Check Approval Status')</span>
                         </button>
                     </div>
                 </div>
                 <div style="text-align:center;margin-top:16px;font-size:0.85rem">
-                    <a href="{{ route('login') }}" style="color:#64748b;text-decoration:underline">Return to Sign In</a>
+                    <a href="{{ route('login') }}" style="color:#64748b;text-decoration:underline">@t('auth.otp_return_to_signin', 'Return to Sign In')</a>
                 </div>
             @else
                 {{-- Attempt Status & Brute-Force Alert --}}
                 @if($isLocked)
                     <div style="background:#fef2f2;border:1.5px solid #ef4444;color:#991b1b;padding:18px;border-radius:12px;margin-bottom:22px;text-align:center">
                         <div style="font-weight:800;font-size:0.95rem;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:6px">
-                            <span>🛑</span> Verification Code Locked
+                            <span>🛑</span> @t('auth.otp_locked_title', 'Verification Code Locked')
                         </div>
                         <p style="font-size:0.84rem;line-height:1.5;margin:0 0 14px;color:#7f1d1d">
-                            You have exceeded the maximum of <strong>3 attempts</strong>. To protect your account from brute-force access, this code has been deactivated. Please request a new code below.
+                            @t('auth.otp_locked_desc', 'You have exceeded the maximum of 3 attempts. To protect your account from brute-force access, this code has been deactivated. Please request a new code below.', ['max' => 3])
                         </p>
                         @if(!$hasUsedResend)
-                            <form method="POST" action="{{ route('otp.resend') }}" style="margin:0" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').innerText='Sending New Code...';">
+                            <form method="POST" action="{{ route('otp.resend') }}" style="margin:0" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').innerText='{{ app(\App\Services\TranslationService::class)->translate('auth.otp_sending_new_code', 'Sending New Code...') }}';">
                                 @csrf
                                 <button type="submit" class="btn btn-primary" style="background:#dc2626;border-color:#dc2626;width:100%;padding:11px;font-weight:700;font-size:0.9rem;border-radius:8px">
-                                    Send Me a New Code
+                                    @t('auth.otp_btn_send_new_code', 'Send Me a New Code')
                                 </button>
                             </form>
                         @else
                             <button type="button" disabled class="btn" style="background:#cbd5e1;color:#64748b;border:1px solid #94a3b8;width:100%;padding:11px;font-weight:700;font-size:0.9rem;border-radius:8px;cursor:not-allowed">
-                                Send Me a New Code (Disabled)
+                                @t('auth.otp_btn_send_disabled', 'Send Me a New Code (Disabled)')
                             </button>
                         @endif
                     </div>
                 @elseif($errors->has('otp'))
                     <div style="background:#fffbeb;border:1.5px solid #f59e0b;color:#92400e;padding:14px;border-radius:12px;margin-bottom:22px">
                         <div style="font-weight:700;font-size:0.88rem;margin-bottom:4px;display:flex;align-items:center;gap:6px">
-                            <span>⚠️</span> {{ $errors->first('otp') }}
+                            <span>⚠️</span> {{ __t($errors->first('otp'), $errors->first('otp')) }}
                         </div>
                         @if($hasUsedResend)
                             <div style="font-size:0.8rem;color:#b45309;font-weight:700;margin-top:4px">
-                                ⚠️ Final warning: This is your resent code. If you exhaust your 3 attempts, your account will be blocked.
+                                ⚠️ @t('auth.otp_final_warning', 'Final warning: This is your resent code. If you exhaust your 3 attempts, your account will be blocked.')
                             </div>
                         @else
                             <div style="font-size:0.78rem;color:#b45309;margin-top:4px">
-                                Security Notice: Exactly 3 attempts are allowed before a new code is enforced.
+                                @t('auth.otp_security_notice', 'Security Notice: Exactly 3 attempts are allowed before a new code is enforced.')
                             </div>
                         @endif
                     </div>
                 @else
                     @if($hasUsedResend)
                         <div style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:10px 14px;border-radius:10px;font-size:0.82rem;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between">
-                            <span>⚠️ Resent Code Active (Final Cycle)</span>
+                            <span>⚠️ @t('auth.otp_resent_active', 'Resent Code Active (Final Cycle)')</span>
                             <span style="font-weight:700;background:#fef3c7;padding:2px 8px;border-radius:6px">
-                                {{ $attemptsRemaining }} of 3 attempts left
+                                @t('auth.otp_attempts_left', ':remaining of 3 attempts left', ['remaining' => $attemptsRemaining])
                             </span>
                         </div>
                     @else
                         <div style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:10px 14px;border-radius:10px;font-size:0.82rem;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between">
-                            <span>🛡️ Code Valid for 10 minutes</span>
+                            <span>🛡️ @t('auth.otp_code_valid_10m', 'Code Valid for 10 minutes')</span>
                             <span style="font-weight:700;background:#dcfce7;padding:2px 8px;border-radius:6px">
-                                {{ $attemptsRemaining }} of 3 attempts left
+                                @t('auth.otp_attempts_left', ':remaining of 3 attempts left', ['remaining' => $attemptsRemaining])
                             </span>
                         </div>
                     @endif
@@ -160,7 +160,7 @@
 
                     <div style="margin-bottom:24px">
                         <label style="display:block;text-align:center;font-weight:700;color:#334155;font-size:0.88rem;margin-bottom:12px">
-                            Enter 6-Digit Code
+                            @t('auth.otp_enter_code', 'Enter 6-Digit Code')
                         </label>
 
                         {{-- 6 Digit Inputs --}}
@@ -178,7 +178,7 @@
                             @endfor
                         </div>
                         <div style="text-align:center;margin-top:8px;font-size:0.75rem;color:#94a3b8">
-                            Tip: You can paste the full 6-digit code directly
+                            @t('auth.otp_paste_tip', 'Tip: You can paste the full 6-digit code directly')
                         </div>
                     </div>
 
@@ -187,7 +187,7 @@
                             class="btn btn-primary"
                             {{ $isLocked ? 'disabled' : '' }}
                             style="width:100%;padding:13px;font-size:0.95rem;font-weight:700;border-radius:10px;background:{{ $isLocked ? '#94a3b8' : '#2563eb' }};border-color:{{ $isLocked ? '#94a3b8' : '#2563eb' }};box-shadow:0 4px 14px rgba(37,99,235,0.25);display:flex;align-items:center;justify-content:center;gap:8px;cursor:{{ $isLocked ? 'not-allowed' : 'pointer' }}">
-                        <span>Verify &amp; Activate Account</span>
+                        <span>@t('auth.otp_btn_verify_activate', 'Verify & Activate Account')</span>
                         <span>→</span>
                     </button>
                 </form>
@@ -196,35 +196,35 @@
                 @if(!$isLocked)
                 <div style="margin-top:24px;padding-top:20px;border-top:1px solid #f1f5f9;display:flex;flex-direction:column;align-items:center;gap:12px">
                     @if(!$hasUsedResend)
-                    <form method="POST" action="{{ route('otp.resend') }}" id="resendForm" style="margin:0" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').innerText='Sending...';">
+                    <form method="POST" action="{{ route('otp.resend') }}" id="resendForm" style="margin:0" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').innerText='{{ app(\App\Services\TranslationService::class)->translate('auth.otp_sending', 'Sending...') }}';">
                         @csrf
                         <div style="font-size:0.86rem;color:#64748b;display:flex;align-items:center;gap:6px">
-                            <span>Didn't receive code?</span>
+                            <span>@t('auth.otp_didnt_receive', "Didn't receive code?")</span>
                             <button type="submit"
                                     id="resendBtn"
                                     style="background:transparent;border:none;color:#2563eb;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;font-size:0.86rem"
                                     {{ $cooldownRemaining > 0 ? 'disabled' : '' }}>
-                                Send me a new code
+                                @t('auth.otp_resend_link', 'Send me a new code')
                             </button>
                             <span id="cooldownLabel" style="font-size:0.8rem;color:#94a3b8;display:{{ $cooldownRemaining > 0 ? 'inline' : 'none' }}">
-                                (in <span id="cooldownSeconds">{{ $cooldownRemaining }}</span>s)
+                                (<span id="cooldownSeconds">{{ (int) $cooldownRemaining }}</span>@t('auth.otp_sec_unit', 's'))
                             </span>
                         </div>
                         @error('resend')
-                            <div style="color:#ef4444;font-size:0.8rem;text-align:center;margin-top:4px">{{ $message }}</div>
+                            <div style="color:#ef4444;font-size:0.8rem;text-align:center;margin-top:4px">{{ __t($message, $message) }}</div>
                         @enderror
                     </form>
                     @else
                         <div style="font-size:0.84rem;color:#94a3b8;display:flex;align-items:center;gap:6px">
-                            <span>Didn't receive code?</span>
+                            <span>@t('auth.otp_didnt_receive', "Didn't receive code?")</span>
                             <button type="button" disabled style="background:transparent;border:none;color:#94a3b8;font-weight:600;cursor:not-allowed;padding:0;text-decoration:none;font-size:0.84rem">
-                                Send me a new code (Disabled)
+                                @t('auth.otp_btn_send_disabled', 'Send me a new code (Disabled)')
                             </button>
                         </div>
                     @endif
 
                     <div style="font-size:0.8rem;color:#94a3b8">
-                        Wrong email? <a href="{{ route('register') }}" style="color:#64748b;text-decoration:underline">Register with another email</a>
+                        @t('auth.otp_wrong_email', 'Wrong email?') <a href="{{ route('register') }}" style="color:#64748b;text-decoration:underline">@t('auth.otp_register_another', 'Register with another email')</a>
                     </div>
                 </div>
                 @endif
@@ -318,13 +318,13 @@ document.addEventListener('DOMContentLoaded', function() {
             updateFullOtp();
             if (fullOtpInput && fullOtpInput.value.length !== 6) {
                 e.preventDefault();
-                alert('Please enter all 6 digits of the verification code.');
+                alert('{{ app(\App\Services\TranslationService::class)->translate('auth.otp_alert_enter_all_digits', 'Please enter all 6 digits of the verification code.') }}');
             }
         });
     }
 
     // Cooldown Timer
-    let cooldown = {{ $cooldownRemaining }};
+    let cooldown = parseInt({{ (int) $cooldownRemaining }}) || 0;
     const resendBtn = document.getElementById('resendBtn');
     const cooldownLabel = document.getElementById('cooldownLabel');
     const cooldownSeconds = document.getElementById('cooldownSeconds');
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (cooldown > 0 && resendBtn && cooldownSeconds) {
         const timer = setInterval(() => {
             cooldown--;
-            cooldownSeconds.textContent = cooldown;
+            cooldownSeconds.textContent = Math.max(0, cooldown);
             if (cooldown <= 0) {
                 clearInterval(timer);
                 resendBtn.disabled = false;

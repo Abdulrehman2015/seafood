@@ -12,9 +12,32 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
+        $middleware->append(\App\Http\Middleware\SecurityHeadersMiddleware::class);
+
+        $middleware->redirectGuestsTo(function (\Illuminate\Http\Request $request) {
+            $locale = session('locale', $request->cookie('locale', config('app.locale', 'en')));
+            if (!in_array($locale, ['en', 'zh', 'bm'])) {
+                $locale = 'en';
+            }
+            return route('login', ['locale' => $locale]);
+        });
+
+        $middleware->redirectUsersTo(function (\Illuminate\Http\Request $request) {
+            $user = $request->user();
+            if ($user && $user->isAdmin()) {
+                return route('admin.dashboard');
+            }
+
+            $locale = session('locale', $request->cookie('locale', config('app.locale', 'en')));
+            if (!in_array($locale, ['en', 'zh', 'bm'])) {
+                $locale = 'en';
+            }
+            return route('home', ['locale' => $locale]);
+        });
 
         $middleware->web(append: [
-            \App\Http\Middleware\SecurityHeadersMiddleware::class,
+            \App\Http\Middleware\SetLocaleMiddleware::class,
+            \App\Http\Middleware\PerformanceHeadersMiddleware::class,
             \App\Http\Middleware\EnsurePendingUserRestricted::class,
         ]);
 

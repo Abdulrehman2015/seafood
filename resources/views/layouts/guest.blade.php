@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -8,19 +8,15 @@
 
     <title>{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</title>
 
-    {{-- Dynamic Favicon --}}
-    @if(!empty($settings['site_favicon']))
-        <link rel="icon" type="image/webp" href="{{ asset('storage/' . $settings['site_favicon']) }}">
-        <link rel="shortcut icon" href="{{ asset('storage/' . $settings['site_favicon']) }}">
-    @else
-        <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
-        <link rel="shortcut icon" href="{{ asset('images/favicon.webp') }}">
-    @endif
+    {{-- Favicon & Touch Icons --}}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
     {{-- Fonts --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
 
     {{-- Site CSS --}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
@@ -113,8 +109,8 @@
                      alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}">
             @endif
             <div class="guest-brand-text">
-                <span class="guest-brand-name">{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</span>
-                <span class="guest-brand-sub">{{ $settings['store_tagline'] ?? 'Flow with Integrity, Grow with Strength' }}</span>
+                <span class="guest-brand-name">@t('footer.company_name', $settings['store_name'] ?? 'MST Import and Export Sdn Bhd')</span>
+                <span class="guest-brand-sub">@t('footer.tagline', $settings['store_tagline'] ?? 'Flow with Integrity, Grow with Strength')</span>
             </div>
         </a>
 

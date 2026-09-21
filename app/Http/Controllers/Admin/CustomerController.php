@@ -149,9 +149,9 @@ class CustomerController extends Controller
         $mailError = null;
         try {
             \App\Models\Setting::configureMailer();
-            Mail::to($user->email)->send(new \App\Mail\AccountApproved($user));
+            Mail::to($user->email)->send(new \App\Mail\AccountApproved($user, $user->preferred_locale));
             $mailSent = true;
-            \Illuminate\Support\Facades\Log::info("Account approval email sent to {$user->email}");
+            \Illuminate\Support\Facades\Log::info("Account approval email sent to {$user->email} in locale: " . ($user->preferred_locale ?? 'en'));
         } catch (\Throwable $e) {
             $mailError = $e->getMessage();
             \Illuminate\Support\Facades\Log::error("Account approval email failed for {$user->email}: " . $mailError);
@@ -187,9 +187,9 @@ class CustomerController extends Controller
         $mailError = null;
         try {
             \App\Models\Setting::configureMailer();
-            Mail::to($user->email)->send(new \App\Mail\AccountRejected($user));
+            Mail::to($user->email)->send(new \App\Mail\AccountRejected($user, $user->preferred_locale));
             $mailSent = true;
-            \Illuminate\Support\Facades\Log::info("Account rejection email sent to {$user->email}");
+            \Illuminate\Support\Facades\Log::info("Account rejection email sent to {$user->email} in locale: " . ($user->preferred_locale ?? 'en'));
         } catch (\Throwable $e) {
             $mailError = $e->getMessage();
             \Illuminate\Support\Facades\Log::error("Account rejection email failed for {$user->email}: " . $mailError);

@@ -79,8 +79,17 @@
                                         <div style="font-size: 17px; font-weight: 800; color: #ffffff; letter-spacing: 0.04em; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; text-transform: uppercase;">
                                             MST IMPORT &amp; EXPORT
                                         </div>
+                                        @php
+                                            $mailLoc = $mailLocale ?? current_locale();
+                                        @endphp
                                         <div style="font-size: 11px; color: #94a3b8; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px;">
-                                            镁嘉国际贸易有限公司 · (原 MIKA SEAFOOD TRADING)
+                                            @if($mailLoc === 'zh')
+                                                镁嘉国际贸易有限公司 · (原 MIKA SEAFOOD TRADING)
+                                            @elseif($mailLoc === 'bm')
+                                                MST IMPORT &amp; EXPORT SDN. BHD. · Pengedaran Makanan Laut Rangkaian Sejuk
+                                            @else
+                                                MST IMPORT &amp; EXPORT SDN. BHD. · Cold-Chain Seafood Distribution
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -106,7 +115,13 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px;">
                                 <tr>
                                     <td style="font-size: 12px; color: #64748b; line-height: 1.5;">
-                                        <strong>Need assistance?</strong> Reach our support desk directly via WhatsApp at <a href="https://wa.me/601112710260" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1271 0260</a> or call Office at <a href="tel:01114360109" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1436 0109</a>.
+                                        @if($mailLoc === 'zh')
+                                            <strong>需要协助？</strong>请直接通过 WhatsApp 联系客服团队 <a href="https://wa.me/601112710260" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1271 0260</a> 或致电办公室 <a href="tel:01114360109" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1436 0109</a>。
+                                        @elseif($mailLoc === 'bm')
+                                            <strong>Perlukan bantuan?</strong> Hubungi meja sokongan kami terus melalui WhatsApp di <a href="https://wa.me/601112710260" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1271 0260</a> atau hubungi Pejabat di <a href="tel:01114360109" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1436 0109</a>.
+                                        @else
+                                            <strong>Need assistance?</strong> Reach our support desk directly via WhatsApp at <a href="https://wa.me/601112710260" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1271 0260</a> or call Office at <a href="tel:01114360109" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1436 0109</a>.
+                                        @endif
                                     </td>
                                 </tr>
                             </table>
@@ -121,22 +136,25 @@
                                     <td align="center" style="font-size: 12px; color: #64748b; line-height: 1.6;">
                                         <strong style="color: #1e293b;">MST IMPORT &amp; EXPORT SDN. BHD.</strong><br>
                                         7 Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia<br>
-                                        <span style="color: #94a3b8; font-size: 11px;">Halal &amp; HACCP Certified Cold-Chain Sourcing &amp; Seafood Distribution</span>
+                                        <span style="color: #94a3b8; font-size: 11px;">{{ __t('email.cold_chain_cert', 'Halal & HACCP Certified Cold-Chain Sourcing & Seafood Distribution', [], $mailLoc) }}</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="center" style="padding-top: 14px;">
-                                        <a href="{{ $baseUrl }}" style="font-size: 12px; color: #2563eb; font-weight: 700; text-decoration: none; margin: 0 8px;">Visit Store</a>
+                                        @php
+                                            $locPrefix = ($mailLoc && $mailLoc !== 'en') ? '/' . $mailLoc : '';
+                                        @endphp
+                                        <a href="{{ $baseUrl . $locPrefix }}" style="font-size: 12px; color: #2563eb; font-weight: 700; text-decoration: none; margin: 0 8px;">{{ __t('email.visit_store', 'Visit Store', [], $mailLoc) }}</a>
                                         <span style="color: #cbd5e1;">·</span>
-                                        <a href="{{ $baseUrl }}/about" style="font-size: 12px; color: #2563eb; font-weight: 700; text-decoration: none; margin: 0 8px;">About Us</a>
+                                        <a href="{{ $baseUrl . $locPrefix . '/about' }}" style="font-size: 12px; color: #2563eb; font-weight: 700; text-decoration: none; margin: 0 8px;">{{ __t('email.about_us', 'About Us', [], $mailLoc) }}</a>
                                         <span style="color: #cbd5e1;">·</span>
-                                        <a href="{{ $baseUrl }}/contact" style="font-size: 12px; color: #2563eb; font-weight: 700; text-decoration: none; margin: 0 8px;">Contact Us</a>
+                                        <a href="{{ $baseUrl . $locPrefix . '/contact' }}" style="font-size: 12px; color: #2563eb; font-weight: 700; text-decoration: none; margin: 0 8px;">{{ __t('email.contact_us', 'Contact Us', [], $mailLoc) }}</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="center" style="padding-top: 14px; font-size: 11px; color: #94a3b8;">
-                                        © {{ date('Y') }} MST Import &amp; Export SDN. BHD. All rights reserved.<br>
-                                        This is an automated system email notification. Please do not reply directly to this address.
+                                        © {{ date('Y') }} MST Import &amp; Export SDN. BHD. {{ __t('email.all_rights_reserved', 'All rights reserved.', [], $mailLoc) }}<br>
+                                        {{ __t('email.automated_notice', 'This is an automated system email notification. Please do not reply directly to this address.', [], $mailLoc) }}
                                     </td>
                                 </tr>
                             </table>

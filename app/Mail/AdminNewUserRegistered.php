@@ -13,7 +13,10 @@ class AdminNewUserRegistered extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public User $user) {}
+    public function __construct(public User $user)
+    {
+        $this->locale('en');
+    }
 
     public function envelope(): Envelope
     {
@@ -23,6 +26,9 @@ class AdminNewUserRegistered extends Mailable
 
     public function content(): Content
     {
-        return new Content(view: 'emails.admin-new-user');
+        return new Content(
+            view: 'emails.admin-new-user',
+            with: ['mailLocale' => 'en']
+        );
     }
 }

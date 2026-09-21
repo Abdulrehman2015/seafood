@@ -194,11 +194,17 @@ class ProductController extends Controller
     protected function validateProduct(Request $request, ?int $ignoreId = null): array
     {
         return $request->validate([
-            'name'               => 'required|string|max:255',
-            'sku'                => 'nullable|string|max:100|unique:products,sku,' . ($ignoreId ?? 'NULL'),
-            'category_id'        => 'nullable|exists:categories,id',
-            'short_description'  => 'nullable|string|max:500',
-            'description'        => 'nullable|string',
+            'name'                 => 'required|string|max:255',
+            'name_zh'              => 'nullable|string|max:255',
+            'name_bm'              => 'nullable|string|max:255',
+            'sku'                  => 'nullable|string|max:100|unique:products,sku,' . ($ignoreId ?? 'NULL'),
+            'category_id'          => 'nullable|exists:categories,id',
+            'short_description'    => 'nullable|string|max:500',
+            'short_description_zh' => 'nullable|string|max:500',
+            'short_description_bm' => 'nullable|string|max:500',
+            'description'          => 'nullable|string',
+            'description_zh'       => 'nullable|string',
+            'description_bm'       => 'nullable|string',
             'retail_price'       => 'required|numeric|min:0',
             'walkin_price'       => 'required|numeric|min:0',
             'wholesale_price'    => 'required|numeric|min:0',

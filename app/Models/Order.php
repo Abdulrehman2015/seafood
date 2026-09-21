@@ -41,27 +41,46 @@ class Order extends Model
 
     public function getStatusBadgeAttribute(): string
     {
-        return match ($this->status) {
-            'pending'    => '<span class="badge badge-warning">Pending</span>',
-            'confirmed'  => '<span class="badge badge-info">Confirmed</span>',
-            'processing' => '<span class="badge badge-primary">Processing</span>',
-            'ready'      => '<span class="badge badge-success">Ready</span>',
-            'shipped'    => '<span class="badge badge-primary">Shipped</span>',
-            'delivered'  => '<span class="badge badge-success">Delivered</span>',
-            'cancelled'  => '<span class="badge badge-danger">Cancelled</span>',
-            default      => '<span class="badge badge-secondary">' . ucfirst($this->status) . '</span>',
+        $label = match ($this->status) {
+            'pending'    => __t('order.status.pending', 'Pending'),
+            'confirmed'  => __t('order.status.confirmed', 'Confirmed'),
+            'processing' => __t('order.status.processing', 'Processing'),
+            'ready'      => __t('order.status.ready', 'Ready'),
+            'shipped'    => __t('order.status.shipped', 'Shipped'),
+            'delivered'  => __t('order.status.delivered', 'Delivered'),
+            'cancelled'  => __t('order.status.cancelled', 'Cancelled'),
+            default      => ucfirst($this->status),
         };
+        $class = match ($this->status) {
+            'pending'    => 'badge-warning',
+            'confirmed'  => 'badge-info',
+            'processing' => 'badge-primary',
+            'ready'      => 'badge-success',
+            'shipped'    => 'badge-primary',
+            'delivered'  => 'badge-success',
+            'cancelled'  => 'badge-danger',
+            default      => 'badge-secondary',
+        };
+        return '<span class="badge ' . $class . '">' . e($label) . '</span>';
     }
 
     public function getPaymentBadgeAttribute(): string
     {
-        return match ($this->payment_status) {
-            'paid'     => '<span class="badge badge-success">Paid</span>',
-            'unpaid'   => '<span class="badge badge-warning">Unpaid</span>',
-            'refunded' => '<span class="badge badge-info">Refunded</span>',
-            'failed'   => '<span class="badge badge-danger">Failed</span>',
-            default    => '<span class="badge badge-secondary">' . ucfirst($this->payment_status) . '</span>',
+        $label = match ($this->payment_status) {
+            'paid'     => __t('order.payment.paid', 'Paid'),
+            'unpaid'   => __t('order.payment.unpaid', 'Unpaid'),
+            'refunded' => __t('order.payment.refunded', 'Refunded'),
+            'failed'   => __t('order.payment.failed', 'Failed'),
+            default    => ucfirst($this->payment_status),
         };
+        $class = match ($this->payment_status) {
+            'paid'     => 'badge-success',
+            'unpaid'   => 'badge-warning',
+            'refunded' => 'badge-info',
+            'failed'   => 'badge-danger',
+            default    => 'badge-secondary',
+        };
+        return '<span class="badge ' . $class . '">' . e($label) . '</span>';
     }
 
     protected static function booted(): void

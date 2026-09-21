@@ -13,7 +13,10 @@ class AdminNewOrderNotification extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public Order $order) {}
+    public function __construct(public Order $order)
+    {
+        $this->locale('en');
+    }
 
     public function envelope(): Envelope
     {
@@ -24,6 +27,9 @@ class AdminNewOrderNotification extends Mailable
 
     public function content(): Content
     {
-        return new Content(view: 'emails.admin-new-order');
+        return new Content(
+            view: 'emails.admin-new-order',
+            with: ['mailLocale' => 'en']
+        );
     }
 }

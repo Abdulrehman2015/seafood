@@ -79,6 +79,8 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name'          => 'required|string|max:255',
+            'name_zh'       => 'nullable|string|max:255',
+            'name_bm'       => 'nullable|string|max:255',
             'slug'          => 'nullable|string|max:255|unique:categories,slug',
             'custom_url'    => 'nullable|string|max:500',
             'description'   => 'nullable|string',
@@ -116,6 +118,8 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name'          => 'required|string|max:255',
+            'name_zh'       => 'nullable|string|max:255',
+            'name_bm'       => 'nullable|string|max:255',
             'slug'          => 'nullable|string|max:255',
             'custom_url'    => 'nullable|string|max:500',
             'description'   => 'nullable|string',

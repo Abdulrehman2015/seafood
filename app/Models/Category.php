@@ -11,13 +11,25 @@ class Category extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'slug', 'custom_url', 'description', 'image', 'parent_id', 'sort_order', 'is_active', 'is_featured',
+        'name', 'name_zh', 'name_bm', 'slug', 'custom_url', 'description', 'image', 'parent_id', 'sort_order', 'is_active', 'is_featured',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
     ];
+
+    public function getNameAttribute($value)
+    {
+        $locale = current_locale();
+        if ($locale === 'zh' && !empty($this->attributes['name_zh'])) {
+            return $this->attributes['name_zh'];
+        }
+        if ($locale === 'bm' && !empty($this->attributes['name_bm'])) {
+            return $this->attributes['name_bm'];
+        }
+        return $value;
+    }
 
     public function getUrlAttribute(): string
     {

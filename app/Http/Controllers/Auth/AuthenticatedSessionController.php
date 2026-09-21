@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
         if (!$user->isAdmin() && !$user->isEmailVerified()) {
             Auth::guard('web')->logout();
             $request->session()->put('otp_verify_user_id', $user->id);
-            return redirect()->route('otp.verify')->with('status', 'Please verify your email with the 6-digit verification code before logging in.');
+            return redirect()->route('otp.verify')->with('status', __t('auth.otp_login_unverified_notice', 'Please verify your email with the 6-digit verification code before logging in.'));
         }
 
         if ($user->isAdmin()) {

@@ -1,0 +1,1500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="http://127.0.0.1:8000/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>http://127.0.0.1:8000/en</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/categories</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/categories" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/categories" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/categories" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/categories" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/categories</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/categories" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/categories" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/categories" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/categories" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/categories</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/categories" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/categories" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/categories" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/categories" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/about</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/about" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/about" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/about" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/about</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/about" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/about" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/about" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/about</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/about" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/about" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/about" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/contact</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/contact" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/contact" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/contact</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/contact" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/contact" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/contact</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/contact" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/contact" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/contact" />
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/atlantic-salmon-fillet-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/atlantic-salmon-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/atlantic-salmon-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/atlantic-salmon-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/atlantic-salmon-fillet-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/salmon_fillet_premium.jpg</image:loc>
+      <image:title>Atlantic Salmon Fillet (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/atlantic-salmon-fillet-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/atlantic-salmon-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/atlantic-salmon-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/atlantic-salmon-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/atlantic-salmon-fillet-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/salmon_fillet_premium.jpg</image:loc>
+      <image:title>Atlantic Salmon Fillet (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/atlantic-salmon-fillet-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/atlantic-salmon-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/atlantic-salmon-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/atlantic-salmon-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/atlantic-salmon-fillet-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/salmon_fillet_premium.jpg</image:loc>
+      <image:title>Atlantic Salmon Fillet (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/barramundi-siakap-whole-750g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/barramundi-siakap-whole-750g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/barramundi-siakap-whole-750g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/barramundi-siakap-whole-750g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/barramundi-siakap-whole-750g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/barramundi_seabass.jpg</image:loc>
+      <image:title>Barramundi / Siakap Whole Cleaned (750g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/barramundi-siakap-whole-750g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/barramundi-siakap-whole-750g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/barramundi-siakap-whole-750g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/barramundi-siakap-whole-750g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/barramundi-siakap-whole-750g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/barramundi_seabass.jpg</image:loc>
+      <image:title>Barramundi / Siakap Whole Cleaned (750g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/barramundi-siakap-whole-750g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/barramundi-siakap-whole-750g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/barramundi-siakap-whole-750g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/barramundi-siakap-whole-750g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/barramundi-siakap-whole-750g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/barramundi_seabass.jpg</image:loc>
+      <image:title>Barramundi / Siakap Whole Cleaned (750g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/flower-crab-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/flower-crab-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/1789019303_7SewDQ_flowercrab-1-1024x1024.webp</image:loc>
+      <image:title>Flower Crab (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/flower-crab-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/flower-crab-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/1789019303_7SewDQ_flowercrab-1-1024x1024.webp</image:loc>
+      <image:title>Flower Crab (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/flower-crab-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/flower-crab-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/1789019303_7SewDQ_flowercrab-1-1024x1024.webp</image:loc>
+      <image:title>Flower Crab (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/red-snapper-ikan-merah-fillet-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/red-snapper-ikan-merah-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/red-snapper-ikan-merah-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/red-snapper-ikan-merah-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/red-snapper-ikan-merah-fillet-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/red_snapper_fillet.jpg</image:loc>
+      <image:title>Red Snapper / Ikan Merah Fillet (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/red-snapper-ikan-merah-fillet-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/red-snapper-ikan-merah-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/red-snapper-ikan-merah-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/red-snapper-ikan-merah-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/red-snapper-ikan-merah-fillet-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/red_snapper_fillet.jpg</image:loc>
+      <image:title>Red Snapper / Ikan Merah Fillet (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/red-snapper-ikan-merah-fillet-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/red-snapper-ikan-merah-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/red-snapper-ikan-merah-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/red-snapper-ikan-merah-fillet-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/red-snapper-ikan-merah-fillet-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/red_snapper_fillet.jpg</image:loc>
+      <image:title>Red Snapper / Ikan Merah Fillet (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/squid-rings-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/squid-rings-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/1789019355_zhPb0X_seashelfcalamarirings-500gm-2.webp</image:loc>
+      <image:title>Squid Rings (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/squid-rings-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/squid-rings-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/1789019355_zhPb0X_seashelfcalamarirings-500gm-2.webp</image:loc>
+      <image:title>Squid Rings (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/squid-rings-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/squid-rings-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/1789019355_zhPb0X_seashelfcalamarirings-500gm-2.webp</image:loc>
+      <image:title>Squid Rings (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/spanish-mackerel-tenggiri-steak-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/tenggiri_steak.jpg</image:loc>
+      <image:title>Spanish Mackerel / Tenggiri Steak (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/spanish-mackerel-tenggiri-steak-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/tenggiri_steak.jpg</image:loc>
+      <image:title>Spanish Mackerel / Tenggiri Steak (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/spanish-mackerel-tenggiri-steak-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/spanish-mackerel-tenggiri-steak-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/tenggiri_steak.jpg</image:loc>
+      <image:title>Spanish Mackerel / Tenggiri Steak (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/jumbo-black-tiger-prawns-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/jumbo-black-tiger-prawns-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/jumbo-black-tiger-prawns-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/jumbo-black-tiger-prawns-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/jumbo-black-tiger-prawns-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/black_tiger_prawns.jpg</image:loc>
+      <image:title>Jumbo Black Tiger Prawns (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/jumbo-black-tiger-prawns-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/jumbo-black-tiger-prawns-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/jumbo-black-tiger-prawns-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/jumbo-black-tiger-prawns-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/jumbo-black-tiger-prawns-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/black_tiger_prawns.jpg</image:loc>
+      <image:title>Jumbo Black Tiger Prawns (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/jumbo-black-tiger-prawns-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/jumbo-black-tiger-prawns-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/jumbo-black-tiger-prawns-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/jumbo-black-tiger-prawns-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/jumbo-black-tiger-prawns-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/black_tiger_prawns.jpg</image:loc>
+      <image:title>Jumbo Black Tiger Prawns (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/cockles-kerang-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/cockles-kerang-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/cockles-kerang-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/cockles-kerang-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/cockles-kerang-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/1789019396_jGi9Uw_b821a0d1-e4a7-4098-a2ce-605068421216.webp</image:loc>
+      <image:title>Cockles / Kerang (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/cockles-kerang-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/cockles-kerang-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/cockles-kerang-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/cockles-kerang-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/cockles-kerang-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/1789019396_jGi9Uw_b821a0d1-e4a7-4098-a2ce-605068421216.webp</image:loc>
+      <image:title>Cockles / Kerang (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/cockles-kerang-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/cockles-kerang-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/cockles-kerang-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/cockles-kerang-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/cockles-kerang-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/1789019396_jGi9Uw_b821a0d1-e4a7-4098-a2ce-605068421216.webp</image:loc>
+      <image:title>Cockles / Kerang (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/sea-white-prawns-udang-kertas-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/sea-white-prawns-udang-kertas-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/sea-white-prawns-udang-kertas-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/sea-white-prawns-udang-kertas-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/sea-white-prawns-udang-kertas-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/sea_white_prawns.jpg</image:loc>
+      <image:title>Sea White Prawns / Udang Kertas (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/sea-white-prawns-udang-kertas-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/sea-white-prawns-udang-kertas-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/sea-white-prawns-udang-kertas-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/sea-white-prawns-udang-kertas-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/sea-white-prawns-udang-kertas-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/sea_white_prawns.jpg</image:loc>
+      <image:title>Sea White Prawns / Udang Kertas (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/sea-white-prawns-udang-kertas-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/sea-white-prawns-udang-kertas-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/sea-white-prawns-udang-kertas-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/sea-white-prawns-udang-kertas-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/sea-white-prawns-udang-kertas-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/sea_white_prawns.jpg</image:loc>
+      <image:title>Sea White Prawns / Udang Kertas (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/peeled-deveined-king-prawns-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/peeled-deveined-king-prawns-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/peeled-deveined-king-prawns-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/peeled-deveined-king-prawns-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/peeled-deveined-king-prawns-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/peeled_king_prawns.jpg</image:loc>
+      <image:title>Peeled &amp; Deveined King Prawns (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/peeled-deveined-king-prawns-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/peeled-deveined-king-prawns-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/peeled-deveined-king-prawns-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/peeled-deveined-king-prawns-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/peeled-deveined-king-prawns-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/peeled_king_prawns.jpg</image:loc>
+      <image:title>Peeled &amp; Deveined King Prawns (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/peeled-deveined-king-prawns-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/peeled-deveined-king-prawns-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/peeled-deveined-king-prawns-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/peeled-deveined-king-prawns-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/peeled-deveined-king-prawns-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/peeled_king_prawns.jpg</image:loc>
+      <image:title>Peeled &amp; Deveined King Prawns (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/fresh-loligo-squid-sotong-jarum-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/loligo_squid.jpg</image:loc>
+      <image:title>Fresh Loligo Squid / Sotong Jarum (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/fresh-loligo-squid-sotong-jarum-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/loligo_squid.jpg</image:loc>
+      <image:title>Fresh Loligo Squid / Sotong Jarum (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/fresh-loligo-squid-sotong-jarum-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/fresh-loligo-squid-sotong-jarum-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/loligo_squid.jpg</image:loc>
+      <image:title>Fresh Loligo Squid / Sotong Jarum (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/crispy-calamari-squid-rings-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/crispy-calamari-squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/crispy-calamari-squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/crispy-calamari-squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/crispy-calamari-squid-rings-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/squid_rings_iqf.jpg</image:loc>
+      <image:title>Crispy Calamari Squid Rings (500g IQF)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/crispy-calamari-squid-rings-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/crispy-calamari-squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/crispy-calamari-squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/crispy-calamari-squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/crispy-calamari-squid-rings-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/squid_rings_iqf.jpg</image:loc>
+      <image:title>Crispy Calamari Squid Rings (500g IQF)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/crispy-calamari-squid-rings-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/crispy-calamari-squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/crispy-calamari-squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/crispy-calamari-squid-rings-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/crispy-calamari-squid-rings-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/squid_rings_iqf.jpg</image:loc>
+      <image:title>Crispy Calamari Squid Rings (500g IQF)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/live-mud-crabs-ketam-nipah-800g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/live-mud-crabs-ketam-nipah-800g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/live-mud-crabs-ketam-nipah-800g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/live-mud-crabs-ketam-nipah-800g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/live-mud-crabs-ketam-nipah-800g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/mud_crabs_live.jpg</image:loc>
+      <image:title>Live Mud Crabs / Ketam Nipah (~800g Pair)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/live-mud-crabs-ketam-nipah-800g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/live-mud-crabs-ketam-nipah-800g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/live-mud-crabs-ketam-nipah-800g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/live-mud-crabs-ketam-nipah-800g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/live-mud-crabs-ketam-nipah-800g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/mud_crabs_live.jpg</image:loc>
+      <image:title>Live Mud Crabs / Ketam Nipah (~800g Pair)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/live-mud-crabs-ketam-nipah-800g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/live-mud-crabs-ketam-nipah-800g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/live-mud-crabs-ketam-nipah-800g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/live-mud-crabs-ketam-nipah-800g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/live-mud-crabs-ketam-nipah-800g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/mud_crabs_live.jpg</image:loc>
+      <image:title>Live Mud Crabs / Ketam Nipah (~800g Pair)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/blue-swimmer-flower-crab-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/blue-swimmer-flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/blue-swimmer-flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/blue-swimmer-flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/blue-swimmer-flower-crab-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/flower_crab_fresh.jpg</image:loc>
+      <image:title>Blue Swimmer Flower Crab (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/blue-swimmer-flower-crab-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/blue-swimmer-flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/blue-swimmer-flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/blue-swimmer-flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/blue-swimmer-flower-crab-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/flower_crab_fresh.jpg</image:loc>
+      <image:title>Blue Swimmer Flower Crab (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/blue-swimmer-flower-crab-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/blue-swimmer-flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/blue-swimmer-flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/blue-swimmer-flower-crab-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/blue-swimmer-flower-crab-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/flower_crab_fresh.jpg</image:loc>
+      <image:title>Blue Swimmer Flower Crab (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/crispy-soft-shell-crab-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/crispy-soft-shell-crab-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/crispy-soft-shell-crab-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/crispy-soft-shell-crab-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/crispy-soft-shell-crab-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/soft_shell_crab.jpg</image:loc>
+      <image:title>Crispy Soft Shell Crab (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/crispy-soft-shell-crab-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/crispy-soft-shell-crab-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/crispy-soft-shell-crab-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/crispy-soft-shell-crab-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/crispy-soft-shell-crab-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/soft_shell_crab.jpg</image:loc>
+      <image:title>Crispy Soft Shell Crab (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/crispy-soft-shell-crab-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/crispy-soft-shell-crab-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/crispy-soft-shell-crab-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/crispy-soft-shell-crab-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/crispy-soft-shell-crab-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/soft_shell_crab.jpg</image:loc>
+      <image:title>Crispy Soft Shell Crab (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/canadian-sea-scallops-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/canadian-sea-scallops-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/canadian-sea-scallops-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/canadian-sea-scallops-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/canadian-sea-scallops-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/canadian_scallops.jpg</image:loc>
+      <image:title>Canadian Sea Scallops (500g Sashimi Grade)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/canadian-sea-scallops-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/canadian-sea-scallops-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/canadian-sea-scallops-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/canadian-sea-scallops-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/canadian-sea-scallops-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/canadian_scallops.jpg</image:loc>
+      <image:title>Canadian Sea Scallops (500g Sashimi Grade)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/canadian-sea-scallops-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/canadian-sea-scallops-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/canadian-sea-scallops-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/canadian-sea-scallops-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/canadian-sea-scallops-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/canadian_scallops.jpg</image:loc>
+      <image:title>Canadian Sea Scallops (500g Sashimi Grade)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/half-shell-green-mussels-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/half-shell-green-mussels-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/half-shell-green-mussels-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/half-shell-green-mussels-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/half-shell-green-mussels-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/green_mussels.jpg</image:loc>
+      <image:title>Half-Shell Green Mussels (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/half-shell-green-mussels-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/half-shell-green-mussels-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/half-shell-green-mussels-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/half-shell-green-mussels-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/half-shell-green-mussels-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/green_mussels.jpg</image:loc>
+      <image:title>Half-Shell Green Mussels (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/half-shell-green-mussels-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/half-shell-green-mussels-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/half-shell-green-mussels-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/half-shell-green-mussels-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/half-shell-green-mussels-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/green_mussels.jpg</image:loc>
+      <image:title>Half-Shell Green Mussels (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/premium-dory-fish-fillet-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/premium-dory-fish-fillet-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/premium-dory-fish-fillet-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/premium-dory-fish-fillet-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/premium-dory-fish-fillet-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/barramundi_seabass.jpg</image:loc>
+      <image:title>Premium Dory Fish Fillet (1kg IQF)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/premium-dory-fish-fillet-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/premium-dory-fish-fillet-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/premium-dory-fish-fillet-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/premium-dory-fish-fillet-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/premium-dory-fish-fillet-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/barramundi_seabass.jpg</image:loc>
+      <image:title>Premium Dory Fish Fillet (1kg IQF)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/premium-dory-fish-fillet-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/premium-dory-fish-fillet-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/premium-dory-fish-fillet-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/premium-dory-fish-fillet-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/premium-dory-fish-fillet-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/barramundi_seabass.jpg</image:loc>
+      <image:title>Premium Dory Fish Fillet (1kg IQF)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/japanese-seasoned-unagi-kabayaki-200g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/loligo_squid.jpg</image:loc>
+      <image:title>Japanese Seasoned Unagi Kabayaki (200g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/japanese-seasoned-unagi-kabayaki-200g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/loligo_squid.jpg</image:loc>
+      <image:title>Japanese Seasoned Unagi Kabayaki (200g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/japanese-seasoned-unagi-kabayaki-200g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/japanese-seasoned-unagi-kabayaki-200g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/loligo_squid.jpg</image:loc>
+      <image:title>Japanese Seasoned Unagi Kabayaki (200g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/steamboat-hotpot-harvest-combo-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/steamboat_hotpot_combo.jpg</image:loc>
+      <image:title>Steamboat Hotpot Harvest Combo (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/steamboat-hotpot-harvest-combo-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/steamboat_hotpot_combo.jpg</image:loc>
+      <image:title>Steamboat Hotpot Harvest Combo (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/steamboat-hotpot-harvest-combo-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/steamboat-hotpot-harvest-combo-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/steamboat_hotpot_combo.jpg</image:loc>
+      <image:title>Steamboat Hotpot Harvest Combo (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/meltique-beef-striploin-steak-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/meltique-beef-striploin-steak-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/meltique-beef-striploin-steak-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/meltique-beef-striploin-steak-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/meltique-beef-striploin-steak-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Meltique Beef Striploin Steak (1kg / 5x200g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/meltique-beef-striploin-steak-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/meltique-beef-striploin-steak-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/meltique-beef-striploin-steak-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/meltique-beef-striploin-steak-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/meltique-beef-striploin-steak-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Meltique Beef Striploin Steak (1kg / 5x200g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/meltique-beef-striploin-steak-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/meltique-beef-striploin-steak-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/meltique-beef-striploin-steak-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/meltique-beef-striploin-steak-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/meltique-beef-striploin-steak-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Meltique Beef Striploin Steak (1kg / 5x200g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/frozen-beef-short-ribs-bone-in-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Frozen Beef Short Ribs Bone-In (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/frozen-beef-short-ribs-bone-in-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Frozen Beef Short Ribs Bone-In (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/frozen-beef-short-ribs-bone-in-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/frozen-beef-short-ribs-bone-in-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Frozen Beef Short Ribs Bone-In (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/australian-frenched-lamb-cutlets-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/australian-frenched-lamb-cutlets-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/australian-frenched-lamb-cutlets-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/australian-frenched-lamb-cutlets-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/australian-frenched-lamb-cutlets-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Australian Frenched Lamb Cutlets (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/australian-frenched-lamb-cutlets-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/australian-frenched-lamb-cutlets-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/australian-frenched-lamb-cutlets-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/australian-frenched-lamb-cutlets-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/australian-frenched-lamb-cutlets-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Australian Frenched Lamb Cutlets (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/australian-frenched-lamb-cutlets-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/australian-frenched-lamb-cutlets-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/australian-frenched-lamb-cutlets-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/australian-frenched-lamb-cutlets-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/australian-frenched-lamb-cutlets-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Australian Frenched Lamb Cutlets (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/boneless-chicken-leg-thigh-fillet-2kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/barramundi_seabass.jpg</image:loc>
+      <image:title>Boneless Chicken Leg &amp; Thigh Fillet (2kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/boneless-chicken-leg-thigh-fillet-2kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/barramundi_seabass.jpg</image:loc>
+      <image:title>Boneless Chicken Leg &amp; Thigh Fillet (2kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/boneless-chicken-leg-thigh-fillet-2kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/boneless-chicken-leg-thigh-fillet-2kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/barramundi_seabass.jpg</image:loc>
+      <image:title>Boneless Chicken Leg &amp; Thigh Fillet (2kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/gourmet-smoked-duck-breast-200g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/gourmet-smoked-duck-breast-200g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/gourmet-smoked-duck-breast-200g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/gourmet-smoked-duck-breast-200g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/gourmet-smoked-duck-breast-200g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Gourmet Smoked Duck Breast (200g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/gourmet-smoked-duck-breast-200g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/gourmet-smoked-duck-breast-200g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/gourmet-smoked-duck-breast-200g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/gourmet-smoked-duck-breast-200g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/gourmet-smoked-duck-breast-200g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Gourmet Smoked Duck Breast (200g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/gourmet-smoked-duck-breast-200g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/gourmet-smoked-duck-breast-200g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/gourmet-smoked-duck-breast-200g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/gourmet-smoked-duck-breast-200g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/gourmet-smoked-duck-breast-200g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/meltique_beef_steak.jpg</image:loc>
+      <image:title>Gourmet Smoked Duck Breast (200g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/japanese-premium-crab-sticks-kanikama-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_tofu_platter.jpg</image:loc>
+      <image:title>Japanese Premium Crab Sticks / Kanikama (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/japanese-premium-crab-sticks-kanikama-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_tofu_platter.jpg</image:loc>
+      <image:title>Japanese Premium Crab Sticks / Kanikama (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/japanese-premium-crab-sticks-kanikama-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/japanese-premium-crab-sticks-kanikama-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_tofu_platter.jpg</image:loc>
+      <image:title>Japanese Premium Crab Sticks / Kanikama (500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/handmade-crystal-shrimp-har-kow-10pcs</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/dimsum_har_kow.jpg</image:loc>
+      <image:title>Handmade Crystal Shrimp Har Kow (10 pcs)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/handmade-crystal-shrimp-har-kow-10pcs</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/dimsum_har_kow.jpg</image:loc>
+      <image:title>Handmade Crystal Shrimp Har Kow (10 pcs)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/handmade-crystal-shrimp-har-kow-10pcs</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/handmade-crystal-shrimp-har-kow-10pcs" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/dimsum_har_kow.jpg</image:loc>
+      <image:title>Handmade Crystal Shrimp Har Kow (10 pcs)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/traditional-seafood-siew-mai-12pcs</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/traditional-seafood-siew-mai-12pcs" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/traditional-seafood-siew-mai-12pcs" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/traditional-seafood-siew-mai-12pcs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/traditional-seafood-siew-mai-12pcs" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_siew_mai.jpg</image:loc>
+      <image:title>Traditional Seafood Siew Mai (12 pcs)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/traditional-seafood-siew-mai-12pcs</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/traditional-seafood-siew-mai-12pcs" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/traditional-seafood-siew-mai-12pcs" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/traditional-seafood-siew-mai-12pcs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/traditional-seafood-siew-mai-12pcs" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_siew_mai.jpg</image:loc>
+      <image:title>Traditional Seafood Siew Mai (12 pcs)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/traditional-seafood-siew-mai-12pcs</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/traditional-seafood-siew-mai-12pcs" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/traditional-seafood-siew-mai-12pcs" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/traditional-seafood-siew-mai-12pcs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/traditional-seafood-siew-mai-12pcs" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_siew_mai.jpg</image:loc>
+      <image:title>Traditional Seafood Siew Mai (12 pcs)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/japanese-chuka-wakame-seasoned-seaweed-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_tofu_platter.jpg</image:loc>
+      <image:title>Japanese Chuka Wakame Seasoned Seaweed (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/japanese-chuka-wakame-seasoned-seaweed-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_tofu_platter.jpg</image:loc>
+      <image:title>Japanese Chuka Wakame Seasoned Seaweed (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/japanese-chuka-wakame-seasoned-seaweed-1kg</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/japanese-chuka-wakame-seasoned-seaweed-1kg" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_tofu_platter.jpg</image:loc>
+      <image:title>Japanese Chuka Wakame Seasoned Seaweed (1kg)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/crispy-seafood-spring-rolls-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/crispy-seafood-spring-rolls-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/crispy-seafood-spring-rolls-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/crispy-seafood-spring-rolls-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/crispy-seafood-spring-rolls-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_tofu_platter.jpg</image:loc>
+      <image:title>Crispy Seafood Spring Rolls (20 pcs / 500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/crispy-seafood-spring-rolls-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/crispy-seafood-spring-rolls-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/crispy-seafood-spring-rolls-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/crispy-seafood-spring-rolls-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/crispy-seafood-spring-rolls-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_tofu_platter.jpg</image:loc>
+      <image:title>Crispy Seafood Spring Rolls (20 pcs / 500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/crispy-seafood-spring-rolls-500g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/crispy-seafood-spring-rolls-500g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/crispy-seafood-spring-rolls-500g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/crispy-seafood-spring-rolls-500g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/crispy-seafood-spring-rolls-500g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/seafood_tofu_platter.jpg</image:loc>
+      <image:title>Crispy Seafood Spring Rolls (20 pcs / 500g)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/dimsum_har_kow.jpg</image:loc>
+      <image:title>Artisan Japanese Matcha &amp; Mango Ice Mochi (6 pcs)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/dimsum_har_kow.jpg</image:loc>
+      <image:title>Artisan Japanese Matcha &amp; Mango Ice Mochi (6 pcs)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/artisan-japanese-matcha-mango-ice-mochi-6pcs" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/dimsum_har_kow.jpg</image:loc>
+      <image:title>Artisan Japanese Matcha &amp; Mango Ice Mochi (6 pcs)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/en/shop/handcrafted-fresh-prawn-paste-200g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/handcrafted-fresh-prawn-paste-200g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/handcrafted-fresh-prawn-paste-200g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/handcrafted-fresh-prawn-paste-200g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/handcrafted-fresh-prawn-paste-200g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/prawn_paste_tube.jpg</image:loc>
+      <image:title>Handcrafted Fresh Prawn Paste (200g Tube)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/zh/shop/handcrafted-fresh-prawn-paste-200g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/handcrafted-fresh-prawn-paste-200g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/handcrafted-fresh-prawn-paste-200g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/handcrafted-fresh-prawn-paste-200g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/handcrafted-fresh-prawn-paste-200g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/prawn_paste_tube.jpg</image:loc>
+      <image:title>Handcrafted Fresh Prawn Paste (200g Tube)</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://127.0.0.1:8000/bm/shop/handcrafted-fresh-prawn-paste-200g</loc>
+    <lastmod>2026-09-20T06:27:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="http://127.0.0.1:8000/en/shop/handcrafted-fresh-prawn-paste-200g" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="http://127.0.0.1:8000/zh/shop/handcrafted-fresh-prawn-paste-200g" />
+    <xhtml:link rel="alternate" hreflang="ms" href="http://127.0.0.1:8000/bm/shop/handcrafted-fresh-prawn-paste-200g" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="http://127.0.0.1:8000/en/shop/handcrafted-fresh-prawn-paste-200g" />
+    <image:image>
+      <image:loc>http://127.0.0.1:8000/storage/products/prawn_paste_tube.jpg</image:loc>
+      <image:title>Handcrafted Fresh Prawn Paste (200g Tube)</image:title>
+    </image:image>
+  </url>
+</urlset>

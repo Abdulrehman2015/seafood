@@ -12,7 +12,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        if (file_exists(app_path('helpers.php'))) {
+            require_once app_path('helpers.php');
+        }
     }
 
     /**
@@ -26,7 +28,8 @@ class AppServiceProvider extends ServiceProvider
 
         \Illuminate\Pagination\Paginator::defaultView('vendor.pagination.custom');
 
-
+        // Always ensure a fallback default for localized routes ({locale})
+        \Illuminate\Support\Facades\URL::defaults(['locale' => config('app.locale', 'en')]);
         Password::defaults(function () {
             return Password::min(8)
                 ->letters()
@@ -97,6 +100,32 @@ class AppServiceProvider extends ServiceProvider
                     'currencyList'    => [],
                 ]);
             }
+
+            // Share Multilingual Data with all views
+            try {
+                $translationService = app(\App\Services\TranslationService::class);
+                $currentLocale      = $translationService->currentLocale();
+                $supportedLocales   = $translationService->getSupportedLocales();
+                $view->with([
+                    'translationService' => $translationService,
+                    'currentLocale'      => $currentLocale,
+                    'activeLocale'       => $currentLocale,
+                    'supportedLocales'   => $supportedLocales,
+                    'activeLocaleData'   => $supportedLocales[$currentLocale] ?? $supportedLocales['en'],
+                ]);
+            } catch (\Throwable $e) {
+                $view->with([
+                    'currentLocale'    => 'en',
+                    'activeLocale'     => 'en',
+                    'supportedLocales' => [],
+                    'activeLocaleData' => ['code' => 'en', 'label' => 'EN', 'flag' => '🇬🇧', 'native' => 'English'],
+                ]);
+            }
+        });
+
+        // Register custom Blade directive @t
+        \Illuminate\Support\Facades\Blade::directive('t', function ($expression) {
+            return "<?php echo __t({$expression}); ?>";
         });
     }
 }

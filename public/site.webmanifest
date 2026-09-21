@@ -1,0 +1,31 @@
+{
+  "name": "MST Import and Export Sdn Bhd",
+  "short_name": "MST Seafood",
+  "description": "Premium fresh & frozen seafood importer and distributor",
+  "icons": [
+    {
+      "src": "/images/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/favicon.webp",
+      "sizes": "512x512",
+      "type": "image/webp"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06152b",
+  "theme_color": "#06152b"
+}

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Checkout — MST Import and Export Sdn Bhd')
+@section('title', __t('checkout.meta_title', 'Checkout — MST Import and Export Sdn Bhd'))
 
 @section('content')
 <!-- Page Header -->
@@ -7,39 +7,39 @@
     <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:20px 20px"></div>
     <div class="container page-header-content" style="position:relative;z-index:2">
         <div class="breadcrumb" style="margin-bottom:4px">
-            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 Home</a>
+            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 @t('nav.home', 'Home')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <a href="{{ route('cart.index') }}" style="color:#bae6fd;text-decoration:none">Shopping Cart</a>
+            <a href="{{ route('cart.index') }}" style="color:#bae6fd;text-decoration:none">@t('cart.title', 'Shopping Cart')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">Checkout &amp; Payment</span>
+            <span style="font-weight:600;color:#ffffff">@t('checkout.page_title', 'Checkout & Payment')</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
             <div>
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:2px 9px;border-radius:999px;font-size:0.7rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
-                        🔒 256-Bit Encrypted Secure Checkout
+                        🔒 @t('checkout.encrypted_checkout_badge', '256-Bit Encrypted Secure Checkout')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.78rem">Guaranteed Cold-Chain Dispatch</span>
+                    <span style="color:#bae6fd;font-size:0.78rem">@t('checkout.cold_chain_dispatch', 'Guaranteed Cold-Chain Dispatch')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.5rem,3vw,1.95rem);margin-bottom:4px;letter-spacing:-0.02em">
-                    Checkout &amp; Payment
+                    @t('checkout.page_title', 'Checkout & Payment')
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.88rem;max-width:680px;line-height:1.4;margin:0">
-                    Review your order items, confirm delivery address, and proceed to Stripe's encrypted payment gateway.
+                    @t('checkout.header_subtitle', "Review your order items, confirm delivery address, and proceed to Stripe's encrypted payment gateway.")
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 @if($group === 'wholesale')
                 <div style="font-size:0.8rem;padding:5px 12px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb;font-weight:600">
-                    🏢 Wholesale Partner Tier
+                    🏢 @t('checkout.tier_wholesale', 'Wholesale Partner Tier')
                 </div>
                 @elseif($group === 'walkin')
                 <div style="font-size:0.8rem;padding:5px 12px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb;font-weight:600">
-                    🏪 In-Store Walk-in Express
+                    🏪 @t('checkout.tier_walkin', 'In-Store Walk-in Express')
                 </div>
                 @else
                 <div style="font-size:0.8rem;padding:5px 12px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb;font-weight:600">
-                    🛒 Retail Customer Order
+                    🛒 @t('checkout.tier_retail', 'Retail Customer Order')
                 </div>
                 @endif
             </div>
@@ -55,24 +55,24 @@
             <a href="{{ route('cart.index') }}" class="stepper-item step-completed">
                 <div class="step-num">✓</div>
                 <div class="step-label">
-                    <span class="label-full">Shopping Cart</span>
-                    <span class="label-short">Cart</span>
+                    <span class="label-full">@t('checkout.step_cart', 'Shopping Cart')</span>
+                    <span class="label-short">@t('checkout.step_cart_short', 'Cart')</span>
                 </div>
             </a>
             <div class="stepper-divider"></div>
             <div class="stepper-item step-active">
                 <div class="step-num">2</div>
                 <div class="step-label">
-                    <span class="label-full">Checkout &amp; Payment</span>
-                    <span class="label-short">Payment</span>
+                    <span class="label-full">@t('checkout.step_checkout', 'Checkout & Payment')</span>
+                    <span class="label-short">@t('checkout.step_checkout_short', 'Payment')</span>
                 </div>
             </div>
             <div class="stepper-divider"></div>
             <div class="stepper-item step-disabled">
                 <div class="step-num">3</div>
                 <div class="step-label">
-                    <span class="label-full">Order Confirmation</span>
-                    <span class="label-short">Done</span>
+                    <span class="label-full">@t('checkout.step_confirm', 'Order Confirmation')</span>
+                    <span class="label-short">@t('checkout.step_confirm_short', 'Done')</span>
                 </div>
             </div>
         </div>
@@ -83,8 +83,8 @@
                 <div class="mobile-summary-left">
                     <span class="mobile-summary-icon">🛍️</span>
                     <span class="mobile-summary-text">
-                        <span id="mobileSummaryText">Show Order Summary</span>
-                        <span class="mobile-summary-count">({{ $items->count() }} {{ Str::plural('item', $items->count()) }})</span>
+                        <span id="mobileSummaryText">@t('checkout.show_summary', 'Show Order Summary')</span>
+                        <span class="mobile-summary-count">(@t('checkout.items_count', ':count items', ['count' => $items->count()]))</span>
                     </span>
                     <span id="mobileSummaryChevron" class="mobile-summary-chevron">▼</span>
                 </div>
@@ -129,7 +129,7 @@
 
                 <div class="mobile-summary-totals">
                     <div class="summary-line">
-                        <span>Subtotal</span>
+                        <span>@t('checkout.subtotal', 'Subtotal')</span>
                         <span>
                             @if($currentCurrency !== 'MYR')
                                 {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['subtotal'], $currentCurrency), 2) }}
@@ -140,11 +140,11 @@
                         </span>
                     </div>
                     <div class="summary-line">
-                        <span>Shipping &amp; Cold-Chain</span>
-                        <span class="val-green" id="mobileShippingDisplay">Free (Self-collection)</span>
+                        <span>@t('checkout.shipping_logistics', 'Shipping & Cold-Chain')</span>
+                        <span class="val-green" id="mobileShippingDisplay">@t('checkout.free_self_collection', 'Free (Self-collection)')</span>
                     </div>
                     <div class="summary-line summary-grand-total">
-                        <span class="total-label">Grand Total</span>
+                        <span class="total-label">@t('checkout.grand_total', 'Grand Total')</span>
                         <span class="total-val">
                             @if($currentCurrency !== 'MYR')
                                 {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['total'], $currentCurrency), 2) }}
@@ -171,7 +171,7 @@
                         <div class="card-header">
                             <div class="card-title">
                                 <span class="card-title-icon">📦</span>
-                                <span>1. Select Fulfillment Method</span>
+                                <span>@t('checkout.fulfillment_step', '1. Select Fulfillment Method')</span>
                             </div>
                         </div>
 
@@ -184,9 +184,9 @@
                                 <div class="tile-check-indicator">✓</div>
                                 <div class="tile-icon">🚚</div>
                                 <div class="tile-content">
-                                    <div class="tile-title">Cold-Chain Delivery</div>
-                                    <div class="tile-desc">Direct refrigerated delivery across Klang Valley and West Malaysia.</div>
-                                    <div class="tile-badge badge-blue">Refrigerated Logistics</div>
+                                    <div class="tile-title">@t('checkout.cold_chain_delivery', 'Cold-Chain Delivery')</div>
+                                    <div class="tile-desc">@t('checkout.cold_chain_delivery_desc', 'Direct refrigerated delivery across Klang Valley and West Malaysia.')</div>
+                                    <div class="tile-badge badge-blue">@t('checkout.refrigerated_logistics', 'Refrigerated Logistics')</div>
                                 </div>
                             </label>
                             @endif
@@ -198,9 +198,9 @@
                                 <div class="tile-check-indicator">✓</div>
                                 <div class="tile-icon">🏪</div>
                                 <div class="tile-content">
-                                    <div class="tile-title">Store Self-Collection</div>
-                                    <div class="tile-desc">Collect directly at our SILC Cold-Chain facility in Iskandar Puteri, Johor Bahru.</div>
-                                    <div class="tile-badge badge-green">Free Pickup</div>
+                                    <div class="tile-title">@t('checkout.store_pickup', 'Store Self-Collection')</div>
+                                    <div class="tile-desc">@t('checkout.store_pickup_desc', 'Collect directly at our SILC Cold-Chain facility in Iskandar Puteri, Johor Bahru.')</div>
+                                    <div class="tile-badge badge-green">@t('checkout.free_pickup', 'Free Pickup')</div>
                                 </div>
                             </label>
                         </div>
@@ -212,17 +212,17 @@
                         <div class="card-header">
                             <div class="card-title">
                                 <span class="card-title-icon">👤</span>
-                                <span>2. Customer Information</span>
+                                <span>@t('checkout.customer_info_step', '2. Customer Information')</span>
                             </div>
                         </div>
                         <div class="form-grid-2">
                             <div class="form-group">
-                                <label class="form-label">Full Name <span class="required">*</span></label>
+                                <label class="form-label">@t('checkout.full_name', 'Full Name') <span class="required">*</span></label>
                                 <input type="text" name="customer_name" class="form-control" value="{{ old('customer_name') }}" placeholder="e.g. John Tan" required>
                                 @error('customer_name')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Phone Number <span class="required">*</span></label>
+                                <label class="form-label">@t('checkout.phone_number', 'Phone Number') <span class="required">*</span></label>
                                 <input type="tel" name="customer_phone" class="form-control" value="{{ old('customer_phone') }}" placeholder="e.g. 012-345 6789" required>
                                 @error('customer_phone')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
@@ -236,29 +236,29 @@
                         <div class="card-header">
                             <div class="card-title">
                                 <span class="card-title-icon">📍</span>
-                                <span>2. Delivery Address</span>
+                                <span>@t('checkout.shipping_info', '2. Delivery Address')</span>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Street Address <span class="required">*</span></label>
+                            <label class="form-label">@t('checkout.address', 'Street Address') <span class="required">*</span></label>
                             <input type="text" name="address" class="form-control" value="{{ old('address', auth()->user()?->address) }}" placeholder="Unit / House No, Street, Taman...">
                             @error('address')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="address-grid-responsive">
                             <div class="form-group">
-                                <label class="form-label">City <span class="required">*</span></label>
+                                <label class="form-label">@t('checkout.city', 'City') <span class="required">*</span></label>
                                 <input type="text" name="city" class="form-control" value="{{ old('city', auth()->user()?->city) }}" placeholder="e.g. Kuala Lumpur / JB">
                                 @error('city')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-group">
-                                <label class="form-label">State <span class="required">*</span></label>
+                                <label class="form-label">@t('checkout.state', 'State') <span class="required">*</span></label>
                                 <input type="text" name="state" class="form-control" value="{{ old('state', auth()->user()?->state ?? 'Selangor') }}" placeholder="e.g. Selangor">
                                 @error('state')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Postcode <span class="required">*</span></label>
+                                <label class="form-label">@t('checkout.postcode', 'Postcode') <span class="required">*</span></label>
                                 <input type="text" name="postcode" class="form-control" value="{{ old('postcode', auth()->user()?->postcode) }}" placeholder="68100" maxlength="5">
                                 @error('postcode')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
@@ -271,10 +271,10 @@
                         <div class="card-header">
                             <div class="card-title">
                                 <span class="card-title-icon">📝</span>
-                                <span>3. Special Instructions &amp; Notes</span>
+                                <span>@t('checkout.special_notes_step', '3. Special Instructions & Notes')</span>
                             </div>
                         </div>
-                        <textarea name="customer_notes" class="form-control" rows="3" placeholder="Add specific delivery timing, packing instructions, or gate codes (optional)...">{{ old('customer_notes') }}</textarea>
+                        <textarea name="customer_notes" class="form-control" rows="3" placeholder="{{ __t('checkout.notes_placeholder', 'Add specific delivery timing, packing instructions, or gate codes (optional)...') }}">{{ old('customer_notes') }}</textarea>
                     </div>
 
                     <!-- Payment Method Card -->
@@ -282,17 +282,17 @@
                         <div class="card-header flex-wrap-mobile">
                             <div class="card-title">
                                 <span class="card-title-icon">💳</span>
-                                <span>4. Payment via Stripe</span>
+                                <span>@t('checkout.payment_step', '4. Payment via Stripe')</span>
                             </div>
                             <div class="payment-shield-badge">
-                                🔒 256-bit SSL Encrypted
+                                🔒 @t('checkout.ssl_encrypted', '256-bit SSL Encrypted')
                             </div>
                         </div>
 
                         <div class="stripe-secure-banner">
                             <div class="banner-icon">🛡️</div>
                             <div class="banner-text">
-                                <strong>Stripe Official Hosted Checkout:</strong> When you click below, you will be securely redirected to Stripe's payment page (<code>checkout.stripe.com</code>) to complete your card or online banking payment.
+                                <strong>@t('checkout.stripe_banner_title', 'Stripe Official Hosted Checkout:')</strong> @t('checkout.stripe_banner_desc', "When you click below, you will be securely redirected to Stripe's payment page (checkout.stripe.com) to complete your card or online banking payment.")
                             </div>
                         </div>
 
@@ -301,11 +301,11 @@
                                 <div class="stripe-gateway-brand">
                                     <span class="stripe-logo-icon">💳</span>
                                     <div>
-                                        <div class="stripe-brand-title">Stripe Official Checkout</div>
-                                        <div class="stripe-brand-subtitle">Credit / Debit Card, Apple Pay &amp; FPX</div>
+                                        <div class="stripe-brand-title">@t('checkout.stripe_official', 'Stripe Official Checkout')</div>
+                                        <div class="stripe-brand-subtitle">@t('checkout.stripe_methods', 'Credit / Debit Card, Apple Pay & FPX')</div>
                                     </div>
                                 </div>
-                                <span class="stripe-badge-pill">Secure Gateway</span>
+                                <span class="stripe-badge-pill">@t('checkout.secure_gateway', 'Secure Gateway')</span>
                             </div>
 
                             <div class="stripe-payment-methods-grid">
@@ -324,8 +324,8 @@
                 <div class="checkout-summary-column">
                     <div class="card checkout-summary-card">
                         <div class="card-header summary-header">
-                            <div class="card-title">Order Summary</div>
-                            <span class="summary-count-badge">{{ $items->count() }} {{ Str::plural('item', $items->count()) }}</span>
+                            <div class="card-title">@t('checkout.order_summary', 'Order Summary')</div>
+                            <span class="summary-count-badge">@t('checkout.items_count', ':count items', ['count' => $items->count()])</span>
                         </div>
 
                         <div class="summary-items-scroll">
@@ -360,7 +360,7 @@
 
                         <div class="summary-totals-box">
                             <div class="summary-line">
-                                <span class="line-label">Subtotal</span>
+                                <span class="line-label">@t('checkout.subtotal', 'Subtotal')</span>
                                 <span class="line-val">
                                     @if($currentCurrency !== 'MYR')
                                         {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['subtotal'], $currentCurrency), 2) }}
@@ -371,11 +371,11 @@
                                 </span>
                             </div>
                             <div class="summary-line">
-                                <span class="line-label">Shipping &amp; Logistics</span>
-                                <span class="line-val val-green" id="shippingDisplay">Free (Self-collection)</span>
+                                <span class="line-label">@t('checkout.shipping_logistics', 'Shipping & Logistics')</span>
+                                <span class="line-val val-green" id="shippingDisplay">@t('checkout.free_self_collection', 'Free (Self-collection)')</span>
                             </div>
                             <div class="summary-line summary-grand-total">
-                                <span class="total-label">Grand Total</span>
+                                <span class="total-label">@t('checkout.grand_total', 'Grand Total')</span>
                                 <span class="total-val">
                                     @if($currentCurrency !== 'MYR')
                                         {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['total'], $currentCurrency), 2) }}
@@ -388,7 +388,7 @@
                         </div>
 
                         <button type="submit" class="checkout-submit-btn" id="submitBtn">
-                            <span class="btn-main-text">🔒 Proceed to checkout</span>
+                            <span class="btn-main-text">🔒 @t('checkout.place_order', 'Proceed to checkout')</span>
                             <span class="btn-amount-badge">
                                 @if($currentCurrency !== 'MYR')
                                     {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['total'], $currentCurrency), 2) }}
@@ -401,26 +401,26 @@
                         <div class="checkout-trust-badges">
                             <div class="trust-item">
                                 <span class="trust-icon">🔒</span>
-                                <span>SSL Encrypted</span>
+                                <span>@t('checkout.trust_ssl', 'SSL Encrypted')</span>
                             </div>
                             <div class="trust-item">
                                 <span class="trust-icon">❄️</span>
-                                <span>Cold-Chain</span>
+                                <span>@t('checkout.trust_cold_chain', 'Cold-Chain')</span>
                             </div>
                             <div class="trust-item">
                                 <span class="trust-icon">⚡</span>
-                                <span>Instant Confirm</span>
+                                <span>@t('checkout.trust_instant', 'Instant Confirm')</span>
                             </div>
                         </div>
 
                         @if($currentCurrency !== 'MYR')
                             <div style="font-size:0.75rem;color:#64748b;margin:10px 0 12px;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid #e2e8f0;line-height:1.4">
-                                ℹ️ Prices displayed in <strong>{{ $currentCurrency }}</strong> for reference. Final payment will be processed in <strong>MYR {{ number_format($totals['total'], 2) }}</strong> at checkout.
+                                ℹ️ @t('checkout.currency_note', 'Prices displayed in :currency for reference. Final payment will be processed in MYR :amount at checkout.', ['currency' => '<strong>' . $currentCurrency . '</strong>', 'amount' => number_format($totals['total'], 2)])
                             </div>
                         @endif
 
                         <p class="checkout-terms-note">
-                            By clicking proceed, you will be redirected to Stripe to securely finalize your payment.
+                            @t('checkout.terms_note', 'By clicking proceed, you will be redirected to Stripe to securely finalize your payment.')
                         </p>
                     </div>
                 </div>
@@ -434,7 +434,7 @@
     <div class="mobile-sticky-footer-bar d-lg-none">
         <div class="mobile-footer-inner">
             <div class="mobile-footer-price-col">
-                <span class="mobile-footer-label">Grand Total</span>
+                <span class="mobile-footer-label">@t('checkout.grand_total', 'Grand Total')</span>
                 <span class="mobile-footer-amount">
                     @if($currentCurrency !== 'MYR')
                         {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['total'], $currentCurrency), 2) }}
@@ -444,7 +444,7 @@
                 </span>
             </div>
             <button type="button" onclick="submitCheckoutForm()" class="mobile-footer-pay-btn" id="mobilePayBtn">
-                <span>🔒 Proceed to checkout</span>
+                <span>🔒 @t('checkout.place_order', 'Proceed to checkout')</span>
             </button>
         </div>
     </div>
@@ -1348,6 +1348,14 @@ textarea.form-control {
 
 @push('scripts')
 <script>
+const checkoutI18n = {
+    calculatedByAdmin: @json(__t('checkout.shipping_calculated_admin', 'Calculated by admin')),
+    freeSelfCollection: @json(__t('checkout.free_self_collection', 'Free (Self-collection)')),
+    showOrderSummary: @json(__t('checkout.show_summary', 'Show Order Summary')),
+    hideOrderSummary: @json(__t('checkout.hide_summary', 'Hide Order Summary')),
+    proceeding: @json(__t('checkout.proceeding', 'Proceeding to checkout...')),
+};
+
 function onFulfillment(type) {
     document.querySelectorAll('.fulfillment-tile').forEach(l => l.classList.remove('selected'));
     const labelEl = document.getElementById('label_' + type);
@@ -1358,7 +1366,7 @@ function onFulfillment(type) {
         addressCard.style.display = type === 'delivery' ? 'block' : 'none';
     }
 
-    const shipText = type === 'delivery' ? 'Calculated by admin' : 'Free (Self-collection)';
+    const shipText = type === 'delivery' ? checkoutI18n.calculatedByAdmin : checkoutI18n.freeSelfCollection;
     const desktopShip = document.getElementById('shippingDisplay');
     if (desktopShip) desktopShip.textContent = shipText;
 
@@ -1375,11 +1383,11 @@ function toggleMobileSummary() {
     if (box.style.display === 'none' || box.style.display === '') {
         box.style.display = 'block';
         if (chevron) chevron.classList.add('open');
-        if (text) text.textContent = 'Hide Order Summary';
+        if (text) text.textContent = checkoutI18n.hideOrderSummary;
     } else {
         box.style.display = 'none';
         if (chevron) chevron.classList.remove('open');
-        if (text) text.textContent = 'Show Order Summary';
+        if (text) text.textContent = checkoutI18n.showOrderSummary;
     }
 }
 
@@ -1401,13 +1409,13 @@ function submitCheckoutForm() {
     const btn = document.getElementById('submitBtn');
     if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<span class="btn-main-text">⏳ Proceeding to checkout...</span>';
+        btn.innerHTML = '<span class="btn-main-text">⏳ ' + checkoutI18n.proceeding + '</span>';
     }
 
     const mobileBtn = document.getElementById('mobilePayBtn');
     if (mobileBtn) {
         mobileBtn.disabled = true;
-        mobileBtn.innerHTML = '<span>⏳ Proceeding...</span>';
+        mobileBtn.innerHTML = '<span>⏳ ' + checkoutI18n.proceeding + '</span>';
     }
 
     form.submit();
@@ -1417,13 +1425,13 @@ document.getElementById('checkoutForm').addEventListener('submit', function (e) 
     const btn = document.getElementById('submitBtn');
     if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<span class="btn-main-text">⏳ Proceeding to checkout...</span>';
+        btn.innerHTML = '<span class="btn-main-text">⏳ ' + checkoutI18n.proceeding + '</span>';
     }
 
     const mobileBtn = document.getElementById('mobilePayBtn');
     if (mobileBtn) {
         mobileBtn.disabled = true;
-        mobileBtn.innerHTML = '<span>⏳ Proceeding...</span>';
+        mobileBtn.innerHTML = '<span>⏳ ' + checkoutI18n.proceeding + '</span>';
     }
 });
 </script>

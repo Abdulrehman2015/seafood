@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', ($order->fulfillment_type === 'self_collection' || $order->customer_group === 'walkin') ? 'Collection Token #' . ($order->collection_token ?? $order->order_number) : 'Order Confirmed — MST Import and Export Sdn Bhd')
+@section('title', ($order->fulfillment_type === 'self_collection' || $order->customer_group === 'walkin') ? __t('checkout.collection_token', 'Collection Token') . ' #' . ($order->collection_token ?? $order->order_number) : __t('checkout.order_confirmed_title', 'Order Confirmed — MST Import and Export Sdn Bhd'))
 
 @section('content')
 <!-- Page Header -->
@@ -7,33 +7,33 @@
     <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:20px 20px"></div>
     <div class="container page-header-content" style="position:relative;z-index:2">
         <div class="breadcrumb" style="margin-bottom:4px">
-            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 Home</a>
+            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 @t('nav.home', 'Home')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <a href="{{ route('account.orders') }}" style="color:#bae6fd;text-decoration:none">My Orders</a>
+            <a href="{{ route('account.orders') }}" style="color:#bae6fd;text-decoration:none">@t('checkout.track_orders', 'My Orders')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">Order Confirmed</span>
+            <span style="font-weight:600;color:#ffffff">@t('checkout.order_confirmation', 'Order Confirmed')</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
             <div>
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:2px 9px;border-radius:999px;font-size:0.7rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
-                        🎉 Payment Confirmed
+                        🎉 @t('checkout.payment_confirmed', 'Payment Confirmed')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.78rem">Order #{{ $order->order_number }}</span>
+                    <span style="color:#bae6fd;font-size:0.78rem">@t('checkout.order_number', 'Order') #{{ $order->order_number }}</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.5rem,3vw,1.95rem);margin-bottom:4px;letter-spacing:-0.02em">
-                    Order Confirmation
+                    @t('checkout.order_confirmation', 'Order Confirmation')
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.88rem;max-width:680px;line-height:1.4;margin:0">
-                    Thank you for your order! Your payment has been received and your frozen seafood is being prepared.
+                    @t('checkout.success_subtitle', 'Thank you for your order! Your payment has been received and your frozen seafood is being prepared.')
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 <a href="{{ route('account.orders') }}" class="btn btn-secondary btn-sm" style="background:rgba(255,255,255,0.12);color:#ffffff;border:1px solid rgba(255,255,255,0.25);border-radius:10px;font-weight:600">
-                    📦 Track Orders
+                    📦 @t('checkout.track_orders', 'Track Orders')
                 </a>
                 <a href="{{ route('shop.index') }}" class="btn btn-primary btn-sm" style="background:#2563eb;color:#ffffff;border:1px solid #3b82f6;border-radius:10px;font-weight:700;box-shadow:0 2px 8px rgba(37,99,235,0.35)">
-                    Continue Shopping →
+                    @t('checkout.continue_shopping', 'Continue Shopping') →
                 </a>
             </div>
         </div>
@@ -51,10 +51,10 @@
             <div style="text-align:center;margin-bottom:var(--space-4)">
                 <div style="font-size:2.8rem;margin-bottom:6px;animation:bounceIn 0.6s ease">🎉</div>
                 <h1 style="font-size:1.6rem;font-family:var(--font-heading);color:var(--seagreen-900);margin-bottom:4px">
-                    Payment Successful!
+                    @t('checkout.payment_successful', 'Payment Successful!')
                 </h1>
                 <p class="text-sm text-muted" style="margin:0">
-                    Your seafood order is placed and being prepared at our counter.
+                    @t('checkout.success_subtitle', 'Your seafood order is placed and being prepared at our counter.')
                 </p>
             </div>
 
@@ -64,18 +64,18 @@
                 <!-- Pass Header -->
                 <div style="background:linear-gradient(135deg,var(--seagreen-700),var(--seagreen-800));color:white;padding:var(--space-4) var(--space-5);display:flex;justify-content:space-between;align-items:center">
                     <div>
-                        <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;opacity:0.9">MST In-Store Pass</div>
-                        <div style="font-weight:700;font-size:1rem">Johor Bahru (SILC) Store</div>
+                        <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;opacity:0.9">@t('checkout.in_store_pass', 'MST In-Store Pass')</div>
+                        <div style="font-weight:700;font-size:1rem">@t('checkout.silc_store', 'Johor Bahru (SILC) Store')</div>
                     </div>
                     <div style="background:rgba(255,255,255,0.2);padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600">
-                        Self-Collection
+                        @t('checkout.store_pickup', 'Self-Collection')
                     </div>
                 </div>
 
                 <!-- Big Token Section -->
                 <div style="text-align:center;padding:var(--space-6) var(--space-4);background:linear-gradient(180deg,#eff6ff,#ffffff);border-bottom:2px dashed #bfdbfe">
                     <div style="font-size:0.85rem;color:var(--seagreen-700);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">
-                        Your Collection Token
+                        @t('checkout.collection_token', 'Your Collection Token')
                     </div>
                     <div style="display:inline-block;background:#dbeafe;color:#1e3a8a;padding:8px 24px;border-radius:12px;border:2px solid #93c5fd;margin-bottom:var(--space-3);box-shadow:0 4px 12px rgba(29,78,216,0.12)">
                         <span style="font-size:2.8rem;font-weight:900;font-family:var(--font-heading);letter-spacing:2px;line-height:1">
@@ -86,12 +86,12 @@
                     <div style="margin-bottom:var(--space-3)">
                         <span style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;padding:6px 14px;border-radius:20px;font-weight:700;font-size:0.8rem;border:1px solid #fde68a">
                             <span style="width:8px;height:8px;background:#f59e0b;border-radius:50%;animation:pulseDot 1.5s infinite"></span>
-                            Preparing at Store Counter
+                            @t('checkout.preparing_at_counter', 'Preparing at Store Counter')
                         </span>
                     </div>
 
                     <p style="font-size:0.85rem;color:var(--gray-600);max-width:400px;margin:0 auto;line-height:1.4">
-                        Please proceed to <strong>Counter 2 (Express Collection)</strong> and show this token to collect your packed seafood.
+                        @t('checkout.counter_instruction', 'Please proceed to Counter 2 (Express Collection) and show this token to collect your packed seafood.')
                     </p>
                 </div>
 
@@ -101,18 +101,18 @@
                         {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(80)->generate(url('/admin/orders/' . $order->id)) !!}
                     </div>
                     <div style="flex:1;min-width:180px">
-                        <div style="font-size:0.75rem;color:var(--gray-500)">Order Reference</div>
+                        <div style="font-size:0.75rem;color:var(--gray-500)">@t('checkout.order_reference', 'Order Reference')</div>
                         <div style="font-weight:700;color:var(--gray-900);font-size:0.95rem;margin-bottom:4px">{{ $order->order_number }}</div>
                         <div style="font-size:0.8rem;color:var(--gray-600)">
-                            Customer: <strong>{{ $order->customer_name }}</strong>
+                            @t('checkout.customer', 'Customer:') <strong>{{ $order->customer_name }}</strong>
                         </div>
                         @if($order->customer_phone)
                             <div style="font-size:0.8rem;color:var(--gray-600)">
-                                Phone: <strong>{{ $order->customer_phone }}</strong>
+                                @t('checkout.phone', 'Phone:') <strong>{{ $order->customer_phone }}</strong>
                             </div>
                         @endif
                         <div style="font-size:0.75rem;color:var(--seagreen-700);margin-top:2px">
-                            Paid: RM {{ number_format($order->total, 2) }} ({{ ucfirst(str_replace('_', ' ', $order->payment_method ?? 'card')) }})
+                            @t('checkout.paid', 'Paid:') RM {{ number_format($order->total, 2) }} ({{ ucfirst(str_replace('_', ' ', $order->payment_method ?? 'card')) }})
                         </div>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                 <!-- Order Items Checklist -->
                 <div style="padding:var(--space-4) var(--space-5)">
                     <div style="font-size:0.8rem;font-weight:700;color:var(--gray-700);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:var(--space-2)">
-                        Items to Collect ({{ $order->items->count() }})
+                        @t('checkout.items_to_collect', 'Items to Collect') ({{ $order->items->count() }})
                     </div>
                     <div style="max-height:220px;overflow-y:auto">
                         @foreach($order->items as $item)
@@ -137,24 +137,24 @@
 
                     @if($order->customer_notes)
                     <div style="margin-top:var(--space-3);background:var(--gray-50);padding:8px 12px;border-radius:6px;font-size:0.8rem;color:var(--gray-600)">
-                        <strong>Note to staff:</strong> {{ $order->customer_notes }}
+                        <strong>@t('checkout.note_to_staff', 'Note to staff:')</strong> {{ $order->customer_notes }}
                     </div>
                     @endif
                 </div>
 
                 <!-- Footer Hint -->
                 <div style="background:var(--gray-50);padding:10px 16px;text-align:center;font-size:0.75rem;color:var(--gray-500);border-top:1px solid var(--gray-100)">
-                    💡 Keep this screen open or take a screenshot to show at the counter.
+                    💡 @t('checkout.screenshot_hint', 'Keep this screen open or take a screenshot to show at the counter.')
                 </div>
             </div>
 
             <!-- Action Buttons -->
             <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap">
                 <a href="{{ route('walkin.shop') }}" class="btn btn-primary" style="padding:10px 20px;font-weight:600">
-                    🛒 Order More Seafood
+                    🛒 @t('checkout.order_more_seafood', 'Order More Seafood')
                 </a>
                 <button type="button" onclick="window.print()" class="btn btn-secondary" style="padding:10px 18px;font-weight:600">
-                    🖨️ Print / Save Pass
+                    🖨️ @t('checkout.print_save_pass', 'Print / Save Pass')
                 </button>
             </div>
 
@@ -165,16 +165,16 @@
             
             <div style="text-align:center;margin-bottom:var(--space-5)">
                 <div style="font-size:3.5rem;margin-bottom:var(--space-3);animation:bounceIn 0.6s ease">🎉</div>
-                <h1 style="font-family:var(--font-heading);margin-bottom:var(--space-2);color:var(--gray-900)">Order Confirmed!</h1>
+                <h1 style="font-family:var(--font-heading);margin-bottom:var(--space-2);color:var(--gray-900)">@t('checkout.order_confirmed_title', 'Order Confirmed!')</h1>
                 <p class="text-muted" style="font-size:0.95rem">
-                    Thank you for ordering with MST Import and Export Sdn Bhd! We are preparing your shipment.
+                    @t('checkout.success_subtitle', 'Thank you for ordering with MST Import and Export Sdn Bhd! We are preparing your shipment.')
                 </p>
             </div>
 
             <div class="card p-6 mb-6" style="background:white;border:1px solid var(--gray-200);border-radius:12px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4)">
                     <div>
-                        <div class="text-xs text-muted">Order Number</div>
+                        <div class="text-xs text-muted">@t('checkout.order_number', 'Order Number')</div>
                         <div style="font-size:1.2rem;font-weight:700;color:var(--seagreen-700);font-family:var(--font-heading)">{{ $order->order_number }}</div>
                     </div>
                     <div>{!! $order->status_badge !!}</div>
@@ -188,24 +188,24 @@
                 @endforeach
 
                 <div style="display:flex;justify-content:space-between;margin-top:var(--space-4);font-family:var(--font-heading);font-size:1.1rem">
-                    <strong>Total Paid</strong>
+                    <strong>@t('checkout.total_paid', 'Total Paid')</strong>
                     <strong style="color:var(--seagreen-700)">RM {{ number_format($order->total, 2) }}</strong>
                 </div>
 
                 <div style="margin-top:var(--space-4);padding-top:var(--space-3);border-top:1px solid var(--gray-100)">
-                    <div class="text-xs text-muted">Fulfillment</div>
+                    <div class="text-xs text-muted">@t('checkout.shipping_logistics', 'Fulfillment')</div>
                     <div style="font-weight:600;margin-top:2px;font-size:0.9rem">
-                        🚚 Delivery to {{ $order->shipping_address['city'] ?? 'your address' }}
+                        🚚 @t('checkout.delivery_to', 'Delivery to :city', ['city' => $order->shipping_address['city'] ?? 'your address'])
                     </div>
                 </div>
             </div>
 
             <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap">
                 @auth
-                    <a href="{{ route('account.orders') }}" class="btn btn-primary">View My Orders</a>
-                    <a href="{{ route('shop.index') }}" class="btn btn-secondary">Continue Shopping</a>
+                    <a href="{{ route('account.orders') }}" class="btn btn-primary">@t('checkout.view_my_orders', 'View My Orders')</a>
+                    <a href="{{ route('shop.index') }}" class="btn btn-secondary">@t('checkout.continue_shopping', 'Continue Shopping')</a>
                 @else
-                    <a href="{{ route('home') }}" class="btn btn-primary">Back to Home</a>
+                    <a href="{{ route('home') }}" class="btn btn-primary">@t('checkout.back_to_home', 'Back to Home')</a>
                 @endauth
             </div>
         @endif

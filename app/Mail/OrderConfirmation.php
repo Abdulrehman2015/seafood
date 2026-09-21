@@ -13,16 +13,35 @@ class OrderConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public Order $order) {}
+    public string $mailLocale;
+
+    public function __construct(
+        public Order $order,
+        ?string $mailLocale = null
+    ) {
+        $this->mailLocale = $mailLocale ?: ($order->user?->preferred_locale ?? current_locale());
+        $this->locale($this->mailLocale);
+    }
 
     public function envelope(): Envelope
     {
         $orderNo = $this->order->order_number ?? '#' . $this->order->id;
-        return new Envelope(subject: 'Order Confirmed: ' . $orderNo . ' — ' . config('app.name', 'MST Import & Export'));
+        $appName = config('app.name', 'MST Import & Export');
+        $subject = __t('email.order_confirmed_subject', 'Order Confirmed: :order — :app', [
+            'order' => $orderNo,
+            'app'   => $appName,
+        ], $this->mailLocale);
+
+        return new Envelope(subject: $subject);
     }
 
     public function content(): Content
     {
-        return new Content(view: 'emails.order-confirmation');
+        return new Content(
+            view: 'emails.order-confirmation',
+            with: [
+                'mailLocale' => $this->mailLocale,
+            ]
+        );
     }
 }

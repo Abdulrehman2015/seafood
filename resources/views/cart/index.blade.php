@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Shopping Cart — MST Import and Export Sdn Bhd')
+@section('title', __t('cart.title', 'Shopping Cart') . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd'))
 
 @section('content')
 <!-- Page Header -->
@@ -7,28 +7,28 @@
     <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:20px 20px"></div>
     <div class="container page-header-content" style="position:relative;z-index:2">
         <div class="breadcrumb" style="margin-bottom:var(--space-2)">
-            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 Home</a>
+            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 @t('nav.home', 'Home')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">Shopping Cart</span>
+            <span style="font-weight:600;color:#ffffff">@t('cart.title', 'Shopping Cart')</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
             <div>
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:2px 9px;border-radius:999px;font-size:0.7rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
-                        🛒 Secure Cold-Chain Cart
+                        🛒 @t('cart.secure_cold_chain_cart', 'Secure Cold-Chain Cart')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.78rem">Continuous -18°C Cold Chain Protected</span>
+                    <span style="color:#bae6fd;font-size:0.78rem">@t('cart.cold_chain_protected', 'Continuous -18°C Cold Chain Protected')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.5rem,3vw,1.95rem);margin-bottom:4px;letter-spacing:-0.02em">
-                    Your Shopping Cart
+                    @t('cart.your_shopping_cart', 'Your Shopping Cart')
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.88rem;max-width:680px;line-height:1.4;margin:0">
-                    Review your selected frozen catches, adjust carton quantities, and proceed to encrypted checkout.
+                    @t('cart.header_subtitle', 'Review your selected frozen catches, adjust carton quantities, and proceed to encrypted checkout.')
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 <div style="font-size:0.8rem;padding:5px 12px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb">
-                    🔒 256-Bit Encrypted
+                    🔒 @t('cart.encrypted_256', '256-Bit Encrypted')
                 </div>
             </div>
         </div>
@@ -41,15 +41,21 @@
         <div class="cart-page-header" id="cartPageHeaderBar" style="{{ $items->count() ? '' : 'display:none' }}">
             <div>
                 <span style="font-size:1.05rem;font-weight:700;color:#0f274a">
-                    <span id="cartHeaderCount">{{ $totals['count'] }}</span> {{ Str::plural('item', $totals['count']) }} in your cart
+                    @if(current_locale() === 'zh')
+                        您的购物车中共有 <span id="cartHeaderCount">{{ $totals['count'] }}</span> 件商品
+                    @elseif(current_locale() === 'bm')
+                        <span id="cartHeaderCount">{{ $totals['count'] }}</span> item dalam troli anda
+                    @else
+                        <span id="cartHeaderCount">{{ $totals['count'] }}</span> {{ Str::plural('item', $totals['count']) }} in your cart
+                    @endif
                 </span>
                 @if(session('walkin_session'))
-                    · <span class="badge" style="background:#eff6ff;color:#1d4ed8;font-weight:700;border:1px solid #bfdbfe">🏪 In-Store Walk-in Mode</span>
+                    · <span class="badge" style="background:#eff6ff;color:#1d4ed8;font-weight:700;border:1px solid #bfdbfe">🏪 @t('cart.walkin_mode', 'In-Store Walk-in Mode')</span>
                 @endif
             </div>
             @if($items->count())
                 <a href="{{ route('shop.index') }}" class="btn-continue-shopping" id="continueShopBtn">
-                    ← Add More Products
+                    ← @t('cart.add_more_products', 'Add More Products')
                 </a>
             @endif
         </div>
@@ -96,11 +102,11 @@
                             <div class="cart-item-main">
                                 <div class="cart-item-header">
                                     <div class="cart-item-cat">
-                                        {{ $item->product?->category?->name ?? 'Seafood' }}
+                                        {{ $item->product?->category?->name ?? __t('cart.default_category', 'Seafood') }}
                                     </div>
                                     <h3 class="cart-item-name">
                                         <a href="{{ $item->product ? route('shop.show', $item->product) : '#' }}">
-                                            {{ $item->product?->name ?? 'Product Unavailable' }}
+                                            {{ $item->product?->name ?? __t('cart.product_unavailable', 'Product Unavailable') }}
                                         </a>
                                     </h3>
                                     <div class="cart-item-unit-price">
@@ -110,14 +116,14 @@
                                               data-manual-usd="{{ $item->product?->price_usd ?? '' }}"
                                         >{{ $currencySymbol }} {{ number_format($curAmount, 2) }}</span>
                                         <span class="price-base-rm" style="{{ $currentCurrency !== 'MYR' ? '' : 'display:none' }};font-size:0.75rem;color:#64748b;margin-left:3px">(RM {{ number_format($itemPrice, 2) }})</span>
-                                        <span class="unit-val">/ {{ $item->product?->unit ?? 'unit' }}</span>
+                                        <span class="unit-val">/ {{ $item->product?->unit ?? __t('cart.default_unit', 'unit') }}</span>
                                         @if($item->product?->weight)
                                             <span class="meta-sep">·</span>
                                             <span class="meta-weight">{{ $item->product->weight }}</span>
                                         @endif
                                         @if($moq > 1)
                                             <span class="meta-sep">·</span>
-                                            <span class="meta-moq">MOQ: {{ $moq }}</span>
+                                            <span class="meta-moq">@t('shop.moq_label', 'MOQ:') {{ $moq }}</span>
                                         @endif
                                     </div>
                                 </div>
@@ -155,18 +161,18 @@
                                         <button type="button" 
                                                 class="btn-cart-remove" 
                                                 onclick="confirmRemoveCartItem({{ $item->id }})" 
-                                                title="Remove this item from your cart">
+                                                title="@t('cart.remove', 'Remove')">
                                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                                 <line x1="18" y1="6" x2="6" y2="18"></line>
                                                 <line x1="6" y1="6" x2="18" y2="18"></line>
                                             </svg>
-                                            <span>Remove</span>
+                                            <span>@t('cart.remove', 'Remove')</span>
                                         </button>
                                     </div>
 
                                     <!-- Item Subtotal on Mobile & Desktop -->
                                     <div class="cart-item-subtotal-box">
-                                        <div class="subtotal-label">Subtotal</div>
+                                        <div class="subtotal-label">@t('cart.subtotal', 'Subtotal')</div>
                                         <div id="subtotal-{{ $item->id }}" class="subtotal-val js-cart-item-subtotal"
                                              data-qty="{{ $item->quantity }}"
                                              data-base-rm="{{ $itemPrice * $item->quantity }}"
@@ -188,11 +194,11 @@
                 <div class="cart-summary-col">
                     <div class="cart-summary-card">
                         <div class="summary-header">
-                            <span>Order Summary</span>
+                            <span>@t('cart.order_summary', 'Order Summary')</span>
                         </div>
 
                         <div class="summary-line">
-                            <span>Items Subtotal (<span id="summaryCount">{{ $totals['count'] }}</span> items)</span>
+                            <span>@t('cart.items_subtotal', 'Items Subtotal') (<span id="summaryCount">{{ $totals['count'] }}</span> @t('cart.items_count_label', 'items'))</span>
                             <span id="summarySubtotal" class="summary-val js-cart-summary-subtotal" data-base-subtotal="{{ $totals['subtotal'] }}">
                                 {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['subtotal'], $currentCurrency), 2) }}
                                 @if($currentCurrency !== 'MYR')
@@ -202,16 +208,16 @@
                         </div>
 
                         <div class="summary-line">
-                            <span>Fulfillment</span>
+                            <span>@t('cart.fulfillment', 'Fulfillment')</span>
                             @if(session('walkin_session'))
-                                <span style="color:#1d4ed8;font-weight:700">Counter Pickup (FREE)</span>
+                                <span style="color:#1d4ed8;font-weight:700">@t('cart.counter_pickup_free', 'Counter Pickup (FREE)')</span>
                             @else
-                                <span style="font-size:0.8rem;color:#64748b">Calculated at checkout</span>
+                                <span style="font-size:0.8rem;color:#64748b">@t('cart.calculated_at_checkout', 'Calculated at checkout')</span>
                             @endif
                         </div>
 
                         <div class="summary-total-line">
-                            <span class="total-label">Estimated Total</span>
+                            <span class="total-label">@t('cart.estimated_total', 'Estimated Total')</span>
                             <span id="summaryTotal" class="total-val js-cart-summary-total" data-base-total="{{ $totals['total'] }}">
                                 {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['total'], $currentCurrency), 2) }}
                                 @if($currentCurrency !== 'MYR')
@@ -220,41 +226,41 @@
                             </span>
                         </div>
                         <div class="js-cart-currency-note" style="{{ $currentCurrency !== 'MYR' ? '' : 'display:none' }};font-size:0.75rem;color:#64748b;margin:8px 0 12px 0;background:#f8fafc;padding:8px 10px;border-radius:8px;border:1px solid #e2e8f0;line-height:1.4">
-                            ℹ️ Prices displayed in <strong class="js-cart-currency-code">{{ $currentCurrency }}</strong> for reference. Final payment will be processed in <strong>MYR</strong> at checkout.
+                            ℹ️ @t('cart.currency_note', 'Prices displayed in :currency for reference. Final payment will be processed in MYR at checkout.', ['currency' => '<strong class="js-cart-currency-code">' . $currentCurrency . '</strong>'])
                         </div>
 
                         <!-- Checkout Buttons -->
                         @if(session('walkin_session'))
                             <a href="{{ route('walkin.checkout') }}" class="btn-checkout">
-                                🏪 Walk-in Express Checkout →
+                                🏪 @t('cart.walkin_checkout', 'Walk-in Express Checkout') →
                             </a>
                             <div style="text-align:center;margin-top:8px;font-size:0.75rem;color:#64748b">
-                                Johor Bahru (SILC) Counter · Immediate Collection Token
+                                @t('cart.silc_counter_desc', 'Johor Bahru (SILC) Counter · Immediate Collection Token')
                             </div>
                         @else
                             @auth
                                 @if(auth()->user()->needsApproval())
                                     <div class="alert alert-warning" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;font-size:0.85rem;padding:10px;border-radius:10px">
-                                        ⏳ Your B2B account is pending approval before you can place wholesale orders.
+                                        ⏳ @t('cart.pending_approval_alert', 'Your B2B account is pending approval before you can place wholesale orders.')
                                     </div>
                                 @else
                                     <a href="{{ route('checkout.index') }}" class="btn-checkout">
-                                        🔒 Proceed to Checkout →
+                                        🔒 @t('cart.checkout_btn', 'Proceed to Checkout') →
                                     </a>
                                 @endif
                             @else
                                 <a href="{{ route('checkout.index') }}" class="btn-checkout">
-                                    🔒 Proceed to Checkout →
+                                    🔒 @t('cart.checkout_btn', 'Proceed to Checkout') →
                                 </a>
                                 <div style="text-align:center;margin-top:10px;font-size:0.82rem;color:#64748b">
-                                    Have a Wholesale Account? <a href="{{ route('login') }}" style="color:#1d4ed8;font-weight:700;text-decoration:underline">Sign in</a>
+                                    @t('cart.have_wholesale_account', 'Have a Wholesale Account?') <a href="{{ route('login') }}" style="color:#1d4ed8;font-weight:700;text-decoration:underline">@t('cart.sign_in', 'Sign in')</a>
                                 </div>
                             @endauth
                         @endif
 
                         <div class="summary-trust-badges">
-                            <div>🔒 256-bit Encrypted Secure Payment</div>
-                            <div>❄️ 100% Cold Chain Guaranteed Freshness</div>
+                            <div>🔒 @t('cart.trust_encrypted', '256-bit Encrypted Secure Payment')</div>
+                            <div>❄️ @t('cart.trust_cold_chain', '100% Cold Chain Guaranteed Freshness')</div>
                         </div>
                     </div>
                 </div>
@@ -265,17 +271,17 @@
         <!-- Empty Cart State -->
         <div id="emptyCartContainer" class="empty-cart-card" style="{{ $items->count() ? 'display:none' : '' }}">
             <div class="empty-cart-icon">🛒</div>
-            <h2 class="empty-cart-title">Your Cart is Currently Empty</h2>
+            <h2 class="empty-cart-title">@t('cart.empty_title', 'Your Cart is Currently Empty')</h2>
             <p class="empty-cart-desc">
-                Looks like you haven't added any premium seafood yet. Explore our fresh salmon, jumbo prawns, crabs, and dim sum!
+                @t('cart.empty_desc', 'Looks like you haven\'t added any fresh seafood items to your cart yet.')
             </p>
             <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
                 <a href="{{ route('shop.index') }}" class="btn-browse-seafood">
-                    Browse Fresh Seafood →
+                    @t('cart.continue_shopping', 'Browse Fresh Seafood') →
                 </a>
                 @if(session('walkin_session'))
                     <a href="{{ route('walkin.shop') }}" class="btn-browse-walkin">
-                        Walk-in Catalogue
+                        @t('cart.walkin_catalogue', 'Walk-in Catalogue')
                     </a>
                 @endif
             </div>
@@ -298,23 +304,23 @@
             </svg>
         </div>
 
-        <h3 class="cart-confirm-modal-title" id="removeModalTitle">Remove Item from Cart?</h3>
-        <p class="cart-confirm-modal-desc">Are you sure you want to remove this catch from your shopping cart?</p>
+        <h3 class="cart-confirm-modal-title" id="removeModalTitle">@t('cart.remove_modal_title', 'Remove Item from Cart?')</h3>
+        <p class="cart-confirm-modal-desc">@t('cart.remove_modal_desc', 'Are you sure you want to remove this catch from your shopping cart?')</p>
 
         <div class="cart-confirm-item-preview">
             <div class="cart-confirm-item-thumb" id="removeModalThumb"></div>
             <div class="cart-confirm-item-info">
-                <div class="cart-confirm-item-name" id="removeModalName">Product Name</div>
-                <div class="cart-confirm-item-meta" id="removeModalMeta">Qty: 1</div>
+                <div class="cart-confirm-item-name" id="removeModalName">@t('cart.default_product_name', 'Seafood Product')</div>
+                <div class="cart-confirm-item-meta" id="removeModalMeta">@t('cart.quantity_label', 'Quantity:') 1</div>
             </div>
         </div>
 
         <div class="cart-confirm-modal-actions">
             <button type="button" class="btn-modal-cancel" onclick="closeRemoveModal()">
-                Keep in Cart
+                @t('cart.keep_in_cart', 'Keep in Cart')
             </button>
             <button type="button" class="btn-modal-delete" id="btnConfirmDelete" onclick="executeRemoveCartItem()">
-                <span id="btnConfirmDeleteText">Yes, Remove</span>
+                <span id="btnConfirmDeleteText">@t('cart.yes_remove', 'Yes, Remove')</span>
             </button>
         </div>
     </div>
@@ -1109,6 +1115,22 @@
 <script>
 const csrf = document.querySelector('meta[name="csrf-token"]').content;
 
+const cartI18n = {
+    cartUpdated: @json(__t('cart.cart_updated', 'Cart updated')),
+    itemRemoved: @json(__t('cart.item_removed', 'Item removed from cart')),
+    networkError: @json(__t('cart.network_error', 'Network error updating cart.')),
+    errorRemoving: @json(__t('cart.error_removing', 'Error removing item.')),
+    couldNotUpdate: @json(__t('cart.could_not_update', 'Could not update quantity')),
+    couldNotRemove: @json(__t('cart.could_not_remove', 'Could not remove item')),
+    minOrderQty: @json(__t('cart.min_order_qty', 'Minimum order quantity is :moq')),
+    maxStock: @json(__t('cart.max_stock', 'Maximum available stock is :max')),
+    removing: @json(__t('cart.removing', 'Removing...')),
+    yesRemove: @json(__t('cart.yes_remove', 'Yes, Remove')),
+    qtyLabel: @json(__t('cart.quantity_label', 'Quantity:')),
+    subtotalLabel: @json(__t('cart.subtotal', 'Subtotal')),
+    defaultProductName: @json(__t('cart.default_product_name', 'Seafood Product')),
+};
+
 // Show toast message
 function showToast(msg) {
     const toast = document.getElementById('cartToast');
@@ -1130,11 +1152,11 @@ function stepCartQty(cartId, delta) {
     const newQty = currentQty + delta;
 
     if (newQty < moq) {
-        showToast('Minimum order quantity is ' + moq);
+        showToast(cartI18n.minOrderQty.replace(':moq', moq));
         return;
     }
     if (newQty > maxStock) {
-        showToast('Maximum available stock is ' + maxStock);
+        showToast(cartI18n.maxStock.replace(':max', maxStock));
         return;
     }
 
@@ -1153,11 +1175,11 @@ function handleQtyInputChange(cartId) {
     const prevQty = parseInt(input.dataset.current) || moq;
 
     if (isNaN(enteredQty) || enteredQty < moq) {
-        showToast('Minimum quantity is ' + moq);
+        showToast(cartI18n.minOrderQty.replace(':moq', moq));
         enteredQty = moq;
         input.value = moq;
     } else if (enteredQty > maxStock) {
-        showToast('Maximum available stock is ' + maxStock);
+        showToast(cartI18n.maxStock.replace(':max', maxStock));
         enteredQty = maxStock;
         input.value = maxStock;
     }
@@ -1176,8 +1198,8 @@ async function sendCartUpdate(cartId, quantity) {
     if (card) card.classList.add('updating');
 
     try {
-        const res = await fetch('/cart/' + cartId, {
-            method: 'PATCH',
+        const response = await fetch('/cart/' + cartId, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -1186,37 +1208,26 @@ async function sendCartUpdate(cartId, quantity) {
             body: JSON.stringify({ quantity: quantity })
         });
 
-        const data = await res.json();
+        const data = await response.json();
 
         if (data.success) {
-            input.value = quantity;
+            // Update item row
             input.dataset.current = quantity;
+            input.value = quantity;
 
-            // Update item subtotal
             const subtotalEl = document.getElementById('subtotal-' + cartId);
             if (subtotalEl) {
+                subtotalEl.setAttribute('data-base-item-subtotal', data.item_subtotal);
                 const curCode = (window.AppCurrency && window.AppCurrency.current) || data.currency || 'MYR';
                 const curSymbol = (window.AppCurrency && window.AppCurrency.symbol) || data.currency_symbol || 'RM';
 
-                let displaySubtotal = '';
-                if (data.currency === curCode && data.currency_item_subtotal_formatted) {
-                    displaySubtotal = data.currency_item_subtotal_formatted;
+                if (data.currency === curCode && data.item_currency_subtotal_formatted) {
+                    subtotalEl.innerHTML = data.item_currency_subtotal_formatted + (curCode !== 'MYR' ? '<span style="font-size:0.75rem;color:#64748b;display:block;font-weight:normal">RM ' + parseFloat(data.item_subtotal).toFixed(2) + '</span>' : '');
                 } else {
                     const rate = (window.AppCurrency && window.AppCurrency.rates && window.AppCurrency.rates[curCode]) ? parseFloat(window.AppCurrency.rates[curCode]) : 1;
-                    const converted = curCode === 'MYR' ? data.item_subtotal : (Math.round(data.item_subtotal * rate * 100) / 100);
-                    displaySubtotal = curSymbol + ' ' + converted.toFixed(2);
+                    const convertedItemSub = curCode === 'MYR' ? data.item_subtotal : (Math.round(data.item_subtotal * rate * 100) / 100);
+                    subtotalEl.innerHTML = curSymbol + ' ' + convertedItemSub.toFixed(2) + (curCode !== 'MYR' ? '<span style="font-size:0.75rem;color:#64748b;display:block;font-weight:normal">RM ' + parseFloat(data.item_subtotal).toFixed(2) + '</span>' : '');
                 }
-
-                subtotalEl.setAttribute('data-base-rm', data.item_subtotal);
-                subtotalEl.setAttribute('data-qty', quantity);
-
-                if (curCode !== 'MYR') {
-                    subtotalEl.innerHTML = displaySubtotal + '<div style="font-size:0.75rem;color:#64748b;font-weight:normal">RM ' + parseFloat(data.item_subtotal).toFixed(2) + '</div>';
-                } else {
-                    subtotalEl.textContent = 'RM ' + parseFloat(data.item_subtotal).toFixed(2);
-                }
-                subtotalEl.classList.add('price-pop');
-                setTimeout(() => subtotalEl.classList.remove('price-pop'), 400);
             }
 
             // Update summary counts and totals
@@ -1267,14 +1278,14 @@ async function sendCartUpdate(cartId, quantity) {
             // Update navbar cart badge
             if (typeof updateCartCount === 'function') updateCartCount();
 
-            showToast('Cart updated');
+            showToast(cartI18n.cartUpdated);
         } else {
-            showToast(data.message || 'Could not update quantity');
+            showToast(data.message || cartI18n.couldNotUpdate);
             input.value = prevQty;
         }
     } catch (err) {
         console.error(err);
-        showToast('Network error updating cart.');
+        showToast(cartI18n.networkError);
         input.value = prevQty;
     } finally {
         if (card) card.classList.remove('updating');
@@ -1365,14 +1376,14 @@ async function removeCartItemAjax(cartId) {
 
             if (typeof updateCartCount === 'function') updateCartCount();
 
-            showToast('Item removed from cart');
+            showToast(cartI18n.itemRemoved);
         } else {
-            showToast(data.message || 'Could not remove item');
+            showToast(data.message || cartI18n.couldNotRemove);
             if (card) card.classList.remove('updating');
         }
     } catch (err) {
         console.error(err);
-        showToast('Error removing item.');
+        showToast(cartI18n.errorRemoving);
         if (card) card.classList.remove('updating');
     }
 }
@@ -1397,7 +1408,7 @@ function confirmRemoveCartItem(cartId) {
     const card = document.getElementById('cart-item-' + cartId);
     
     let thumbHtml = '🐟';
-    let nameText = 'Seafood Product';
+    let nameText = cartI18n.defaultProductName;
     let metaText = '';
 
     if (card) {
@@ -1413,7 +1424,7 @@ function confirmRemoveCartItem(cartId) {
         const qtyVal = qtyInput ? qtyInput.value : '1';
         const subtotalEl = document.getElementById('subtotal-' + cartId);
         const priceVal = subtotalEl ? subtotalEl.textContent.trim().split('\n')[0] : '';
-        metaText = `Quantity: ${qtyVal}` + (priceVal ? ` · Subtotal: ${priceVal}` : '');
+        metaText = `${cartI18n.qtyLabel} ${qtyVal}` + (priceVal ? ` · ${cartI18n.subtotalLabel}: ${priceVal}` : '');
     }
 
     const thumbContainer = document.getElementById('removeModalThumb');
@@ -1466,13 +1477,13 @@ async function executeRemoveCartItem() {
     const btnText = document.getElementById('btnConfirmDeleteText');
 
     if (btn) btn.disabled = true;
-    if (btnText) btnText.textContent = 'Removing...';
+    if (btnText) btnText.textContent = cartI18n.removing;
 
     try {
         await removeCartItemAjax(cartId);
     } finally {
         if (btn) btn.disabled = false;
-        if (btnText) btnText.textContent = 'Yes, Remove';
+        if (btnText) btnText.textContent = cartI18n.yesRemove;
         closeRemoveModal();
     }
 }

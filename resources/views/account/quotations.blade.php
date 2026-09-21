@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'My Quotation Requests (RFQ) — MST Import and Export Sdn Bhd')
+@section('title', __t('account.rfq_meta_title', 'My Quotation Requests (RFQ) — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd')))
 
 @section('content')
 <!-- Page Header -->
@@ -7,33 +7,33 @@
     <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:20px 20px"></div>
     <div class="container page-header-content" style="position:relative;z-index:2">
         <div class="breadcrumb" style="margin-bottom:4px">
-            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 Home</a>
+            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">@t('account.breadcrumb_home', '🏠 Home')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <a href="{{ route('account.dashboard') }}" style="color:#bae6fd;text-decoration:none">My Account</a>
+            <a href="{{ route('account.dashboard') }}" style="color:#bae6fd;text-decoration:none">@t('account.breadcrumb_account', 'My Account')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">Quotations &amp; RFQs</span>
+            <span style="font-weight:600;color:#ffffff">@t('account.rfq_page_title', 'Quotations & RFQs')</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
             <div>
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:2px 9px;border-radius:999px;font-size:0.7rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
-                        📋 B2B Trading Desk
+                        @t('account.rfq_badge', '📋 B2B Trading Desk')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.78rem">Volume-Tiered Commercial Pricing</span>
+                    <span style="color:#bae6fd;font-size:0.78rem">@t('account.rfq_tagline', 'Volume-Tiered Commercial Pricing')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.5rem,3vw,1.95rem);margin-bottom:4px;letter-spacing:-0.02em">
-                    Quotations &amp; RFQ History
+                    @t('account.rfq_page_title', 'Quotations & RFQ History')
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.88rem;max-width:680px;line-height:1.4;margin:0">
-                    Review and accept custom quotations for bulk container, pallet, and commercial trading orders.
+                    @t('account.rfq_page_subtitle', 'Review and accept custom quotations for bulk container, pallet, and commercial trading orders.')
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 <a href="{{ route('account.dashboard') }}" class="btn btn-secondary btn-sm" style="background:rgba(255,255,255,0.12);color:#ffffff;border:1px solid rgba(255,255,255,0.25);border-radius:10px;font-weight:600">
-                    ← Dashboard
+                    @t('account.back_to_dashboard', '← Dashboard')
                 </a>
                 <a href="{{ route('quotations.create') }}" class="btn btn-primary btn-sm" style="background:#2563eb;color:#ffffff;border:1px solid #3b82f6;border-radius:10px;font-weight:700;box-shadow:0 2px 8px rgba(37,99,235,0.35)">
-                    + Request New Quote (RFQ)
+                    @t('account.btn_request_new_rfq', '+ Request New Quote (RFQ)')
                 </a>
             </div>
         </div>
@@ -47,26 +47,26 @@
         <div class="profile-nav-pills" style="margin-bottom:20px;display:flex;gap:8px;overflow-x:auto;padding-bottom:6px">
             <a href="{{ route('account.dashboard') }}" class="profile-nav-pill">
                 <span>📊</span>
-                <span>Dashboard</span>
+                <span>@t('account.nav_dashboard', 'Dashboard')</span>
             </a>
             <a href="{{ route('account.orders') }}" class="profile-nav-pill">
                 <span>📦</span>
-                <span>My Orders</span>
+                <span>@t('account.nav_orders', 'My Orders')</span>
             </a>
             <a href="{{ route('account.profile') }}" class="profile-nav-pill">
                 <span>👤</span>
-                <span>Profile Settings</span>
+                <span>@t('account.nav_profile', 'Profile Settings')</span>
             </a>
             @if(auth()->user()->customer_group === 'trading' && auth()->user()->isApproved())
                 <a href="{{ route('quotations.index') }}" class="profile-nav-pill active">
                     <span>📝</span>
-                    <span>My RFQs</span>
+                    <span>@t('account.nav_rfqs', 'My RFQs')</span>
                 </a>
             @endif
             @if(auth()->user()->isAdmin())
                 <a href="{{ route('admin.dashboard') }}" class="profile-nav-pill" style="border-color:#bfdbfe;background:#eff6ff;color:var(--seagreen-700)">
                     <span>⚡</span>
-                    <span>Admin Panel</span>
+                    <span>@t('account.nav_admin', 'Admin Panel')</span>
                 </a>
             @endif
         </div>
@@ -77,13 +77,13 @@
                     <table class="table" style="width:100%;border-collapse:collapse">
                         <thead>
                             <tr style="background:#f8fafc;border-bottom:1px solid #e2e8f0">
-                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">RFQ Number</th>
-                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">Submitted Date</th>
-                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">Items</th>
-                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">Valid Until</th>
-                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">Quoted Total</th>
-                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">Status</th>
-                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em;text-align:right">Action</th>
+                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">@t('account.th_rfq_number', 'RFQ Number')</th>
+                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">@t('account.th_submitted_date', 'Submitted Date')</th>
+                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">@t('account.th_items', 'Items')</th>
+                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">@t('account.th_valid_until', 'Valid Until')</th>
+                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">@t('account.th_quoted_total', 'Quoted Total')</th>
+                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em">@t('account.th_status', 'Status')</th>
+                                <th style="padding:14px 16px;font-size:0.8rem;color:#475569;text-transform:uppercase;letter-spacing:0.05em;text-align:right">@t('account.th_action', 'Action')</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -98,7 +98,7 @@
                                     {{ $quotation->created_at->format('d M Y, h:i A') }}
                                 </td>
                                 <td style="padding:14px 16px;font-size:0.85rem;color:#334155;font-weight:600">
-                                    {{ $quotation->items->count() }} item(s)
+                                    {{ $quotation->items->count() > 1 ? __t('account.items_count_multi', ':count items', ['count' => $quotation->items->count()]) : __t('account.items_count_single', ':count item', ['count' => $quotation->items->count()]) }}
                                 </td>
                                 <td style="padding:14px 16px;font-size:0.85rem">
                                     @if($quotation->valid_until)
@@ -121,7 +121,7 @@
                                 </td>
                                 <td style="padding:14px 16px;text-align:right">
                                     <a href="{{ route('quotations.show', $quotation) }}" class="btn btn-secondary btn-sm" style="border-radius:8px;font-size:0.8rem;padding:6px 12px;font-weight:600">
-                                        View Details
+                                        @t('account.btn_view', 'View Details')
                                     </a>
                                 </td>
                             </tr>
@@ -136,12 +136,12 @@
             @else
                 <div class="empty-state" style="padding:60px 24px;text-align:center">
                     <div style="font-size:3.5rem;margin-bottom:12px">📋</div>
-                    <h3 style="font-family:var(--font-heading);font-size:1.4rem;color:#0f172a;margin-bottom:8px">No Quotation Requests</h3>
+                    <h3 style="font-family:var(--font-heading);font-size:1.4rem;color:#0f172a;margin-bottom:8px">@t('account.empty_rfq_title', 'No Quotations Yet')</h3>
                     <p style="color:#64748b;font-size:0.9rem;max-width:440px;margin:0 auto 20px;line-height:1.5">
-                        Trading and wholesale customers can request custom pricing and cold-chain terms for volume container orders.
+                        @t('account.rfq_page_subtitle', 'Trading and wholesale customers can request custom pricing and cold-chain terms for volume container orders.')
                     </p>
                     <a href="{{ route('quotations.create') }}" class="btn btn-primary" style="padding:10px 22px;border-radius:10px;font-weight:700">
-                        Submit First RFQ
+                        @t('account.btn_request_new_rfq', '+ Request New Quote (RFQ)')
                     </a>
                 </div>
             @endif

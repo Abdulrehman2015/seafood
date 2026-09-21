@@ -48,11 +48,27 @@
                     <div class="card-title" style="font-size:1.1rem;font-weight:700;">General Information</div>
                 </div>
 
+                <!-- Multilingual Product Names -->
                 <div class="form-group mb-4">
-                    <label class="form-label">Product Name <span class="required">*</span></label>
+                    <label class="form-label">Product Name (🇬🇧 English Base) <span class="required">*</span></label>
                     <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
                            value="{{ old('name') }}" placeholder="e.g. Atlantic Salmon Fillet (500g)" required autofocus>
                     @error('name')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-grid-2 mb-4" style="background:#f8fafc;padding:12px 14px;border-radius:10px;border:1px solid #e2e8f0;">
+                    <div class="form-group mb-0">
+                        <label class="form-label" style="color:#dc2626;font-weight:700;">🇨🇳 Product Name (Simplified Chinese)</label>
+                        <input type="text" name="name_zh" class="form-control"
+                               value="{{ old('name_zh') }}" placeholder="e.g. 挪威大西洋三文鱼柳 (500g)">
+                        <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Displayed when Chinese (ZH) is selected</div>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label class="form-label" style="color:#059669;font-weight:700;">🇲🇾 Product Name (Bahasa Melayu)</label>
+                        <input type="text" name="name_bm" class="form-control"
+                               value="{{ old('name_bm') }}" placeholder="e.g. Flet Salmon Atlantik (500g)">
+                        <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Displayed when Malay (BM) is selected</div>
+                    </div>
                 </div>
 
                 <div class="form-grid-2 mb-4">
@@ -77,15 +93,41 @@
                     </div>
                 </div>
 
-                <div class="form-group mb-4">
-                    <label class="form-label">Short Description</label>
+                <!-- Short Descriptions -->
+                <div class="form-group mb-3">
+                    <label class="form-label">Short Description (🇬🇧 English)</label>
                     <input type="text" name="short_description" class="form-control" maxlength="500"
                            value="{{ old('short_description') }}" placeholder="Crisp 1-2 sentence highlight shown in catalogue cards">
                 </div>
 
-                <div class="form-group mb-0">
-                    <label class="form-label">Full Description</label>
-                    <textarea name="description" class="form-control" rows="5" placeholder="Detailed product culinary advisory, tasting notes, thaw instructions, packaging details...">{{ old('description') }}</textarea>
+                <div class="form-grid-2 mb-4" style="background:#f8fafc;padding:12px 14px;border-radius:10px;border:1px solid #e2e8f0;">
+                    <div class="form-group mb-0">
+                        <label class="form-label" style="color:#dc2626;font-size:0.8rem;font-weight:700;">🇨🇳 Short Description (Chinese)</label>
+                        <input type="text" name="short_description_zh" class="form-control" maxlength="500"
+                               value="{{ old('short_description_zh') }}" placeholder="简短亮点说明...">
+                    </div>
+                    <div class="form-group mb-0">
+                        <label class="form-label" style="color:#059669;font-size:0.8rem;font-weight:700;">🇲🇾 Short Description (Malay)</label>
+                        <input type="text" name="short_description_bm" class="form-control" maxlength="500"
+                               value="{{ old('short_description_bm') }}" placeholder="Keterangan ringkas...">
+                    </div>
+                </div>
+
+                <!-- Full Descriptions -->
+                <div class="form-group mb-3">
+                    <label class="form-label">Full Description (🇬🇧 English)</label>
+                    <textarea name="description" class="form-control" rows="4" placeholder="Detailed product culinary advisory, tasting notes, thaw instructions, packaging details...">{{ old('description') }}</textarea>
+                </div>
+
+                <div class="form-grid-2 mb-0" style="background:#f8fafc;padding:12px 14px;border-radius:10px;border:1px solid #e2e8f0;">
+                    <div class="form-group mb-0">
+                        <label class="form-label" style="color:#dc2626;font-size:0.8rem;font-weight:700;">🇨🇳 Full Description (Chinese)</label>
+                        <textarea name="description_zh" class="form-control" rows="3" placeholder="详细中文描述、烹饪建议、解冻方式...">{{ old('description_zh') }}</textarea>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label class="form-label" style="color:#059669;font-size:0.8rem;font-weight:700;">🇲🇾 Full Description (Malay)</label>
+                        <textarea name="description_bm" class="form-control" rows="3" placeholder="Penerangan penuh, panduan masakan, penyahbekuan...">{{ old('description_bm') }}</textarea>
+                    </div>
                 </div>
             </div>
 

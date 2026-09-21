@@ -43,13 +43,36 @@
 
                 <div class="form-group" style="margin-bottom:18px">
                     <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block">
-                        Category Name <span style="color:#ef4444">*</span>
+                        Category Name (English - Default) <span style="color:#ef4444">*</span>
                     </label>
                     <input type="text" name="name" id="categoryNameInput" class="form-control" 
-                           value="{{ old('name', $category->name) }}" required 
+                           value="{{ old('name', $category->getRawOriginal('name')) }}" required 
                            style="width:100%;height:42px;border-radius:8px;font-size:0.95rem"
                            placeholder="e.g. Shellfish, Whole Fish, Prawns">
                     @error('name')<div class="form-error" style="color:#ef4444;font-size:0.8rem;margin-top:4px">{{ $message }}</div>@enderror
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;background:#f8fafc;padding:14px;border-radius:8px;border:1px solid #e2e8f0">
+                    <div>
+                        <label class="form-label" style="font-weight:600;color:#1e293b;font-size:0.88rem;margin-bottom:6px;display:flex;align-items:center;gap:6px">
+                            <span>🇨🇳</span> Chinese Name (简体中文)
+                        </label>
+                        <input type="text" name="name_zh" class="form-control" 
+                               value="{{ old('name_zh', $category->name_zh) }}" 
+                               style="width:100%;height:40px;border-radius:6px;font-size:0.9rem"
+                               placeholder="e.g. 贝类海鲜 / 虾类">
+                        @error('name_zh')<div class="form-error" style="color:#ef4444;font-size:0.8rem;margin-top:4px">{{ $message }}</div>@enderror
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-weight:600;color:#1e293b;font-size:0.88rem;margin-bottom:6px;display:flex;align-items:center;gap:6px">
+                            <span>🇲🇾</span> Malay Name (Bahasa Melayu)
+                        </label>
+                        <input type="text" name="name_bm" class="form-control" 
+                               value="{{ old('name_bm', $category->name_bm) }}" 
+                               style="width:100%;height:40px;border-radius:6px;font-size:0.9rem"
+                               placeholder="e.g. Makanan Laut Bercangkerang / Udang">
+                        @error('name_bm')<div class="form-error" style="color:#ef4444;font-size:0.8rem;margin-top:4px">{{ $message }}</div>@enderror
+                    </div>
                 </div>
 
 @push('styles')

@@ -16,7 +16,12 @@
             Manage meta titles, descriptions, open graph social tags, and structured data for public-facing pages.
         </p>
     </div>
-    <div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="{{ route('admin.sitemap.index') }}" class="btn btn-secondary"
+           style="background:#0f172a;color:#ffffff;border-color:#0f172a;font-weight:700;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;font-size:0.9rem;box-shadow:0 2px 6px rgba(15,23,42,0.15)">
+            <span>🗺️</span>
+            <span>Manage XML Sitemap</span>
+        </a>
         <a href="{{ route('admin.page-seo.create') }}" class="btn btn-primary"
            style="background:#4f46e5;border-color:#4f46e5;font-weight:700;display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;font-size:0.9rem;box-shadow:0 2px 6px rgba(79,70,229,0.25)">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">

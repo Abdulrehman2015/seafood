@@ -14,38 +14,32 @@ use App\Http\Controllers\Admin;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
-// ─── Public Routes ───────────────────────────────────────────────────────────
+// ─── Root Locale Redirect ──────────────────────────────────────────────────
+Route::get('/', function (\Illuminate\Http\Request $request) {
+    $locale = session('locale', $request->cookie('locale', config('app.locale', 'en')));
+    if (!in_array($locale, ['en', 'zh', 'bm'])) {
+        $locale = 'en';
+    }
+    return redirect()->to('/' . $locale);
+});
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/about', [StaticController::class, 'about'])->name('about');
-Route::get('/contact', [StaticController::class, 'contact'])->name('contact');
-Route::post('/contact', [StaticController::class, 'contactSubmit'])->middleware('throttle:5,1')->name('contact.submit');
+// ─── Global System Routes (No locale prefix needed) ───────────────────────────
 
-// Product Catalogue (public / retail)
-Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
-Route::get('/categories', [ShopController::class, 'categories'])->name('categories.index');
-Route::get('/category', fn() => redirect()->route('categories.index'));
-Route::get('/shop/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
+// XML Sitemap (Valid, standards-compliant, multilingual)
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
 // Currency Switcher (RM, SGD, USD)
 Route::get('/currency/{code}', [\App\Http\Controllers\CurrencyController::class, 'switch'])->name('currency.switch');
 Route::match(['get', 'post'], '/currency/switch/{code?}', [\App\Http\Controllers\CurrencyController::class, 'switch'])->name('currency.switch.post');
 
+// Multilingual Language Switcher (EN, ZH, BM)
+Route::get('/language/{locale}', [\App\Http\Controllers\LanguageController::class, 'switch'])->name('language.switch');
+Route::match(['get', 'post'], '/language/switch/{locale?}', [\App\Http\Controllers\LanguageController::class, 'switch'])->name('language.switch.post');
+
 // Newsletter Subscription
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->middleware('throttle:15,1')->name('newsletter.subscribe');
 
-// Cart (session + user, public)
-Route::prefix('cart')->name('cart.')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('index');
-    Route::post('/add', [CartController::class, 'add'])->middleware('throttle:60,1')->name('add');
-    Route::patch('/{cartId}', [CartController::class, 'update'])->middleware('throttle:60,1')->name('update');
-    Route::delete('/{cartId}', [CartController::class, 'remove'])->name('remove');
-    Route::get('/count', [CartController::class, 'count'])->name('count');
-});
-
-// Approval status pages & live check
-Route::get('/pending-approval', [HomeController::class, 'approvalPending'])->name('approval.pending');
-Route::get('/account-rejected', [HomeController::class, 'approvalRejected'])->name('approval.rejected');
+// Approval status live API check
 Route::get('/api/check-approval-status', function () {
     if (!auth()->check()) {
         return response()->json([
@@ -73,64 +67,120 @@ Route::get('/api/check-approval-status', function () {
     ]);
 })->name('approval.check_status');
 
-// ─── Walk-in Routes ───────────────────────────────────────────────────────────
+// ─── Localized Application Routes ({locale} = en, zh, bm) ─────────────────────
+Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function () {
 
-Route::prefix('walkin')->name('walkin.')->group(function () {
-    Route::get('/enter', [WalkInController::class, 'entry'])->name('entry');
-    Route::get('/exit', [WalkInController::class, 'exit'])->name('exit');
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/about', [StaticController::class, 'about'])->name('about');
+    Route::get('/contact', [StaticController::class, 'contact'])->name('contact');
+    Route::post('/contact', [StaticController::class, 'contactSubmit'])->middleware('throttle:5,1')->name('contact.submit');
 
-    // Protected by walk-in session
-    Route::middleware(\App\Http\Middleware\WalkInMiddleware::class)->group(function () {
-        Route::get('/', [WalkInController::class, 'shop'])->name('shop');
-        Route::get('/product/{product:slug}', [WalkInController::class, 'show'])->name('show');
-        Route::get('/checkout', [WalkInController::class, 'checkout'])->name('checkout');
+    // Product Catalogue (public / retail)
+    Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+    Route::get('/categories', [ShopController::class, 'categories'])->name('categories.index');
+    Route::get('/category', fn() => redirect()->route('categories.index'));
+    Route::get('/shop/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
+
+    // Cart (session + user, public)
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::post('/add', [CartController::class, 'add'])->middleware('throttle:60,1')->name('add');
+        Route::patch('/{cartId}', [CartController::class, 'update'])->middleware('throttle:60,1')->name('update');
+        Route::delete('/{cartId}', [CartController::class, 'remove'])->name('remove');
+        Route::get('/count', [CartController::class, 'count'])->name('count');
     });
+
+    // Approval status pages
+    Route::get('/pending-approval', [HomeController::class, 'approvalPending'])->name('approval.pending');
+    Route::get('/account-rejected', [HomeController::class, 'approvalRejected'])->name('approval.rejected');
+
+    // Walk-in Routes
+    Route::prefix('walkin')->name('walkin.')->group(function () {
+        Route::get('/enter', [WalkInController::class, 'entry'])->name('entry');
+        Route::get('/exit', [WalkInController::class, 'exit'])->name('exit');
+
+        // Protected by walk-in session
+        Route::middleware(\App\Http\Middleware\WalkInMiddleware::class)->group(function () {
+            Route::get('/', [WalkInController::class, 'shop'])->name('shop');
+            Route::get('/product/{product:slug}', [WalkInController::class, 'show'])->name('show');
+            Route::get('/checkout', [WalkInController::class, 'checkout'])->name('checkout');
+        });
+    });
+
+    // Checkout Routes
+    Route::prefix('checkout')->name('checkout.')->group(function () {
+        Route::get('/', [CheckoutController::class, 'index'])->middleware('auth')->name('index');
+        Route::get('/quotation/{quotation}', [CheckoutController::class, 'fromQuotation'])->middleware('auth')->name('fromQuotation');
+        Route::post('/payment-intent', [CheckoutController::class, 'createPaymentIntent'])->middleware('throttle:15,1')->name('paymentIntent');
+        Route::post('/', [CheckoutController::class, 'store'])->middleware('throttle:10,1')->name('store');
+        Route::get('/stripe/success', [CheckoutController::class, 'stripeSuccess'])->name('stripe.success');
+        Route::get('/stripe/cancel', [CheckoutController::class, 'stripeCancel'])->name('stripe.cancel');
+        Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
+    });
+
+    // Authenticated Customer Routes
+    Route::middleware('auth')->group(function () {
+
+        Route::get('/dashboard', function () {
+            if (auth()->user()->isAdmin()) {
+                return redirect()->route('admin.dashboard');
+            }
+            return redirect()->route('account.dashboard');
+        })->name('dashboard');
+
+        // Account
+        Route::prefix('account')->name('account.')->group(function () {
+            Route::get('/', [AccountController::class, 'dashboard'])->name('dashboard');
+            Route::get('/orders', [AccountController::class, 'orders'])->name('orders');
+            Route::get('/orders/{order}', [AccountController::class, 'orderShow'])->name('orders.show');
+            Route::get('/orders/{order}/invoice', [AccountController::class, 'invoice'])->name('orders.invoice');
+            Route::post('/orders/{order}/reorder', [AccountController::class, 'reorder'])->name('orders.reorder');
+            Route::get('/profile', [AccountController::class, 'profile'])->name('profile');
+            Route::patch('/profile', [AccountController::class, 'updateProfile'])->name('profile.update');
+        });
+
+        // Quotations (trading customers only)
+        Route::prefix('quotations')->name('quotations.')->middleware(\App\Http\Middleware\ApprovedCustomerMiddleware::class)->group(function () {
+            Route::get('/', [QuotationController::class, 'index'])->name('index');
+            Route::get('/create', [QuotationController::class, 'create'])->name('create');
+            Route::post('/', [QuotationController::class, 'store'])->middleware('throttle:10,1')->name('store');
+            Route::get('/{quotation}', [QuotationController::class, 'show'])->name('show');
+            Route::post('/{quotation}/accept', [QuotationController::class, 'accept'])->name('accept');
+            Route::post('/{quotation}/reject', [QuotationController::class, 'reject'])->name('reject');
+        });
+    });
+
+    // Auth Routes (Breeze login, register, password reset, etc.)
+    require __DIR__ . '/auth.php';
 });
 
-// ─── Checkout Routes ────────────────────────────────────────────────────────
-Route::prefix('checkout')->name('checkout.')->group(function () {
-    Route::get('/', [CheckoutController::class, 'index'])->middleware('auth')->name('index');
-    Route::get('/quotation/{quotation}', [CheckoutController::class, 'fromQuotation'])->middleware('auth')->name('fromQuotation');
-    Route::post('/payment-intent', [CheckoutController::class, 'createPaymentIntent'])->middleware('throttle:15,1')->name('paymentIntent');
-    Route::post('/', [CheckoutController::class, 'store'])->middleware('throttle:10,1')->name('store');
-    Route::get('/stripe/success', [CheckoutController::class, 'stripeSuccess'])->name('stripe.success');
-    Route::get('/stripe/cancel', [CheckoutController::class, 'stripeCancel'])->name('stripe.cancel');
-    Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
-});
-
-// ─── Authenticated Routes ─────────────────────────────────────────────────────
-
-Route::middleware('auth')->group(function () {
-
-    Route::get('/dashboard', function () {
-        if (auth()->user()->isAdmin()) {
-            return redirect()->route('admin.dashboard');
+// ─── Legacy Unprefixed Route Redirects ─────────────────────────────────────────
+$unprefixedRedirects = [
+    'about', 'contact', 'shop', 'categories', 'category', 'cart',
+    'walkin', 'checkout', 'dashboard', 'account', 'quotations',
+    'pending-approval', 'account-rejected', 'login', 'register',
+    'forgot-password', 'reset-password'
+];
+foreach ($unprefixedRedirects as $uPath) {
+    Route::any($uPath, function (\Illuminate\Http\Request $request) use ($uPath) {
+        $locale = session('locale', $request->cookie('locale', config('app.locale', 'en')));
+        if (!in_array($locale, ['en', 'zh', 'bm'])) {
+            $locale = 'en';
         }
-        return redirect()->route('account.dashboard');
-    })->name('dashboard');
-
-    // Account (approved customers only for wholesale/trading-specific features)
-    Route::prefix('account')->name('account.')->group(function () {
-        Route::get('/', [AccountController::class, 'dashboard'])->name('dashboard');
-        Route::get('/orders', [AccountController::class, 'orders'])->name('orders');
-        Route::get('/orders/{order}', [AccountController::class, 'orderShow'])->name('orders.show');
-        Route::get('/orders/{order}/invoice', [AccountController::class, 'invoice'])->name('orders.invoice');
-        Route::post('/orders/{order}/reorder', [AccountController::class, 'reorder'])->name('orders.reorder');
-        Route::get('/profile', [AccountController::class, 'profile'])->name('profile');
-        Route::patch('/profile', [AccountController::class, 'updateProfile'])->name('profile.update');
+        $target = '/' . $locale . '/' . $uPath;
+        $qs = $request->getQueryString();
+        return redirect()->to($target . ($qs ? '?' . $qs : ''));
     });
-
-    // Quotations (trading customers only)
-    Route::prefix('quotations')->name('quotations.')->middleware(\App\Http\Middleware\ApprovedCustomerMiddleware::class)->group(function () {
-        Route::get('/', [QuotationController::class, 'index'])->name('index');
-        Route::get('/create', [QuotationController::class, 'create'])->name('create');
-        Route::post('/', [QuotationController::class, 'store'])->middleware('throttle:10,1')->name('store');
-        Route::get('/{quotation}', [QuotationController::class, 'show'])->name('show');
-        Route::post('/{quotation}/accept', [QuotationController::class, 'accept'])->name('accept');
-        Route::post('/{quotation}/reject', [QuotationController::class, 'reject'])->name('reject');
-    });
-
-});
+    Route::any($uPath . '/{any}', function (\Illuminate\Http\Request $request, $any) use ($uPath) {
+        $locale = session('locale', $request->cookie('locale', config('app.locale', 'en')));
+        if (!in_array($locale, ['en', 'zh', 'bm'])) {
+            $locale = 'en';
+        }
+        $target = '/' . $locale . '/' . $uPath . '/' . $any;
+        $qs = $request->getQueryString();
+        return redirect()->to($target . ($qs ? '?' . $qs : ''));
+    })->where('any', '.*');
+}
 
 // ─── Admin Routes ─────────────────────────────────────────────────────────────
 
@@ -212,6 +262,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 
     // Page SEO Module
     Route::resource('page-seo', Admin\PageSeoController::class);
+
+    // Sitemap Management Module (Dynamic Auto-Generate & Custom Upload)
+    Route::get('sitemap', [Admin\SitemapController::class, 'index'])->name('sitemap.index');
+    Route::post('sitemap/generate', [Admin\SitemapController::class, 'generate'])->name('sitemap.generate');
+    Route::post('sitemap/upload', [Admin\SitemapController::class, 'upload'])->name('sitemap.upload');
+    Route::post('sitemap/mode', [Admin\SitemapController::class, 'setMode'])->name('sitemap.mode');
+    Route::get('sitemap/download', [Admin\SitemapController::class, 'download'])->name('sitemap.download');
+    Route::delete('sitemap/custom', [Admin\SitemapController::class, 'deleteCustom'])->name('sitemap.deleteCustom');
+
+    // Multilingual Translation Manager
+    Route::get('translations', [Admin\TranslationController::class, 'index'])->name('translations.index');
+    Route::post('translations', [Admin\TranslationController::class, 'update'])->name('translations.update');
+    Route::post('translations/create', [Admin\TranslationController::class, 'store'])->name('translations.store');
+    Route::delete('translations/{translation}', [Admin\TranslationController::class, 'destroy'])->name('translations.destroy');
+    Route::post('translations/sync', [Admin\TranslationController::class, 'sync'])->name('translations.sync');
+    Route::post('translations/cache/clear', [Admin\TranslationController::class, 'clearCache'])->name('translations.clearCache');
 
     // Media Gallery Module
     Route::get('gallery', [Admin\GalleryController::class, 'index'])->name('gallery.index');
@@ -423,7 +489,3 @@ Route::get('/map-tile/{z}/{x}/{y}', function ($z, $x, $y) {
         ->header('Content-Type', 'image/png')
         ->header('Cache-Control', 'public, max-age=86400');
 })->whereNumber(['z', 'x', 'y']);
-
-// ─── Auth Routes (Breeze) ──────────────────────────────────────────────────────
-
-require __DIR__ . '/auth.php';

@@ -13,19 +13,33 @@ class UserRegistered extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public User $user) {}
+    public string $mailLocale;
+
+    public function __construct(
+        public User $user,
+        ?string $mailLocale = null
+    ) {
+        $this->mailLocale = $mailLocale ?: ($user->preferred_locale ?? current_locale());
+        $this->locale($this->mailLocale);
+    }
 
     public function envelope(): Envelope
     {
+        $appName = config('app.name', 'MST Import & Export');
         $subject = $this->user->isPending()
-            ? 'Account Application Received — ' . config('app.name', 'MST Import & Export')
-            : 'Welcome to ' . config('app.name', 'MST Import & Export') . '!';
+            ? __t('email.user_registered_subject_pending', 'Account Application Received — :app', ['app' => $appName], $this->mailLocale)
+            : __t('email.user_registered_subject_active', 'Welcome to :app!', ['app' => $appName], $this->mailLocale);
 
         return new Envelope(subject: $subject);
     }
 
     public function content(): Content
     {
-        return new Content(view: 'emails.user-registered');
+        return new Content(
+            view: 'emails.user-registered',
+            with: [
+                'mailLocale' => $this->mailLocale,
+            ]
+        );
     }
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin') — MST Import and Export Sdn Bhd</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
-    <link rel="shortcut icon" href="{{ asset('images/favicon.webp') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ file_exists(public_path('css/app.css')) ? filemtime(public_path('css/app.css')) : time() }}">
     <style>
         /* Dedicated Side-by-Side Currency Input Group */
@@ -369,18 +370,19 @@
             padding: 14px 16px !important;
         }
 
+        /* Base Admin Form Controls */
         .form-control,
         input[type="text"],
         input[type="email"],
         input[type="password"],
         textarea,
         select {
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 6px !important;
-            padding: 8px 12px !important;
-            font-size: 0.875rem !important;
-            transition: border-color 0.12s, box-shadow 0.12s !important;
-            background: #ffffff !important;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.875rem;
+            transition: border-color 0.12s, box-shadow 0.12s;
+            background: #ffffff;
         }
 
         .form-control:focus,
@@ -390,6 +392,68 @@
             border-color: #1d4ed8 !important;
             outline: none !important;
             box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12) !important;
+        }
+
+        /* ── Universal Admin Search Inputs (Fix Search Icon & Placeholder Overlap Everywhere) ── */
+        .cat-search-group,
+        .search-input-wrap,
+        .seo-search-wrap,
+        .nl-search-wrap,
+        .rev-search-group,
+        .searchable-search-box {
+            position: relative !important;
+            display: flex !important;
+            align-items: center !important;
+            flex: 1 1 auto;
+        }
+
+        .cat-search-icon,
+        .search-icon,
+        .seo-search-icon,
+        .nl-search-icon,
+        .rev-search-icon {
+            position: absolute !important;
+            left: 14px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            color: #94a3b8 !important;
+            pointer-events: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 2 !important;
+        }
+
+        /* Enforce adequate left padding so placeholder text never overlaps icons */
+        .cat-search-input,
+        .filter-search-input,
+        .seo-search-input,
+        .nl-search-input,
+        .rev-search-input,
+        input.cat-search-input,
+        input.filter-search-input,
+        input.seo-search-input,
+        input.nl-search-input,
+        input.rev-search-input,
+        .cat-search-group input[type="text"],
+        .search-input-wrap input[type="text"],
+        .seo-search-wrap input[type="text"],
+        .nl-search-wrap input[type="text"],
+        .rev-search-group input[type="text"],
+        .searchable-search-box input[type="text"] {
+            padding-left: 44px !important;
+            padding-right: 14px !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Email templates search bar reset */
+        .email-search-box input[type="text"],
+        .email-search-box input {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 0 0 8px !important;
+            box-shadow: none !important;
+            outline: none !important;
         }
 
         .btn {
@@ -1061,6 +1125,30 @@
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                     <span>Page SEO</span>
+                </a>
+                <!-- XML Sitemap Management Link -->
+                <a href="{{ route('admin.sitemap.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.sitemap.*') ? 'active' : '' }}">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8">
+                        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                        <line x1="8" y1="2" x2="8" y2="18"></line>
+                        <line x1="16" y1="6" x2="16" y2="22"></line>
+                    </svg>
+                    <span>XML Sitemap</span>
+                    <span class="sidebar-badge" style="background:#ecfdf5;color:#059669;border-color:#a7f3d0">Auto</span>
+                </a>
+                <!-- Multilingual Translations Link -->
+                <a href="{{ route('admin.translations.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.translations.*') ? 'active' : '' }}">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <span>Translations</span>
+                    <span class="sidebar-badge" style="background:#e0e7ff;color:#4338ca;border-color:#c7d2fe">3 Lang</span>
                 </a>
                 <a href="{{ route('admin.walkin.qr') }}"
                     class="sidebar-link {{ request()->routeIs('admin.walkin.qr') ? 'active' : '' }}">

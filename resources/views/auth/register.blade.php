@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Create Account — MST Import and Export Sdn Bhd')
+@section('title', __t('auth.register_meta_title', 'Create Account — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd')))
 
 @section('content')
 <!-- Page Header -->
@@ -7,28 +7,28 @@
     <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:20px 20px"></div>
     <div class="container page-header-content" style="position:relative;z-index:2">
         <div class="breadcrumb" style="margin-bottom:var(--space-2)">
-            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 Home</a>
+            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">@t('auth.breadcrumb_home', '🏠 Home')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">Create Account</span>
+            <span style="font-weight:600;color:#ffffff">@t('auth.breadcrumb_register', 'Create Account')</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
             <div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
-                        ⭐ Exclusive Partner Tiers
+                        @t('auth.register_tiers_badge', '⭐ Exclusive Partner Tiers')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.8rem">Retail · Wholesale · Trading</span>
+                    <span style="color:#bae6fd;font-size:0.8rem">@t('auth.register_tiers_sub', 'Retail · Wholesale · Trading')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.75rem,3.5vw,2.4rem);margin-bottom:6px;letter-spacing:-0.02em">
-                    Create Your MST Account
+                    @t('auth.register_header_title', 'Create Your MST Account')
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.95rem;max-width:680px;line-height:1.5;margin:0">
-                    Select your customer category to unlock tailored wholesale pricing and seamless cold-chain delivery.
+                    @t('auth.register_header_subtitle', 'Select your customer category to unlock tailored wholesale pricing and seamless cold-chain delivery.')
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 <div style="font-size:0.85rem;padding:6px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb">
-                    ⚡ Instant Tier Access
+                    @t('auth.register_instant_access_badge', '⚡ Instant Tier Access')
                 </div>
             </div>
         </div>
@@ -42,8 +42,8 @@
             <div class="brand-badge">
                 <span style="font-size:1.75rem">🌊</span>
             </div>
-            <h2 class="register-title" style="font-size:1.5rem">Account Registration</h2>
-            <p class="register-subtitle">Choose your customer category below</p>
+            <h2 class="register-title" style="font-size:1.5rem">@t('auth.register_form_title', 'Account Registration')</h2>
+            <p class="register-subtitle">@t('auth.register_form_subtitle', 'Choose your customer category below')</p>
         </div>
 
         <div class="register-card">
@@ -52,12 +52,12 @@
 
                 <!-- Customer Type Selection -->
                 <div class="form-section-block">
-                    <label class="form-label font-semibold">Customer Type <span class="required">*</span></label>
+                    <label class="form-label font-semibold">@t('auth.customer_type_label', 'Customer Type') <span class="required">*</span></label>
                     <div class="customer-types-grid">
                         @foreach([
-                            ['value'=>'retail','label'=>'Retail','icon'=>'🛒','desc'=>'General public, instant access'],
-                            ['value'=>'wholesale','label'=>'Wholesale','icon'=>'🏭','desc'=>'Business & verified discounts'],
-                            ['value'=>'trading','label'=>'Trading','icon'=>'📦','desc'=>'Bulk orders & RFQ pricing'],
+                            ['value'=>'retail','label'=>__t('auth.type_retail_label', 'Retail'),'icon'=>'🛒','desc'=>__t('auth.type_retail_desc', 'General public, instant access')],
+                            ['value'=>'wholesale','label'=>__t('auth.type_wholesale_label', 'Wholesale'),'icon'=>'🏭','desc'=>__t('auth.type_wholesale_desc', 'Business & verified discounts')],
+                            ['value'=>'trading','label'=>__t('auth.type_trading_label', 'Trading'),'icon'=>'📦','desc'=>__t('auth.type_trading_desc', 'Bulk orders & RFQ pricing')],
                         ] as $type)
                         <label class="ctype-radio {{ old('customer_group', request('type', 'retail')) == $type['value'] ? 'selected' : '' }}"
                                for="type_{{ $type['value'] }}" id="label_{{ $type['value'] }}">
@@ -77,19 +77,19 @@
                 </div>
 
                 <div class="section-divider">
-                    <span>Personal Details</span>
+                    <span>@t('auth.section_personal_details', 'Personal Details')</span>
                 </div>
 
                 <!-- Personal Info -->
                 <div class="form-grid-2">
                     <div class="form-group">
-                        <label class="form-label" for="name">Full Name <span class="required">*</span></label>
+                        <label class="form-label" for="name">@t('auth.field_fullname', 'Full Name') <span class="required">*</span></label>
                         <input type="text" name="name" id="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
-                               value="{{ old('name') }}" placeholder="e.g. Ahmad bin Ali" required>
+                               value="{{ old('name') }}" placeholder="{{ __t('auth.placeholder_fullname', 'e.g. Ahmad bin Ali') }}" required>
                         @error('name')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="phone">Phone Number <span class="required">*</span></label>
+                        <label class="form-label" for="phone">@t('auth.field_phone', 'Phone Number') <span class="required">*</span></label>
                         <input type="tel" name="phone" id="phone" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}"
                                value="{{ old('phone') }}" placeholder="+60 12-345 6789" required>
                         @error('phone')<div class="form-error">{{ $message }}</div>@enderror
@@ -97,22 +97,22 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="email">Email Address <span class="required">*</span></label>
+                    <label class="form-label" for="email">@t('auth.field_email', 'Email Address') <span class="required">*</span></label>
                     <input type="email" name="email" id="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
                            value="{{ old('email') }}" placeholder="you@example.com" required>
                     @error('email')<div class="form-error">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="section-divider">
-                    <span>Security</span>
+                    <span>@t('auth.section_security', 'Security')</span>
                 </div>
 
                 <div class="form-grid-2">
                     <div class="form-group">
-                        <label class="form-label" for="password">Password <span class="required">*</span></label>
+                        <label class="form-label" for="password">@t('auth.field_password', 'Password') <span class="required">*</span></label>
                         <div class="password-field-wrapper">
                             <input type="password" name="password" id="password" class="form-control password-input {{ $errors->has('password') ? 'is-invalid' : '' }}"
-                                   placeholder="Min. 8 characters" required autocomplete="new-password">
+                                   placeholder="{{ __t('auth.placeholder_min_chars', 'Min. 8 characters') }}" required autocomplete="new-password">
                             <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility" tabindex="-1">
                                 <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -123,10 +123,10 @@
                         @error('password')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="password_confirmation">Confirm Password <span class="required">*</span></label>
+                        <label class="form-label" for="password_confirmation">@t('auth.field_confirm_password', 'Confirm Password') <span class="required">*</span></label>
                         <div class="password-field-wrapper">
                             <input type="password" name="password_confirmation" id="password_confirmation" class="form-control password-input"
-                                   placeholder="Repeat password" required autocomplete="new-password">
+                                   placeholder="{{ __t('auth.placeholder_repeat_password', 'Repeat password') }}" required autocomplete="new-password">
                             <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password_confirmation', this)" aria-label="Toggle password visibility" tabindex="-1">
                                 <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -140,22 +140,22 @@
                 <!-- Company Fields (wholesale/trading only) -->
                 <div id="companyFields" style="{{ in_array(old('customer_group', request('type', 'retail')), ['wholesale','trading']) ? '' : 'display:none' }}">
                     <div class="section-divider">
-                        <span>Company Information</span>
+                        <span>@t('auth.section_company_info', 'Company Information')</span>
                     </div>
                     <div class="register-company-note">
                         <span class="note-icon">🏢</span>
-                        <span>Your account will be verified by our team for access to wholesale/trading tier prices.</span>
+                        <span>@t('auth.company_verification_note', 'Your account will be verified by our team for access to wholesale/trading tier prices.')</span>
                     </div>
 
                     <div class="form-grid-2">
                         <div class="form-group">
-                            <label class="form-label" for="company_name">Company Name <span class="required">*</span></label>
+                            <label class="form-label" for="company_name">@t('auth.field_company_name', 'Company Name') <span class="required">*</span></label>
                             <input type="text" name="company_name" id="company_name" class="form-control {{ $errors->has('company_name') ? 'is-invalid' : '' }}"
-                                   value="{{ old('company_name') }}" placeholder="e.g. MST Seafood Trading Sdn Bhd">
+                                   value="{{ old('company_name') }}" placeholder="{{ __t('auth.placeholder_company_name', 'e.g. MST Seafood Trading Sdn Bhd') }}">
                             @error('company_name')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="company_reg_no">Company Reg. No. (SSM) <span class="required">*</span></label>
+                            <label class="form-label" for="company_reg_no">@t('auth.field_company_ssm', 'Company Reg. No. (SSM)') <span class="required">*</span></label>
                             <input type="text" name="company_reg_no" id="company_reg_no" class="form-control {{ $errors->has('company_reg_no') ? 'is-invalid' : '' }}"
                                    value="{{ old('company_reg_no') }}" placeholder="202301012345 (1234567-X)">
                             @error('company_reg_no')<div class="form-error">{{ $message }}</div>@enderror
@@ -163,17 +163,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="business_type">Business Nature / Type <span class="required">*</span></label>
+                        <label class="form-label" for="business_type">@t('auth.field_business_nature', 'Business Nature / Type') <span class="required">*</span></label>
                         <div class="custom-select-wrapper">
                             <select name="business_type" id="business_type" class="form-control custom-select {{ $errors->has('business_type') ? 'is-invalid' : '' }}">
-                                <option value="">Select business type...</option>
-                                <option value="Restaurant & Catering"   {{ old('business_type')=='Restaurant & Catering'?'selected':'' }}>Restaurant & Catering</option>
-                                <option value="Seafood Retailer"        {{ old('business_type')=='Seafood Retailer'?'selected':'' }}>Seafood Retailer</option>
-                                <option value="Seafood Importer"        {{ old('business_type')=='Seafood Importer'?'selected':'' }}>Seafood Importer</option>
-                                <option value="Seafood Exporter"        {{ old('business_type')=='Seafood Exporter'?'selected':'' }}>Seafood Exporter</option>
-                                <option value="Food Manufacturer"       {{ old('business_type')=='Food Manufacturer'?'selected':'' }}>Food Manufacturer</option>
-                                <option value="Hotel / Resort"          {{ old('business_type')=='Hotel / Resort'?'selected':'' }}>Hotel / Resort</option>
-                                <option value="Other"                   {{ old('business_type')=='Other'?'selected':'' }}>Other</option>
+                                <option value="">@t('auth.select_business_type', 'Select business type...')</option>
+                                <option value="Restaurant & Catering"   {{ old('business_type')=='Restaurant & Catering'?'selected':'' }}>@t('auth.btype_restaurant', 'Restaurant & Catering')</option>
+                                <option value="Seafood Retailer"        {{ old('business_type')=='Seafood Retailer'?'selected':'' }}>@t('auth.btype_retailer', 'Seafood Retailer')</option>
+                                <option value="Seafood Importer"        {{ old('business_type')=='Seafood Importer'?'selected':'' }}>@t('auth.btype_importer', 'Seafood Importer')</option>
+                                <option value="Seafood Exporter"        {{ old('business_type')=='Seafood Exporter'?'selected':'' }}>@t('auth.btype_exporter', 'Seafood Exporter')</option>
+                                <option value="Food Manufacturer"       {{ old('business_type')=='Food Manufacturer'?'selected':'' }}>@t('auth.btype_manufacturer', 'Food Manufacturer')</option>
+                                <option value="Hotel / Resort"          {{ old('business_type')=='Hotel / Resort'?'selected':'' }}>@t('auth.btype_hotel', 'Hotel / Resort')</option>
+                                <option value="Other"                   {{ old('business_type')=='Other'?'selected':'' }}>@t('auth.btype_other', 'Other')</option>
                             </select>
                         </div>
                         @error('business_type')<div class="form-error">{{ $message }}</div>@enderror
@@ -182,39 +182,39 @@
 
                 <!-- Address Section -->
                 <div class="section-divider">
-                    <span>Delivery Address</span>
+                    <span>@t('auth.section_delivery_address', 'Delivery Address')</span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="address">Street Address <span class="required">*</span></label>
-                    <input type="text" name="address" id="address" class="form-control" value="{{ old('address') }}" placeholder="Unit / Street address, Taman / Area" required>
+                    <label class="form-label" for="address">@t('auth.field_street_address', 'Street Address') <span class="required">*</span></label>
+                    <input type="text" name="address" id="address" class="form-control" value="{{ old('address') }}" placeholder="{{ __t('auth.placeholder_street_address', 'Unit / Street address, Taman / Area') }}" required>
                     @error('address')<div class="form-error">{{ $message }}</div>@enderror
                 </div>
 
                 <!-- Responsive Address Grid: 3 cols on desktop, state full-width + city/postcode 2-col on mobile -->
                 <div class="register-address-grid">
                     <div class="form-group mb-0 grid-state-col">
-                        <label class="form-label" for="state">State <span class="required">*</span></label>
-                        <input type="text" name="state" id="state" class="form-control {{ $errors->has('state') ? 'is-invalid' : '' }}" value="{{ old('state') }}" placeholder="e.g. Selangor" required>
+                        <label class="form-label" for="state">@t('auth.field_state', 'State') <span class="required">*</span></label>
+                        <input type="text" name="state" id="state" class="form-control {{ $errors->has('state') ? 'is-invalid' : '' }}" value="{{ old('state') }}" placeholder="{{ __t('auth.placeholder_state', 'e.g. Johor') }}" required>
                         @error('state')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="form-group mb-0 grid-city-col">
-                        <label class="form-label" for="city">City <span class="required">*</span></label>
-                        <input type="text" name="city" id="city" class="form-control" value="{{ old('city') }}" placeholder="e.g. Petaling Jaya" required>
+                        <label class="form-label" for="city">@t('auth.field_city', 'City') <span class="required">*</span></label>
+                        <input type="text" name="city" id="city" class="form-control" value="{{ old('city') }}" placeholder="{{ __t('auth.placeholder_city', 'e.g. Iskandar Puteri') }}" required>
                         @error('city')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="form-group mb-0 grid-postcode-col">
-                        <label class="form-label" for="postcode">Postcode <span class="required">*</span></label>
-                        <input type="text" name="postcode" id="postcode" class="form-control" value="{{ old('postcode') }}" placeholder="47301" maxlength="5" pattern="[0-9]*" inputmode="numeric" required>
+                        <label class="form-label" for="postcode">@t('auth.field_postcode', 'Postcode') <span class="required">*</span></label>
+                        <input type="text" name="postcode" id="postcode" class="form-control" value="{{ old('postcode') }}" placeholder="79200" maxlength="5" pattern="[0-9]*" inputmode="numeric" required>
                         @error('postcode')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
                 <div class="submit-section">
                     <button type="submit" class="btn btn-primary btn-lg btn-block register-submit-btn">
-                        <span>Create Account</span>
+                        <span>@t('auth.btn_create_account', 'Create Account')</span>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -224,7 +224,7 @@
 
                 <div class="register-footer-links text-center">
                     <p class="text-sm text-muted">
-                        Already have an account? <a href="{{ route('login') }}" class="signin-link">Sign In</a>
+                        @t('auth.already_have_account', 'Already have an account?') <a href="{{ route('login') }}" class="signin-link">@t('auth.signin_link', 'Sign In')</a>
                     </p>
                 </div>
             </form>

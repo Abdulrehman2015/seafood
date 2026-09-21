@@ -60,19 +60,20 @@ class RegisteredUserController extends Controller
         };
 
         $user = User::create([
-            'name'            => $request->name,
-            'email'           => $request->email,
-            'password'        => Hash::make($request->password),
-            'customer_group'  => $request->customer_group,
-            'approval_status' => $approvalStatus,
-            'phone'           => $request->phone,
-            'company_name'    => $request->company_name,
-            'company_reg_no'  => $request->company_reg_no,
-            'business_type'   => $request->business_type,
-            'address'         => $request->address,
-            'city'            => $request->city,
-            'state'           => $request->state,
-            'postcode'        => $request->postcode,
+            'name'             => $request->name,
+            'email'            => $request->email,
+            'preferred_locale' => current_locale(),
+            'password'         => Hash::make($request->password),
+            'customer_group'   => $request->customer_group,
+            'approval_status'  => $approvalStatus,
+            'phone'            => $request->phone,
+            'company_name'     => $request->company_name,
+            'company_reg_no'   => $request->company_reg_no,
+            'business_type'    => $request->business_type,
+            'address'          => $request->address,
+            'city'             => $request->city,
+            'state'            => $request->state,
+            'postcode'         => $request->postcode,
         ]);
 
         event(new Registered($user));
@@ -82,8 +83,8 @@ class RegisteredUserController extends Controller
         \App\Models\Setting::configureMailer();
 
         try {
-            \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\SendEmailOtp($user, $otp));
-            \Illuminate\Support\Facades\Log::info("Registration OTP sent to user: {$user->email}");
+            \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\SendEmailOtp($user, $otp, current_locale()));
+            \Illuminate\Support\Facades\Log::info("Registration OTP sent to user: {$user->email} in locale: " . current_locale());
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Registration OTP dispatch error for {$user->email}: " . $e->getMessage());
         }
@@ -91,6 +92,6 @@ class RegisteredUserController extends Controller
         // Store user identifier in session for OTP verification
         session(['otp_verify_user_id' => $user->id]);
 
-        return redirect()->route('otp.verify')->with('status', 'We have sent a 6-digit verification code to ' . $user->email . '. Please enter it below to complete your registration.');
+        return redirect()->route('otp.verify')->with('status', __t('auth.otp_register_sent_notice', 'We have sent a 6-digit verification code to :email. Please enter it below to complete your registration.', ['email' => $user->email]));
     }
 }

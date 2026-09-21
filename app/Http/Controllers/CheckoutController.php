@@ -399,8 +399,8 @@ class CheckoutController extends Controller
         // 1. Dispatch Customer Order Confirmation
         try {
             if (!empty($order->customer_email)) {
-                \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderConfirmation($order->load('items')));
-                \Illuminate\Support\Facades\Log::info("Order confirmation email sent to {$order->customer_email} for #{$order->order_number}");
+                \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderConfirmation($order->load('items'), current_locale()));
+                \Illuminate\Support\Facades\Log::info("Order confirmation email sent to {$order->customer_email} for #{$order->order_number} in locale: " . current_locale());
             }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Failed to send order confirmation to {$order->customer_email}: " . $e->getMessage());

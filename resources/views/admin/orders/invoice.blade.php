@@ -1,11 +1,9 @@
 @extends(request()->is('admin/*') ? 'layouts.admin' : 'layouts.app')
 
-@section('title', 'Invoice #' . $order->order_number . ' — MST Import and Export SDN BHD')
+@section('title', __t('invoice.title', 'INVOICE') . ' #' . $order->order_number . ' — MST Import and Export SDN BHD')
 
 @push('styles')
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700;900&family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <style>
         :root {
             --primary: #0a1929;
@@ -621,20 +619,19 @@
         }
     </style>
 @endpush
-
-@section('content')
+@section('content')
 <div class="invoice-body-reset">
 
 <!-- Interactive Header Action Bar (Screen Only) -->
 <div class="no-print-bar">
     <a href="{{ url()->previous() ?: route('admin.orders.index') }}" class="btn btn-outline">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        <span>Back</span>
+        <span>{{ __t('invoice.back', 'Back') }}</span>
     </a>
     <div style="display: flex; gap: 8px;">
         <button onclick="window.print()" class="btn btn-primary">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-            <span>Print Invoice / Save as PDF</span>
+            <span>{{ __t('invoice.print_pdf', 'Print Invoice / Save as PDF') }}</span>
         </button>
     </div>
 </div>
@@ -646,7 +643,7 @@
         <div class="company-brand-box">
             <img src="{{ asset('images/logo.webp') }}" alt="MST Import and Export" class="company-logo-img">
             <div class="company-brand-info">
-                <div class="company-chinese-name">鎂嘉国际贸易有限公司</div>
+                <div class="company-chinese-name">{{ __t('invoice.company_chinese', '鎂嘉国际贸易有限公司') }}</div>
                 <div class="company-english-name">MST IMPORT AND EXPORT SDN BHD</div>
                 <div class="company-reg-number">202401053472</div>
                 <div class="company-address-lines">
@@ -661,34 +658,34 @@
         </div>
 
         <div class="invoice-meta-box">
-            <div class="invoice-main-title">INVOICE</div>
+            <div class="invoice-main-title">{{ __t('invoice.title', 'INVOICE') }}</div>
             <table class="meta-table">
                 <tr>
-                    <td class="meta-label">No. :</td>
+                    <td class="meta-label">{{ __t('invoice.meta_no', 'No. :') }}</td>
                     <td class="meta-val">{{ $order->order_number }}</td>
                 </tr>
                 <tr>
-                    <td class="meta-label">Date :</td>
+                    <td class="meta-label">{{ __t('invoice.meta_date', 'Date :') }}</td>
                     <td class="meta-val">{{ $order->created_at->format('d/m/Y') }}</td>
                 </tr>
                 <tr>
-                    <td class="meta-label">P/O Ref. :</td>
+                    <td class="meta-label">{{ __t('invoice.meta_po_ref', 'P/O Ref. :') }}</td>
                     <td class="meta-val">{{ $order->po_ref ?? $order->order_number }}</td>
                 </tr>
                 <tr>
-                    <td class="meta-label">Terms :</td>
+                    <td class="meta-label">{{ __t('invoice.meta_terms', 'Terms :') }}</td>
                     <td class="meta-val">
                         @if($order->payment_method === 'cash_on_delivery')
-                            C.O.D.
+                            {{ __t('invoice.terms_cod', 'C.O.D.') }}
                         @elseif($order->payment_status === 'paid')
-                            PAID (ONLINE)
+                            {{ __t('invoice.terms_paid_online', 'PAID (ONLINE)') }}
                         @else
-                            C.O.D.
+                            {{ __t('invoice.terms_cod', 'C.O.D.') }}
                         @endif
                     </td>
                 </tr>
                 <tr>
-                    <td class="meta-label">Page :</td>
+                    <td class="meta-label">{{ __t('invoice.meta_page', 'Page :') }}</td>
                     <td class="meta-val">1</td>
                 </tr>
             </table>
@@ -706,7 +703,7 @@
         <div class="bill-to-col">
             <div class="bill-to-header">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                <span>Bill To #</span>
+                <span>{{ __t('invoice.bill_to', 'Bill To #') }}</span>
             </div>
             <div class="bill-to-company">
                 {{ $order->user && $order->user->company_name ? $order->user->company_name : $order->customer_name }}
@@ -719,36 +716,36 @@
                     {{ $order->user->address }}<br>
                     {{ $order->user->city ?? '' }} {{ $order->user->postcode ?? '' }} {{ $order->user->state ?? '' }}, Malaysia
                 @else
-                    Store Self-Collection (SILC Cold-Chain Facility)
+                    {{ __t('invoice.store_pickup_address', 'Store Self-Collection (SILC Cold-Chain Facility)') }}
                 @endif
             </div>
             <div class="bill-to-detail">
-                <strong>Attention :</strong> {{ $order->customer_name }}
+                <strong>{{ __t('invoice.attention', 'Attention :') }}</strong> {{ $order->customer_name }}
             </div>
             <div class="bill-to-detail">
-                <strong>Tel :</strong> {{ $order->customer_phone ?? ($order->user->phone ?? '—') }}
+                <strong>{{ __t('invoice.tel', 'Tel :') }}</strong> {{ $order->customer_phone ?? ($order->user->phone ?? '—') }}
             </div>
         </div>
 
         <div class="fulfillment-col">
             <div class="bill-to-header">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-                <span>Fulfillment &amp; Logistics</span>
+                <span>{{ __t('invoice.fulfillment_logistics', 'Fulfillment & Logistics') }}</span>
             </div>
             <div class="bill-to-detail" style="margin-top: 4px;">
-                <strong>Method:</strong> {{ $order->fulfillment_type === 'self_collection' ? 'Store Self-Collection' : 'Cold-Chain Delivery' }}
+                <strong>{{ __t('invoice.method', 'Method:') }}</strong> {{ $order->fulfillment_type === 'self_collection' ? __t('invoice.method_pickup', 'Store Self-Collection') : __t('invoice.method_delivery', 'Cold-Chain Delivery') }}
             </div>
             <div class="bill-to-detail">
-                <strong>Account Type:</strong> {{ ucfirst($order->customer_group ?? 'Retail') }}
+                <strong>{{ __t('invoice.account_type', 'Account Type:') }}</strong> {{ ucfirst($order->customer_group ?? 'Retail') }}
             </div>
             @if($order->customer_email)
             <div class="bill-to-detail">
-                <strong>Email:</strong> {{ $order->customer_email }}
+                <strong>{{ __t('invoice.email', 'Email:') }}</strong> {{ $order->customer_email }}
             </div>
             @endif
             @if($order->customer_notes)
             <div class="bill-to-detail" style="margin-top: 4px; font-style: italic; color: var(--gray-600);">
-                <strong>Notes:</strong> "{{ $order->customer_notes }}"
+                <strong>{{ __t('invoice.notes', 'Notes:') }}</strong> "{{ $order->customer_notes }}"
             </div>
             @endif
         </div>
@@ -759,12 +756,12 @@
         <table class="items-table">
             <thead>
                 <tr>
-                    <th class="col-no">No.</th>
-                    <th class="col-desc">Description</th>
-                    <th class="col-qty">Qty</th>
-                    <th class="col-price">Price</th>
-                    <th class="col-disc">Discount</th>
-                    <th class="col-amount">Amount<br><span style="font-size:0.65rem;font-weight:600;opacity:0.85">RM</span></th>
+                    <th class="col-no">{{ __t('invoice.col_no', 'No.') }}</th>
+                    <th class="col-desc">{{ __t('invoice.col_desc', 'Description') }}</th>
+                    <th class="col-qty">{{ __t('invoice.col_qty', 'Qty') }}</th>
+                    <th class="col-price">{{ __t('invoice.col_price', 'Price') }}</th>
+                    <th class="col-disc">{{ __t('invoice.col_disc', 'Discount') }}</th>
+                    <th class="col-amount">{{ __t('invoice.col_amount', 'Amount') }}<br><span style="font-size:0.65rem;font-weight:600;opacity:0.85">RM</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -774,7 +771,7 @@
                     <td class="col-desc">
                         <div class="item-name">{{ $item->product_name }}</div>
                         @if($item->product && $item->product->weight)
-                            <div class="item-spec">Spec: {{ $item->product->weight }} {{ $item->product->unit ?? 'KG' }}</div>
+                            <div class="item-spec">{{ __t('invoice.spec', 'Spec:') }} {{ $item->product->weight }} {{ $item->product->unit ?? 'KG' }}</div>
                         @endif
                     </td>
                     <td class="col-qty">
@@ -792,7 +789,7 @@
     <!-- 4. Ringgit In Words & Totals Summary -->
     <div class="summary-words-grid">
         <div class="words-box">
-            <span class="words-label">RINGGIT M'SIA</span>
+            <span class="words-label">{{ __t('invoice.ringgit_label', "RINGGIT M'SIA") }}</span>
             <div class="words-val">
                 {{ \App\Helpers\InvoiceHelper::amountInWords($order->total) }}
             </div>
@@ -801,21 +798,21 @@
         <div>
             <table class="totals-table">
                 <tr>
-                    <td>Total</td>
+                    <td>{{ __t('invoice.subtotal', 'Total') }}</td>
                     <td>{{ number_format($order->subtotal, 2) }}</td>
                 </tr>
                 <tr>
-                    <td>Rounding Adj.</td>
+                    <td>{{ __t('invoice.rounding_adj', 'Rounding Adj.') }}</td>
                     <td>0.00</td>
                 </tr>
                 @if($order->shipping_fee > 0)
                 <tr>
-                    <td>Shipping &amp; Logistics</td>
+                    <td>{{ __t('invoice.shipping_logistics', 'Shipping & Logistics') }}</td>
                     <td>{{ number_format($order->shipping_fee, 2) }}</td>
                 </tr>
                 @endif
                 <tr class="total-row">
-                    <td>Grand Total</td>
+                    <td>{{ __t('invoice.grand_total', 'Grand Total') }}</td>
                     <td>{{ number_format($order->total, 2) }}</td>
                 </tr>
             </table>
@@ -825,22 +822,22 @@
     <!-- 5. Important Notes & Declarations -->
     <div class="notes-declaration-grid">
         <div class="note-card">
-            <div class="note-card-title">Important Note:</div>
+            <div class="note-card-title">{{ __t('invoice.important_note', 'Important Note:') }}</div>
             <ol>
-                <li>Please notice us of discrepancy if any, within 7 days , otherwise this invoice will be considered</li>
-                <li>Goods sold and delivered are not returnable and exchangeable. Otherwise a cancellation fee of 20% on purchase price will be imposed.</li>
-                <li>All cheques to be crossed &amp; made payable to <strong>" MST IMPORT AND EXPORT SDN BHD"</strong> or to our <strong>MAYBANK A/C NO:551342155505</strong> and email the bank in slip to <strong>mikatrading15@gmail.com</strong> or <strong>011-14360109</strong>.</li>
-                <li>Interest will be charged at 1.5% per month on overdue</li>
+                <li>{{ __t('invoice.note_1', 'Please notice us of discrepancy if any, within 7 days , otherwise this invoice will be considered confirmed.') }}</li>
+                <li>{{ __t('invoice.note_2', 'Goods sold and delivered are not returnable and exchangeable. Otherwise a cancellation fee of 20% on purchase price will be imposed.') }}</li>
+                <li>{{ __t('invoice.note_3', 'All cheques to be crossed & made payable to "MST IMPORT AND EXPORT SDN BHD" or to our MAYBANK A/C NO:551342155505 and email the bank in slip to mikatrading15@gmail.com or 011-14360109.') }}</li>
+                <li>{{ __t('invoice.note_4', 'Interest will be charged at 1.5% per month on overdue payments.') }}</li>
             </ol>
         </div>
 
         <div class="declaration-card">
             <div class="declaration-text">
-                GOODS RECEIVED IN GOOD CONDITION
+                {{ __t('invoice.goods_received_condition', 'GOODS RECEIVED IN GOOD CONDITION') }}
             </div>
             <div style="height: 1px; background: var(--gray-200); width: 60%; margin: 0 auto;"></div>
             <div class="declaration-text" style="color: var(--accent);">
-                GOODS SOLD ARE NEITHER RETURNABLE NOR REFUNDABLE
+                {{ __t('invoice.goods_sold_condition', 'GOODS SOLD ARE NEITHER RETURNABLE NOR REFUNDABLE') }}
             </div>
         </div>
     </div>
@@ -849,11 +846,11 @@
     <div class="signatures-grid">
         <div class="signature-box">
             <div class="signature-line"></div>
-            <div class="signature-title">DRIVER SIGNATURE</div>
+            <div class="signature-title">{{ __t('invoice.driver_signature', 'DRIVER SIGNATURE') }}</div>
         </div>
         <div class="signature-box">
             <div class="signature-line"></div>
-            <div class="signature-title">CUSTOMER SIGNATURE &amp; STAMP</div>
+            <div class="signature-title">{{ __t('invoice.customer_signature', 'CUSTOMER SIGNATURE & STAMP') }}</div>
         </div>
     </div>
 </div>

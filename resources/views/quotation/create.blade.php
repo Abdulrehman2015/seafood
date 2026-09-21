@@ -7,11 +7,11 @@
     <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:20px 20px"></div>
     <div class="container page-header-content" style="position:relative;z-index:2">
         <div class="breadcrumb" style="margin-bottom:4px">
-            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 Home</a>
+            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 @t('nav.home', 'Home')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <a href="{{ route('quotations.index') }}" style="color:#bae6fd;text-decoration:none">Quotations &amp; RFQs</a>
+            <a href="{{ route('quotations.index') }}" style="color:#bae6fd;text-decoration:none">@t('nav.my_rfqs', 'Quotations & RFQs')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">New RFQ Request</span>
+            <span style="font-weight:600;color:#ffffff">@t('rfq.title', 'New RFQ Request')</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
             <div>
@@ -22,10 +22,10 @@
                     <span style="color:#bae6fd;font-size:0.78rem">Container &amp; Pallet Trade Evaluation</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.5rem,3vw,1.95rem);margin-bottom:4px;letter-spacing:-0.02em">
-                    Request for Quotation (RFQ)
+                    @t('rfq.title', 'Request for Quotation (RFQ)')
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.88rem;max-width:680px;line-height:1.4;margin:0">
-                    Submit bulk frozen seafood requirements for volume-tiered container and pallet pricing.
+                    @t('rfq.subtitle', 'Submit bulk frozen seafood requirements for volume-tiered container and pallet pricing.')
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
