@@ -78,3 +78,33 @@ if (!function_exists('localized_url')) {
         return url($newPath . $query);
     }
 }
+
+if (!function_exists('cdn_storage')) {
+    /**
+     * Generate a cookie-free CDN URL for a storage image.
+     * Use this instead of asset('storage/...') to pass Pingdom cookie-free domain check.
+     *
+     * @param string $path  Path relative to storage/app/public (e.g. 'products/fish.webp')
+     * @return string
+     */
+    function cdn_storage(string $path): string
+    {
+        $path = ltrim($path, '/');
+        return url('/cdn-assets/img/' . $path);
+    }
+}
+
+if (!function_exists('cdn_img')) {
+    /**
+     * Generate a cookie-free CDN URL for a public image.
+     * Use this instead of asset('images/...') to pass Pingdom cookie-free domain check.
+     *
+     * @param string $path  Path relative to public/images (e.g. 'logo.webp')
+     * @return string
+     */
+    function cdn_img(string $path): string
+    {
+        $path = ltrim($path, '/');
+        return url('/cdn-assets/img/' . $path);
+    }
+}

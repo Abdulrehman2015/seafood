@@ -76,8 +76,8 @@
         <div class="mika-hero-right">
             <div class="mika-image-frame">
                 <picture>
-                    <source srcset="{{ asset('images/hero-banner.webp') }}" type="image/webp">
-                    <img src="{{ asset('images/hero-banner.jpg') }}"
+                    <source srcset="{{ cdn_img('hero-banner.webp') }}" type="image/webp">
+                    <img src="{{ cdn_img('hero-banner.jpg') }}"
                          alt="Premium frozen seafood — MST Import and Export Sdn Bhd"
                          class="mika-hero-img"
                          width="1376"
@@ -1163,7 +1163,7 @@
                 <div class="product-card">
                     <div class="product-card-img">
                         @if($product->thumbnail)
-                            <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="{{ $product->name }}" loading="lazy">
+                            <img src="{{ cdn_storage($product->thumbnail) }}" alt="{{ $product->name }}" loading="lazy">
                         @else
                             <div class="product-img-placeholder">🐟</div>
                         @endif

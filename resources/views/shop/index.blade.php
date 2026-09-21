@@ -276,7 +276,7 @@
                             <div class="product-card-img">
                                 <a href="{{ route('shop.show', $product) }}" style="display:block;width:100%;height:100%">
                                     @if($product->thumbnail)
-                                        <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="{{ $product->name }}" loading="lazy">
+                                        <img src="{{ cdn_storage($product->thumbnail) }}" alt="{{ $product->name }}" loading="lazy">
                                     @else
                                         <div class="product-img-placeholder">🐟</div>
                                     @endif
@@ -309,7 +309,7 @@
                                     'price_formatted' => $priceFormatted,
                                     'moq' => $product->getMoqForGroup($group) > 1 ? ($product->getMoqForGroup($group) . ' ' . $product->unit) : null,
                                     'short_desc' => $product->short_description ?? $product->description,
-                                    'image' => $product->thumbnail ? asset('storage/' . $product->thumbnail) : null,
+                                    'image' => $product->thumbnail ? cdn_storage($product->thumbnail) : null,
                                     'url' => route('shop.show', $product),
                                     'rfq_url' => route('quotations.create', ['product' => $product->id]),
                                 ]) }})">

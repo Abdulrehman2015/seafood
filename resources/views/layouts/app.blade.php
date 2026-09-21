@@ -71,15 +71,15 @@
     <link rel="alternate" hreflang="ms" href="{{ url()->current() }}?lang=bm">
     <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
     <!-- Favicon & Apple Touch Icons -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
-    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url('/favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ cdn_img('favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url('/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ url('/site.webmanifest') }}">
     <meta name="apple-mobile-web-app-title" content="{{ $settings['store_name'] ?? 'MST Seafood' }}">
     <meta name="application-name" content="{{ $settings['store_name'] ?? 'MST Seafood' }}">
     <meta name="theme-color" content="#06152b">
     <meta name="msapplication-TileColor" content="#06152b">
-    <meta name="msapplication-TileImage" content="{{ asset('apple-touch-icon.png') }}">
+    <meta name="msapplication-TileImage" content="{{ url('/apple-touch-icon.png') }}">
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:site_name" content="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}">
@@ -130,7 +130,7 @@
                         'url' => url('/'),
                         'logo' => [
                             '@type' => 'ImageObject',
-                            'url' => asset('images/logo.webp'),
+                            'url' => cdn_img('logo.webp'),
                         ],
                         'description' => 'MST Import and Export Sdn Bhd provides frozen food sourcing, trading and distribution solutions across regional and international markets.',
                         'address' => [
@@ -785,7 +785,7 @@
                 <div class="water-ripple r2"></div>
                 <div class="water-ripple r3"></div>
                 <div class="ocean-mascot-badge">
-                    <img src="{{ asset('images/logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}" class="ocean-mascot-img">
+                    <img src="{{ cdn_img('logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}" class="ocean-mascot-img">
                 </div>
             </div>
 
@@ -815,7 +815,7 @@
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
             <a href="{{ route('home') }}" class="nav-logo">
-                <img src="{{ asset('images/logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}"
+                <img src="{{ cdn_img('logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}"
                     style="height:44px;width:44px;object-fit:contain;border-radius:8px;">
                 <div class="logo-text">
                     <span class="logo-brand">MST</span>
@@ -1151,7 +1151,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <img src="{{ asset('images/logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}"
+                        <img src="{{ cdn_img('logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}"
                             style="height:52px;width:52px;object-fit:contain;border-radius:10px;">
                         <div class="logo-text">
                             <span class="logo-brand">MST</span>

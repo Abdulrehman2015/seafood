@@ -8,8 +8,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/**
+ * PerformanceHeadersMiddleware
+ *
+ * Applies GZIP compression and aggressive caching to all PHP-delivered responses.
+ * Designed to work on shared hosts (InfinityFree, ByetHost) where Nginx sits in
+ * front of Apache and may strip Accept-Encoding from crawler/bot requests.
+ */
 class PerformanceHeadersMiddleware
 {
+    /** Static file extensions that should never have session cookies */
+    private const STATIC_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',
+                                        'ico', 'woff', 'woff2', 'ttf', 'otf', 'eot',
+                                        'css', 'js', 'map'];
+
     /**
      * Handle an incoming request.
      *
@@ -19,32 +31,69 @@ class PerformanceHeadersMiddleware
     {
         $response = $next($request);
 
-        // Do not alter streaming or binary file downloads
+        $contentType = $response->headers->get('Content-Type', '');
+        $uri         = $request->getRequestUri();
+        $ext         = strtolower(pathinfo(parse_url($uri, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION));
+
+        // ── 1. STATIC ASSET CACHING + COOKIE STRIP ───────────────────────────
+        $isStaticContentType = str_starts_with($contentType, 'image/')
+            || str_contains($contentType, 'font/')
+            || str_contains($contentType, 'text/css')
+            || str_contains($contentType, 'application/javascript')
+            || str_contains($contentType, 'text/javascript')
+            || str_contains($contentType, 'image/x-icon')
+            || str_contains($contentType, 'image/vnd.microsoft.icon');
+
+        $isStaticByExtension = in_array($ext, self::STATIC_EXTENSIONS, true);
+
+        if ($isStaticContentType || $isStaticByExtension) {
+            // Cache for 1 year (immutable)
+            $response->headers->set('Cache-Control', 'public, max-age=31536000, immutable');
+            $response->headers->set('Expires', gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT');
+
+            // CRITICAL: Strip ALL cookies from static assets (Pingdom: Use cookie-free domains)
+            $response->headers->remove('Set-Cookie');
+            $response->headers->remove('Cookie');
+
+            // Add Vary for proper CDN caching
+            $response->headers->set('Vary', 'Accept-Encoding');
+        }
+
+        // ── 2. FAVICON CACHING ────────────────────────────────────────────────
+        if (str_contains($uri, 'favicon')) {
+            $response->headers->set('Cache-Control', 'public, max-age=31536000, immutable');
+            $response->headers->set('Expires', gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT');
+            $response->headers->remove('Set-Cookie');
+            $response->headers->remove('Cookie');
+        }
+
+        // Do not alter streaming or binary file downloads for dynamic GZIP compression
         if ($response instanceof BinaryFileResponse || $response instanceof StreamedResponse) {
             return $response;
         }
 
-        $contentType = $response->headers->get('Content-Type', '');
+        // ── 3. DYNAMIC GZIP COMPRESSION ──────────────────────────────────────
+        // On InfinityFree / shared hosts, the Nginx proxy may strip Accept-Encoding
+        // from bot/crawler requests. We apply GZIP UNLESS the client explicitly
+        // requests uncompressed content (Accept-Encoding: identity).
+        $rawEncoding = strtolower(
+            $request->header('Accept-Encoding')
+            ?? ($_SERVER['HTTP_ACCEPT_ENCODING'] ?? '')
+        );
 
-        // 1. Static/Media asset routes served by PHP (e.g., map tiles)
-        // 1. Static/Media asset routes served by PHP (e.g., map tiles, CSS, fonts, icons)
-        if (str_starts_with($contentType, 'image/') || str_contains($contentType, 'font/') || str_contains($contentType, 'text/css')) {
-            $response->headers->set('Cache-Control', 'public, max-age=31536000, immutable');
-            $response->headers->set('Expires', gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT');
-            $response->headers->remove('Set-Cookie');
-        }
+        // Apply GZIP: default ON unless client says identity only
+        $clientWantsRaw = $rawEncoding !== ''
+            && str_contains($rawEncoding, 'identity')
+            && !str_contains($rawEncoding, 'gzip')
+            && !str_contains($rawEncoding, '*');
 
-        // 2. Dynamic GZIP Compression for HTML, JSON, JS, CSS, SVG, XML
-        $rawEncoding = strtolower($request->header('Accept-Encoding', $_SERVER['HTTP_ACCEPT_ENCODING'] ?? ''));
-        $supportsGzip = ($rawEncoding === '' || str_contains($rawEncoding, 'gzip') || str_contains($rawEncoding, '*'))
-            && !str_contains($rawEncoding, 'identity');
         $zlibActive = filter_var(ini_get('zlib.output_compression'), FILTER_VALIDATE_BOOLEAN);
 
         if (
-            function_exists('gzencode')
+            !$clientWantsRaw
+            && function_exists('gzencode')
             && !in_array('ob_gzhandler', ob_list_handlers())
             && !$zlibActive
-            && $supportsGzip
             && !$response->headers->has('Content-Encoding')
         ) {
             $isCompressible = str_contains($contentType, 'text/html')

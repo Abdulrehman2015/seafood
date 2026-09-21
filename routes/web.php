@@ -14,53 +14,282 @@ use App\Http\Controllers\Admin;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
-// ─── Root Locale Redirect ──────────────────────────────────────────────────
+// ─── Direct Root Homepage Route (Zero Redirects for Pingdom 100 Score) ────────
 Route::get('/', function (\Illuminate\Http\Request $request) {
     $locale = session('locale', $request->cookie('locale', config('app.locale', 'en')));
     if (!in_array($locale, ['en', 'zh', 'bm'])) {
         $locale = 'en';
     }
-    return redirect()->to('/' . $locale);
-});
+    app()->setLocale($locale);
+    return app(\App\Http\Controllers\HomeController::class)->index();
+})->name('home.root');
 
 // ─── Global System Routes (No locale prefix needed) ───────────────────────────
 
 // XML Sitemap (Valid, standards-compliant, multilingual)
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
-// High-Performance Compressed Asset Delivery (Pingdom: GZIP, Expires & Cookie-free delivery)
+// ─── Favicon & Static File Routes (with proper Cache + No-Cookie headers) ────
+// These explicit routes ensure correct headers even on PHP built-in dev server
+// (which doesn't process .htaccess). On production Apache, .htaccess takes over.
+Route::get('/favicon.ico', function () {
+    $path = public_path('favicon.ico');
+    if (!file_exists($path)) abort(404);
+    $content = file_get_contents($path);
+    $etag = '"' . md5($content) . '"';
+    if (request()->header('If-None-Match') === $etag) {
+        return response('', 304, [
+            'ETag'          => $etag,
+            'Cache-Control' => 'public, max-age=31536000, immutable',
+        ]);
+    }
+    $response = response($content, 200, [
+        'Content-Type'   => 'image/x-icon',
+        'Cache-Control'  => 'public, max-age=31536000, immutable',
+        'Expires'        => gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT',
+        'ETag'           => $etag,
+        'Content-Length' => strlen($content),
+    ]);
+    $response->headers->remove('Set-Cookie');
+    $response->headers->remove('Cookie');
+    return $response;
+})->withoutMiddleware('web');
+
+Route::get('/apple-touch-icon.png', function () {
+    $path = public_path('apple-touch-icon.png');
+    if (!file_exists($path)) abort(404);
+    $content = file_get_contents($path);
+    $etag = '"' . md5($content) . '"';
+    if (request()->header('If-None-Match') === $etag) {
+        return response('', 304, [
+            'ETag'          => $etag,
+            'Cache-Control' => 'public, max-age=31536000, immutable',
+        ]);
+    }
+    $response = response($content, 200, [
+        'Content-Type'   => 'image/png',
+        'Cache-Control'  => 'public, max-age=31536000, immutable',
+        'Expires'        => gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT',
+        'ETag'           => $etag,
+        'Content-Length' => strlen($content),
+    ]);
+    $response->headers->remove('Set-Cookie');
+    $response->headers->remove('Cookie');
+    return $response;
+})->withoutMiddleware('web');
+
+Route::get('/site.webmanifest', function () {
+    $path = public_path('site.webmanifest');
+    if (!file_exists($path)) abort(404);
+    $content = file_get_contents($path);
+    return response($content, 200, [
+        'Content-Type'   => 'application/manifest+json',
+        'Cache-Control'  => 'public, max-age=86400',
+        'Expires'        => gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT',
+        'Content-Length' => strlen($content),
+    ]);
+})->withoutMiddleware('web');
+
+// Cookie-free fonts delivery
+Route::get('/fonts/{file}', function (string $file) {
+    $file = basename($file);
+    $path = public_path('fonts/' . $file);
+    if (!file_exists($path)) abort(404);
+    $content = file_get_contents($path);
+    $etag = '"' . md5($content) . '"';
+    if (request()->header('If-None-Match') === $etag) {
+        return response('', 304, [
+            'ETag'          => $etag,
+            'Cache-Control' => 'public, max-age=31536000, immutable',
+        ]);
+    }
+    $response = response($content, 200, [
+        'Content-Type'   => 'font/woff2',
+        'Cache-Control'  => 'public, max-age=31536000, immutable',
+        'Expires'        => gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT',
+        'ETag'           => $etag,
+        'Content-Length' => strlen($content),
+    ]);
+    $response->headers->remove('Set-Cookie');
+    $response->headers->remove('Cookie');
+    return $response;
+})->withoutMiddleware('web');
+
+// High-Performance Compressed Asset Delivery (Pingdom: GZIP, Expires & Cookie-free)
 Route::get('/cdn-assets/css/{file}', function (string $file) {
     $file = basename($file);
     $path = public_path('css/' . $file);
     if (!file_exists($path)) {
         abort(404);
     }
-    $rawEncoding = strtolower(request()->header('Accept-Encoding', $_SERVER['HTTP_ACCEPT_ENCODING'] ?? ''));
-    $supportsGzip = ($rawEncoding === '' || str_contains($rawEncoding, 'gzip') || str_contains($rawEncoding, '*'))
-        && !str_contains($rawEncoding, 'identity');
+
+    $rawEncoding = strtolower(
+        request()->header('Accept-Encoding') ?? ($_SERVER['HTTP_ACCEPT_ENCODING'] ?? '')
+    );
+    $clientWantsRaw = $rawEncoding !== ''
+        && str_contains($rawEncoding, 'identity')
+        && !str_contains($rawEncoding, 'gzip')
+        && !str_contains($rawEncoding, '*');
 
     $content = file_get_contents($path);
+    $etag    = '"' . md5_file($path) . '"';
+
+    if (request()->header('If-None-Match') === $etag) {
+        return response('', 304, [
+            'ETag'          => $etag,
+            'Cache-Control' => 'public, max-age=31536000, immutable',
+        ]);
+    }
+
     $headers = [
         'Content-Type'  => 'text/css; charset=UTF-8',
         'Cache-Control' => 'public, max-age=31536000, immutable',
         'Expires'       => gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT',
         'Vary'          => 'Accept-Encoding',
+        'ETag'          => $etag,
     ];
 
-    if ($supportsGzip && function_exists('gzencode')) {
+    if (!$clientWantsRaw && function_exists('gzencode')) {
         $gzPath = $path . '.gz';
         if (file_exists($gzPath)) {
             $content = file_get_contents($gzPath);
         } else {
-            $content = gzencode($content, 6);
+            $compressed = gzencode($content, 6);
+            if ($compressed !== false) {
+                $content = $compressed;
+            }
         }
         $headers['Content-Encoding'] = 'gzip';
+    }
+    $headers['Content-Length'] = strlen($content);
+
+    $response = response($content, 200, $headers);
+    $response->headers->remove('Set-Cookie');
+    $response->headers->remove('Cookie');
+    return $response;
+})->name('cdn.css')->withoutMiddleware('web');
+
+// High-Performance Compressed JavaScript Delivery
+Route::get('/cdn-assets/js/{file}', function (string $file) {
+    $file = basename($file);
+    $path = public_path('js/' . $file);
+    if (!file_exists($path)) {
+        abort(404);
+    }
+
+    $rawEncoding = strtolower(
+        request()->header('Accept-Encoding') ?? ($_SERVER['HTTP_ACCEPT_ENCODING'] ?? '')
+    );
+    $clientWantsRaw = $rawEncoding !== ''
+        && str_contains($rawEncoding, 'identity')
+        && !str_contains($rawEncoding, 'gzip')
+        && !str_contains($rawEncoding, '*');
+
+    $content = file_get_contents($path);
+    $etag    = '"' . md5_file($path) . '"';
+
+    if (request()->header('If-None-Match') === $etag) {
+        return response('', 304, [
+            'ETag'          => $etag,
+            'Cache-Control' => 'public, max-age=31536000, immutable',
+        ]);
+    }
+
+    $headers = [
+        'Content-Type'  => 'application/javascript; charset=UTF-8',
+        'Cache-Control' => 'public, max-age=31536000, immutable',
+        'Expires'       => gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT',
+        'Vary'          => 'Accept-Encoding',
+        'ETag'          => $etag,
+    ];
+
+    if (!$clientWantsRaw && function_exists('gzencode')) {
+        $gzPath = $path . '.gz';
+        if (file_exists($gzPath)) {
+            $content = file_get_contents($gzPath);
+        } else {
+            $compressed = gzencode($content, 6);
+            if ($compressed !== false) {
+                $content = $compressed;
+            }
+        }
+        $headers['Content-Encoding'] = 'gzip';
+    }
+    $headers['Content-Length'] = strlen($content);
+
+    $response = response($content, 200, $headers);
+    $response->headers->remove('Set-Cookie');
+    $response->headers->remove('Cookie');
+    return $response;
+})->name('cdn.js')->withoutMiddleware('web');
+
+// Cookie-free CDN route for images (Pingdom: cookie-free domains + Expires headers)
+Route::get('/cdn-assets/img/{path}', function (string $path) {
+    $path = str_replace(['..', '\\'], '', $path);
+
+    $candidates = [
+        storage_path('app/public/' . $path),
+        public_path('storage/' . $path),
+        public_path('images/' . $path),
+        public_path($path),
+    ];
+
+    $filePath = null;
+    foreach ($candidates as $candidate) {
+        if (file_exists($candidate) && is_file($candidate)) {
+            $filePath = $candidate;
+            break;
+        }
+    }
+
+    if (!$filePath) {
+        abort(404);
+    }
+
+    $mimeMap = [
+        'jpg'  => 'image/jpeg', 'jpeg' => 'image/jpeg',
+        'png'  => 'image/png',  'gif'  => 'image/gif',
+        'webp' => 'image/webp', 'svg'  => 'image/svg+xml',
+        'ico'  => 'image/x-icon',
+    ];
+    $ext  = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+    $mime = $mimeMap[$ext] ?? mime_content_type($filePath);
+    $content = file_get_contents($filePath);
+    $etag = '"' . md5($content) . '"';
+
+    if (request()->header('If-None-Match') === $etag) {
+        return response('', 304, [
+            'ETag'          => $etag,
+            'Cache-Control' => 'public, max-age=31536000, immutable',
+        ]);
+    }
+
+    $headers = [
+        'Content-Type'   => $mime,
+        'Cache-Control'  => 'public, max-age=31536000, immutable',
+        'Expires'        => gmdate('D, d M Y H:i:s', time() + 31536000) . ' GMT',
+        'ETag'           => $etag,
+        'Vary'           => 'Accept-Encoding',
+        'Content-Length' => strlen($content),
+    ];
+
+    if ($ext === 'svg' && function_exists('gzencode')) {
+        $rawEncoding = strtolower(request()->header('Accept-Encoding') ?? ($_SERVER['HTTP_ACCEPT_ENCODING'] ?? ''));
+        if (!str_contains($rawEncoding, 'identity')) {
+            $compressed = gzencode($content, 6);
+            if ($compressed !== false) {
+                $content = $compressed;
+                $headers['Content-Encoding'] = 'gzip';
+                $headers['Content-Length'] = strlen($content);
+            }
+        }
     }
 
     $response = response($content, 200, $headers);
     $response->headers->remove('Set-Cookie');
+    $response->headers->remove('Cookie');
     return $response;
-})->name('cdn.css')->withoutMiddleware('web');
+})->name('cdn.img')->where('path', '.+')->withoutMiddleware('web');
 
 // Currency Switcher (RM, SGD, USD)
 Route::get('/currency/{code}', [\App\Http\Controllers\CurrencyController::class, 'switch'])->name('currency.switch');

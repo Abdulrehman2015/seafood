@@ -2,7 +2,7 @@
 @section('title', $product->name . ' — MST Import and Export Sdn Bhd')
 @section('og_title', $product->name)
 @section('og_description', $product->short_description ?? $product->name)
-@section('og_image', $product->thumbnail ? asset('storage/'.$product->thumbnail) : asset('images/og-default.jpg'))
+@section('og_image', $product->thumbnail ? cdn_storage($product->thumbnail) : asset('images/og-default.jpg'))
 
 @section('content')
 <div style="padding-top:calc(70px + var(--space-4));padding-bottom:var(--space-16);background:#fcfdfd">
@@ -29,11 +29,11 @@
             @php
                 $allImages = [];
                 if ($product->thumbnail) {
-                    $allImages[] = asset('storage/' . $product->thumbnail);
+                    $allImages[] = cdn_storage($product->thumbnail);
                 }
                 if ($product->images && is_array($product->images)) {
                     foreach ($product->images as $extraImg) {
-                        $allImages[] = asset('storage/' . $extraImg);
+                        $allImages[] = cdn_storage($extraImg);
                     }
                 }
             @endphp
@@ -440,7 +440,7 @@
                     <div class="product-card" style="border-radius:12px;border:1px solid var(--gray-200);background:white;overflow:hidden;display:flex;flex-direction:column">
                         <div class="product-card-img" style="aspect-ratio:4/3;background:#f8fafc;overflow:hidden;position:relative">
                             @if($rel->thumbnail)
-                                <img src="{{ asset('storage/'.$rel->thumbnail) }}" alt="{{ $rel->name }}" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+                                <img src="{{ cdn_storage($rel->thumbnail) }}" alt="{{ $rel->name }}" loading="lazy" style="width:100%;height:100%;object-fit:cover">
                             @else
                                 <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--seagreen-300)">🐟</div>
                             @endif

@@ -62,7 +62,7 @@
                 <!-- Customer Identity Info -->
                 <div style="display:flex;align-items:center;gap:12px;border-top:1px solid #f1f5f9;padding-top:14px">
                     @if($rev->avatar)
-                        <img src="{{ asset('storage/'.$rev->avatar) }}" alt="{{ $rev->name }}" loading="lazy"
+                        <img src="{{ cdn_storage($rev->avatar) }}" alt="{{ $rev->name }}" loading="lazy"
                              style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #bfdbfe;flex-shrink:0">
                     @else
                         <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#1d4ed8,#0f244a);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.95rem;flex-shrink:0;box-shadow:0 2px 6px rgba(29,78,216,0.25)">
