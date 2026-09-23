@@ -1032,6 +1032,51 @@
                         <span class="sidebar-badge">{{ $pending }}</span>
                     @endif
                 </a>
+                <!-- Customer Reviews Link -->
+                <a href="{{ route('admin.reviews.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                        </polygon>
+                    </svg>
+                    <span>Customer Reviews</span>
+                    @php $pendingReviews = \App\Models\Review::where('status', 'pending')->count(); @endphp
+                    @if($pendingReviews > 0)
+                        <span class="sidebar-badge"
+                            style="background:#fef3c7;color:#92400e;border-color:#fde68a">{{ $pendingReviews }}</span>
+                    @endif
+                </a>
+                <!-- Inquiries Link -->
+                <a href="{{ route('admin.messages.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <span>Inquiries</span>
+                    @php $unreadCount = \App\Models\ContactMessage::unread()->count(); @endphp
+                    @if($unreadCount > 0)
+                        <span class="sidebar-badge">{{ $unreadCount }}</span>
+                    @endif
+                </a>
+                <!-- Newsletter Subscribers Link -->
+                <a href="{{ route('admin.newsletter.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.newsletter.*') ? 'active' : '' }}">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8">
+                        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                    </svg>
+                    <span>Newsletter</span>
+                    @php $subscriberCount = \App\Models\NewsletterSubscriber::where('status', 'active')->count(); @endphp
+                    @if($subscriberCount > 0)
+                        <span class="sidebar-badge"
+                            style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">{{ $subscriberCount }}</span>
+                    @endif
+                </a>
             </div>
 
             <!-- Section: Orders -->
@@ -1061,75 +1106,10 @@
                 </a>
             </div>
 
-            <!-- Section: Communication & Settings -->
+            <!-- Section: SEO -->
             <div class="sidebar-section" style="margin-bottom:14px">
-                <div class="sidebar-section-label">Settings & SEO</div>
-                <a href="{{ route('admin.messages.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    <span>Inquiries</span>
-                    @php $unreadCount = \App\Models\ContactMessage::unread()->count(); @endphp
-                    @if($unreadCount > 0)
-                        <span class="sidebar-badge">{{ $unreadCount }}</span>
-                    @endif
-                </a>
-                <!-- Newsletter Subscribers Link -->
-                <a href="{{ route('admin.newsletter.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.newsletter.*') ? 'active' : '' }}">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8">
-                        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                    </svg>
-                    <span>Newsletter</span>
-                    @php $subscriberCount = \App\Models\NewsletterSubscriber::where('status', 'active')->count(); @endphp
-                    @if($subscriberCount > 0)
-                        <span class="sidebar-badge"
-                            style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">{{ $subscriberCount }}</span>
-                    @endif
-                </a>
-                <!-- Customer Reviews Link -->
-                <a href="{{ route('admin.reviews.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8">
-                        <polygon
-                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-                        </polygon>
-                    </svg>
-                    <span>Customer Reviews</span>
-                    @php $pendingReviews = \App\Models\Review::where('status', 'pending')->count(); @endphp
-                    @if($pendingReviews > 0)
-                        <span class="sidebar-badge"
-                            style="background:#fef3c7;color:#92400e;border-color:#fde68a">{{ $pendingReviews }}</span>
-                    @endif
-                </a>
-                <a href="{{ route('admin.settings.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                        </path>
-                    </svg>
-                    <span>Store Settings</span>
-                </a>
-                <!-- Email Templates Link -->
-                <a href="{{ route('admin.emails.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.emails.*') ? 'active' : '' }}">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    <span>Email Templates</span>
-                </a>
-                <!-- NEW: Page SEO Link -->
+                <div class="sidebar-section-label">SEO</div>
+                <!-- Page SEO Link -->
                 <a href="{{ route('admin.page-seo.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.page-seo.*') ? 'active' : '' }}">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -1150,6 +1130,33 @@
                     </svg>
                     <span>XML Sitemap</span>
                     <span class="sidebar-badge" style="background:#ecfdf5;color:#059669;border-color:#a7f3d0">Auto</span>
+                </a>
+            </div>
+
+            <!-- Section: Settings -->
+            <div class="sidebar-section" style="margin-bottom:14px">
+                <div class="sidebar-section-label">Settings</div>
+                <!-- Store Settings Link -->
+                <a href="{{ route('admin.settings.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
+                    </svg>
+                    <span>Store Settings</span>
+                </a>
+                <!-- Email Templates Link -->
+                <a href="{{ route('admin.emails.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.emails.*') ? 'active' : '' }}">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <span>Email Templates</span>
                 </a>
                 <!-- Policies & Dynamic Pages Link -->
                 <a href="{{ route('admin.policies.index') }}"
@@ -1180,6 +1187,7 @@
                     <span>Translations</span>
                     <span class="sidebar-badge" style="background:#e0e7ff;color:#4338ca;border-color:#c7d2fe">3 Lang</span>
                 </a>
+                <!-- Walk-in QR Code Link -->
                 <a href="{{ route('admin.walkin.qr') }}"
                     class="sidebar-link {{ request()->routeIs('admin.walkin.qr') ? 'active' : '' }}">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"

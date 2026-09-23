@@ -35,14 +35,14 @@
             </p>
         </div>
 
-        <div class="hero-content-right">
             @auth
                 <div class="user-tier-pill">
                     ⭐ {{ match($group) {
                         'retail' => __t('shop.retail_tier', 'Retail / Walk-in Tier'),
+                        'walkin' => __t('shop.walkin_tier', 'Walk-in Retail Tier'),
                         'wholesale' => __t('shop.wholesale_tier', 'Wholesale Tier'),
                         'trading' => __t('shop.trading_tier', 'Trading Partner Tier'),
-                        default => ucfirst($group) . ' Tier',
+                        default => __t('shop.' . $group . '_tier', ucfirst($group) . ' Tier'),
                     } }}
                 </div>
             @else
@@ -184,7 +184,7 @@
                     <button type="button" class="searchable-dropdown-trigger {{ $selectedCatSlug ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('category')">
                         <span class="dropdown-trigger-content">
                             <span class="dropdown-trigger-icon">{{ $activeParentCat ? ($catIcons[$activeParentCat->slug] ?? '📁') : '📁' }}</span>
-                            <span class="dropdown-trigger-text" id="label-category">{{ $activeParentCat ? $activeParentCat->name : 'Parent Category' }}</span>
+                            <span class="dropdown-trigger-text" id="label-category">{{ $activeParentCat ? $activeParentCat->name : __t('shop.filter_parent_cat', 'Parent Category') }}</span>
                         </span>
                         <span class="dropdown-trigger-arrows">
                             @if($selectedCatSlug)
@@ -201,11 +201,11 @@
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
-                            <input type="text" class="dropdown-search-input" placeholder="Search parent category..." oninput="filterDropdownOptions('category', this.value)" autocomplete="off">
+                            <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_parent_cat', 'Search parent category...')" oninput="filterDropdownOptions('category', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-category">
-                            <button type="button" class="dropdown-option-item {{ empty($selectedCatSlug) ? 'selected' : '' }}" data-value="" data-label="All Parent Categories" onclick="selectDropdownOption('category', '', 'Parent Category')">
-                                <span class="option-name">🌟 All Parent Categories</span>
+                            <button type="button" class="dropdown-option-item {{ empty($selectedCatSlug) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_parent_cats', 'All Parent Categories')" onclick="selectDropdownOption('category', '', '{{ addslashes(__t('shop.filter_parent_cat', 'Parent Category')) }}')">
+                                <span class="option-name">🌟 @t('shop.all_parent_cats', 'All Parent Categories')</span>
                                 @if(empty($selectedCatSlug)) <span class="option-check">✓</span> @endif
                             </button>
                             @foreach($parentCategories as $pCat)
@@ -214,7 +214,7 @@
                                     @if($selectedCatSlug === $pCat->slug) <span class="option-check">✓</span> @endif
                                 </button>
                             @endforeach
-                            <div class="dropdown-no-results" style="display:none;"><span>No categories found</span></div>
+                            <div class="dropdown-no-results" style="display:none;"><span>@t('shop.no_results', 'No results found')</span></div>
                         </div>
                     </div>
                 </div>
@@ -224,7 +224,7 @@
                     <button type="button" class="searchable-dropdown-trigger {{ $selectedSubSlug ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('subcategory')">
                         <span class="dropdown-trigger-content">
                             <span class="dropdown-trigger-icon">📂</span>
-                            <span class="dropdown-trigger-text" id="label-subcategory">{{ $activeSubCat ? $activeSubCat->name : 'Child category' }}</span>
+                            <span class="dropdown-trigger-text" id="label-subcategory">{{ $activeSubCat ? $activeSubCat->name : __t('shop.filter_child_cat', 'Child category') }}</span>
                         </span>
                         <span class="dropdown-trigger-arrows">
                             @if($selectedSubSlug)
@@ -241,11 +241,11 @@
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
-                            <input type="text" class="dropdown-search-input" placeholder="Search child category..." oninput="filterDropdownOptions('subcategory', this.value)" autocomplete="off">
+                            <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_child_cat', 'Search child category...')" oninput="filterDropdownOptions('subcategory', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-subcategory">
-                            <button type="button" class="dropdown-option-item {{ empty($selectedSubSlug) ? 'selected' : '' }}" data-value="" data-label="All Child Categories" onclick="selectDropdownOption('subcategory', '', 'Child category')">
-                                <span class="option-name">📂 All Child Categories</span>
+                            <button type="button" class="dropdown-option-item {{ empty($selectedSubSlug) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_child_cats', 'All Child Categories')" onclick="selectDropdownOption('subcategory', '', '{{ addslashes(__t('shop.filter_child_cat', 'Child category')) }}')">
+                                <span class="option-name">📂 @t('shop.all_child_cats', 'All Child Categories')</span>
                                 @if(empty($selectedSubSlug)) <span class="option-check">✓</span> @endif
                             </button>
                             @if($activeParentCat && $activeParentCat->children->count())
@@ -263,7 +263,7 @@
                                     </button>
                                 @endforeach
                             @endif
-                            <div class="dropdown-no-results" style="display:none;"><span>No subcategories found</span></div>
+                            <div class="dropdown-no-results" style="display:none;"><span>@t('shop.no_results', 'No results found')</span></div>
                         </div>
                     </div>
                 </div>
@@ -273,7 +273,7 @@
                     <button type="button" class="searchable-dropdown-trigger {{ request('origin') ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('origin')">
                         <span class="dropdown-trigger-content">
                             <span class="dropdown-trigger-icon">🌍</span>
-                            <span class="dropdown-trigger-text" id="label-origin">{{ request('origin') ?: 'Origin' }}</span>
+                            <span class="dropdown-trigger-text" id="label-origin">{{ request('origin') ?: __t('shop.filter_origin', 'Origin') }}</span>
                         </span>
                         <span class="dropdown-trigger-arrows">
                             @if(request('origin'))
@@ -290,11 +290,11 @@
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
-                            <input type="text" class="dropdown-search-input" placeholder="Search origin..." oninput="filterDropdownOptions('origin', this.value)" autocomplete="off">
+                            <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_origin', 'Search origin...')" oninput="filterDropdownOptions('origin', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-origin">
-                            <button type="button" class="dropdown-option-item {{ empty(request('origin')) ? 'selected' : '' }}" data-value="" data-label="All Origins" onclick="selectDropdownOption('origin', '', 'Origin')">
-                                <span class="option-name">🌍 All Origins</span>
+                            <button type="button" class="dropdown-option-item {{ empty(request('origin')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_origins', 'All Origins')" onclick="selectDropdownOption('origin', '', '{{ addslashes(__t('shop.filter_origin', 'Origin')) }}')">
+                                <span class="option-name">🌍 @t('shop.all_origins', 'All Origins')</span>
                                 @if(empty(request('origin'))) <span class="option-check">✓</span> @endif
                             </button>
                             @foreach($availableOrigins as $orig)
@@ -303,7 +303,7 @@
                                     @if(request('origin') === $orig) <span class="option-check">✓</span> @endif
                                 </button>
                             @endforeach
-                            <div class="dropdown-no-results" style="display:none;"><span>No origins found</span></div>
+                            <div class="dropdown-no-results" style="display:none;"><span>@t('shop.no_results', 'No results found')</span></div>
                         </div>
                     </div>
                 </div>
@@ -313,7 +313,7 @@
                     <button type="button" class="searchable-dropdown-trigger {{ request('brand') ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('brand')">
                         <span class="dropdown-trigger-content">
                             <span class="dropdown-trigger-icon">🏷️</span>
-                            <span class="dropdown-trigger-text" id="label-brand">{{ request('brand') ?: 'Brand' }}</span>
+                            <span class="dropdown-trigger-text" id="label-brand">{{ request('brand') ?: __t('shop.filter_brand', 'Brand') }}</span>
                         </span>
                         <span class="dropdown-trigger-arrows">
                             @if(request('brand'))
@@ -330,11 +330,11 @@
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
-                            <input type="text" class="dropdown-search-input" placeholder="Search brand..." oninput="filterDropdownOptions('brand', this.value)" autocomplete="off">
+                            <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_brand', 'Search brand...')" oninput="filterDropdownOptions('brand', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-brand">
-                            <button type="button" class="dropdown-option-item {{ empty(request('brand')) ? 'selected' : '' }}" data-value="" data-label="All Brands" onclick="selectDropdownOption('brand', '', 'Brand')">
-                                <span class="option-name">🏷️ All Brands</span>
+                            <button type="button" class="dropdown-option-item {{ empty(request('brand')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_brands', 'All Brands')" onclick="selectDropdownOption('brand', '', '{{ addslashes(__t('shop.filter_brand', 'Brand')) }}')">
+                                <span class="option-name">🏷️ @t('shop.all_brands', 'All Brands')</span>
                                 @if(empty(request('brand'))) <span class="option-check">✓</span> @endif
                             </button>
                             @foreach($availableBrands as $br)
@@ -343,7 +343,7 @@
                                     @if(request('brand') === $br) <span class="option-check">✓</span> @endif
                                 </button>
                             @endforeach
-                            <div class="dropdown-no-results" style="display:none;"><span>No brands found</span></div>
+                            <div class="dropdown-no-results" style="display:none;"><span>@t('shop.no_results', 'No results found')</span></div>
                         </div>
                     </div>
                 </div>
@@ -353,7 +353,7 @@
                     <button type="button" class="searchable-dropdown-trigger {{ request('pack_size') ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('pack_size')">
                         <span class="dropdown-trigger-content">
                             <span class="dropdown-trigger-icon">⚖️</span>
-                            <span class="dropdown-trigger-text" id="label-pack_size">{{ request('pack_size') ?: 'Pack Size' }}</span>
+                            <span class="dropdown-trigger-text" id="label-pack_size">{{ request('pack_size') ?: __t('shop.filter_pack_size', 'Pack Size') }}</span>
                         </span>
                         <span class="dropdown-trigger-arrows">
                             @if(request('pack_size'))
@@ -370,11 +370,11 @@
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
-                            <input type="text" class="dropdown-search-input" placeholder="Search pack size..." oninput="filterDropdownOptions('pack_size', this.value)" autocomplete="off">
+                            <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_pack_size', 'Search pack size...')" oninput="filterDropdownOptions('pack_size', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-pack_size">
-                            <button type="button" class="dropdown-option-item {{ empty(request('pack_size')) ? 'selected' : '' }}" data-value="" data-label="All Pack Sizes" onclick="selectDropdownOption('pack_size', '', 'Pack Size')">
-                                <span class="option-name">⚖️ All Pack Sizes</span>
+                            <button type="button" class="dropdown-option-item {{ empty(request('pack_size')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_pack_sizes', 'All Pack Sizes')" onclick="selectDropdownOption('pack_size', '', '{{ addslashes(__t('shop.filter_pack_size', 'Pack Size')) }}')">
+                                <span class="option-name">⚖️ @t('shop.all_pack_sizes', 'All Pack Sizes')</span>
                                 @if(empty(request('pack_size'))) <span class="option-check">✓</span> @endif
                             </button>
                             @foreach($availablePackSizes as $ps)
@@ -383,7 +383,7 @@
                                     @if(request('pack_size') === $ps) <span class="option-check">✓</span> @endif
                                 </button>
                             @endforeach
-                            <div class="dropdown-no-results" style="display:none;"><span>No pack sizes found</span></div>
+                            <div class="dropdown-no-results" style="display:none;"><span>@t('shop.no_results', 'No results found')</span></div>
                         </div>
                     </div>
                 </div>
@@ -394,7 +394,7 @@
                         <span class="dropdown-trigger-content">
                             <span class="dropdown-trigger-icon">{{ request('availability') === 'pre_order' ? '📦' : '🟢' }}</span>
                             <span class="dropdown-trigger-text" id="label-availability">
-                                {{ request('availability') === 'in_stock' ? 'In Stock' : (request('availability') === 'pre_order' ? 'Pre-Order' : 'Availability') }}
+                                {{ request('availability') === 'in_stock' ? __t('shop.in_stock', 'In Stock') : (request('availability') === 'pre_order' ? __t('shop.pre_order', 'Pre-Order') : __t('shop.filter_availability', 'Availability')) }}
                             </span>
                         </span>
                         <span class="dropdown-trigger-arrows">
@@ -412,22 +412,22 @@
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
-                            <input type="text" class="dropdown-search-input" placeholder="Search availability..." oninput="filterDropdownOptions('availability', this.value)" autocomplete="off">
+                            <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_availability', 'Search availability...')" oninput="filterDropdownOptions('availability', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-availability">
-                            <button type="button" class="dropdown-option-item {{ empty(request('availability')) ? 'selected' : '' }}" data-value="" data-label="All Availability" onclick="selectDropdownOption('availability', '', 'Availability')">
-                                <span class="option-name">⚡ All Availability</span>
+                            <button type="button" class="dropdown-option-item {{ empty(request('availability')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_availability', 'All Availability')" onclick="selectDropdownOption('availability', '', '{{ addslashes(__t('shop.filter_availability', 'Availability')) }}')">
+                                <span class="option-name">⚡ @t('shop.all_availability', 'All Availability')</span>
                                 @if(empty(request('availability'))) <span class="option-check">✓</span> @endif
                             </button>
-                            <button type="button" class="dropdown-option-item {{ request('availability') === 'in_stock' ? 'selected' : '' }}" data-value="in_stock" data-label="In Stock" onclick="selectDropdownOption('availability', 'in_stock', 'In Stock')">
-                                <span class="option-name">🟢 In Stock</span>
+                            <button type="button" class="dropdown-option-item {{ request('availability') === 'in_stock' ? 'selected' : '' }}" data-value="in_stock" data-label="@t('shop.in_stock', 'In Stock')" onclick="selectDropdownOption('availability', 'in_stock', '{{ addslashes(__t('shop.in_stock', 'In Stock')) }}')">
+                                <span class="option-name">🟢 @t('shop.in_stock', 'In Stock')</span>
                                 @if(request('availability') === 'in_stock') <span class="option-check">✓</span> @endif
                             </button>
-                            <button type="button" class="dropdown-option-item {{ request('availability') === 'pre_order' ? 'selected' : '' }}" data-value="pre_order" data-label="Pre-Order / Custom Sourcing" onclick="selectDropdownOption('availability', 'pre_order', 'Pre-Order / Custom Sourcing')">
-                                <span class="option-name">📦 Pre-Order / Custom Sourcing</span>
+                            <button type="button" class="dropdown-option-item {{ request('availability') === 'pre_order' ? 'selected' : '' }}" data-value="pre_order" data-label="@t('shop.pre_order', 'Pre-Order / Custom Sourcing')" onclick="selectDropdownOption('availability', 'pre_order', '{{ addslashes(__t('shop.pre_order', 'Pre-Order / Custom Sourcing')) }}')">
+                                <span class="option-name">📦 @t('shop.pre_order', 'Pre-Order / Custom Sourcing')</span>
                                 @if(request('availability') === 'pre_order') <span class="option-check">✓</span> @endif
                             </button>
-                            <div class="dropdown-no-results" style="display:none;"><span>No options found</span></div>
+                            <div class="dropdown-no-results" style="display:none;"><span>@t('shop.no_results', 'No options found')</span></div>
                         </div>
                     </div>
                 </div>
@@ -535,16 +535,16 @@
                             <span class="dropdown-trigger-text" id="label-sort">
                                 @switch(request('sort', 'sort_order'))
                                     @case('price_asc')
-                                        Price: Low to High
+                                        @t('shop.sort_price_low', 'Price: Low to High')
                                         @break
                                     @case('price_desc')
-                                        Price: High to Low
+                                        @t('shop.sort_price_high', 'Price: High to Low')
                                         @break
                                     @case('name')
-                                        Name A–Z
+                                        @t('shop.sort_name_az', 'Name A–Z')
                                         @break
                                     @default
-                                        Sort: Featured
+                                        @t('shop.sort_featured', 'Sort: Featured')
                                 @endswitch
                             </span>
                         </span>
@@ -556,20 +556,20 @@
                     </button>
                     <div class="searchable-dropdown-menu sort-dropdown-menu" id="menu-sort">
                         <div class="dropdown-options-list" id="list-sort">
-                            <button type="button" class="dropdown-option-item {{ request('sort', 'sort_order') === 'sort_order' ? 'selected' : '' }}" data-value="sort_order" data-label="Featured" onclick="selectDropdownOption('sort', 'sort_order', 'Sort: Featured')">
-                                <span class="option-name">✨ Featured</span>
+                            <button type="button" class="dropdown-option-item {{ request('sort', 'sort_order') === 'sort_order' ? 'selected' : '' }}" data-value="sort_order" data-label="@t('shop.sort_featured', 'Sort: Featured')" onclick="selectDropdownOption('sort', 'sort_order', '{{ addslashes(__t('shop.sort_featured', 'Sort: Featured')) }}')">
+                                <span class="option-name">✨ @t('shop.sort_featured_opt', 'Featured Catches')</span>
                                 @if(request('sort', 'sort_order') === 'sort_order') <span class="option-check">✓</span> @endif
                             </button>
-                            <button type="button" class="dropdown-option-item {{ request('sort') === 'price_asc' ? 'selected' : '' }}" data-value="price_asc" data-label="Price: Low to High" onclick="selectDropdownOption('sort', 'price_asc', 'Price: Low to High')">
-                                <span class="option-name">💵 Price: Low to High</span>
+                            <button type="button" class="dropdown-option-item {{ request('sort') === 'price_asc' ? 'selected' : '' }}" data-value="price_asc" data-label="@t('shop.sort_price_low', 'Price: Low to High')" onclick="selectDropdownOption('sort', 'price_asc', '{{ addslashes(__t('shop.sort_price_low', 'Price: Low to High')) }}')">
+                                <span class="option-name">💵 @t('shop.sort_price_low', 'Price: Low to High')</span>
                                 @if(request('sort') === 'price_asc') <span class="option-check">✓</span> @endif
                             </button>
-                            <button type="button" class="dropdown-option-item {{ request('sort') === 'price_desc' ? 'selected' : '' }}" data-value="price_desc" data-label="Price: High to Low" onclick="selectDropdownOption('sort', 'price_desc', 'Price: High to Low')">
-                                <span class="option-name">💎 Price: High to Low</span>
+                            <button type="button" class="dropdown-option-item {{ request('sort') === 'price_desc' ? 'selected' : '' }}" data-value="price_desc" data-label="@t('shop.sort_price_high', 'Price: High to Low')" onclick="selectDropdownOption('sort', 'price_desc', '{{ addslashes(__t('shop.sort_price_high', 'Price: High to Low')) }}')">
+                                <span class="option-name">💎 @t('shop.sort_price_high', 'Price: High to Low')</span>
                                 @if(request('sort') === 'price_desc') <span class="option-check">✓</span> @endif
                             </button>
-                            <button type="button" class="dropdown-option-item {{ request('sort') === 'name' ? 'selected' : '' }}" data-value="name" data-label="Name A–Z" onclick="selectDropdownOption('sort', 'name', 'Name A–Z')">
-                                <span class="option-name">🔤 Name A–Z</span>
+                            <button type="button" class="dropdown-option-item {{ request('sort') === 'name' ? 'selected' : '' }}" data-value="name" data-label="@t('shop.sort_name_az', 'Name A–Z')" onclick="selectDropdownOption('sort', 'name', '{{ addslashes(__t('shop.sort_name_az', 'Name A–Z')) }}')">
+                                <span class="option-name">🔤 @t('shop.sort_name_az', 'Name A–Z')</span>
                                 @if(request('sort') === 'name') <span class="option-check">✓</span> @endif
                             </button>
                         </div>

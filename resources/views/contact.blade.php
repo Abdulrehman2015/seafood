@@ -1237,7 +1237,7 @@
             </div>
             <div style="margin-top:auto;padding-top:12px;width:100%">
                 <a href="tel:{{ $cleanPrimaryPhone }}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:7px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
-                    <span>📞 Call Hotline</span>
+                    <span>📞 @t('contact.btn_call', 'Call Hotline')</span>
                 </a>
             </div>
         </div>
@@ -1265,7 +1265,7 @@
             </div>
             <div style="margin-top:auto;padding-top:12px;width:100%">
                 <a href="mailto:{{ $storeEmail }}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:7px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
-                    <span>✉️ Send Email</span>
+                    <span>✉️ @t('contact.btn_email', 'Send Email')</span>
                 </a>
             </div>
         </div>
@@ -1307,7 +1307,7 @@
             </div>
             <div style="margin-top:auto;padding-top:12px;width:100%">
                 <a href="{{ $waUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:#ffffff;font-size:0.82rem;font-weight:700;padding:7px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;box-shadow:0 2px 6px rgba(37,211,102,0.3);transition:transform 0.15s ease;">
-                    <span>💬 WhatsApp Us</span>
+                    <span>💬 @t('contact.btn_whatsapp', 'WhatsApp Us')</span>
                 </a>
             </div>
         </div>
