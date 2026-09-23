@@ -618,21 +618,6 @@
                     </label>
                 </div>
 
-                <!-- Featured Toggle -->
-                <div style="background:#fffbeb;border:1px solid #fef3c7;border-radius:10px;padding:12px 14px;margin-bottom:16px">
-                    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin:0">
-                        <input type="hidden" name="is_featured" value="0">
-                        <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $category->is_featured) ? 'checked' : '' }} style="width:18px;height:18px;accent-color:#d97706">
-                        <div>
-                            <div style="font-weight:700;color:#92400e;font-size:0.88rem;display:flex;align-items:center;gap:6px">
-                                <span>Featured Category</span>
-                                <span style="font-size:0.65rem;background:#fde68a;color:#78350f;padding:1px 6px;border-radius:4px;font-weight:700">HOMEPAGE</span>
-                            </div>
-                            <div style="font-size:0.75rem;color:#b45309">Display in the featured categories section on the homepage</div>
-                        </div>
-                    </label>
-                </div>
-
                 <!-- Sort Order -->
                 <div class="form-group" style="margin-bottom:16px">
                     <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block">

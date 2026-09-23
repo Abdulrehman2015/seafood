@@ -21,8 +21,8 @@
 </div>
 
 <!-- Category Stat Metric Cards -->
-<div class="cat-metrics-grid">
-    <a href="{{ route('admin.categories.index') }}" class="category-metric-card {{ !request('status') && !request('featured') && !request('level') ? 'active' : '' }}">
+<div class="cat-metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <a href="{{ route('admin.categories.index') }}" class="category-metric-card {{ !request('status') && !request('level') ? 'active' : '' }}">
         <div>
             <div class="cat-metric-value">{{ $stats['total'] ?? $categories->total() }}</div>
             <div class="cat-metric-title">Total Categories</div>
@@ -39,16 +39,6 @@
         </div>
         <div class="cat-metric-icon" style="background:#f0fdf4;color:#16a34a;">
             🟢
-        </div>
-    </a>
-
-    <a href="{{ route('admin.categories.index', array_merge(request()->query(), ['featured' => 'yes'])) }}" class="category-metric-card {{ request('featured') === 'yes' ? 'active' : '' }}">
-        <div>
-            <div class="cat-metric-value" style="color:#b45309;">{{ $stats['featured'] ?? 0 }}</div>
-            <div class="cat-metric-title">Homepage Featured</div>
-        </div>
-        <div class="cat-metric-icon" style="background:#fffbeb;color:#d97706;">
-            ⭐
         </div>
     </a>
 
@@ -80,12 +70,6 @@
                 <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive Only</option>
             </select>
 
-            <select name="featured" class="cat-filter-select" onchange="document.getElementById('catFilterForm').submit()">
-                <option value="">All Homepage Tiers</option>
-                <option value="yes" {{ request('featured') === 'yes' ? 'selected' : '' }}>⭐ Featured on Home</option>
-                <option value="no" {{ request('featured') === 'no' ? 'selected' : '' }}>Standard Only</option>
-            </select>
-
             <select name="level" class="cat-filter-select" onchange="document.getElementById('catFilterForm').submit()">
                 <option value="">All Levels</option>
                 <option value="root" {{ request('level') === 'root' ? 'selected' : '' }}>Root Level Only</option>
@@ -102,7 +86,7 @@
                 <button type="submit" class="btn btn-primary btn-sm" style="height:40px;padding:0 16px;font-weight:600;">
                     Filter
                 </button>
-                @if(request()->hasAny(['q', 'status', 'featured', 'level', 'sort']))
+                @if(request()->hasAny(['q', 'status', 'level', 'sort']))
                     <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary btn-sm" style="height:40px;padding:0 14px;display:inline-flex;align-items:center;" title="Reset all filters">
                         ✕ Reset
                     </a>
@@ -126,7 +110,6 @@
                         <th style="padding:12px 16px;">Products</th>
                         <th style="padding:12px 16px;text-align:center;width:80px;">Order</th>
                         <th style="padding:12px 16px;text-align:center;width:95px;">Status</th>
-                        <th style="padding:12px 16px;text-align:center;width:125px;">Homepage</th>
                         <th style="padding:12px 16px;text-align:right;width:180px;">Actions</th>
                     </tr>
                 </thead>
@@ -203,16 +186,6 @@
                                     Inactive
                                 </span>
                             @endif
-                        </td>
-                        <td style="padding:12px 16px;text-align:center;">
-                            <form method="POST" action="{{ route('admin.categories.toggle-featured', $cat) }}" style="display:inline;margin:0;">
-                                @csrf
-                                <button type="submit" class="btn btn-sm" 
-                                        style="padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;gap:4px;cursor:pointer;transition:all 0.15s ease;{{ $cat->is_featured ? 'background:#fef3c7;color:#92400e;border:1px solid #fde68a;' : 'background:#f8fafc;color:#64748b;border:1px solid #cbd5e1;' }}" 
-                                        title="{{ $cat->is_featured ? 'Featured on Homepage — click to remove' : 'Click to feature on Homepage' }}">
-                                    <span>{{ $cat->is_featured ? '⭐ Featured' : '☆ Standard' }}</span>
-                                </button>
-                            </form>
                         </td>
                         <td style="padding:12px 16px;text-align:right;">
                             <div style="display:inline-flex;gap:6px;align-items:center;">
@@ -306,14 +279,6 @@
                         Order: <strong>{{ $cat->sort_order }}</strong>
                     </span>
                 </div>
-
-                <form method="POST" action="{{ route('admin.categories.toggle-featured', $cat) }}" style="margin:0;">
-                    @csrf
-                    <button type="submit" class="btn btn-sm" 
-                            style="padding:3px 8px;border-radius:20px;font-size:0.72rem;font-weight:700;display:inline-flex;align-items:center;gap:4px;{{ $cat->is_featured ? 'background:#fef3c7;color:#92400e;border:1px solid #fde68a;' : 'background:#ffffff;color:#64748b;border:1px solid #cbd5e1;' }}">
-                        {{ $cat->is_featured ? '⭐ Featured' : '☆ Standard' }}
-                    </button>
-                </form>
             </div>
 
             <div class="cat-card-actions">

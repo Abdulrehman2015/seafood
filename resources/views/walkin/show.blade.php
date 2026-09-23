@@ -87,10 +87,43 @@
             <!-- In-Store Price Box -->
             <div class="walkin-price-card">
                 <div class="price-card-label">@t('walkin.in_store_price', 'In-Store Walk-in Price')</div>
-                <div class="price-card-value-row">
-                    <span class="price-num">RM {{ number_format($price, 2) }}</span>
-                    <span class="price-unit">/ {{ $product->unit ?? 'pack' }}</span>
+                
+                <!-- Unlocked Price Display -->
+                <div class="price-card-value-row js-currency-price walkin-price-unlocked-block"
+                     data-base-rm="{{ $price ?? 0 }}"
+                     data-manual-sgd="{{ $product->price_sgd ?? '' }}"
+                     data-manual-usd="{{ $product->price_usd ?? '' }}"
+                     style="display:none">
+                    @php
+                        $displayWalkin = isset($currencyService) 
+                            ? $currencyService->getProductPrice($product, 'walkin', $currentCurrency) 
+                            : ['formatted' => 'RM ' . number_format($price, 2), 'base_rm' => null];
+                    @endphp
+                    <div class="price-stack">
+                        <div class="price-main-line" style="display:flex;align-items:baseline;gap:4px">
+                            <span class="price-amount price-num price-val" style="color:#1e40af;font-size:1.65rem;font-weight:900">{{ $displayWalkin['formatted'] }}</span>
+                            <span class="price-unit" style="font-size:0.88rem;color:#64748b;font-weight:600">/ {{ $product->unit ?? 'pack' }}</span>
+                        </div>
+                        <span class="price-base-rm price-sub-myr" style="display:{{ ($currentCurrency !== 'MYR' && !empty($displayWalkin['base_rm'])) ? 'block' : 'none' }};font-size:0.85rem;font-weight:600;color:#64748b;margin-top:3px">
+                            RM {{ number_format($price, 2) }}
+                        </span>
+                    </div>
                 </div>
+
+                <!-- Locked Price Display -->
+                <div class="walkin-price-locked-block" style="margin-bottom:10px">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                        <span style="background:#ffffff;border:1.5px solid #cbd5e1;color:#1e293b;font-size:0.95rem;font-weight:800;padding:6px 14px;border-radius:10px;display:inline-flex;align-items:center;gap:6px">
+                            <span>🔒</span>
+                            <span>@t('walkin.in_store_rate', 'In-Store Special Rate')</span>
+                        </span>
+                    </div>
+                    <button type="button" onclick="openGetPriceModal({{ json_encode($product->name) }}, {{ json_encode($product->sku ?? '') }}, '{{ $displayWalkin['formatted'] }}', '{{ $product->unit ?? 'pack' }}', '{{ $product->id }}')" 
+                            style="width:100%;padding:10px 16px;background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);color:#ffffff;border:none;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 10px rgba(37,99,235,0.25)">
+                        <span>🏷️ @t('walkin.view_price', 'View Price / Unlock In-Store Rate')</span>
+                    </button>
+                </div>
+
                 <div class="price-card-hint">
                     📍 @t('walkin.pickup_hint', 'Pay from your phone and immediately collect at SILC Retail Frozen Counter 2.')
                 </div>
@@ -102,8 +135,8 @@
                 </div>
             @endif
 
-            <!-- Add to Walk-in Cart Form -->
-            <form action="{{ route('cart.add') }}" method="POST" class="walkin-add-form">
+            <!-- Add to Walk-in Cart Form (Visible when unlocked) -->
+            <form action="{{ route('cart.add') }}" method="POST" class="walkin-add-form walkin-price-unlocked-block" style="display:none">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
 
@@ -156,6 +189,55 @@
                     </div>
                 </div>
             @endif
+        </div>
+    </div>
+</div>
+
+<!-- ─── Get Price / In-Store Rate Unlock Modal ───────────────────────── -->
+<div class="get-price-modal-backdrop" id="getPriceModalBackdrop" onclick="handleGetPriceModalBackdropClick(event)">
+    <div class="get-price-modal-dialog" id="getPriceModalDialog" role="dialog" aria-modal="true" aria-labelledby="getPriceModalTitle">
+        <div class="get-price-modal-header">
+            <div class="get-price-modal-title" id="getPriceModalTitle">
+                <span>🏷️ @t('walkin.view_price_title', 'In-Store Special Rate')</span>
+            </div>
+            <button type="button" class="get-price-modal-close-btn" onclick="closeGetPriceModal()" aria-label="Close modal">✕</button>
+        </div>
+
+        <div class="get-price-modal-body">
+            <div class="get-price-product-info">
+                <div class="get-price-product-name" id="modalProductName">{{ $product->name }}</div>
+                <div class="get-price-product-sku" id="modalProductSku">{{ $product->sku ? 'SKU: ' . $product->sku : '' }}</div>
+            </div>
+
+            <!-- Price Reveal Box -->
+            <div class="get-price-revealed-card" id="modalPriceRevealedCard">
+                <div class="get-price-card-label">@t('walkin.counter_rate_revealed', 'Official In-Store Rate')</div>
+                <div class="get-price-card-amount">
+                    <span id="modalProductPrice" class="modal-price-num">{{ $displayWalkin['formatted'] }}</span>
+                    <span id="modalProductUnit" class="modal-price-unit">/ {{ $product->unit ?? 'pack' }}</span>
+                </div>
+                <div class="get-price-card-hint">
+                    📍 @t('walkin.counter_pickup_ready', 'Available for immediate walk-in purchase & packing at SILC Counter 2.')
+                </div>
+            </div>
+
+            <div class="get-price-actions-grid">
+                <button type="button" class="btn-unlock-all-prices" id="btnUnlockPrices" onclick="unlockWalkinPrices()">
+                    <span style="font-size:1.1rem">🔓</span>
+                    <span>@t('walkin.unlock_all_prices', 'Unlock All In-Store Prices')</span>
+                </button>
+                @php
+                    $waMsg = urlencode("Hi MST Import & Export, I would like to get the latest in-store price & availability for: " . $product->name . ($product->sku ? ' (' . $product->sku . ')' : ''));
+                @endphp
+                <a href="https://wa.me/923176121524?text={{ $waMsg }}" id="modalWhatsAppBtn" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-inquire">
+                    <span style="font-size:1.1rem">💬</span>
+                    <span>@t('walkin.inquire_whatsapp', 'Enquire on WhatsApp')</span>
+                </a>
+            </div>
+
+            <div class="get-price-guarantee-note">
+                🔒 @t('walkin.price_flow_note', 'Walk-in pricing is reserved for verified retail visitors and registered walk-in guests.')
+            </div>
         </div>
     </div>
 </div>
@@ -312,20 +394,35 @@
 }
 .price-card-value-row {
     display: flex;
-    align-items: baseline;
-    gap: 8px;
+    flex-direction: column;
     margin-bottom: 6px;
+}
+.price-stack {
+    display: flex;
+    flex-direction: column;
+}
+.price-main-line {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
 }
 .price-num {
     font-family: var(--font-heading);
     font-size: 2.3rem;
     font-weight: 800;
     color: #1e3a8a;
+    line-height: 1.1;
 }
 .price-unit {
     font-size: 0.95rem;
     color: #475569;
     font-weight: 600;
+}
+.walkin-price-card .price-base-rm {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-top: 2px;
 }
 .price-card-hint {
     font-size: 0.85rem;
@@ -476,6 +573,187 @@
         gap: 24px;
     }
 }
+
+/* ─── Get Price Modal Styling ─── */
+.get-price-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    padding: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+.get-price-modal-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+.get-price-modal-dialog {
+    background: #ffffff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    transform: scale(0.95);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.get-price-modal-backdrop.show .get-price-modal-dialog {
+    transform: scale(1);
+}
+.get-price-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #091a36 0%, #1e3a8a 100%);
+    color: #ffffff;
+}
+.get-price-modal-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.get-price-modal-close-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #ffffff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 700;
+    transition: background 0.15s;
+}
+.get-price-modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+.get-price-modal-body {
+    padding: 22px;
+}
+.get-price-product-info {
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+.get-price-product-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.3;
+}
+.get-price-product-sku {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 4px;
+    font-weight: 600;
+}
+.get-price-revealed-card {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1.5px solid #bfdbfe;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+}
+.get-price-card-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1d4ed8;
+    margin-bottom: 4px;
+}
+.get-price-card-amount {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+.modal-price-num {
+    font-family: var(--font-heading);
+    font-size: 1.85rem;
+    font-weight: 900;
+    color: #1e3a8a;
+    line-height: 1.1;
+}
+.modal-price-unit {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+}
+.get-price-card-hint {
+    font-size: 0.8rem;
+    color: #1e40af;
+    line-height: 1.4;
+}
+.get-price-actions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.btn-unlock-all-prices {
+    width: 100%;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-unlock-all-prices:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+}
+.btn-whatsapp-inquire {
+    width: 100%;
+    padding: 12px 18px;
+    background: #25d366;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+    transition: transform 0.15s, filter 0.15s;
+}
+.btn-whatsapp-inquire:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    color: #ffffff;
+}
+.get-price-guarantee-note {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: center;
+    line-height: 1.4;
+}
 </style>
 @endpush
 
@@ -486,5 +764,67 @@ function switchMainImage(thumb) {
     document.querySelectorAll('.walkin-thumb').forEach(t => t.classList.remove('active'));
     thumb.classList.add('active');
 }
+
+// ─── Walk-in Price Unlock Flow Controller ───
+const WALKIN_STORAGE_KEY = 'mst_walkin_price_unlocked';
+
+function isWalkinUnlocked() {
+    return localStorage.getItem(WALKIN_STORAGE_KEY) === '1';
+}
+
+function applyWalkinUnlockState() {
+    const unlocked = isWalkinUnlocked();
+    const unlockedEls = document.querySelectorAll('.walkin-price-unlocked-block');
+    const lockedEls = document.querySelectorAll('.walkin-price-locked-block');
+
+    if (unlocked) {
+        unlockedEls.forEach(el => {
+            el.style.setProperty('display', el.classList.contains('walkin-add-form') ? 'block' : 'flex', 'important');
+        });
+        lockedEls.forEach(el => el.style.setProperty('display', 'none', 'important'));
+    } else {
+        unlockedEls.forEach(el => el.style.setProperty('display', 'none', 'important'));
+        lockedEls.forEach(el => el.style.setProperty('display', 'block', 'important'));
+    }
+}
+
+function openGetPriceModal(name, sku, price, unit, productId) {
+    const backdrop = document.getElementById('getPriceModalBackdrop');
+    if (backdrop) {
+        backdrop.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeGetPriceModal() {
+    const backdrop = document.getElementById('getPriceModalBackdrop');
+    if (backdrop) {
+        backdrop.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+}
+
+function handleGetPriceModalBackdropClick(event) {
+    if (event.target === document.getElementById('getPriceModalBackdrop')) {
+        closeGetPriceModal();
+    }
+}
+
+function unlockWalkinPrices() {
+    localStorage.setItem(WALKIN_STORAGE_KEY, '1');
+    applyWalkinUnlockState();
+    closeGetPriceModal();
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeGetPriceModal();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    applyWalkinUnlockState();
+});
+applyWalkinUnlockState();
 </script>
 @endpush

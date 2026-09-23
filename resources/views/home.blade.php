@@ -25,7 +25,7 @@
             {{-- Live badge --}}
             <div class="mika-live-badge">
                 <span class="mika-live-dot"></span>
-                @t('home.hero_badge', 'ESTABLISHED IN 2014 · JOHOR BAHRU, MALAYSIA')
+                @t('home.hero_badge', 'REGIONAL SOURCING & COLD-CHAIN SUPPLY')
             </div>
 
             <h1 class="mika-hero-h1">
@@ -58,7 +58,7 @@
                 <span class="mika-pill">🏪 @t('nav.walkin_mode', 'Walk-in')</span>
                 <span class="mika-pill">🏭 @t('home.b2b_banner_title', 'Wholesale')</span>
                 <span class="mika-pill">📦 @t('home.stat_clients', 'Trading')</span>
-                <span class="mika-pill">🌏 @t('about.global_sourcing', 'International')</span>
+                <span class="mika-pill">🌏 @t('home.regional_international_pill', 'Regional & International')</span>
             </div>
 
             {{-- CTAs --}}
@@ -716,12 +716,13 @@
 
 /* Category Sourcing Card */
 .category-card-sourcing {
-    background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 100%);
+    background: linear-gradient(135deg, #f0f7ff 0%, #e8f0fe 100%);
     border-radius: 16px;
     padding: 26px 28px;
-    color: #ffffff;
-    box-shadow: 0 8px 24px rgba(10,37,64,0.15);
+    color: #0f172a;
+    box-shadow: 0 8px 24px rgba(37,99,235,0.08);
     grid-column: 1 / -1;
+    border: 1px solid #bfdbfe;
 }
 
 .sourcing-card-inner {
@@ -1413,18 +1414,18 @@
                     <div class="sourcing-card-content">
                         <span style="font-size:2.8rem;flex-shrink:0;">📦</span>
                         <div>
-                            <div style="font-size:0.75rem;font-weight:700;color:#93c5fd;letter-spacing:0.08em;text-transform:uppercase;">@t('home.sourcing_tag', 'YOU NEED IT. WE SOURCE IT.')</div>
-                            <div style="font-size:1.3rem;font-weight:800;color:#ffffff;margin:2px 0 4px;">@t('home.sourcing_title', 'CUSTOMISED SOURCING SOLUTIONS')</div>
-                            <p style="color:#dbeafe;font-size:0.92rem;margin:0;max-width:720px;line-height:1.5;">
+                            <div style="font-size:0.75rem;font-weight:700;color:#1d4ed8;letter-spacing:0.08em;text-transform:uppercase;">@t('home.sourcing_tag', 'YOU NEED IT. WE SOURCE IT.')</div>
+                            <div style="font-size:1.3rem;font-weight:800;color:#091a36;margin:2px 0 4px;">@t('home.sourcing_title', 'CUSTOMISED SOURCING SOLUTIONS')</div>
+                            <p style="color:#475569;font-size:0.92rem;margin:0;max-width:720px;line-height:1.5;">
                                 @t('home.sourcing_desc', 'Can\'t find what you need? Tell us what you\'re looking for. We work with our sourcing network to identify suitable products and supply options based on your requirements.')
                             </p>
                         </div>
                     </div>
                     <div class="sourcing-card-actions">
-                        <a href="{{ route('shop.index') }}" class="btn btn-secondary" style="background:rgba(255,255,255,0.15);color:white;border-color:rgba(255,255,255,0.3);padding:10px 18px;font-size:0.88rem;font-weight:700;">
+                        <a href="{{ route('shop.index') }}" class="btn btn-secondary" style="background:#ffffff;color:#0f172a;border-color:#cbd5e1;padding:10px 18px;font-size:0.88rem;font-weight:700;">
                             @t('home.explore_products_btn', 'EXPLORE PRODUCTS →')
                         </a>
-                        <a href="{{ route('contact') }}#quote" class="btn btn-primary" style="background:#3b82f6;border-color:#3b82f6;color:white;padding:10px 20px;font-size:0.88rem;font-weight:700;">
+                        <a href="{{ route('contact') }}#quote" class="btn btn-primary" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);border:1px solid #f59e0b;color:#091a36;padding:10px 20px;font-size:0.88rem;font-weight:800;box-shadow:0 4px 12px rgba(245,158,11,0.3);">
                             @t('home.request_quote_btn', 'REQUEST A QUOTE')
                         </a>
                     </div>
@@ -1663,7 +1664,7 @@
 <section class="section" style="background: linear-gradient(180deg, #f8fafc, #ffffff); padding: var(--space-16) 0;">
     <div class="container">
         <div class="section-header" style="text-align:center;max-width:720px;margin:0 auto var(--space-10);">
-            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('home.how_it_works_eyebrow', 'HOW IT WORKS')</div>
+            <div class="section-eyebrow" style="color:#1d4ed8;font-weight:700;margin-bottom:8px">@t('home.how_it_works_eyebrow', 'HOW IT WORKS')</div>
             <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:8px;">@t('home.how_it_works_title', 'A Smarter Way to Buy')</h2>
             <p class="section-subtitle" style="font-size:0.95rem;color:var(--text-muted);margin:0 auto;line-height:1.6;text-align:center;">
                 @t('home.how_it_works_subtitle', 'Different customers. Different needs. One platform. Choose the account type that fits your business and access the products, pricing and purchasing options designed for you.')
@@ -1710,7 +1711,7 @@
 <section class="section" style="padding:var(--space-16) 0;background:#ffffff;border-top:1px solid #e2e8f0;">
     <div class="container">
         <div class="section-header" style="text-align:center;max-width:760px;margin:0 auto var(--space-10);">
-            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('home.quality_eyebrow', 'OUR COMMITMENT TO QUALITY')</div>
+            <div class="section-eyebrow" style="color:#1d4ed8;font-weight:700;margin-bottom:8px">@t('home.quality_eyebrow', 'OUR COMMITMENT TO QUALITY')</div>
             <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:10px;">@t('home.quality_title', 'QUALITY. INTEGRITY. RELIABLE COLD-CHAIN.')</h2>
             <p class="section-subtitle" style="font-size:0.95rem;color:var(--text-muted);line-height:1.6;margin:0 auto;text-align:center;">
                 @t('home.quality_subtitle', 'At MST, product quality begins with responsible sourcing and continues through proper handling, temperature-controlled storage and reliable supply. We focus on maintaining product integrity from receiving and storage to order preparation and dispatch.')
@@ -1718,10 +1719,10 @@
         </div>
 
         <div class="cold-chain-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:22px;">
-            <div class="card" style="padding:28px 24px;border-radius:16px;border:1px solid #e2e8f0;background:#f8fafc;transition:transform 0.2s,box-shadow 0.2s"
-                 onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 10px 25px rgba(0,0,0,0.06)'"
+            <div class="card" style="padding:28px 24px;border-radius:16px;border:1px solid #dbeafe;background:#f0f7ff;transition:transform 0.2s,box-shadow 0.2s"
+                 onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 10px 25px rgba(37,99,235,0.08)'"
                  onmouseout="this.style.transform='none';this.style.boxShadow='none'">
-                <div style="width:52px;height:52px;border-radius:12px;background:#ecfdf5;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:var(--space-4);color:#059669">
+                <div style="width:52px;height:52px;border-radius:12px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:var(--space-4);color:#1d4ed8">
                     ❄️
                 </div>
                 <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:8px">@t('home.quality_c1_title', 'TEMPERATURE-CONTROLLED STORAGE')</h3>
@@ -1730,8 +1731,8 @@
                 </p>
             </div>
 
-            <div class="card" style="padding:28px 24px;border-radius:16px;border:1px solid #e2e8f0;background:#f8fafc;transition:transform 0.2s,box-shadow 0.2s"
-                 onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 10px 25px rgba(0,0,0,0.06)'"
+            <div class="card" style="padding:28px 24px;border-radius:16px;border:1px solid #dbeafe;background:#f0f7ff;transition:transform 0.2s,box-shadow 0.2s"
+                 onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 10px 25px rgba(37,99,235,0.08)'"
                  onmouseout="this.style.transform='none';this.style.boxShadow='none'">
                 <div style="width:52px;height:52px;border-radius:12px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:var(--space-4);color:#2563eb">
                     🔍
@@ -1742,8 +1743,8 @@
                 </p>
             </div>
 
-            <div class="card" style="padding:28px 24px;border-radius:16px;border:1px solid #e2e8f0;background:#f8fafc;transition:transform 0.2s,box-shadow 0.2s"
-                 onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 10px 25px rgba(0,0,0,0.06)'"
+            <div class="card" style="padding:28px 24px;border-radius:16px;border:1px solid #fde68a;background:#fffbeb;transition:transform 0.2s,box-shadow 0.2s"
+                 onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 10px 25px rgba(245,158,11,0.1)'"
                  onmouseout="this.style.transform='none';this.style.boxShadow='none'">
                 <div style="width:52px;height:52px;border-radius:12px;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:var(--space-4);color:#d97706">
                     📦
@@ -1754,10 +1755,10 @@
                 </p>
             </div>
 
-            <div class="card" style="padding:28px 24px;border-radius:16px;border:1px solid #e2e8f0;background:#f8fafc;transition:transform 0.2s,box-shadow 0.2s"
-                 onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 10px 25px rgba(0,0,0,0.06)'"
+            <div class="card" style="padding:28px 24px;border-radius:16px;border:1px solid #dbeafe;background:#f0f7ff;transition:transform 0.2s,box-shadow 0.2s"
+                 onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 10px 25px rgba(37,99,235,0.08)'"
                  onmouseout="this.style.transform='none';this.style.boxShadow='none'">
-                <div style="width:52px;height:52px;border-radius:12px;background:#f5f3ff;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:var(--space-4);color:#7c3aed">
+                <div style="width:52px;height:52px;border-radius:12px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:var(--space-4);color:#1d4ed8">
                     🚚
                 </div>
                 <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:8px">@t('home.quality_c4_title', 'RELIABLE SUPPLY')</h3>
@@ -1779,7 +1780,7 @@
 </section>
 
 <!-- ─── 4.6 Customised Sourcing Spotlight ───────────────────────────────── -->
-<section class="section" style="padding:var(--space-16) 0;background:linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);border-top:1px solid #bfdbfe;border-bottom:1px solid #e2e8f0;color:#0f172a;">
+<section class="section" style="padding:var(--space-16) 0;background:linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);border-top:1px solid #bfdbfe;border-bottom:1px solid #e2e8f0;color:#0f172a;" id="sourcing-spotlight">
     <div class="container">
         <div style="max-width:820px;margin:0 auto 40px;text-align:center;">
             <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.75rem;font-weight:700;padding:5px 16px;border-radius:999px;text-transform:uppercase;letter-spacing:0.08em;display:inline-block;margin-bottom:12px;">
@@ -1894,7 +1895,7 @@
     <div class="container">
         <div class="culinary-advisory-grid">
             <div class="tips-left-content">
-                <span class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;">@t('home.tips_eyebrow', 'FOOD SOURCING & SUPPLY INSIGHTS')</span>
+                <span class="section-eyebrow" style="color:#1d4ed8;font-weight:700;">@t('home.tips_eyebrow', 'FOOD SOURCING & SUPPLY INSIGHTS')</span>
                 <h2 style="font-family:var(--font-heading);font-size:clamp(1.5rem, 3.5vw, 2rem);color:var(--gray-900);margin:8px 0 12px">
                     @t('home.tips_title', 'KNOW YOUR PRODUCT. BUY WITH CONFIDENCE.')
                 </h2>

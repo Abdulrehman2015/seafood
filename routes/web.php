@@ -394,11 +394,18 @@ Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function
 
     // Product Catalogue (public / retail)
     Route::get('/products', [ShopController::class, 'index'])->name('shop.index');
-    Route::get('/shop', fn($locale) => redirect()->route('shop.index', array_merge(['locale' => $locale], request()->query()), 301));
+    Route::get('/shop', function ($locale) {
+        $loc = is_string($locale) ? $locale : 'en';
+        return redirect()->route('shop.index', array_merge(['locale' => $loc], request()->query()), 301);
+    });
     Route::get('/categories', [ShopController::class, 'categories'])->name('categories.index');
-    Route::get('/category', fn($locale) => redirect()->route('categories.index', ['locale' => $locale], 301));
+    Route::get('/category', fn($locale) => redirect()->route('categories.index', ['locale' => is_string($locale) ? $locale : 'en'], 301));
     Route::get('/products/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
-    Route::get('/shop/{product:slug}', fn($locale, $product) => redirect()->route('shop.show', ['locale' => $locale, 'product' => $product], 301));
+    Route::get('/shop/{product}', function ($locale, $product) {
+        $loc = is_string($locale) ? $locale : 'en';
+        $slug = is_object($product) ? ($product->slug ?? $product->id) : $product;
+        return redirect()->route('shop.show', ['locale' => $loc, 'product' => $slug], 301);
+    });
 
     // Dynamic Policy & Custom Pages
     Route::get('/policy/{slug}', [\App\Http\Controllers\PolicyController::class, 'show'])->name('policy.show');
@@ -520,7 +527,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
 
     // Categories
     Route::resource('categories', Admin\CategoryController::class);
-    Route::post('categories/{category}/toggle-featured', [Admin\CategoryController::class, 'toggleFeatured'])->name('categories.toggle-featured');
 
     // Customers
     Route::get('customers', [Admin\CustomerController::class, 'index'])->name('customers.index');

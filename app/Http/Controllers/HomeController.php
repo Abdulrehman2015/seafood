@@ -18,8 +18,8 @@ class HomeController extends Controller
 
         $featuredProducts = Product::featured()->inStock()->with('category')->limit(8)->get();
         
-        // Show ONLY featured categories from admin panel on homepage
-        $categories = Category::active()->featured()->orderBy('sort_order')->get();
+        // Show active root categories on homepage
+        $categories = Category::active()->whereNull('parent_id')->orderBy('sort_order')->orderBy('name')->get();
 
         $newArrivals      = Product::active()->inStock()->latest()->limit(4)->get();
         $reviews          = Review::approved()->featured()->orderBy('sort_order')->limit(6)->get();

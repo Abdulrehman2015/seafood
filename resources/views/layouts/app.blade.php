@@ -162,7 +162,62 @@
     @endif
 
     <style>
-        /* ─── Footer: Matches Homepage 1st Section (Hero) Royal Oceanic Gradient ─── */
+        /* ─────────────────────────────────────────────────────────────────────────
+           MST BRAND COLOUR SYSTEM — Global Design Tokens
+           Deep Navy / Royal Blue · White · Ice Blue · Yellow · Silver
+           Balance: 70% Light · 20% Navy/Blue · 10% Yellow accents
+           ───────────────────────────────────────────────────────────────────────── */
+        :root {
+            /* MST Primary — Deep Navy → Royal Blue */
+            --mst-navy:          #06152b;
+            --mst-navy-mid:      #0c2146;
+            --mst-royal:         #1d4ed8;
+            --mst-royal-light:   #2563eb;
+            --mst-royal-hover:   #1e40af;
+
+            /* MST Accent — Yellow CTA */
+            --mst-yellow:        #fbbf24;
+            --mst-yellow-dark:   #f59e0b;
+            --mst-yellow-deep:   #d97706;
+
+            /* MST Backgrounds — Light / Ice Blue / White */
+            --mst-white:         #ffffff;
+            --mst-ice-blue:      #f0f7ff;
+            --mst-ice-blue-mid:  #e8f0fe;
+            --mst-cool-grey:     #f8fafc;
+            --mst-cool-grey-mid: #f1f5f9;
+
+            /* MST Text */
+            --mst-text-dark:     #0f172a;
+            --mst-text-mid:      #334155;
+            --mst-text-muted:    #64748b;
+            --mst-text-light:    #94a3b8;
+
+            /* MST Borders */
+            --mst-border:        #e2e8f0;
+            --mst-border-blue:   #bfdbfe;
+            --mst-border-navy:   #dbeafe;
+
+            /* Override legacy seagreen → MST Navy / Royal Blue / Ice Blue for brand consistency */
+            --seagreen-950:      #06152b;
+            --seagreen-900:      #0c234b;
+            --seagreen-800:      #13376d;
+            --seagreen-700:      #1d4ed8;
+            --seagreen-600:      #2563eb;
+            --seagreen-500:      #3b82f6;
+            --seagreen-400:      #60a5fa;
+            --seagreen-300:      #93c5fd;
+            --seagreen-200:      #bfdbfe;
+            --seagreen-100:      #dbeafe;
+            --seagreen-50:       #eff6ff;
+        }
+
+        /* Global body — white background per MST guidelines */
+        body {
+            background-color: #ffffff;
+        }
+
+        /* ─── Footer: Deep Navy — Premium Professional Ending ─── */
         .footer {
             position: relative !important;
             overflow: hidden !important;
@@ -1297,24 +1352,19 @@
                         <li><a href="{{ route('walkin.shop') }}">@t('nav.walkin_menu', 'Walk-in Menu')</a></li>
                         <li><a href="{{ route('about') }}">@t('nav.about', 'About Us')</a></li>
                         <li><a href="{{ route('contact') }}">@t('nav.contact', 'Contact Us')</a></li>
-                        @php
-                            $publishedFooterPolicies = \App\Models\Policy::published()->get();
-                        @endphp
-                        @foreach($publishedFooterPolicies as $footerPolicy)
-                            <li><a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => $footerPolicy->slug]) }}">{{ $footerPolicy->title_for_locale }}</a></li>
-                        @endforeach
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h4 class="footer-heading">@t('footer.featured_categories', 'Featured Categories')</h4>
+                    <h4 class="footer-heading">@t('footer.policies', 'Policies')</h4>
                     <ul class="footer-links">
-                        @if(isset($footerCategories) && $footerCategories->count())
-                            @foreach($footerCategories as $fCat)
-                                <li><a href="{{ route('shop.index', ['category' => $fCat->slug]) }}">{{ $fCat->name }}</a></li>
-                            @endforeach
-                        @else
-                            <li><a href="{{ route('shop.index') }}">@t('footer.all_products', 'All Products & Categories')</a></li>
-                        @endif
+                        @php
+                            $publishedFooterPolicies = \App\Models\Policy::published()->get();
+                        @endphp
+                        @forelse($publishedFooterPolicies as $footerPolicy)
+                            <li><a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => $footerPolicy->slug]) }}">{{ $footerPolicy->title_for_locale }}</a></li>
+                        @empty
+                            <li><a href="{{ route('contact') }}">@t('footer.contact_support', 'Customer Support')</a></li>
+                        @endforelse
                     </ul>
                 </div>
                 <div class="footer-col">
@@ -1335,15 +1385,10 @@
             </div>
             <div class="footer-bottom">
                 <p>© {{ date('Y') }} @t('footer.company_name', 'MST Import & Export Sdn. Bhd.') · @t('footer.all_rights_reserved', 'All rights reserved.')</p>
-                <div class="footer-bottom-links">
-                    <a href="{{ route('contact') }}">@t('footer.support', 'Support')</a>
-                    <a href="{{ route('about') }}">@t('nav.about', 'About')</a>
-                    @if(isset($publishedFooterPolicies) && $publishedFooterPolicies->count())
-                        @foreach($publishedFooterPolicies->take(3) as $bPolicy)
-                            <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => $bPolicy->slug]) }}">{{ $bPolicy->title_for_locale }}</a>
-                        @endforeach
-                    @endif
-                    <a href="{{ route('walkin.entry') }}">@t('footer.instore_pass', 'In-Store Pass')</a>
+                <div class="footer-bottom-credit" style="font-size:0.85rem;color:#94a3b8;display:inline-flex;align-items:center;gap:4px;">
+                    <span>Website by</span>
+                    <a href="https://wa.me/923176121524" target="_blank" rel="noopener noreferrer" style="color:#38bdf8;text-decoration:none;font-weight:700;transition:color 0.15s ease;" onmouseover="this.style.color='#7dd3fc';this.style.textDecoration='underline'" onmouseout="this.style.color='#38bdf8';this.style.textDecoration='none'">Abdul Rehman</a>
+                    <span>❤️</span>
                 </div>
             </div>
         </div>
@@ -1948,6 +1993,23 @@
                 showPageLoader(hint);
             }
         });
+
+        // Trigger page loader on standard non-AJAX form submits
+        document.addEventListener('submit', (e) => {
+            const form = e.target;
+            if (!form || e.defaultPrevented) return;
+            if (form.target === '_blank' || form.getAttribute('data-no-loader') === 'true') return;
+            showPageLoader('Processing & loading data...');
+        });
+
+        // Ensure loader is smoothly hidden once all page resources (DOM, images, stylesheets) are completely loaded
+        if (document.readyState === 'complete') {
+            hidePageLoader();
+        } else {
+            window.addEventListener('load', () => {
+                setTimeout(hidePageLoader, 150);
+            });
+        }
 
         // Hide loader when navigating via browser back/forward cache
         window.addEventListener('pageshow', (e) => {

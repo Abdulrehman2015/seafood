@@ -690,10 +690,10 @@
     font-size: 1rem;
     font-weight: 700;
     letter-spacing: 0.02em;
-    background: linear-gradient(135deg, var(--seagreen-600) 0%, #0284c7 100%);
+    background: linear-gradient(135deg, #1d4ed8 0%, #0c234b 100%);
     border: none;
     border-radius: 12px;
-    box-shadow: 0 6px 18px -2px rgba(13, 148, 136, 0.35);
+    box-shadow: 0 6px 18px -2px rgba(29, 78, 216, 0.35);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     color: #ffffff;
     cursor: pointer;
@@ -702,8 +702,8 @@
 
 .register-submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 24px -4px rgba(13, 148, 136, 0.45);
-    filter: brightness(1.05);
+    box-shadow: 0 10px 24px -4px rgba(29, 78, 216, 0.45);
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
 }
 
 .register-submit-btn:active {

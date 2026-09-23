@@ -1045,15 +1045,15 @@ textarea.form-control {
 /* Enhanced Submit Button with Amount Pill */
 .checkout-submit-btn {
     width: 100%;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     border: none;
-    color: #ffffff;
-    font-weight: 700;
+    color: #091a36;
+    font-weight: 800;
     padding: 13px 18px;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1064,14 +1064,15 @@ textarea.form-control {
 }
 
 .checkout-submit-btn:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+    color: #091a36;
 }
 
 .checkout-submit-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
 }
 
 .checkout-submit-btn:disabled {
@@ -1082,7 +1083,7 @@ textarea.form-control {
 
 .btn-main-text {
     font-size: clamp(0.85rem, 1.4vw, 0.96rem);
-    font-weight: 700;
+    font-weight: 800;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -1090,8 +1091,9 @@ textarea.form-control {
 }
 
 .btn-amount-badge {
-    background: rgba(255, 255, 255, 0.22);
-    border: 1px solid rgba(255, 255, 255, 0.28);
+    background: rgba(9, 26, 54, 0.12);
+    border: 1px solid rgba(9, 26, 54, 0.2);
+    color: #091a36;
     padding: 4px 10px;
     border-radius: 20px;
     font-size: clamp(0.82rem, 1.3vw, 0.9rem);
@@ -1172,15 +1174,15 @@ textarea.form-control {
 }
 
 .mobile-footer-pay-btn {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     border: none;
-    color: white;
-    font-weight: 700;
+    color: #091a36;
+    font-weight: 800;
     font-size: clamp(0.82rem, 3.2vw, 0.92rem);
     padding: clamp(10px, 2.5vw, 12px) clamp(12px, 3.2vw, 18px);
     border-radius: 12px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
@@ -1192,7 +1194,8 @@ textarea.form-control {
 }
 
 .mobile-footer-pay-btn:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: #091a36;
 }
 
 .mobile-footer-pay-btn:active {

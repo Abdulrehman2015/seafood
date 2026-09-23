@@ -946,19 +946,21 @@
     border-radius: 12px;
     font-weight: 800;
     font-size: 0.95rem;
-    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     border: none;
-    color: #ffffff;
+    color: #091a36;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 6px 18px rgba(29, 78, 216, 0.28);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
 }
 .rfq-btn-submit:hover {
-    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: #091a36;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(29, 78, 216, 0.35);
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45);
 }
 
 /* ════════════════════════════════════════

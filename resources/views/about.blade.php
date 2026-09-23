@@ -43,7 +43,7 @@
     <section class="about-section">
         <div class="about-who-grid">
             <div>
-                <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('about.section_1_eyebrow', '1. ABOUT MST — WHO WE ARE')</div>
+                <div class="section-eyebrow" style="color:#1d4ed8;font-weight:700;margin-bottom:8px">@t('about.section_1_eyebrow', '1. ABOUT MST — WHO WE ARE')</div>
                 <h2 style="font-family:var(--font-heading);font-size:clamp(1.6rem, 3.5vw, 2.2rem);color:#0f172a;margin-bottom:18px;line-height:1.3">
                     @t('about.section_1_title', 'From Johor Bahru Roots to a Regional & International Supply Platform')
                 </h2>
@@ -108,7 +108,7 @@
     <!-- ─── Section 2: Our Journey — Brand Story ────────────────────────────── -->
     <section class="about-section">
         <div style="text-align:center;max-width:700px;margin:0 auto 40px;">
-            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('about.section_2_eyebrow', '2. OUR JOURNEY — BRAND STORY')</div>
+            <div class="section-eyebrow" style="color:#1d4ed8;font-weight:700;margin-bottom:8px">@t('about.section_2_eyebrow', '2. OUR JOURNEY — BRAND STORY')</div>
             <h2 style="font-family:var(--font-heading);font-size:clamp(1.6rem, 3.5vw, 2.2rem);color:#0f172a;margin-bottom:12px;">
                 @t('about.section_2_title', 'Over a Decade of Growth')
             </h2>
@@ -159,7 +159,7 @@
     <!-- ─── Section 3: MST At A Glance — Company Facts ──────────────────────── -->
     <section class="about-section about-facts-wrapper">
         <div style="text-align:center;max-width:650px;margin:0 auto 36px;">
-            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('about.section_3_eyebrow', '3. MST AT A GLANCE — COMPANY FACTS')</div>
+            <div class="section-eyebrow" style="color:#1d4ed8;font-weight:700;margin-bottom:8px">@t('about.section_3_eyebrow', '3. MST AT A GLANCE — COMPANY FACTS')</div>
             <h2 style="font-family:var(--font-heading);font-size:clamp(1.5rem, 3vw, 2rem);color:#0f172a;margin-bottom:8px;">
                 @t('about.section_3_title', 'Fast Facts & Infrastructure')
             </h2>
@@ -221,7 +221,7 @@
     <!-- ─── Section 4: What Defines MST — Current Capabilities ──────────────── -->
     <section class="about-section">
         <div style="text-align:center;max-width:720px;margin:0 auto 40px;">
-            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('about.section_4_eyebrow', '4. WHAT DEFINES MST — CURRENT CAPABILITIES')</div>
+            <div class="section-eyebrow" style="color:#1d4ed8;font-weight:700;margin-bottom:8px">@t('about.section_4_eyebrow', '4. WHAT DEFINES MST — CURRENT CAPABILITIES')</div>
             <h2 style="font-family:var(--font-heading);font-size:clamp(1.6rem, 3.5vw, 2.2rem);color:#0f172a;margin-bottom:12px;">
                 @t('about.section_4_title', 'Five Pillars of Operational Reliability')
             </h2>
@@ -242,7 +242,7 @@
 
             <!-- 2. Customised Sourcing -->
             <div class="pillar-card">
-                <div class="pillar-icon" style="background:#ecfdf5;color:#059669;">🔍</div>
+                <div class="pillar-icon" style="background:#eff6ff;color:#2563eb;">🔍</div>
                 <h3 class="pillar-title">@t('about.pillar_2_title', 'CUSTOMISED SOURCING')</h3>
                 <p class="pillar-desc">
                     @t('about.pillar_2_desc', "Can't find what you need? Tell us what you are looking for — including product type, specifications, pack size, origin and quantity. Our sourcing network allows us to identify suitable products and supply options according to your requirements.")
@@ -251,7 +251,7 @@
 
             <!-- 3. Cold-Chain Integrity -->
             <div class="pillar-card">
-                <div class="pillar-icon" style="background:#eff6ff;color:#1d4ed8;">❄️</div>
+                <div class="pillar-icon" style="background:#eff6ff;color:#0284c7;">❄️</div>
                 <h3 class="pillar-title">@t('about.pillar_3_title', 'COLD-CHAIN INTEGRITY')</h3>
                 <p class="pillar-desc">
                     @t('about.pillar_3_desc', 'From receiving and storage to packing and dispatch, our temperature-controlled operations are designed to maintain product quality and cold-chain integrity throughout the supply chain. Our frozen storage operates within -18°C to -25°C, supporting proper handling and storage of frozen products.')
@@ -260,7 +260,7 @@
 
             <!-- 4. Reliable Supply -->
             <div class="pillar-card">
-                <div class="pillar-icon" style="background:#fff7ed;color:#ea580c;">🚚</div>
+                <div class="pillar-icon" style="background:#eff6ff;color:#1d4ed8;">🚚</div>
                 <h3 class="pillar-title">@t('about.pillar_4_title', 'RELIABLE SUPPLY & DELIVERY')</h3>
                 <p class="pillar-desc">
                     @t('about.pillar_4_desc', 'Our operations cover receiving, storage, packing, order preparation and dispatch. With our cold storage and distribution facility at SILC, we support regular stock supply as well as product-specific sourcing and growing customer requirements.')
@@ -269,7 +269,7 @@
 
             <!-- 5. Built to Scale -->
             <div class="pillar-card">
-                <div class="pillar-icon" style="background:#f5f3ff;color:#7c3aed;">📈</div>
+                <div class="pillar-icon" style="background:#fef3c7;color:#b45309;">📈</div>
                 <h3 class="pillar-title">@t('about.pillar_5_title', 'BUILT TO SCALE')</h3>
                 <p class="pillar-desc">
                     @t('about.pillar_5_desc', 'Our infrastructure and sourcing capabilities are designed to support increasing volumes and expanding regional and international markets. Whether you are a restaurant, food business, wholesaler, distributor or international buyer, we aim to be a reliable long-term sourcing and supply partner.')
@@ -284,7 +284,7 @@
             <!-- Focus & Creed -->
             <div class="creed-card">
                 <div>
-                    <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('about.section_5_eyebrow', '5. OUR FOCUS & CREED')</div>
+                    <div class="section-eyebrow" style="color:#1d4ed8;font-weight:700;margin-bottom:8px">@t('about.section_5_eyebrow', '5. OUR FOCUS & CREED')</div>
                     <h3 style="font-size:1.35rem;font-weight:800;color:#0f172a;margin-bottom:4px;line-height:1.35;">
                         @t('about.creed_title', 'Quality Products. Reliable Supply. Competitive Pricing. Consistent Service.')
                     </h3>
@@ -346,10 +346,10 @@
             <p style="color:#64748b;font-size:0.9rem;margin:0;">@t('about.cta_desc', "From regular supply requirements to product-specific sourcing, let's talk business.")</p>
         </div>
         <div class="about-cta-actions">
-            <a href="{{ route('shop.index') }}" class="btn btn-secondary" style="font-weight:700;padding:10px 20px;">
+            <a href="{{ route('shop.index') }}" class="btn btn-secondary" style="font-weight:700;padding:10px 20px;background:#eff6ff;color:#1d4ed8;border:1.5px solid #bfdbfe;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
                 @t('about.explore_products', 'Explore Products')
             </a>
-            <a href="{{ route('contact') }}" class="btn btn-primary" style="font-weight:700;padding:10px 22px;">
+            <a href="{{ route('contact') }}" class="btn btn-primary" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);color:#091a36;border:none;font-weight:800;padding:10px 22px;border-radius:10px;box-shadow:0 4px 14px rgba(245,158,11,0.35);text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
                 @t('about.request_quote', 'Request a Quote →')
             </a>
         </div>

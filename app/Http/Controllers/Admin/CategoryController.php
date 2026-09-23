@@ -33,14 +33,6 @@ class CategoryController extends Controller
             }
         }
 
-        if ($request->filled('featured')) {
-            if ($request->featured === 'yes') {
-                $query->where('is_featured', true);
-            } elseif ($request->featured === 'no') {
-                $query->where('is_featured', false);
-            }
-        }
-
         if ($request->filled('level')) {
             if ($request->level === 'root') {
                 $query->whereNull('parent_id');
@@ -62,7 +54,6 @@ class CategoryController extends Controller
         $stats = [
             'total'    => Category::count(),
             'active'   => Category::where('is_active', true)->count(),
-            'featured' => Category::where('is_featured', true)->count(),
             'root'     => Category::whereNull('parent_id')->count(),
         ];
 
@@ -88,14 +79,12 @@ class CategoryController extends Controller
             'parent_id'     => 'nullable|exists:categories,id',
             'sort_order'    => 'integer|min:0',
             'is_active'     => 'nullable|boolean',
-            'is_featured'   => 'nullable|boolean',
             'image'         => 'nullable',
             'gallery_image' => 'nullable|string|max:255',
         ]);
 
         $data['slug'] = !empty($data['slug']) ? Str::slug($data['slug']) : Str::slug($request->name);
         $data['is_active'] = $request->boolean('is_active');
-        $data['is_featured'] = $request->boolean('is_featured');
 
         if ($request->hasFile('image')) {
             $media = $this->imageService->upload($request->file('image'), 'categories');
@@ -128,13 +117,11 @@ class CategoryController extends Controller
             'parent_id'     => 'nullable|exists:categories,id',
             'sort_order'    => 'integer|min:0',
             'is_active'     => 'nullable|boolean',
-            'is_featured'   => 'nullable|boolean',
             'image'         => 'nullable',
             'gallery_image' => 'nullable|string|max:255',
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
-        $data['is_featured'] = $request->boolean('is_featured');
 
         if ($request->filled('slug')) {
             $customSlug = Str::slug($request->slug);
@@ -161,14 +148,6 @@ class CategoryController extends Controller
         $category->update($data);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
-    }
-
-    public function toggleFeatured(Category $category)
-    {
-        $category->update(['is_featured' => !$category->is_featured]);
-        $status = $category->is_featured ? 'featured on the homepage' : 'removed from homepage featured list';
-
-        return back()->with('success', "Category '{$category->name}' is now {$status}.");
     }
 
     public function destroy(Category $category)

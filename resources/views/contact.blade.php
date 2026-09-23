@@ -1202,9 +1202,11 @@
             <div class="contact-card-sub" style="margin-bottom:10px">
                 {{ $settings['store_address'] ?? 'No. 7, Jalan SiLC 2/18, Kawasan Perindustrian SiLC, 79200 Iskandar Puteri, Johor, Malaysia' }}
             </div>
-            <a href="{{ !empty($settings['store_map_url']) ? $settings['store_map_url'] : '#silc-facility' }}" {{ !empty($settings['store_map_url']) ? 'target="_blank" rel="noopener"' : '' }} style="margin-top:auto;font-size:0.82rem;font-weight:700;color:#2563eb;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
-                <span>@t('contact.view_on_google_maps', 'View on Google Maps →')</span>
-            </a>
+            <div style="margin-top:auto;padding-top:12px;width:100%">
+                <a href="{{ !empty($settings['store_map_url']) ? $settings['store_map_url'] : '#silc-facility' }}" {{ !empty($settings['store_map_url']) ? 'target="_blank" rel="noopener"' : '' }} style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:7px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
+                    <span>📍 @t('contact.view_on_google_maps', 'View Location') →</span>
+                </a>
+            </div>
         </div>
 
         <!-- Card 2: Direct Hotlines -->
@@ -1230,11 +1232,13 @@
                 @if(!empty($phone2))
                     <div><a href="tel:{{ $cleanPhone2 }}" style="color:#1d4ed8;font-weight:600;font-size:0.82rem;text-decoration:none">Alt: {{ $phone2 }}</a></div>
                 @endif
-                @if(!empty($phone3))
-                    <div><a href="https://wa.me/{{ (str_starts_with($cleanPhone3, '0') ? '60' . substr($cleanPhone3, 1) : $cleanPhone3) }}" target="_blank" rel="noopener" style="color:#1d4ed8;font-weight:600;font-size:0.82rem;text-decoration:none">WhatsApp: {{ $phone3 }}</a></div>
-                @endif
                 <div style="margin-top:4px;color:#64748b;font-size:0.78rem">{{ $settings['store_hours'] ?? 'Mon – Sat: 8:00 AM – 6:00 PM' }}</div>
                 <div style="color:#94a3b8;font-size:0.75rem">@t('contact.closed_val', 'Sunday & PH: Closed')</div>
+            </div>
+            <div style="margin-top:auto;padding-top:12px;width:100%">
+                <a href="tel:{{ $cleanPrimaryPhone }}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:7px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
+                    <span>📞 Call Hotline</span>
+                </a>
             </div>
         </div>
 
@@ -1258,6 +1262,11 @@
                     {{ !empty($settings['store_wholesale_email']) && !str_contains($settings['store_wholesale_email'], '@') ? $settings['store_wholesale_email'] : __t('contact.card3_sub', 'B2B Wholesale & Custom RFQ') }}
                 </div>
                 <div style="margin-top:4px;color:#64748b;font-size:0.78rem">@t('contact.card3_response', 'Response Target: Within 24 Hours')</div>
+            </div>
+            <div style="margin-top:auto;padding-top:12px;width:100%">
+                <a href="mailto:{{ $storeEmail }}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:7px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
+                    <span>✉️ Send Email</span>
+                </a>
             </div>
         </div>
 
@@ -1295,6 +1304,11 @@
             <div class="contact-card-sub">
                 <div style="color:#64748b;font-size:0.82rem">@t('contact.card4_sub1', 'Fast Chat & Inquiries')</div>
                 <div style="margin-top:2px;color:#94a3b8;font-size:0.78rem">@t('contact.card4_sub2', 'Live Support Online')</div>
+            </div>
+            <div style="margin-top:auto;padding-top:12px;width:100%">
+                <a href="{{ $waUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:#ffffff;font-size:0.82rem;font-weight:700;padding:7px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;box-shadow:0 2px 6px rgba(37,211,102,0.3);transition:transform 0.15s ease;">
+                    <span>💬 WhatsApp Us</span>
+                </a>
             </div>
         </div>
 

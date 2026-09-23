@@ -5,28 +5,28 @@
 
 @section('content')
 <!-- Page Header -->
-<div class="page-header" style="padding-top:calc(75px + var(--space-8));background:radial-gradient(ellipse at 50% 0%, #0f766e 0%, #064e3b 70%, #022c22 100%);color:white;border-bottom:1px solid #134e4a;padding-bottom:var(--space-10);position:relative;overflow:hidden">
-    <div style="position:absolute;inset:0;opacity:0.1;background-image:radial-gradient(#5eead4 1px, transparent 1px);background-size:24px 24px"></div>
+<div class="page-header" style="padding-top:calc(75px + var(--space-8));background:linear-gradient(135deg, #07152b 0%, #0c234b 45%, #1d4ed8 100%);color:white;border-bottom:1px solid #1e3a8a;padding-bottom:var(--space-10);position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:20px 20px"></div>
     <div class="container page-header-content" style="position:relative;z-index:2">
         <div class="breadcrumb" style="margin-bottom:var(--space-3)">
-            <a href="{{ route('home') }}" style="color:#a7f3d0;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🏠 Home</a>
-            <span class="breadcrumb-sep" style="color:#6ee7b7">›</span>
+            <a href="{{ route('home') }}" style="color:#bae6fd;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🏠 Home</a>
+            <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
             <span style="font-weight:600;color:#ffffff">Product Categories</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
             <div style="max-width:720px">
-                <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(20,184,166,0.25);border:1px solid rgba(94,234,212,0.4);padding:4px 12px;border-radius:999px;font-size:0.75rem;font-weight:700;color:#5eead4;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">
+                <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:4px 12px;border-radius:999px;font-size:0.75rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">
                     ❄️ Cold-Chain Sourcing &amp; Supply Platform
                 </span>
                 <h1 style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.9rem,4vw,2.8rem);margin-bottom:10px;letter-spacing:-0.02em;line-height:1.2">
                     Browse All Product Categories
                 </h1>
-                <p style="color:#ccfbf1;font-size:1.02rem;line-height:1.6;margin:0">
+                <p style="color:#e0f2fe;font-size:1.02rem;line-height:1.6;margin:0">
                     Supplying seafood, meat, frozen food and selected food ingredients to commercial customers across Malaysia, Singapore and regional markets.
                 </p>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
-                <a href="{{ route('shop.index') }}" class="btn btn-primary" style="background:#5eead4;color:#042f2e;font-weight:700;border:none;padding:10px 20px;border-radius:10px;display:inline-flex;align-items:center;gap:8px">
+                <a href="{{ route('shop.index') }}" class="btn btn-primary" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);color:#091a36;font-weight:800;border:none;padding:10px 20px;border-radius:10px;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 14px rgba(245,158,11,0.35)">
                     <span>View All Products</span>
                     <span>→</span>
                 </a>
@@ -243,10 +243,10 @@
     color: #0f172a;
 }
 .cat-filter-tab.active {
-    background: #0f766e;
+    background: #1d4ed8;
     color: #ffffff;
-    border-color: #0f766e;
-    box-shadow: 0 2px 8px rgba(15,118,110,0.25);
+    border-color: #1d4ed8;
+    box-shadow: 0 2px 8px rgba(29, 78, 216, 0.25);
 }
 
 .category-showcase-grid {
@@ -267,8 +267,8 @@
 
 .category-card-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 16px 32px rgba(15,118,110,0.12);
-    border-color: #99f6e4;
+    box-shadow: 0 16px 32px rgba(29, 78, 216, 0.1);
+    border-color: #bfdbfe;
 }
 
 .cat-card-img-wrapper {
@@ -300,7 +300,7 @@
     position: absolute;
     bottom: 12px;
     left: 12px;
-    background: rgba(15,118,110,0.9);
+    background: rgba(12, 35, 75, 0.9);
     backdrop-filter: blur(4px);
     color: #ffffff;
     font-size: 0.75rem;
@@ -348,7 +348,7 @@
 }
 
 .cat-card-title a:hover {
-    color: #0f766e;
+    color: #1d4ed8;
 }
 
 .cat-card-desc {
@@ -374,14 +374,14 @@
     gap: 6px;
     font-size: 0.84rem;
     font-weight: 700;
-    color: #0f766e;
+    color: #1d4ed8;
     text-decoration: none;
     transition: gap 0.15s ease, color 0.15s ease;
 }
 
 .cat-explore-link:hover {
     gap: 10px;
-    color: #115e59;
+    color: #1e40af;
 }
 
 .cat-wa-link {

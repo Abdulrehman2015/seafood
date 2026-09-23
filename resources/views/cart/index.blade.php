@@ -730,21 +730,22 @@
     justify-content: center;
     width: 100%;
     padding: 14px;
-    background: #1d4ed8;
-    color: #ffffff !important;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #091a36 !important;
     font-weight: 800;
     font-size: 1rem;
     border-radius: 12px;
     text-decoration: none;
     border: none;
-    box-shadow: 0 4px 14px rgba(29, 78, 216, 0.28);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
     transition: all 0.15s ease;
     cursor: pointer;
 }
 .btn-checkout:hover {
-    background: #1e40af;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: #091a36 !important;
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(29, 78, 216, 0.38);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
 }
 
 .summary-trust-badges {

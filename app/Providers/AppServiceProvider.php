@@ -53,33 +53,8 @@ class AppServiceProvider extends ServiceProvider
                 } else {
                     $view->with('settings', []);
                 }
-
-                if (\Illuminate\Support\Facades\Schema::hasTable('categories')) {
-                    $footerCategories = \Illuminate\Support\Facades\Cache::remember('footer.categories', 3600, function () {
-                        $featured = \App\Models\Category::where('is_active', true)
-                            ->where('is_featured', true)
-                            ->orderBy('sort_order')
-                            ->orderBy('name')
-                            ->take(8)
-                            ->get();
-
-                        if ($featured->isNotEmpty()) {
-                            return $featured;
-                        }
-
-                        return \App\Models\Category::where('is_active', true)
-                            ->orderBy('sort_order')
-                            ->orderBy('name')
-                            ->take(6)
-                            ->get();
-                    });
-                    $view->with('footerCategories', $footerCategories);
-                } else {
-                    $view->with('footerCategories', collect());
-                }
             } catch (\Throwable $e) {
                 $view->with('settings', []);
-                $view->with('footerCategories', collect());
             }
 
             // Share Multi-Currency Data with all views

@@ -3,56 +3,58 @@
 @section('meta_description', __t('shop.meta_desc', 'Explore seafood, meat, frozen foods, food ingredients and specialty products — with customised sourcing available across Malaysia, Singapore and regional markets.'))
 
 @section('content')
-<!-- Page Header / Hero -->
+<!-- Page Header / Hero Section (MST Deep Navy Brand Gradient — Matching About Us & Contact Us) -->
 <div class="products-hero-section">
-    <div class="products-hero-pattern" aria-hidden="true"></div>
-    <div class="container" style="position:relative;z-index:2">
-        <div class="breadcrumb" style="margin-bottom:12px">
-            <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none;font-size:0.85rem">
-                🏠 @t('nav.home', 'Home')
-            </a>
-            <span class="breadcrumb-sep" style="color:#60a5fa;margin:0 6px">›</span>
-            <span style="font-weight:600;color:#ffffff;font-size:0.85rem">@t('shop.catalogue_title', 'Products Catalogue')</span>
+    <div class="products-hero-grid-pattern"></div>
+    <div class="container products-hero-inner">
+        <div class="hero-content-left">
+            <div class="hero-breadcrumb">
+                <a href="{{ route('home') }}" class="hero-crumb-link">
+                    🏠 @t('nav.home', 'Home')
+                </a>
+                <span class="hero-crumb-sep">›</span>
+                <span class="hero-crumb-current">@t('shop.catalogue_title', 'Products Catalogue')</span>
+            </div>
+            
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+                <span class="hero-usp-pill">
+                    ❄️ @t('shop.usp_frozen', 'Cold-Chain Certified')
+                </span>
+                <span class="hero-usp-pill">
+                    🌏 @t('shop.usp_sourcing', 'Direct Sourcing')
+                </span>
+                <span style="color:#bae6fd;font-size:0.8rem">@t('about.cold_chain_supply', 'Regional & International Cold-Chain Supply')</span>
+            </div>
+
+            <h1 class="products-hero-title">
+                @t('shop.catalogue_title', 'Products Catalogue')
+            </h1>
+            
+            <p class="products-hero-subtitle">
+                @t('shop.catalogue_subtitle', 'Explore seafood, meat, frozen foods, food ingredients and selected specialty products — with customised sourcing available for items not currently listed.')
+            </p>
         </div>
 
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:20px">
-            <div style="max-width:780px">
-                <!-- Top USPs -->
-                <div class="products-hero-usps">
-                    <span class="hero-usp-pill">
-                        ❄️ @t('shop.usp_frozen', 'Temperature-Controlled Frozen Supply')
-                    </span>
-                    <span class="hero-usp-pill">
-                        🌏 @t('shop.usp_sourcing', 'Local & International Sourcing')
-                    </span>
+        <div class="hero-content-right">
+            @auth
+                <div class="user-tier-pill">
+                    ⭐ {{ match($group) {
+                        'retail' => __t('shop.retail_tier', 'Retail / Walk-in Tier'),
+                        'wholesale' => __t('shop.wholesale_tier', 'Wholesale Tier'),
+                        'trading' => __t('shop.trading_tier', 'Trading Partner Tier'),
+                        default => ucfirst($group) . ' Tier',
+                    } }}
                 </div>
-
-                <h1 class="products-hero-title">
-                    @t('shop.catalogue_title', 'Products Catalogue')
-                </h1>
-                <p class="products-hero-subtitle">
-                    @t('shop.catalogue_subtitle', 'Explore seafood, meat, frozen foods, food ingredients and selected specialty products — with customised sourcing available for items not currently listed.')
-                </p>
-            </div>
-
-            <!-- Customer Group Status Badge -->
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-                @auth
-                    <div class="user-tier-pill">
-                        ⭐ {{ match($group) {
-                            'retail' => __t('shop.retail_tier', 'Retail / Walk-in Tier'),
-                            'wholesale' => __t('shop.wholesale_tier', 'Wholesale Tier'),
-                            'trading' => __t('shop.trading_tier', 'Trading Partner Tier'),
-                            default => ucfirst($group) . ' Tier',
-                        } }}
-                    </div>
-                @endauth
-            </div>
+            @else
+                <div style="font-size:0.85rem;padding:6px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb;font-weight:600">
+                    @t('about.motto', 'Flow with Integrity, Grow with Strength.')
+                </div>
+            @endauth
         </div>
     </div>
 </div>
 
-<div class="container" style="padding-top:28px;padding-bottom:72px">
+<div class="container" style="padding-top:14px;padding-bottom:60px">
 
     @php
         $selectedCatSlug = request('category');
@@ -104,51 +106,7 @@
         if (!empty(request('availability'))) $activeFilterCount++;
     @endphp
 
-    <!-- ─── 1. Customer Type Selector & Business Pricing Banner ─── -->
-    <div class="customer-type-bar">
-        <div class="customer-type-label">
-            <span>@t('shop.shopping_for', 'Shopping for:')</span>
-        </div>
-        <div class="customer-type-toggle">
-            <button type="button" 
-               onclick="setCustomerType('retail')" 
-               class="cust-type-btn {{ $currentCustomerType === 'retail' ? 'active' : '' }}">
-                <span>🛍️ @t('shop.type_retail', 'Retail / Walk-in')</span>
-            </button>
-            <button type="button" 
-               onclick="setCustomerType('wholesale')" 
-               class="cust-type-btn {{ $currentCustomerType === 'wholesale' ? 'active' : '' }}">
-                <span>🏢 @t('shop.type_wholesale', 'Wholesale / Business')</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Business Pricing Sign-in Callout if Wholesale selected & not logged in as wholesale -->
-    @if($currentCustomerType === 'wholesale' && (!auth()->check() || $group === 'retail'))
-        <div class="business-pricing-banner" id="businessPricingBanner">
-            <div class="business-banner-left">
-                <div class="business-banner-icon">💼</div>
-                <div>
-                    <h3 class="business-banner-title">
-                        @t('shop.business_banner_title', 'Buying for Business? Sign in for Wholesale & Trading Pricing.')
-                    </h3>
-                    <p class="business-banner-sub">
-                        @t('shop.business_banner_desc', 'Verified commercial accounts access volume tier pricing, flexible MOQ, consolidated cold-chain delivery and invoice terms.')
-                    </p>
-                </div>
-            </div>
-            <div class="business-banner-actions">
-                <a href="{{ route('login') }}" class="btn-biz-signin">
-                    @t('auth.sign_in', 'Sign In')
-                </a>
-                <a href="{{ route('quotations.create') }}" class="btn-biz-access">
-                    @t('shop.request_wholesale_access', 'Request Wholesale Access →')
-                </a>
-            </div>
-        </div>
-    @endif
-
-    <!-- ─── 2. Search & Multi-Filter Bar ─── -->
+    <!-- ─── Search & Multi-Filter Bar ─── -->
     <div class="shop-filter-bar">
         <form method="GET" action="{{ route('shop.index') }}" class="shop-filter-form" id="shopFilterForm" onsubmit="event.preventDefault(); applyShopFilters();">
             <input type="hidden" name="customer_type" id="hidden_customer_type" value="{{ $currentCustomerType }}">
@@ -160,40 +118,63 @@
             <input type="hidden" name="availability" id="hidden_availability" value="{{ request('availability') }}">
             <input type="hidden" name="sort" id="hiddenSortInput" value="{{ request('sort', 'sort_order') }}">
 
-            <!-- Search input & Mobile Filter Toggle Row -->
+            <!-- Search input & Customer Mode Toggle & Mobile Filter Toggle Row -->
             <div class="shop-search-filter-controls">
-                <div class="shop-search-wrapper">
-                    <svg class="search-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="text" name="search" id="shopMainSearchInput" class="shop-main-search-input" 
-                           placeholder="@t('shop.search_placeholder_master', 'Search by product name, category, brand or item code...')" 
-                           value="{{ request('search') }}" autocomplete="off">
-                    <button type="button" class="search-clear-btn" id="searchClearBtn" onclick="clearSearchInput(event)" style="{{ request('search') ? '' : 'display:none;' }}" title="Clear">✕</button>
+                <div class="shop-search-main-row">
+                    <div class="shop-search-wrapper">
+                        <svg class="search-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" name="search" id="shopMainSearchInput" class="shop-main-search-input" 
+                               placeholder="@t('shop.search_placeholder_master', 'Search seafood, meat, ingredients, brands...')" 
+                               value="{{ request('search') }}" autocomplete="off">
+                        <button type="button" class="search-clear-btn" id="searchClearBtn" onclick="clearSearchInput(event)" style="{{ request('search') ? '' : 'display:none;' }}" title="Clear">✕</button>
+                    </div>
+
+                    <!-- Mobile Filter Toggle Button -->
+                    <button type="button" class="btn-mobile-filter-toggle {{ $activeFilterCount > 0 ? 'has-active-filters' : '' }}" id="mobileFilterToggleBtn" onclick="toggleMobileFilters()" aria-label="Toggle Filters">
+                        <span class="btn-filter-content">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="4" y1="21" x2="4" y2="14"></line>
+                                <line x1="4" y1="10" x2="4" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12" y2="3"></line>
+                                <line x1="20" y1="21" x2="20" y2="16"></line>
+                                <line x1="20" y1="12" x2="20" y2="3"></line>
+                                <line x1="1" y1="14" x2="7" y2="14"></line>
+                                <line x1="9" y1="8" x2="15" y2="8"></line>
+                                <line x1="17" y1="16" x2="23" y2="16"></line>
+                            </svg>
+                            <span class="btn-filter-text">@t('shop.filters_btn', 'Filters')</span>
+                            <span class="mobile-filter-count-badge" id="mobileFilterCountBadge" style="{{ $activeFilterCount > 0 ? 'display:inline-flex;' : 'display:none;' }}">{{ $activeFilterCount }}</span>
+                        </span>
+                        <svg class="mobile-filter-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
                 </div>
 
-                <!-- Mobile Filter Toggle Button -->
-                <button type="button" class="btn-mobile-filter-toggle {{ $activeFilterCount > 0 ? 'has-active-filters' : '' }}" id="mobileFilterToggleBtn" onclick="toggleMobileFilters()" aria-label="Toggle Filters">
-                    <span class="btn-filter-content">
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="4" y1="21" x2="4" y2="14"></line>
-                            <line x1="4" y1="10" x2="4" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12" y2="3"></line>
-                            <line x1="20" y1="21" x2="20" y2="16"></line>
-                            <line x1="20" y1="12" x2="20" y2="3"></line>
-                            <line x1="1" y1="14" x2="7" y2="14"></line>
-                            <line x1="9" y1="8" x2="15" y2="8"></line>
-                            <line x1="17" y1="16" x2="23" y2="16"></line>
-                        </svg>
-                        <span class="btn-filter-text">@t('shop.filters_btn', 'Filters')</span>
-                        <span class="mobile-filter-count-badge" id="mobileFilterCountBadge" style="{{ $activeFilterCount > 0 ? 'display:inline-flex;' : 'display:none;' }}">{{ $activeFilterCount }}</span>
-                    </span>
-                    <svg class="mobile-filter-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                </button>
+                <!-- Shopping Mode Toggle -->
+                <div class="customer-type-inline-wrap">
+                    <span class="cust-mode-label">@t('shop.shopping_for', 'Shopping for:')</span>
+                    <div class="customer-type-toggle">
+                        <button type="button" 
+                           onclick="setCustomerType('retail')" 
+                           data-type="retail"
+                           class="cust-type-btn {{ $currentCustomerType === 'retail' ? 'active' : '' }}"
+                           title="Retail / Walk-in Catalog">
+                            <span>🛍️ @t('shop.type_retail', 'Retail / Walk-in')</span>
+                        </button>
+                        <button type="button" 
+                           onclick="setCustomerType('wholesale')" 
+                           data-type="wholesale"
+                           class="cust-type-btn {{ $currentCustomerType === 'wholesale' ? 'active' : '' }}"
+                           title="Wholesale / Business Supply">
+                            <span>🏢 @t('shop.type_wholesale', 'Wholesale')</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- 6 Searchable Dropdown Filters -->
@@ -453,6 +434,31 @@
             </div>
         </form>
     </div>
+
+    <!-- Business Pricing Sign-in Callout if Wholesale selected & not logged in as wholesale -->
+    @if($currentCustomerType === 'wholesale' && (!auth()->check() || $group === 'retail'))
+        <div class="business-pricing-banner" id="businessPricingBanner">
+            <div class="business-banner-left">
+                <div class="business-banner-icon">💼</div>
+                <div>
+                    <h3 class="business-banner-title">
+                        @t('shop.business_banner_title', 'Buying for Business? Sign in for Wholesale & Trading Pricing.')
+                    </h3>
+                    <p class="business-banner-sub">
+                        @t('shop.business_banner_desc', 'Verified commercial accounts access volume tier pricing, flexible MOQ, consolidated cold-chain delivery and invoice terms.')
+                    </p>
+                </div>
+            </div>
+            <div class="business-banner-actions">
+                <a href="{{ route('login') }}" class="btn-biz-signin">
+                    @t('auth.sign_in', 'Sign In')
+                </a>
+                <a href="{{ route('quotations.create') }}" class="btn-biz-access">
+                    @t('shop.request_wholesale_access', 'Request Wholesale Access →')
+                </a>
+            </div>
+        </div>
+    @endif
 
     <!-- ─── Main Shop Content (AJAX Updated) ─── -->
     <div id="shopMainContent">
@@ -867,17 +873,17 @@
                         @csrf
                         <input type="hidden" name="product_id" id="qvProductId">
                         <div style="display:flex;gap:10px">
-                            <input type="number" name="quantity" id="qvQty" value="1" min="1" class="quickview-qty-input" style="width:70px;height:42px;border:1px solid #cbd5e1;border-radius:8px;text-align:center;font-weight:600">
-                            <button type="submit" class="btn btn-primary" style="flex:1;height:42px;background:#2563eb;border-color:#2563eb;font-weight:600;border-radius:8px;cursor:pointer">
-                                🛒 @t('shop.add_to_cart', 'Add to Cart')
+                            <input type="number" name="quantity" id="qvQty" value="1" min="1" class="quickview-qty-input" style="width:70px;height:44px;border:1.5px solid #cbd5e1;border-radius:10px;text-align:center;font-weight:700;font-size:0.95rem">
+                            <button type="submit" class="btn btn-primary" style="flex:1;height:44px;background:#2563eb;border:none;color:#ffffff !important;font-weight:700;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 10px rgba(37,99,235,0.3)">
+                                🛒 <span style="color:#ffffff !important">@t('shop.add_to_cart', 'Add to Cart')</span>
                             </button>
                         </div>
                     </form>
-                    <a href="#" id="qvRfqLink" class="btn btn-primary" onclick="closeQuickViewModal()" style="display:none;flex:1;height:42px;background:#2563eb;color:#fff;font-weight:600;border-radius:8px;text-decoration:none;align-items:center;justify-content:center">
-                        📋 @t('shop.request_quote', 'Request a Quote')
+                    <a href="#" id="qvRfqLink" class="btn btn-primary" onclick="closeQuickViewModal()" style="display:none;flex:1;height:44px;background:#2563eb;color:#ffffff !important;font-weight:700;border-radius:10px;text-decoration:none;align-items:center;justify-content:center;gap:6px">
+                        📋 <span style="color:#ffffff !important">@t('shop.request_quote', 'Request a Quote')</span>
                     </a>
-                    <a href="#" id="qvDetailsLink" class="btn btn-secondary" onclick="closeQuickViewModal()" style="height:42px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;font-weight:600;border-radius:8px;text-decoration:none">
-                        @t('shop.details', 'Full Details →')
+                    <a href="#" id="qvDetailsLink" class="btn btn-secondary" onclick="closeQuickViewModal()" style="height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;font-weight:700;border-radius:10px;text-decoration:none">
+                        @t('shop.details', 'Details')
                     </a>
                 </div>
             </div>
@@ -1050,16 +1056,22 @@
     align-items: center;
 }
 .quickview-actions .btn-primary {
-    background: #f59e0b;
-    color: #091a36;
+    background: #2563eb;
+    color: #ffffff !important;
     border: none;
     font-weight: 700;
     border-radius: 10px;
     transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 .quickview-actions .btn-primary:hover {
-    background: #d97706;
-    color: #091a36;
+    background: #1d4ed8;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 .quickview-actions .btn-secondary {
     background: #f1f5f9;
@@ -1073,19 +1085,19 @@
     background: #e2e8f0;
     color: #0f172a;
 }
-/* ─── Hero Section ─────────────────────────────────────────────── */
+/* ─── Hero Section (MST Deep Navy Gradient — Matching About Us & Contact Us) ─── */
 .products-hero-section {
     position: relative;
+    overflow: hidden;
     background: linear-gradient(135deg, #07152b 0%, #0c234b 45%, #1d4ed8 100%);
     color: #ffffff;
     border-bottom: 1px solid rgba(37, 99, 235, 0.35);
     padding-top: calc(78px + 28px);
-    padding-bottom: 36px;
-    overflow: hidden;
+    padding-bottom: 32px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-.products-hero-pattern {
+.products-hero-grid-pattern {
     position: absolute;
     inset: 0;
     opacity: 0.08;
@@ -1093,11 +1105,53 @@
     background-size: 24px 24px;
     pointer-events: none;
 }
-.products-hero-usps {
+.products-hero-inner {
+    position: relative;
+    z-index: 2;
     display: flex;
-    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
-    margin-bottom: 12px;
+    gap: 16px;
+}
+.hero-content-left {
+    max-width: 820px;
+}
+.hero-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    margin-bottom: 8px;
+}
+.hero-crumb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #bae6fd;
+    text-decoration: none;
+    font-weight: 500;
+}
+.hero-crumb-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+.hero-crumb-sep {
+    color: #60a5fa;
+    margin: 0 2px;
+}
+.hero-crumb-current {
+    color: #ffffff;
+    font-weight: 600;
+}
+.products-hero-title {
+    font-family: var(--font-heading, 'Outfit', sans-serif);
+    font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
 }
 .hero-usp-pill {
     display: inline-flex;
@@ -1105,85 +1159,79 @@
     gap: 6px;
     background: rgba(56, 189, 248, 0.16);
     border: 1px solid rgba(186, 230, 253, 0.35);
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 999px;
-    font-size: 0.76rem;
-    font-weight: 500;
-    color: #7dd3fc;
-    letter-spacing: 0.02em;
-}
-.products-hero-title {
-    font-family: var(--font-heading, inherit);
-    font-size: clamp(1.85rem, 3.8vw, 2.5rem);
+    font-size: 0.72rem;
     font-weight: 700;
-    color: #ffffff;
-    margin: 0 0 8px;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
+    color: #7dd3fc;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 .products-hero-subtitle {
     font-size: 0.96rem;
     color: #e0f2fe;
-    line-height: 1.6;
+    line-height: 1.55;
     margin: 0;
     font-weight: 400;
+    max-width: 760px;
 }
 .user-tier-pill {
-    font-size: 0.84rem;
-    padding: 7px 16px;
+    font-size: 0.85rem;
+    padding: 6px 14px;
     border-radius: 999px;
-    background: rgba(9, 26, 54, 0.85);
+    background: #091a36;
     color: #7dd3fc;
-    border: 1px solid rgba(59, 130, 246, 0.6);
-    backdrop-filter: blur(8px);
+    border: 1px solid #2563eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
-/* ─── 1. Customer Type Bar ───────────────────────────────────────── */
-.customer-type-bar {
-    display: flex;
+/* ─── 1. Shopping Mode Switcher (Inline with Search) ─────────────── */
+.customer-type-inline-wrap {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    background: #ffffff;
-    padding: 12px 20px;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-    margin-bottom: 20px;
-    -webkit-font-smoothing: antialiased;
+    gap: 8px;
+    flex-shrink: 0;
 }
-.customer-type-label {
-    font-size: 0.88rem;
+.cust-mode-label {
+    font-size: 0.82rem;
     font-weight: 600;
-    color: #0f172a;
-    letter-spacing: 0.01em;
+    color: #475569;
+    white-space: nowrap;
 }
 .customer-type-toggle {
     display: inline-flex;
     background: #f1f5f9;
-    padding: 4px;
-    border-radius: 12px;
-    gap: 4px;
+    padding: 3px;
+    border-radius: 10px;
+    gap: 3px;
+    border: 1px solid #e2e8f0;
 }
 .cust-type-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 7px 16px;
-    border-radius: 9px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    text-decoration: none;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: none;
+    background: transparent;
     color: #475569;
-    transition: all 0.18s ease;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+.cust-type-btn:hover {
+    color: #0c234b;
 }
 .cust-type-btn.active {
     background: #2563eb;
     color: #ffffff;
-    font-weight: 600;
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
 }
 
 /* ─── Business Banner ───────────────────────────────────────────── */
@@ -1263,46 +1311,57 @@
 .shop-filter-bar {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+.shop-search-filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
 }
 .shop-search-wrapper {
     position: relative;
     display: flex;
     align-items: center;
-    margin-bottom: 12px;
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 0;
 }
 .search-svg {
     position: absolute;
-    left: 14px;
+    left: 12px;
     color: #64748b;
     pointer-events: none;
 }
 .shop-main-search-input {
     width: 100%;
-    height: 46px;
-    padding: 0 40px 0 42px;
-    border: 1.5px solid #cbd5e1;
-    border-radius: 12px;
-    font-size: 0.92rem;
+    height: 38px;
+    padding: 0 36px 0 38px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    font-size: 0.88rem;
     color: #0f172a;
+    background: #ffffff;
     outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: all 0.15s ease;
     box-sizing: border-box;
 }
 .shop-main-search-input:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 .search-clear-btn {
     position: absolute;
-    right: 14px;
+    right: 12px;
     color: #94a3b8;
-    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 .shop-filters-row {
     display: grid;
@@ -1316,13 +1375,13 @@
 }
 .searchable-dropdown-trigger {
     width: 100%;
-    height: 42px;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
+    height: 36px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
     padding: 0 10px;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    color: #1e293b;
+    color: #334155;
     background: #f8fafc;
     outline: none;
     cursor: pointer;
@@ -1519,32 +1578,40 @@
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 14px;
 }
 .results-header-left {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.results-count-text {
+    font-size: 0.88rem;
+    color: #475569;
+}
+.results-count-text strong {
+    color: #0c234b;
 }
 .sort-searchable-dropdown {
-    min-width: 190px;
+    min-width: 175px;
 }
 .sort-dropdown-trigger {
-    height: 38px;
+    height: 34px;
     padding: 0 12px;
     background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    font-size: 0.82rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.8rem;
     font-weight: 500;
     color: #334155;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     -webkit-appearance: none;
     appearance: none;
 }
 .sort-dropdown-trigger:hover {
-    border-color: #3b82f6;
+    border-color: #93c5fd;
     color: #1d4ed8;
 }
 .sort-dropdown-menu {
@@ -2086,12 +2153,12 @@
 /* ─── 6. Custom Sourcing Banner ─────────────────────────────────── */
 .custom-sourcing-banner {
     margin-top: 48px;
-    background: linear-gradient(135deg, #06152b 0%, #0c2146 45%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #f0f7ff 0%, #e8f0fe 100%);
     border-radius: 20px;
     padding: 36px 32px;
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 12px 32px rgba(6, 21, 43, 0.12);
+    color: #0f172a;
+    border: 1px solid #bfdbfe;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2102,46 +2169,47 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(37, 99, 235, 0.12);
+    border: 1px solid #bfdbfe;
     padding: 4px 12px;
     border-radius: 999px;
     font-size: 0.72rem;
     font-weight: 700;
-    color: #93c5fd;
+    color: #1d4ed8;
     letter-spacing: 0.06em;
     margin-bottom: 10px;
 }
 .sourcing-banner-head {
     font-size: 1.45rem;
     font-weight: 800;
-    color: #ffffff;
+    color: #091a36;
     margin: 0 0 4px;
 }
 .sourcing-banner-subhead {
     font-size: 1.15rem;
     font-weight: 700;
-    color: #7dd3fc;
+    color: #1d4ed8;
     margin: 0 0 10px;
 }
 .sourcing-banner-p {
     font-size: 0.92rem;
-    color: #e0f2fe;
+    color: #475569;
     line-height: 1.6;
     max-width: 680px;
     margin: 0;
 }
 .btn-sourcing-action {
-    background: #2563eb;
-    color: #ffffff;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: #091a36;
     padding: 12px 24px;
     border-radius: 10px;
-    font-weight: 700;
+    font-weight: 800;
     font-size: 0.92rem;
     text-decoration: none;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
     display: inline-block;
     white-space: nowrap;
+    border: 1px solid #f59e0b;
 }
 
 /* ─── 7. Wholesale Supply CTA ────────────────────────────────────── */
@@ -2177,7 +2245,7 @@
     flex-wrap: wrap;
 }
 .btn-wholesale-access {
-    background: #0f172a;
+    background: #1d4ed8;
     color: #ffffff;
     padding: 11px 22px;
     border-radius: 10px;
@@ -2187,7 +2255,7 @@
     transition: background 0.15s ease;
 }
 .btn-wholesale-access:hover {
-    background: #1e293b;
+    background: #1e40af;
 }
 .btn-wholesale-quote {
     background: #2563eb;
@@ -2202,8 +2270,19 @@
 
 /* ─── Search & Mobile Filter Controls ─────────────────────────────── */
 .shop-search-filter-controls {
-    display: block;
-    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.shop-search-main-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
 }
 .btn-mobile-filter-toggle {
     display: none;
@@ -2227,32 +2306,58 @@
 @media (max-width: 900px) {
     .shop-search-filter-controls {
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        align-items: stretch;
         gap: 10px;
         margin-bottom: 0;
     }
+    .shop-search-main-row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
     .shop-search-wrapper {
         flex: 1;
+        min-width: 0;
         margin-bottom: 0 !important;
+    }
+    .customer-type-inline-wrap {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .customer-type-toggle {
+        flex: 1;
+        display: flex;
+        width: 100%;
+    }
+    .cust-type-btn {
+        flex: 1;
+        justify-content: center;
+        text-align: center;
+        padding: 7px 8px;
+        font-size: 0.8rem;
     }
     .btn-mobile-filter-toggle {
         display: inline-flex !important;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
-        height: 46px;
-        padding: 0 16px;
+        gap: 6px;
+        height: 38px;
+        padding: 0 12px;
         background: #ffffff;
-        border: 1.5px solid #cbd5e1;
-        border-radius: 12px;
-        font-size: 0.88rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        font-size: 0.82rem;
         font-weight: 600;
         color: #1e293b;
         cursor: pointer;
         white-space: nowrap;
         flex-shrink: 0;
         transition: all 0.18s ease;
-        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
     }
     .btn-mobile-filter-toggle:hover {
         border-color: #3b82f6;
@@ -2406,20 +2511,42 @@
         min-width: 100% !important;
         max-width: 100% !important;
     }
-    .customer-type-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px 14px;
+    .customer-type-inline-wrap {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .cust-mode-label {
+        font-size: 0.75rem;
+        color: #64748b;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
     .customer-type-toggle {
+        flex: 1;
         width: 100%;
+        display: flex;
     }
     .cust-type-btn {
         flex: 1;
         justify-content: center;
-        font-size: 0.78rem;
-        padding: 6px 10px;
+        font-size: 0.76rem;
+        padding: 6px 6px;
+        min-width: 0;
+        white-space: nowrap;
     }
+}
+
+@media (max-width: 420px) {
+    .cust-mode-label {
+        display: none;
+    }
+    .cust-type-btn {
+        font-size: 0.74rem;
+        padding: 6px 4px;
+    }
+}
     .shop-results-header {
         flex-direction: column;
         align-items: flex-start;
@@ -2523,11 +2650,16 @@ function setCustomerType(type) {
     if (hiddenInput) {
         hiddenInput.value = type;
     }
-    document.querySelectorAll('.cust-type-btn').forEach(btn => btn.classList.remove('active'));
-    if (type === 'retail') {
-        document.querySelector('.cust-type-btn:first-child')?.classList.add('active');
-    } else {
-        document.querySelector('.cust-type-btn:last-child')?.classList.add('active');
+    document.querySelectorAll('.cust-type-btn').forEach(btn => {
+        if (btn.getAttribute('data-type') === type) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    const bizBanner = document.getElementById('businessPricingBanner');
+    if (bizBanner) {
+        bizBanner.style.display = (type === 'wholesale') ? 'flex' : 'none';
     }
     applyShopFilters();
 }
@@ -2646,6 +2778,9 @@ async function applyShopFilters(targetUrl = null, pushState = true) {
     if (mainContent) {
         mainContent.classList.add('is-loading');
     }
+    if (typeof showPageLoader === 'function') {
+        showPageLoader('Loading catalogue items...');
+    }
 
     try {
         const response = await fetch(fetchUrl, {
@@ -2746,6 +2881,11 @@ async function applyShopFilters(targetUrl = null, pushState = true) {
             window.history.pushState({ url: fetchUrl }, '', fetchUrl);
         }
 
+        // 8. Re-format currencies on updated products
+        if (window.AppCurrency && typeof updatePageCurrencies === 'function') {
+            updatePageCurrencies(window.AppCurrency.current || 'MYR');
+        }
+
     } catch (err) {
         if (err.name !== 'AbortError') {
             console.error('Filter AJAX error:', err);
@@ -2753,6 +2893,9 @@ async function applyShopFilters(targetUrl = null, pushState = true) {
     } finally {
         if (mainContent) {
             mainContent.classList.remove('is-loading');
+        }
+        if (typeof hidePageLoader === 'function') {
+            setTimeout(hidePageLoader, 150);
         }
     }
 }
