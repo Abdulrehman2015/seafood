@@ -241,20 +241,40 @@ Route::get('/cdn-assets/js/{file}', function (string $file) {
 
 // Cookie-free CDN route for images (Pingdom: cookie-free domains + Expires headers)
 Route::get('/cdn-assets/img/{path}', function (string $path) {
-    $path = str_replace(['..', '\\'], '', $path);
+    // Sanitize path against null bytes and traversal
+    $path = str_replace(["\0", '..', '\\'], '', $path);
+    $path = ltrim($path, '/');
+
+    // Strict image extension whitelist
+    $allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'ico', 'avif'];
+    $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+    if (!in_array($ext, $allowedExts, true)) {
+        abort(404);
+    }
 
     $candidates = [
         storage_path('app/public/' . $path),
         public_path('storage/' . $path),
         public_path('images/' . $path),
-        public_path($path),
     ];
 
     $filePath = null;
+    $allowedBases = array_filter([
+        realpath(storage_path('app/public')),
+        realpath(public_path('storage')),
+        realpath(public_path('images')),
+    ]);
+
     foreach ($candidates as $candidate) {
-        if (file_exists($candidate) && is_file($candidate)) {
-            $filePath = $candidate;
-            break;
+        $real = realpath($candidate);
+        if ($real && is_file($real)) {
+            // Ensure resolved path is strictly inside allowed media directories
+            foreach ($allowedBases as $base) {
+                if (str_starts_with($real, $base)) {
+                    $filePath = $real;
+                    break 2;
+                }
+            }
         }
     }
 
@@ -267,8 +287,8 @@ Route::get('/cdn-assets/img/{path}', function (string $path) {
         'png'  => 'image/png',  'gif'  => 'image/gif',
         'webp' => 'image/webp', 'svg'  => 'image/svg+xml',
         'ico'  => 'image/x-icon',
+        'avif' => 'image/avif',
     ];
-    $ext  = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
     $mime = $mimeMap[$ext] ?? mime_content_type($filePath);
     $content = file_get_contents($filePath);
     $etag = '"' . md5($content) . '"';
@@ -354,7 +374,7 @@ Route::match(['get', 'post'], '/api/verify-registration-field', function (\Illum
     }
 
     return response()->json(['valid' => true]);
-})->name('register.verify_field');
+})->middleware('throttle:30,1')->name('register.verify_field');
 
 // Approval status live API check
 Route::get('/api/check-approval-status', function () {
@@ -382,7 +402,7 @@ Route::get('/api/check-approval-status', function () {
         'status'    => $user->approval_status,
         'redirect'  => $redirect,
     ]);
-})->name('approval.check_status');
+})->middleware('throttle:60,1')->name('approval.check_status');
 
 // ─── Localized Application Routes ({locale} = en, zh, bm) ─────────────────────
 Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function () {
@@ -688,4 +708,4 @@ Route::get('/map-tile/{z}/{x}/{y}', function ($z, $x, $y) {
     return response($data, 200)
         ->header('Content-Type', 'image/png')
         ->header('Cache-Control', 'public, max-age=86400');
-})->whereNumber(['z', 'x', 'y']);
+})->whereNumber(['z', 'x', 'y'])->middleware('throttle:120,1');

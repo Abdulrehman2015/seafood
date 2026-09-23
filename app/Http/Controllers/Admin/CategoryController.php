@@ -79,7 +79,7 @@ class CategoryController extends Controller
             'parent_id'     => 'nullable|exists:categories,id',
             'sort_order'    => 'integer|min:0',
             'is_active'     => 'nullable|boolean',
-            'image'         => 'nullable',
+            'image'         => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:8192',
             'gallery_image' => 'nullable|string|max:255',
         ]);
 
@@ -117,7 +117,7 @@ class CategoryController extends Controller
             'parent_id'     => 'nullable|exists:categories,id',
             'sort_order'    => 'integer|min:0',
             'is_active'     => 'nullable|boolean',
-            'image'         => 'nullable',
+            'image'         => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:8192',
             'gallery_image' => 'nullable|string|max:255',
         ]);
 

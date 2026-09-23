@@ -231,10 +231,11 @@ class ProductController extends Controller
             'is_featured'        => 'nullable|boolean',
             'is_rfq_only'        => 'nullable|boolean',
             'sort_order'         => 'integer|min:0',
-            'thumbnail'          => 'nullable',
-            'gallery_thumbnail'  => 'nullable|string',
+            'thumbnail'          => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'gallery_thumbnail'  => 'nullable|string|max:255',
             'gallery_images'     => 'nullable',
-            'images.*'           => 'nullable',
+            'images'             => 'nullable|array',
+            'images.*'           => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:10240',
         ]);
     }
 }

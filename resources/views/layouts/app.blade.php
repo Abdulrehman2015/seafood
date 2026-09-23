@@ -217,6 +217,33 @@
             background-color: #ffffff;
         }
 
+        /* ─── Navbar Desktop Fluid Layout & No-Wrap Guarantee ─── */
+        .nav-container {
+            max-width: 1400px !important;
+            width: 100% !important;
+        }
+        @media (min-width: 1161px) {
+            .nav-link {
+                white-space: nowrap !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex-shrink: 0 !important;
+                padding: 6px clamp(8px, 0.75vw, 14px) !important;
+                font-size: clamp(0.82rem, 0.85vw, 0.925rem) !important;
+            }
+            .nav-links {
+                display: flex !important;
+                align-items: center !important;
+                gap: clamp(2px, 0.5vw, 8px) !important;
+                flex-shrink: 0 !important;
+            }
+            .nav-actions {
+                gap: clamp(4px, 0.5vw, 10px) !important;
+                flex-shrink: 0 !important;
+            }
+        }
+
         /* ─── Footer: Deep Navy — Premium Professional Ending ─── */
         .footer {
             position: relative !important;

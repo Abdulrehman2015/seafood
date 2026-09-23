@@ -85,14 +85,69 @@
 
         $activeSubCat = $activeParentCat && $selectedSubSlug ? $activeParentCat->children->firstWhere('slug', $selectedSubSlug) : null;
         
-        $catIcons = [
-            'seafood' => '🦐',
-            'meat' => '🥩',
-            'frozen-food' => '🥟',
-            'food-ingredients' => '🧂',
-            'cuisine-ingredients' => '🍳',
-            'desserts' => '🍡',
+        $originFlags = [
+            'norway'        => '🇳🇴',
+            'malaysia'      => '🇲🇾',
+            'indonesia'     => '🇮🇩',
+            'japan'         => '🇯🇵',
+            'australia'     => '🇦🇺',
+            'new zealand'   => '🇳🇿',
+            'chile'         => '🇨🇱',
+            'china'         => '🇨🇳',
+            'india'         => '🇮🇳',
+            'thailand'      => '🇹🇭',
+            'vietnam'       => '🇻🇳',
+            'usa'           => '🇺🇸',
+            'united states' => '🇺🇸',
+            'canada'        => '🇨🇦',
+            'taiwan'        => '🇹🇼',
+            'korea'         => '🇰🇷',
+            'singapore'     => '🇸🇬',
+            'local'         => '🇲🇾',
         ];
+
+        $getOriginFlag = function($orig) use ($originFlags) {
+            if (!$orig) return '🌍';
+            $lower = strtolower(trim($orig));
+            foreach ($originFlags as $k => $flag) {
+                if (str_contains($lower, $k)) return $flag;
+            }
+            return '🌍';
+        };
+
+        $catIcons = [
+            'seafood'             => '🦐',
+            'fish'                => '🐟',
+            'salmon'              => '🐟',
+            'crab'                => '🦀',
+            'crustacean'          => '🦀',
+            'prawn'               => '🦐',
+            'shrimp'              => '🦐',
+            'squid'               => '🦑',
+            'shellfish'           => '🦪',
+            'meat'                => '🥩',
+            'beef'                => '🥩',
+            'chicken'             => '🍗',
+            'poultry'             => '🍗',
+            'frozen-food'         => '🥟',
+            'dim-sum'             => '🥟',
+            'food-ingredients'    => '🧂',
+            'cuisine-ingredients' => '🍳',
+            'desserts'            => '🍡',
+            'hotpot'              => '🍲',
+            'soup'                => '🍲',
+        ];
+
+        $getCatIcon = function($cat) use ($catIcons) {
+            if (!$cat) return '📁';
+            $slug = is_object($cat) ? ($cat->slug ?? '') : strval($cat);
+            $name = is_object($cat) ? ($cat->name ?? '') : strval($cat);
+            $combined = strtolower($slug . ' ' . $name);
+            foreach ($catIcons as $k => $icon) {
+                if (str_contains($combined, $k)) return $icon;
+            }
+            return '📁';
+        };
 
         $currentCustomerType = request('customer_type', (auth()->check() && in_array($group, ['wholesale', 'trading'])) ? 'wholesale' : 'retail');
         $hasAnyFilter = request('search') || request('category') || request('subcategory') || request('origin') || request('brand') || request('pack_size') || request('availability') || (request('sort') && request('sort') !== 'sort_order');
@@ -183,7 +238,7 @@
                 <div class="searchable-dropdown" id="dropdown-category" data-name="category">
                     <button type="button" class="searchable-dropdown-trigger {{ $selectedCatSlug ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('category')">
                         <span class="dropdown-trigger-content">
-                            <span class="dropdown-trigger-icon">{{ $activeParentCat ? ($catIcons[$activeParentCat->slug] ?? '📁') : '📁' }}</span>
+                            <span class="dropdown-trigger-icon" id="icon-category">{{ $activeParentCat ? $getCatIcon($activeParentCat) : '📁' }}</span>
                             <span class="dropdown-trigger-text" id="label-category">{{ $activeParentCat ? $activeParentCat->name : __t('shop.filter_parent_cat', 'Parent Category') }}</span>
                         </span>
                         <span class="dropdown-trigger-arrows">
@@ -204,13 +259,14 @@
                             <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_parent_cat', 'Search parent category...')" oninput="filterDropdownOptions('category', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-category">
-                            <button type="button" class="dropdown-option-item {{ empty($selectedCatSlug) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_parent_cats', 'All Parent Categories')" onclick="selectDropdownOption('category', '', '{{ addslashes(__t('shop.filter_parent_cat', 'Parent Category')) }}')">
+                            <button type="button" class="dropdown-option-item {{ empty($selectedCatSlug) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_parent_cats', 'All Parent Categories')" onclick="selectDropdownOption('category', '', '{{ addslashes(__t('shop.filter_parent_cat', 'Parent Category')) }}', '📁')">
                                 <span class="option-name">🌟 @t('shop.all_parent_cats', 'All Parent Categories')</span>
                                 @if(empty($selectedCatSlug)) <span class="option-check">✓</span> @endif
                             </button>
                             @foreach($parentCategories as $pCat)
-                                <button type="button" class="dropdown-option-item {{ $selectedCatSlug === $pCat->slug ? 'selected' : '' }}" data-value="{{ $pCat->slug }}" data-label="{{ $pCat->name }}" onclick="selectDropdownOption('category', '{{ $pCat->slug }}', '{{ addslashes($pCat->name) }}')">
-                                    <span class="option-name">{{ $catIcons[$pCat->slug] ?? '📦' }} {{ $pCat->name }}</span>
+                                @php $pIcon = $getCatIcon($pCat); @endphp
+                                <button type="button" class="dropdown-option-item {{ $selectedCatSlug === $pCat->slug ? 'selected' : '' }}" data-value="{{ $pCat->slug }}" data-label="{{ $pCat->name }}" onclick="selectDropdownOption('category', '{{ $pCat->slug }}', '{{ addslashes($pCat->name) }}', '{{ $pIcon }}')">
+                                    <span class="option-name">{{ $pIcon }} {{ $pCat->name }}</span>
                                     @if($selectedCatSlug === $pCat->slug) <span class="option-check">✓</span> @endif
                                 </button>
                             @endforeach
@@ -223,7 +279,7 @@
                 <div class="searchable-dropdown" id="dropdown-subcategory" data-name="subcategory">
                     <button type="button" class="searchable-dropdown-trigger {{ $selectedSubSlug ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('subcategory')">
                         <span class="dropdown-trigger-content">
-                            <span class="dropdown-trigger-icon">📂</span>
+                            <span class="dropdown-trigger-icon" id="icon-subcategory">{{ $activeSubCat ? $getCatIcon($activeSubCat) : '📂' }}</span>
                             <span class="dropdown-trigger-text" id="label-subcategory">{{ $activeSubCat ? $activeSubCat->name : __t('shop.filter_child_cat', 'Child category') }}</span>
                         </span>
                         <span class="dropdown-trigger-arrows">
@@ -244,21 +300,23 @@
                             <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_child_cat', 'Search child category...')" oninput="filterDropdownOptions('subcategory', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-subcategory">
-                            <button type="button" class="dropdown-option-item {{ empty($selectedSubSlug) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_child_cats', 'All Child Categories')" onclick="selectDropdownOption('subcategory', '', '{{ addslashes(__t('shop.filter_child_cat', 'Child category')) }}')">
+                            <button type="button" class="dropdown-option-item {{ empty($selectedSubSlug) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_child_cats', 'All Child Categories')" onclick="selectDropdownOption('subcategory', '', '{{ addslashes(__t('shop.filter_child_cat', 'Child category')) }}', '📂')">
                                 <span class="option-name">📂 @t('shop.all_child_cats', 'All Child Categories')</span>
                                 @if(empty($selectedSubSlug)) <span class="option-check">✓</span> @endif
                             </button>
                             @if($activeParentCat && $activeParentCat->children->count())
                                 @foreach($activeParentCat->children as $cCat)
-                                    <button type="button" class="dropdown-option-item {{ $selectedSubSlug === $cCat->slug ? 'selected' : '' }}" data-value="{{ $cCat->slug }}" data-label="{{ $cCat->name }}" onclick="selectDropdownOption('subcategory', '{{ $cCat->slug }}', '{{ addslashes($cCat->name) }}')">
-                                        <span class="option-name">{{ $cCat->name }}</span>
+                                    @php $cIcon = $getCatIcon($cCat); @endphp
+                                    <button type="button" class="dropdown-option-item {{ $selectedSubSlug === $cCat->slug ? 'selected' : '' }}" data-value="{{ $cCat->slug }}" data-label="{{ $cCat->name }}" onclick="selectDropdownOption('subcategory', '{{ $cCat->slug }}', '{{ addslashes($cCat->name) }}', '{{ $cIcon }}')">
+                                        <span class="option-name">{{ $cIcon }} {{ $cCat->name }}</span>
                                         @if($selectedSubSlug === $cCat->slug) <span class="option-check">✓</span> @endif
                                     </button>
                                 @endforeach
                             @else
                                 @foreach($subcategories as $sCat)
-                                    <button type="button" class="dropdown-option-item {{ $selectedSubSlug === $sCat->slug ? 'selected' : '' }}" data-value="{{ $sCat->slug }}" data-label="{{ $sCat->name }} {{ $sCat->parent?->name }}" onclick="selectDropdownOption('subcategory', '{{ $sCat->slug }}', '{{ addslashes($sCat->name) }}')">
-                                        <span class="option-name">{{ $sCat->name }} <small style="color:#94a3b8">({{ $sCat->parent?->name ?? 'Cat' }})</small></span>
+                                    @php $sIcon = $getCatIcon($sCat); @endphp
+                                    <button type="button" class="dropdown-option-item {{ $selectedSubSlug === $sCat->slug ? 'selected' : '' }}" data-value="{{ $sCat->slug }}" data-label="{{ $sCat->name }} {{ $sCat->parent?->name }}" onclick="selectDropdownOption('subcategory', '{{ $sCat->slug }}', '{{ addslashes($sCat->name) }}', '{{ $sIcon }}')">
+                                        <span class="option-name">{{ $sIcon }} {{ $sCat->name }} <small style="color:#94a3b8">({{ $sCat->parent?->name ?? 'Cat' }})</small></span>
                                         @if($selectedSubSlug === $sCat->slug) <span class="option-check">✓</span> @endif
                                     </button>
                                 @endforeach
@@ -272,7 +330,7 @@
                 <div class="searchable-dropdown" id="dropdown-origin" data-name="origin">
                     <button type="button" class="searchable-dropdown-trigger {{ request('origin') ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('origin')">
                         <span class="dropdown-trigger-content">
-                            <span class="dropdown-trigger-icon">🌍</span>
+                            <span class="dropdown-trigger-icon" id="icon-origin">{{ request('origin') ? $getOriginFlag(request('origin')) : '🌍' }}</span>
                             <span class="dropdown-trigger-text" id="label-origin">{{ request('origin') ?: __t('shop.filter_origin', 'Origin') }}</span>
                         </span>
                         <span class="dropdown-trigger-arrows">
@@ -293,13 +351,14 @@
                             <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_origin', 'Search origin...')" oninput="filterDropdownOptions('origin', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-origin">
-                            <button type="button" class="dropdown-option-item {{ empty(request('origin')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_origins', 'All Origins')" onclick="selectDropdownOption('origin', '', '{{ addslashes(__t('shop.filter_origin', 'Origin')) }}')">
+                            <button type="button" class="dropdown-option-item {{ empty(request('origin')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_origins', 'All Origins')" onclick="selectDropdownOption('origin', '', '{{ addslashes(__t('shop.filter_origin', 'Origin')) }}', '🌍')">
                                 <span class="option-name">🌍 @t('shop.all_origins', 'All Origins')</span>
                                 @if(empty(request('origin'))) <span class="option-check">✓</span> @endif
                             </button>
                             @foreach($availableOrigins as $orig)
-                                <button type="button" class="dropdown-option-item {{ request('origin') === $orig ? 'selected' : '' }}" data-value="{{ $orig }}" data-label="{{ $orig }}" onclick="selectDropdownOption('origin', '{{ addslashes($orig) }}', '{{ addslashes($orig) }}')">
-                                    <span class="option-name">{{ $orig }}</span>
+                                @php $origFlag = $getOriginFlag($orig); @endphp
+                                <button type="button" class="dropdown-option-item {{ request('origin') === $orig ? 'selected' : '' }}" data-value="{{ $orig }}" data-label="{{ $orig }}" onclick="selectDropdownOption('origin', '{{ addslashes($orig) }}', '{{ addslashes($orig) }}', '{{ $origFlag }}')">
+                                    <span class="option-name">{{ $origFlag }} {{ $orig }}</span>
                                     @if(request('origin') === $orig) <span class="option-check">✓</span> @endif
                                 </button>
                             @endforeach
@@ -312,7 +371,7 @@
                 <div class="searchable-dropdown" id="dropdown-brand" data-name="brand">
                     <button type="button" class="searchable-dropdown-trigger {{ request('brand') ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('brand')">
                         <span class="dropdown-trigger-content">
-                            <span class="dropdown-trigger-icon">🏷️</span>
+                            <span class="dropdown-trigger-icon" id="icon-brand">🏷️</span>
                             <span class="dropdown-trigger-text" id="label-brand">{{ request('brand') ?: __t('shop.filter_brand', 'Brand') }}</span>
                         </span>
                         <span class="dropdown-trigger-arrows">
@@ -333,13 +392,13 @@
                             <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_brand', 'Search brand...')" oninput="filterDropdownOptions('brand', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-brand">
-                            <button type="button" class="dropdown-option-item {{ empty(request('brand')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_brands', 'All Brands')" onclick="selectDropdownOption('brand', '', '{{ addslashes(__t('shop.filter_brand', 'Brand')) }}')">
+                            <button type="button" class="dropdown-option-item {{ empty(request('brand')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_brands', 'All Brands')" onclick="selectDropdownOption('brand', '', '{{ addslashes(__t('shop.filter_brand', 'Brand')) }}', '🏷️')">
                                 <span class="option-name">🏷️ @t('shop.all_brands', 'All Brands')</span>
                                 @if(empty(request('brand'))) <span class="option-check">✓</span> @endif
                             </button>
                             @foreach($availableBrands as $br)
-                                <button type="button" class="dropdown-option-item {{ request('brand') === $br ? 'selected' : '' }}" data-value="{{ $br }}" data-label="{{ $br }}" onclick="selectDropdownOption('brand', '{{ addslashes($br) }}', '{{ addslashes($br) }}')">
-                                    <span class="option-name">{{ $br }}</span>
+                                <button type="button" class="dropdown-option-item {{ request('brand') === $br ? 'selected' : '' }}" data-value="{{ $br }}" data-label="{{ $br }}" onclick="selectDropdownOption('brand', '{{ addslashes($br) }}', '{{ addslashes($br) }}', '🏷️')">
+                                    <span class="option-name">🏷️ {{ $br }}</span>
                                     @if(request('brand') === $br) <span class="option-check">✓</span> @endif
                                 </button>
                             @endforeach
@@ -352,7 +411,7 @@
                 <div class="searchable-dropdown" id="dropdown-pack_size" data-name="pack_size">
                     <button type="button" class="searchable-dropdown-trigger {{ request('pack_size') ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('pack_size')">
                         <span class="dropdown-trigger-content">
-                            <span class="dropdown-trigger-icon">⚖️</span>
+                            <span class="dropdown-trigger-icon" id="icon-pack_size">⚖️</span>
                             <span class="dropdown-trigger-text" id="label-pack_size">{{ request('pack_size') ?: __t('shop.filter_pack_size', 'Pack Size') }}</span>
                         </span>
                         <span class="dropdown-trigger-arrows">
@@ -373,13 +432,13 @@
                             <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_pack_size', 'Search pack size...')" oninput="filterDropdownOptions('pack_size', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-pack_size">
-                            <button type="button" class="dropdown-option-item {{ empty(request('pack_size')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_pack_sizes', 'All Pack Sizes')" onclick="selectDropdownOption('pack_size', '', '{{ addslashes(__t('shop.filter_pack_size', 'Pack Size')) }}')">
+                            <button type="button" class="dropdown-option-item {{ empty(request('pack_size')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_pack_sizes', 'All Pack Sizes')" onclick="selectDropdownOption('pack_size', '', '{{ addslashes(__t('shop.filter_pack_size', 'Pack Size')) }}', '⚖️')">
                                 <span class="option-name">⚖️ @t('shop.all_pack_sizes', 'All Pack Sizes')</span>
                                 @if(empty(request('pack_size'))) <span class="option-check">✓</span> @endif
                             </button>
                             @foreach($availablePackSizes as $ps)
-                                <button type="button" class="dropdown-option-item {{ request('pack_size') === $ps ? 'selected' : '' }}" data-value="{{ $ps }}" data-label="{{ $ps }}" onclick="selectDropdownOption('pack_size', '{{ addslashes($ps) }}', '{{ addslashes($ps) }}')">
-                                    <span class="option-name">{{ $ps }}</span>
+                                <button type="button" class="dropdown-option-item {{ request('pack_size') === $ps ? 'selected' : '' }}" data-value="{{ $ps }}" data-label="{{ $ps }}" onclick="selectDropdownOption('pack_size', '{{ addslashes($ps) }}', '{{ addslashes($ps) }}', '⚖️')">
+                                    <span class="option-name">⚖️ {{ $ps }}</span>
                                     @if(request('pack_size') === $ps) <span class="option-check">✓</span> @endif
                                 </button>
                             @endforeach
@@ -392,9 +451,9 @@
                 <div class="searchable-dropdown" id="dropdown-availability" data-name="availability">
                     <button type="button" class="searchable-dropdown-trigger {{ request('availability') ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('availability')">
                         <span class="dropdown-trigger-content">
-                            <span class="dropdown-trigger-icon">{{ request('availability') === 'pre_order' ? '📦' : '🟢' }}</span>
+                            <span class="dropdown-trigger-icon" id="icon-availability">{{ request('availability') === 'pre_order' ? '📦' : (request('availability') === 'in_stock' ? '🟢' : '⚡') }}</span>
                             <span class="dropdown-trigger-text" id="label-availability">
-                                {{ request('availability') === 'in_stock' ? __t('shop.in_stock', 'In Stock') : (request('availability') === 'pre_order' ? __t('shop.pre_order', 'Pre-Order') : __t('shop.filter_availability', 'Availability')) }}
+                                {{ request('availability') === 'in_stock' ? __t('shop.in_stock', 'In Stock') : (request('availability') === 'pre_order' ? __t('shop.pre_order', 'Pre-Order / Custom Sourcing') : __t('shop.filter_availability', 'Availability')) }}
                             </span>
                         </span>
                         <span class="dropdown-trigger-arrows">
@@ -415,15 +474,15 @@
                             <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_availability', 'Search availability...')" oninput="filterDropdownOptions('availability', this.value)" autocomplete="off">
                         </div>
                         <div class="dropdown-options-list" id="list-availability">
-                            <button type="button" class="dropdown-option-item {{ empty(request('availability')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_availability', 'All Availability')" onclick="selectDropdownOption('availability', '', '{{ addslashes(__t('shop.filter_availability', 'Availability')) }}')">
+                            <button type="button" class="dropdown-option-item {{ empty(request('availability')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_availability', 'All Availability')" onclick="selectDropdownOption('availability', '', '{{ addslashes(__t('shop.filter_availability', 'Availability')) }}', '⚡')">
                                 <span class="option-name">⚡ @t('shop.all_availability', 'All Availability')</span>
                                 @if(empty(request('availability'))) <span class="option-check">✓</span> @endif
                             </button>
-                            <button type="button" class="dropdown-option-item {{ request('availability') === 'in_stock' ? 'selected' : '' }}" data-value="in_stock" data-label="@t('shop.in_stock', 'In Stock')" onclick="selectDropdownOption('availability', 'in_stock', '{{ addslashes(__t('shop.in_stock', 'In Stock')) }}')">
+                            <button type="button" class="dropdown-option-item {{ request('availability') === 'in_stock' ? 'selected' : '' }}" data-value="in_stock" data-label="@t('shop.in_stock', 'In Stock')" onclick="selectDropdownOption('availability', 'in_stock', '{{ addslashes(__t('shop.in_stock', 'In Stock')) }}', '🟢')">
                                 <span class="option-name">🟢 @t('shop.in_stock', 'In Stock')</span>
                                 @if(request('availability') === 'in_stock') <span class="option-check">✓</span> @endif
                             </button>
-                            <button type="button" class="dropdown-option-item {{ request('availability') === 'pre_order' ? 'selected' : '' }}" data-value="pre_order" data-label="@t('shop.pre_order', 'Pre-Order / Custom Sourcing')" onclick="selectDropdownOption('availability', 'pre_order', '{{ addslashes(__t('shop.pre_order', 'Pre-Order / Custom Sourcing')) }}')">
+                            <button type="button" class="dropdown-option-item {{ request('availability') === 'pre_order' ? 'selected' : '' }}" data-value="pre_order" data-label="@t('shop.pre_order', 'Pre-Order / Custom Sourcing')" onclick="selectDropdownOption('availability', 'pre_order', '{{ addslashes(__t('shop.pre_order', 'Pre-Order / Custom Sourcing')) }}', '📦')">
                                 <span class="option-name">📦 @t('shop.pre_order', 'Pre-Order / Custom Sourcing')</span>
                                 @if(request('availability') === 'pre_order') <span class="option-check">✓</span> @endif
                             </button>
@@ -531,7 +590,14 @@
                 <div class="searchable-dropdown sort-searchable-dropdown" id="dropdown-sort" data-name="sort">
                     <button type="button" class="searchable-dropdown-trigger sort-dropdown-trigger {{ request('sort') && request('sort') !== 'sort_order' ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('sort')">
                         <span class="dropdown-trigger-content">
-                            <span class="dropdown-trigger-icon">✨</span>
+                            <span class="dropdown-trigger-icon" id="icon-sort">
+                                @switch(request('sort', 'sort_order'))
+                                    @case('price_asc') 💵 @break
+                                    @case('price_desc') 💎 @break
+                                    @case('name') 🔤 @break
+                                    @default ✨
+                                @endswitch
+                            </span>
                             <span class="dropdown-trigger-text" id="label-sort">
                                 @switch(request('sort', 'sort_order'))
                                     @case('price_asc')
@@ -556,19 +622,19 @@
                     </button>
                     <div class="searchable-dropdown-menu sort-dropdown-menu" id="menu-sort">
                         <div class="dropdown-options-list" id="list-sort">
-                            <button type="button" class="dropdown-option-item {{ request('sort', 'sort_order') === 'sort_order' ? 'selected' : '' }}" data-value="sort_order" data-label="@t('shop.sort_featured', 'Sort: Featured')" onclick="selectDropdownOption('sort', 'sort_order', '{{ addslashes(__t('shop.sort_featured', 'Sort: Featured')) }}')">
+                            <button type="button" class="dropdown-option-item {{ request('sort', 'sort_order') === 'sort_order' ? 'selected' : '' }}" data-value="sort_order" data-label="@t('shop.sort_featured', 'Sort: Featured')" onclick="selectDropdownOption('sort', 'sort_order', '{{ addslashes(__t('shop.sort_featured', 'Sort: Featured')) }}', '✨')">
                                 <span class="option-name">✨ @t('shop.sort_featured_opt', 'Featured Catches')</span>
                                 @if(request('sort', 'sort_order') === 'sort_order') <span class="option-check">✓</span> @endif
                             </button>
-                            <button type="button" class="dropdown-option-item {{ request('sort') === 'price_asc' ? 'selected' : '' }}" data-value="price_asc" data-label="@t('shop.sort_price_low', 'Price: Low to High')" onclick="selectDropdownOption('sort', 'price_asc', '{{ addslashes(__t('shop.sort_price_low', 'Price: Low to High')) }}')">
+                            <button type="button" class="dropdown-option-item {{ request('sort') === 'price_asc' ? 'selected' : '' }}" data-value="price_asc" data-label="@t('shop.sort_price_low', 'Price: Low to High')" onclick="selectDropdownOption('sort', 'price_asc', '{{ addslashes(__t('shop.sort_price_low', 'Price: Low to High')) }}', '💵')">
                                 <span class="option-name">💵 @t('shop.sort_price_low', 'Price: Low to High')</span>
                                 @if(request('sort') === 'price_asc') <span class="option-check">✓</span> @endif
                             </button>
-                            <button type="button" class="dropdown-option-item {{ request('sort') === 'price_desc' ? 'selected' : '' }}" data-value="price_desc" data-label="@t('shop.sort_price_high', 'Price: High to Low')" onclick="selectDropdownOption('sort', 'price_desc', '{{ addslashes(__t('shop.sort_price_high', 'Price: High to Low')) }}')">
+                            <button type="button" class="dropdown-option-item {{ request('sort') === 'price_desc' ? 'selected' : '' }}" data-value="price_desc" data-label="@t('shop.sort_price_high', 'Price: High to Low')" onclick="selectDropdownOption('sort', 'price_desc', '{{ addslashes(__t('shop.sort_price_high', 'Price: High to Low')) }}', '💎')">
                                 <span class="option-name">💎 @t('shop.sort_price_high', 'Price: High to Low')</span>
                                 @if(request('sort') === 'price_desc') <span class="option-check">✓</span> @endif
                             </button>
-                            <button type="button" class="dropdown-option-item {{ request('sort') === 'name' ? 'selected' : '' }}" data-value="name" data-label="@t('shop.sort_name_az', 'Name A–Z')" onclick="selectDropdownOption('sort', 'name', '{{ addslashes(__t('shop.sort_name_az', 'Name A–Z')) }}')">
+                            <button type="button" class="dropdown-option-item {{ request('sort') === 'name' ? 'selected' : '' }}" data-value="name" data-label="@t('shop.sort_name_az', 'Name A–Z')" onclick="selectDropdownOption('sort', 'name', '{{ addslashes(__t('shop.sort_name_az', 'Name A–Z')) }}', '🔤')">
                                 <span class="option-name">🔤 @t('shop.sort_name_az', 'Name A–Z')</span>
                                 @if(request('sort') === 'name') <span class="option-check">✓</span> @endif
                             </button>
@@ -1574,18 +1640,21 @@
 
 /* Results Header & Sort */
 .shop-results-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 14px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+    margin-bottom: 20px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    width: 100% !important;
 }
 .results-header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+    flex: 1 1 auto !important;
 }
 .results-count-text {
     font-size: 0.88rem;
@@ -1594,32 +1663,44 @@
 .results-count-text strong {
     color: #0c234b;
 }
+.results-header-right {
+    display: flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+    margin-left: auto !important;
+}
 .sort-searchable-dropdown {
-    min-width: 175px;
+    min-width: 185px !important;
+    width: auto !important;
 }
 .sort-dropdown-trigger {
-    height: 34px;
-    padding: 0 12px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #334155;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-    -webkit-appearance: none;
-    appearance: none;
+    height: 38px !important;
+    padding: 0 14px !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    font-size: 0.84rem !important;
+    font-weight: 500 !important;
+    color: #334155 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    white-space: nowrap !important;
+    cursor: pointer;
+    transition: all 0.15s ease;
 }
 .sort-dropdown-trigger:hover {
-    border-color: #93c5fd;
-    color: #1d4ed8;
+    border-color: #93c5fd !important;
+    color: #1d4ed8 !important;
+    background: #f8fafc !important;
 }
 .sort-dropdown-menu {
     right: 0 !important;
     left: auto !important;
-    min-width: 190px;
-    max-width: 220px;
-    top: calc(100% + 4px);
+    min-width: 195px !important;
+    max-width: 240px !important;
+    top: calc(100% + 4px) !important;
 }
 
 /* AJAX Smooth Loading Animation */
@@ -2538,28 +2619,19 @@
     }
 }
 
-@media (max-width: 420px) {
-    .cust-mode-label {
-        display: none;
-    }
-    .cust-type-btn {
-        font-size: 0.74rem;
-        padding: 6px 4px;
-    }
-}
+@media (max-width: 640px) {
     .shop-results-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
     }
     .results-header-right {
-        width: 100%;
+        width: 100% !important;
+        margin-left: 0 !important;
     }
-    .sort-searchable-dropdown {
-        width: 100%;
-    }
+    .sort-searchable-dropdown,
     .sort-dropdown-trigger {
-        width: 100%;
+        width: 100% !important;
     }
     .sort-dropdown-menu {
         width: 100% !important;
@@ -2592,6 +2664,16 @@
         height: 32px !important;
         border-radius: 8px !important;
         font-size: 0.85rem !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .cust-mode-label {
+        display: none;
+    }
+    .cust-type-btn {
+        font-size: 0.74rem;
+        padding: 6px 4px;
     }
 }
 </style>
@@ -2713,20 +2795,44 @@ function filterDropdownOptions(name, query) {
     }
 }
 
-function selectDropdownOption(name, value, label) {
+function selectDropdownOption(name, value, label, icon) {
     if (name === 'sort') {
         const sortInput = document.getElementById('hiddenSortInput');
         if (sortInput) sortInput.value = value;
+        const sortLabel = document.getElementById('label-sort');
+        if (sortLabel) sortLabel.textContent = label;
+        const sortIcon = document.getElementById('icon-sort');
+        if (sortIcon && icon) sortIcon.textContent = icon;
     } else {
         const hiddenInput = document.getElementById('hidden_' + name);
         if (hiddenInput) {
             hiddenInput.value = value;
+        }
+        const triggerLabel = document.getElementById('label-' + name);
+        if (triggerLabel) triggerLabel.textContent = label;
+
+        const triggerIcon = document.getElementById('icon-' + name);
+        if (triggerIcon && icon) triggerIcon.textContent = icon;
+
+        const triggerBtn = document.querySelector('#dropdown-' + name + ' .searchable-dropdown-trigger');
+        if (triggerBtn) {
+            if (value) {
+                triggerBtn.classList.add('has-value');
+            } else {
+                triggerBtn.classList.remove('has-value');
+            }
         }
         
         // If parent category changes, reset child category
         if (name === 'category') {
             const subInput = document.getElementById('hidden_subcategory');
             if (subInput) subInput.value = '';
+            const subLabel = document.getElementById('label-subcategory');
+            if (subLabel) subLabel.textContent = "{{ addslashes(__t('shop.filter_child_cat', 'Child category')) }}";
+            const subIcon = document.getElementById('icon-subcategory');
+            if (subIcon) subIcon.textContent = '📂';
+            const subTrigger = document.querySelector('#dropdown-subcategory .searchable-dropdown-trigger');
+            if (subTrigger) subTrigger.classList.remove('has-value');
         }
     }
 
@@ -2746,9 +2852,42 @@ function clearDropdownValue(name) {
     if (hiddenInput) {
         hiddenInput.value = '';
     }
+
+    const defaultIcons = {
+        category: '📁',
+        subcategory: '📂',
+        origin: '🌍',
+        brand: '🏷️',
+        pack_size: '⚖️',
+        availability: '⚡'
+    };
+    const defaultLabels = {
+        category: "{{ addslashes(__t('shop.filter_parent_cat', 'Parent Category')) }}",
+        subcategory: "{{ addslashes(__t('shop.filter_child_cat', 'Child category')) }}",
+        origin: "{{ addslashes(__t('shop.filter_origin', 'Origin')) }}",
+        brand: "{{ addslashes(__t('shop.filter_brand', 'Brand')) }}",
+        pack_size: "{{ addslashes(__t('shop.filter_pack_size', 'Pack Size')) }}",
+        availability: "{{ addslashes(__t('shop.filter_availability', 'Availability')) }}"
+    };
+
+    const triggerLabel = document.getElementById('label-' + name);
+    if (triggerLabel && defaultLabels[name]) triggerLabel.textContent = defaultLabels[name];
+
+    const triggerIcon = document.getElementById('icon-' + name);
+    if (triggerIcon && defaultIcons[name]) triggerIcon.textContent = defaultIcons[name];
+
+    const triggerBtn = document.querySelector('#dropdown-' + name + ' .searchable-dropdown-trigger');
+    if (triggerBtn) triggerBtn.classList.remove('has-value');
+
     if (name === 'category') {
         const subInput = document.getElementById('hidden_subcategory');
         if (subInput) subInput.value = '';
+        const subLabel = document.getElementById('label-subcategory');
+        if (subLabel) subLabel.textContent = defaultLabels.subcategory;
+        const subIcon = document.getElementById('icon-subcategory');
+        if (subIcon) subIcon.textContent = '📂';
+        const subTrigger = document.querySelector('#dropdown-subcategory .searchable-dropdown-trigger');
+        if (subTrigger) subTrigger.classList.remove('has-value');
     }
     applyShopFilters();
 }
@@ -2777,9 +2916,6 @@ async function applyShopFilters(targetUrl = null, pushState = true) {
     const mainContent = document.getElementById('shopMainContent');
     if (mainContent) {
         mainContent.classList.add('is-loading');
-    }
-    if (typeof showPageLoader === 'function') {
-        showPageLoader('Loading catalogue items...');
     }
 
     try {
@@ -2818,7 +2954,7 @@ async function applyShopFilters(targetUrl = null, pushState = true) {
             currentSubcatList.innerHTML = newSubcatList.innerHTML;
         }
 
-        // 4. Update all dropdown triggers & hidden inputs
+        // 4. Update all dropdown triggers, icons & hidden inputs
         ['category', 'subcategory', 'origin', 'brand', 'pack_size', 'availability', 'sort'].forEach(name => {
             const newTrigger = doc.querySelector('#dropdown-' + name + ' .searchable-dropdown-trigger');
             const currentTrigger = document.querySelector('#dropdown-' + name + ' .searchable-dropdown-trigger');
@@ -2828,6 +2964,11 @@ async function applyShopFilters(targetUrl = null, pushState = true) {
                 const currentLabel = document.getElementById('label-' + name);
                 if (newLabel && currentLabel) {
                     currentLabel.textContent = newLabel.textContent;
+                }
+                const newIcon = doc.getElementById('icon-' + name);
+                const currentIcon = document.getElementById('icon-' + name);
+                if (newIcon && currentIcon) {
+                    currentIcon.textContent = newIcon.textContent;
                 }
                 const newArrows = newTrigger.querySelector('.dropdown-trigger-arrows');
                 const currentArrows = currentTrigger.querySelector('.dropdown-trigger-arrows');
@@ -2893,9 +3034,6 @@ async function applyShopFilters(targetUrl = null, pushState = true) {
     } finally {
         if (mainContent) {
             mainContent.classList.remove('is-loading');
-        }
-        if (typeof hidePageLoader === 'function') {
-            setTimeout(hidePageLoader, 150);
         }
     }
 }
