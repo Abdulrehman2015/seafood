@@ -9,9 +9,9 @@
                 </div>
                 <p class="cookie-banner-desc">
                     @t('cookie.banner_desc', 'We use essential cookies to make our store work properly, and optional cookies to remember your preferred language and currency. We do not sell your personal information.')
-                    <a href="{{ url(current_locale() . '/privacy') }}" class="cookie-banner-link" target="_blank">
-                        @t('cookie.learn_more', 'Privacy & Cookie Policy')
-                    </a>
+                    <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => 'privacy-policy']) }}" class="cookie-banner-link" target="_blank">@t('nav.privacy_policy', 'Privacy Policy')</a>
+                    <span style="color:#94a3b8;margin:0 2px">&amp;</span>
+                    <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => 'cookie-policy']) }}" class="cookie-banner-link" target="_blank">@t('cookie.cookie_policy', 'Cookie Policy')</a>
                 </p>
             </div>
         </div>
@@ -172,9 +172,6 @@
 
 <script>
 (function() {
-    var banner = document.getElementById('cookie-banner');
-    if (!banner) return;
-
     var consentKey = 'cookie_consent';
     function getConsent() {
         try {
@@ -192,28 +189,33 @@
         var isSecure = window.location.protocol === 'https:';
         var expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
         document.cookie = consentKey + '=' + status + '; expires=' + expires + '; path=/; SameSite=Lax' + (isSecure ? '; Secure' : '');
-        banner.style.display = 'none';
+        var banner = document.getElementById('cookie-banner');
+        if (banner) banner.style.display = 'none';
     }
+
+    window.setCookieConsent = setConsent;
+    window.getCookieConsent = getConsent;
 
     if (!getConsent()) {
         // Show after slight delay for smooth page entrance
         setTimeout(function() {
-            banner.style.display = 'block';
+            var banner = document.getElementById('cookie-banner');
+            if (banner && !getConsent()) {
+                banner.style.display = 'block';
+            }
         }, 500);
     }
 
-    var acceptBtn = document.getElementById('cookie-accept');
-    var rejectBtn = document.getElementById('cookie-reject');
-
-    if (acceptBtn) {
-        acceptBtn.addEventListener('click', function() {
+    document.addEventListener('click', function(e) {
+        var acceptBtn = e.target.closest('#cookie-accept, [data-cookie-accept="true"]');
+        var rejectBtn = e.target.closest('#cookie-reject, [data-cookie-reject="true"]');
+        if (acceptBtn) {
+            e.preventDefault();
             setConsent('accepted');
-        });
-    }
-    if (rejectBtn) {
-        rejectBtn.addEventListener('click', function() {
+        } else if (rejectBtn) {
+            e.preventDefault();
             setConsent('essential');
-        });
-    }
+        }
+    });
 })();
 </script>

@@ -500,51 +500,6 @@
     </div>
 </div>
 
-<!-- ─── Get Price / In-Store Rate Unlock Modal ───────────────────────── -->
-<div class="get-price-modal-backdrop" id="getPriceModalBackdrop" onclick="handleGetPriceModalBackdropClick(event)">
-    <div class="get-price-modal-dialog" id="getPriceModalDialog" role="dialog" aria-modal="true" aria-labelledby="getPriceModalTitle">
-        <div class="get-price-modal-header">
-            <div class="get-price-modal-title" id="getPriceModalTitle">
-                <span>🏷️ @t('walkin.view_price_title', 'In-Store Special Rate')</span>
-            </div>
-            <button type="button" class="get-price-modal-close-btn" onclick="closeGetPriceModal()" aria-label="Close modal">✕</button>
-        </div>
-
-        <div class="get-price-modal-body">
-            <div class="get-price-product-info">
-                <div class="get-price-product-name" id="modalProductName">Selected Product</div>
-                <div class="get-price-product-sku" id="modalProductSku"></div>
-            </div>
-
-            <!-- Price Reveal Box (Hidden until unlocked or previewed) -->
-            <div class="get-price-revealed-card" id="modalPriceRevealedCard">
-                <div class="get-price-card-label">@t('walkin.counter_rate_revealed', 'Official In-Store Rate')</div>
-                <div class="get-price-card-amount">
-                    <span id="modalProductPrice" class="modal-price-num">RM 0.00</span>
-                    <span id="modalProductUnit" class="modal-price-unit">/ pack</span>
-                </div>
-                <div class="get-price-card-hint">
-                    📍 @t('walkin.counter_pickup_ready', 'Available for immediate walk-in purchase & packing at SILC Counter 2.')
-                </div>
-            </div>
-
-            <div class="get-price-actions-grid">
-                <button type="button" class="btn-unlock-all-prices" id="btnUnlockPrices" onclick="unlockWalkinPrices()">
-                    <span style="font-size:1.1rem">🔓</span>
-                    <span>@t('walkin.unlock_all_prices', 'Unlock All In-Store Prices')</span>
-                </button>
-                <a href="#" id="modalWhatsAppBtn" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-inquire">
-                    <span style="font-size:1.1rem">💬</span>
-                    <span>@t('walkin.inquire_whatsapp', 'Enquire on WhatsApp')</span>
-                </a>
-            </div>
-
-            <div class="get-price-guarantee-note">
-                🔒 @t('walkin.price_flow_note', 'Walk-in pricing is reserved for verified retail visitors and registered walk-in guests.')
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('styles')
@@ -2159,7 +2114,7 @@
 
 @push('scripts')
 <script>
-const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
 // Update UI with fresh cart data
 function refreshCartDisplay(count, totalFormatted) {
@@ -2170,15 +2125,18 @@ function refreshCartDisplay(count, totalFormatted) {
 
     if (elWalkinCount) elWalkinCount.textContent = count;
     if (elBottomCount) elBottomCount.textContent = count;
-    if (elBottomTotal && totalFormatted) {
+    if (elBottomTotal && totalFormatted !== undefined && totalFormatted !== null) {
         elBottomTotal.textContent = 'RM ' + totalFormatted;
     }
 
     if (stickyBar) {
         if (count > 0) {
             stickyBar.style.transform = 'translateY(0)';
+            stickyBar.style.opacity = '1';
+            stickyBar.style.visibility = 'visible';
         } else {
             stickyBar.style.transform = 'translateY(120%)';
+            stickyBar.style.opacity = '0';
         }
     }
 }
@@ -2187,66 +2145,78 @@ function refreshCartDisplay(count, totalFormatted) {
 async function initCart() {
     try {
         const res = await fetch('{{ route("cart.count") }}');
-        const data = await res.json();
-        refreshCartDisplay(data.count, data.total_formatted);
+        if (res.ok) {
+            const data = await res.json();
+            refreshCartDisplay(data.count, data.total_formatted);
+        }
     } catch(e) {}
 }
-initCart();
 
-// AJAX 1-Tap Add-to-Cart with Microfeedback
-document.querySelectorAll('.btn-add-ajax').forEach(button => {
-    button.addEventListener('click', async function(e) {
-        e.preventDefault();
-        const productId = this.getAttribute('data-product-id');
-        const origHtml = this.innerHTML;
+// Master Walk-in Page Initializer (runs on page load & after dynamic language switch)
+window.initWalkinPage = function() {
+    initCart();
 
-        this.disabled = true;
-        this.innerHTML = '<span>⏳ Adding...</span>';
+    // AJAX 1-Tap Add-to-Cart with Microfeedback
+    document.querySelectorAll('.btn-add-ajax').forEach(button => {
+        if (button.dataset.bound === 'true') return;
+        button.dataset.bound = 'true';
 
-        try {
-            const res = await fetch('{{ route("cart.add") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({
-                    product_id: parseInt(productId),
-                    quantity: 1
-                })
-            });
+        button.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            const origHtml = this.innerHTML;
 
-            const data = await res.json();
+            this.disabled = true;
+            this.innerHTML = '<span>⏳ Adding...</span>';
 
-            if (data.success) {
-                this.style.background = '#059669';
-                this.innerHTML = '<span>✓ Added!</span>';
-                refreshCartDisplay(data.count, data.total_formatted);
+            try {
+                const token = document.querySelector('meta[name="csrf-token"]')?.content || csrfToken;
+                const res = await fetch('{{ route("cart.add") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({
+                        product_id: parseInt(productId),
+                        quantity: 1
+                    })
+                });
 
-                // Show floating dock with animation
-                const dock = document.getElementById('stickyCheckoutBar');
-                if (dock) {
-                    dock.style.transform = 'translateY(0)';
-                }
+                const data = await res.json();
 
-                setTimeout(() => {
+                if (data.success) {
+                    this.style.background = '#059669';
+                    this.innerHTML = '<span>✓ Added!</span>';
+                    refreshCartDisplay(data.count, data.total_formatted);
+
+                    // Show floating dock with animation
+                    const dock = document.getElementById('stickyCheckoutBar');
+                    if (dock) {
+                        dock.style.transform = 'translateY(0)';
+                        dock.style.opacity = '1';
+                        dock.style.visibility = 'visible';
+                    }
+
+                    setTimeout(() => {
+                        this.disabled = false;
+                        this.style.background = '';
+                        this.innerHTML = origHtml;
+                    }, 1200);
+                } else {
+                    alert(data.message || 'Could not add to cart');
                     this.disabled = false;
-                    this.style.background = '';
                     this.innerHTML = origHtml;
-                }, 1200);
-            } else {
-                alert(data.message || 'Could not add to cart');
+                }
+            } catch(err) {
+                alert('Error adding item to cart. Please try again.');
                 this.disabled = false;
                 this.innerHTML = origHtml;
             }
-        } catch(err) {
-            alert('Error adding item to cart. Please try again.');
-            this.disabled = false;
-            this.innerHTML = origHtml;
-        }
+        });
     });
-});
+};
 
 // Category Selection Modal Functions
 function openCategoryModal() {
@@ -2293,101 +2263,21 @@ function filterCategoryModalList(query) {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeCategoryModal();
-        closeGetPriceModal();
     }
 });
 
-// ─── Walk-in Price Unlock Flow Controller ───
-const WALKIN_STORAGE_KEY = 'mst_walkin_price_unlocked';
-
-function isWalkinUnlocked() {
-    return localStorage.getItem(WALKIN_STORAGE_KEY) === '1';
+// Run initialization
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.initWalkinPage);
+} else {
+    window.initWalkinPage();
 }
 
-function applyWalkinUnlockState() {
-    const unlocked = isWalkinUnlocked();
-    const unlockedEls = document.querySelectorAll('.walkin-price-unlocked-block');
-    const lockedEls = document.querySelectorAll('.walkin-price-locked-block');
-    const statusText = document.getElementById('walkinPriceStatusText');
-    const lockToggleBtn = document.getElementById('walkinLockToggleBtn');
-
-    if (unlocked) {
-        unlockedEls.forEach(el => {
-            el.style.setProperty('display', el.classList.contains('product-price') || el.classList.contains('badge-walkin-pill') ? 'block' : 'inline-flex', 'important');
-        });
-        lockedEls.forEach(el => el.style.setProperty('display', 'none', 'important'));
-        if (statusText) statusText.textContent = '@t("walkin.unlocked_status", "In-Store Rates Active")';
-        if (lockToggleBtn) {
-            lockToggleBtn.innerHTML = '🔒 <span style="font-size:0.75rem">@t("walkin.hide_prices", "Hide Rates")</span>';
-            lockToggleBtn.setAttribute('onclick', 'lockWalkinPrices()');
-        }
-    } else {
-        unlockedEls.forEach(el => el.style.setProperty('display', 'none', 'important'));
-        lockedEls.forEach(el => {
-            el.style.setProperty('display', el.classList.contains('btn-card-view-price') ? 'inline-flex' : 'flex', 'important');
-        });
-        if (statusText) statusText.textContent = '@t("walkin.locked_status", "Prices Hidden (Click View Price)")';
-        if (lockToggleBtn) {
-            lockToggleBtn.innerHTML = '🔓 <span style="font-size:0.75rem">@t("walkin.unlock_all", "Unlock Rates")</span>';
-            lockToggleBtn.setAttribute('onclick', 'unlockWalkinPrices()');
-        }
+// Re-initialize when language changes dynamically
+window.addEventListener('app:locale-changed', function() {
+    if (typeof window.initWalkinPage === 'function') {
+        setTimeout(window.initWalkinPage, 50);
     }
-}
-
-function openGetPriceModal(name, sku, price, unit, productId) {
-    const backdrop = document.getElementById('getPriceModalBackdrop');
-    const elName = document.getElementById('modalProductName');
-    const elSku = document.getElementById('modalProductSku');
-    const elPrice = document.getElementById('modalProductPrice');
-    const elUnit = document.getElementById('modalProductUnit');
-    const elWa = document.getElementById('modalWhatsAppBtn');
-
-    if (elName) elName.textContent = name || 'Seafood Product';
-    if (elSku) elSku.textContent = sku ? ('SKU: ' + sku) : '';
-    if (elPrice) elPrice.textContent = price || 'Inquire';
-    if (elUnit) elUnit.textContent = unit ? ('/ ' + unit) : '/ pack';
-
-    if (elWa) {
-        const skuPart = sku ? ` (${sku})` : '';
-        const msg = encodeURIComponent(`Hi MST Import & Export, I would like to get the latest in-store price & availability for: ${name}${skuPart}.`);
-        elWa.href = `https://wa.me/923176121524?text=${msg}`;
-    }
-
-    if (backdrop) {
-        backdrop.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeGetPriceModal() {
-    const backdrop = document.getElementById('getPriceModalBackdrop');
-    if (backdrop) {
-        backdrop.classList.remove('show');
-        document.body.style.overflow = '';
-    }
-}
-
-function handleGetPriceModalBackdropClick(event) {
-    if (event.target === document.getElementById('getPriceModalBackdrop')) {
-        closeGetPriceModal();
-    }
-}
-
-function unlockWalkinPrices() {
-    localStorage.setItem(WALKIN_STORAGE_KEY, '1');
-    applyWalkinUnlockState();
-    closeGetPriceModal();
-}
-
-function lockWalkinPrices() {
-    localStorage.removeItem(WALKIN_STORAGE_KEY);
-    applyWalkinUnlockState();
-}
-
-// Initialise state on load
-document.addEventListener('DOMContentLoaded', function() {
-    applyWalkinUnlockState();
 });
-applyWalkinUnlockState();
 </script>
 @endpush

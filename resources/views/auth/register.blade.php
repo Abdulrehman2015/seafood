@@ -249,7 +249,11 @@
                     <label class="consent-item" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.88rem; color: #334155;">
                         <input type="checkbox" name="terms_consent" value="1" required style="margin-top: 3px; width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer;" {{ old('terms_consent') ? 'checked' : '' }}>
                         <span>
-                            @t('auth.terms_consent_text', 'I agree to MST Import & Export Terms of Service and Privacy Policy.') <span class="required" style="color:#ef4444">*</span>
+                            @t('auth.i_agree_to', 'I agree to the') 
+                            <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => 'terms-and-conditions']) }}" target="_blank" style="color:#2563eb;text-decoration:underline">@t('nav.terms_and_conditions', 'Terms & Conditions')</a> 
+                            @t('common.and', 'and') 
+                            <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => 'privacy-policy']) }}" target="_blank" style="color:#2563eb;text-decoration:underline">@t('nav.privacy_policy', 'Privacy Policy')</a>. 
+                            <span class="required" style="color:#ef4444">*</span>
                         </span>
                     </label>
                     @error('terms_consent')<div class="form-error" style="margin-top:-6px">{{ $message }}</div>@enderror

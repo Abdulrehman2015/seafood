@@ -1922,7 +1922,18 @@
                     currentFooter.innerHTML = newFooter.innerHTML;
                 }
 
-                // 16. Rewrite all links across the page to ensure all links retain target language
+                // 16. Update Cookie Consent Banner (#cookie-banner)
+                const currentCookieBanner = document.getElementById('cookie-banner');
+                const newCookieBanner = newDoc.getElementById('cookie-banner');
+                if (currentCookieBanner && newCookieBanner) {
+                    const isVisible = currentCookieBanner.style.display !== 'none' && window.getComputedStyle(currentCookieBanner).display !== 'none';
+                    currentCookieBanner.innerHTML = newCookieBanner.innerHTML;
+                    if (isVisible) {
+                        currentCookieBanner.style.display = 'block';
+                    }
+                }
+
+                // 17. Rewrite all links across the page to ensure all links retain target language
                 updatePageLocaleHrefs(targetCode);
 
                 // 17. Update Flash Notifications if any
@@ -1944,12 +1955,18 @@
                     updatePageCurrencies(window.AppCurrency.current || 'MYR');
                 }
 
-                // 15. Re-check Cart Count
+                // 15. Re-check Cart Count & Walkin Page Dock
                 if (typeof updateCartCount === 'function') {
                     updateCartCount();
                 }
+                if (typeof window.initWalkinPage === 'function') {
+                    window.initWalkinPage();
+                }
 
-                // 16. Notify any listeners that language switched
+                // 16. Re-initialize Google reCAPTCHA in newly inserted DOM
+                reinitRecaptcha(mainContent, targetCode);
+
+                // 17. Notify any listeners that language switched
                 window.dispatchEvent(new CustomEvent('app:locale-changed', {
                     detail: { locale: targetCode, url: targetUrl }
                 }));
@@ -1967,10 +1984,63 @@
                     if (mainContent) {
                         setTimeout(() => {
                             mainContent.classList.remove('lang-transitioning');
+                            reinitRecaptcha(mainContent, targetCode);
                         }, 50);
                     }
                     isLanguageSwitching = false;
                 }, remaining);
+            }
+        }
+
+        function reinitRecaptcha(container, targetCode = null) {
+            const wrapper = (container || document).querySelector('.recaptcha-wrapper');
+            const recaptchaEl = (container || document).querySelector('.g-recaptcha');
+            if (!recaptchaEl) return;
+
+            const langCode = targetCode || (document.documentElement.lang || 'en');
+            const hlMap = { zh: 'zh-CN', bm: 'ms', en: 'en' };
+            const hl = hlMap[langCode] || 'en';
+            const siteKey = recaptchaEl.getAttribute('data-sitekey');
+
+            function renderWidget() {
+                document.querySelectorAll('.g-recaptcha').forEach(el => {
+                    if (!el.hasChildNodes() || el.children.length === 0) {
+                        try {
+                            const key = el.getAttribute('data-sitekey') || siteKey;
+                            if (key && typeof grecaptcha !== 'undefined' && typeof grecaptcha.render === 'function') {
+                                grecaptcha.render(el, { 'sitekey': key });
+                            }
+                        } catch (e) {}
+                    }
+                });
+            }
+
+            if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.render === 'function') {
+                setTimeout(renderWidget, 50);
+                setTimeout(renderWidget, 250);
+            } else {
+                const scriptId = 'google-recaptcha-script';
+                let script = document.getElementById(scriptId);
+                if (!script) {
+                    script = document.createElement('script');
+                    script.id = scriptId;
+                    script.src = 'https://www.google.com/recaptcha/api.js?hl=' + encodeURIComponent(hl);
+                    script.async = true;
+                    script.defer = true;
+                    script.onload = () => { setTimeout(renderWidget, 100); };
+                    document.head.appendChild(script);
+                } else {
+                    let attempts = 0;
+                    const interval = setInterval(() => {
+                        attempts++;
+                        if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.render === 'function') {
+                            clearInterval(interval);
+                            renderWidget();
+                        } else if (attempts > 30) {
+                            clearInterval(interval);
+                        }
+                    }, 150);
+                }
             }
         }
 
