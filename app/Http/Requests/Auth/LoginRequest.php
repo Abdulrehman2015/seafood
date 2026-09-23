@@ -27,9 +27,32 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+        ];
+
+        if (\App\Models\Setting::isRecaptchaEnabled('login')) {
+            $rules['g-recaptcha-response'] = [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!\App\Models\Setting::verifyRecaptcha($value, $this->ip())) {
+                        $fail(__t('auth.recaptcha_failed', 'reCAPTCHA verification failed. Please complete the captcha again.'));
+                    }
+                },
+            ];
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Get custom validation messages.
+     */
+    public function messages(): array
+    {
+        return [
+            'g-recaptcha-response.required' => __t('auth.recaptcha_required', 'Please verify that you are not a robot.'),
         ];
     }
 

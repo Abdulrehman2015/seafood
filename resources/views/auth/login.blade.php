@@ -69,6 +69,9 @@
                     <label for="remember" style="color:#64748b;font-size:0.85rem;cursor:pointer;margin:0">@t('auth.remember_me', 'Remember me for 30 days')</label>
                 </div>
 
+                <!-- Google reCAPTCHA Protection -->
+                <x-recaptcha context="login" align="center" />
+
                 <button type="submit" class="btn btn-primary btn-lg btn-block" style="background:linear-gradient(135deg, #1d4ed8, #0f274a);border:none;font-weight:700;border-radius:10px;padding:12px">@t('auth.btn_signin', 'Sign In')</button>
             </form>
 

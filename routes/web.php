@@ -24,6 +24,22 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
     return app(\App\Http\Controllers\HomeController::class)->index();
 })->name('home.root');
 
+// Root /products & /shop direct routes -> redirect to localized /products
+Route::get('/products', function (\Illuminate\Http\Request $request) {
+    $locale = session('locale', $request->cookie('app_lang', $request->cookie('locale', config('app.locale', 'en'))));
+    if (!in_array($locale, ['en', 'zh', 'bm'])) {
+        $locale = 'en';
+    }
+    return redirect()->to("/{$locale}/products" . ($request->getQueryString() ? '?' . $request->getQueryString() : ''), 301);
+});
+Route::get('/shop', function (\Illuminate\Http\Request $request) {
+    $locale = session('locale', $request->cookie('app_lang', $request->cookie('locale', config('app.locale', 'en'))));
+    if (!in_array($locale, ['en', 'zh', 'bm'])) {
+        $locale = 'en';
+    }
+    return redirect()->to("/{$locale}/products" . ($request->getQueryString() ? '?' . $request->getQueryString() : ''), 301);
+});
+
 // ─── Global System Routes (No locale prefix needed) ───────────────────────────
 
 // XML Sitemap (Valid, standards-compliant, multilingual)
@@ -377,10 +393,12 @@ Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function
     Route::post('/contact', [StaticController::class, 'contactSubmit'])->middleware('throttle:5,1')->name('contact.submit');
 
     // Product Catalogue (public / retail)
-    Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+    Route::get('/products', [ShopController::class, 'index'])->name('shop.index');
+    Route::get('/shop', fn($locale) => redirect()->route('shop.index', array_merge(['locale' => $locale], request()->query()), 301));
     Route::get('/categories', [ShopController::class, 'categories'])->name('categories.index');
-    Route::get('/category', fn() => redirect()->route('categories.index'));
-    Route::get('/shop/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
+    Route::get('/category', fn($locale) => redirect()->route('categories.index', ['locale' => $locale], 301));
+    Route::get('/products/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
+    Route::get('/shop/{product:slug}', fn($locale, $product) => redirect()->route('shop.show', ['locale' => $locale, 'product' => $product], 301));
 
     // Dynamic Policy & Custom Pages
     Route::get('/policy/{slug}', [\App\Http\Controllers\PolicyController::class, 'show'])->name('policy.show');
@@ -610,146 +628,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
     // Walk-in QR Code
     Route::get('walkin-qr', [WalkInController::class, 'generateQr'])->name('walkin.qr');
 
-    // Database Dump Download (Admin only) - Streams .sql dump
-    Route::get('database/download/{filename?}', function ($filename = null) {
-        $backupDir = storage_path('app/backups');
-        $tempDir = storage_path('app/temp');
-        if (!is_dir($tempDir)) {
-            @mkdir($tempDir, 0755, true);
-        }
-
-        // If a specific existing backup file from server storage was requested, validate and serve it
-        if ($filename) {
-            $cleanName = basename($filename);
-            $targetPath = "{$backupDir}/{$cleanName}";
-            if (file_exists($targetPath)) {
-                $downloadName = preg_replace('/\.(sql|mysql)$/i', '', $cleanName) . '.sql';
-                return response()->download($targetPath, $downloadName, [
-                    'Content-Type' => 'application/octet-stream',
-                ]);
-            }
-        }
-
-        // Generate a fresh on-the-fly database snapshot in temp directory (NOT storage/app/backups)
-        // so it downloads directly to user's device without cluttering or appearing in server backup archives
-        $newFilename = ($filename && str_ends_with(strtolower($filename), '.sql')) 
-            ? basename($filename) 
-            : ('mst_mysql_backup_' . date('Y-m-d_His') . '.sql');
-
-        $dumpPath = "{$tempDir}/{$newFilename}";
-
-        // Candidate mysqldump locations across Windows, Linux, and custom servers
-        $mysqldumpCandidates = [
-            'C:\\laragon\\bin\\mysql\\mysql-8.4.3-winx64\\bin\\mysqldump.exe',
-            'C:\\Program Files\\MySQL\\MySQL Server 8.4\\bin\\mysqldump.exe',
-            'C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump.exe',
-            'C:\\xampp\\mysql\\bin\\mysqldump.exe',
-            '/usr/bin/mysqldump',
-            '/usr/local/bin/mysqldump',
-        ];
-
-        $mysqldumpBin = null;
-        foreach ($mysqldumpCandidates as $candidate) {
-            if (file_exists($candidate)) {
-                $mysqldumpBin = "\"{$candidate}\"";
-                break;
-            }
-        }
-        if (!$mysqldumpBin) {
-            $mysqldumpBin = 'mysqldump';
-        }
-
-        $dbHost = config('database.connections.mysql.host', '127.0.0.1');
-        $dbPort = config('database.connections.mysql.port', '3306');
-        $dbName = config('database.connections.mysql.database', 'oceanfresh');
-        $dbUser = config('database.connections.mysql.username', 'root');
-        $dbPass = config('database.connections.mysql.password', '');
-
-        $passArg = !empty($dbPass) ? "-p" . escapeshellarg($dbPass) : "";
-        $cmd = "{$mysqldumpBin} --host=" . escapeshellarg($dbHost) . " --port=" . escapeshellarg($dbPort) . " --user=" . escapeshellarg($dbUser) . " {$passArg} --default-character-set=utf8mb4 " . escapeshellarg($dbName) . " > \"{$dumpPath}\"";
-
-        @exec($cmd);
-
-        // If newly generated file is valid and non-empty, download it with .sql extension and auto-delete from temp
-        if (file_exists($dumpPath) && filesize($dumpPath) > 500) {
-            return response()->download($dumpPath, $newFilename, [
-                'Content-Type' => 'application/octet-stream',
-            ])->deleteFileAfterSend(true);
-        }
-
-        // Secondary Fallback: Pure PHP PDO SQL Dumper into temp directory
-        try {
-            $pdo = \Illuminate\Support\Facades\DB::connection()->getPdo();
-            $tables = [];
-            $stmt = $pdo->query('SHOW FULL TABLES WHERE Table_type = "BASE TABLE"');
-            while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-                $tables[] = $row[0];
-            }
-
-            if (!empty($tables)) {
-                $handle = fopen($dumpPath, 'w');
-                fwrite($handle, "-- MST Seafood MySQL Database Dump (.sql)\n");
-                fwrite($handle, "-- Generated: " . date('Y-m-d H:i:s') . "\n");
-                fwrite($handle, "-- Database: `{$dbName}`\n\n");
-                fwrite($handle, "SET FOREIGN_KEY_CHECKS=0;\n");
-                fwrite($handle, "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";\n\n");
-
-                foreach ($tables as $table) {
-                    fwrite($handle, "-- Table structure for `{$table}`\n");
-                    fwrite($handle, "DROP TABLE IF EXISTS `{$table}`;\n");
-                    $createRow = $pdo->query("SHOW CREATE TABLE `{$table}`")->fetch(\PDO::FETCH_NUM);
-                    if ($createRow && isset($createRow[1])) {
-                        fwrite($handle, $createRow[1] . ";\n\n");
-                    }
-
-                    fwrite($handle, "-- Data for `{$table}`\n");
-                    $rowsStmt = $pdo->query("SELECT * FROM `{$table}`");
-                    while ($row = $rowsStmt->fetch(\PDO::FETCH_ASSOC)) {
-                        $keys = array_map(fn($k) => "`{$k}`", array_keys($row));
-                        $vals = array_map(function ($v) use ($pdo) {
-                            return is_null($v) ? "NULL" : $pdo->quote($v);
-                        }, array_values($row));
-                        fwrite($handle, "INSERT INTO `{$table}` (" . implode(', ', $keys) . ") VALUES (" . implode(', ', $vals) . ");\n");
-                    }
-                    fwrite($handle, "\n");
-                }
-                fwrite($handle, "SET FOREIGN_KEY_CHECKS=1;\n");
-                fclose($handle);
-
-                if (file_exists($dumpPath) && filesize($dumpPath) > 500) {
-                    return response()->download($dumpPath, $newFilename, [
-                        'Content-Type' => 'application/octet-stream',
-                    ])->deleteFileAfterSend(true);
-                }
-            }
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('PDO MySQL dump fallback failed: ' . $e->getMessage());
-        }
-
-        return back()->with('error', 'Unable to generate MySQL dump. Ensure MySQL service is running.');
-    })->where('filename', '[A-Za-z0-9_.\-]+')->name('database.download');
-
-    // Delete Database Backup (Admin only)
-    Route::match(['delete', 'post'], 'database/backup/{filename}', function ($filename) {
-        $backupDir = storage_path('app/backups');
-        $cleanName = basename($filename);
-        $targetPath = "{$backupDir}/{$cleanName}";
-
-        if (file_exists($targetPath) && preg_match('/\.(sql|mysql)$/i', $cleanName)) {
-            @unlink($targetPath);
-            $msg = "Database backup '{$cleanName}' deleted successfully.";
-            if (request()->wantsJson() || request()->ajax()) {
-                return response()->json(['success' => true, 'message' => $msg]);
-            }
-            return redirect()->route('admin.settings.index', ['tab' => 'database'])->with('success', $msg);
-        }
-
-        $errMsg = 'Backup file not found or could not be deleted.';
-        if (request()->wantsJson() || request()->ajax()) {
-            return response()->json(['success' => false, 'message' => $errMsg], 404);
-        }
-        return redirect()->route('admin.settings.index', ['tab' => 'database'])->with('error', $errMsg);
-    })->where('filename', '[A-Za-z0-9_.\-]+')->name('database.destroy');
+    // Database Management (Admin only) - Download, Import, Restore, Delete, Migrate, Seed
+    Route::get('database/download/{filename?}', [Admin\DatabaseController::class, 'download'])->where('filename', '[A-Za-z0-9_.\-]+')->name('database.download');
+    Route::post('database/import', [Admin\DatabaseController::class, 'import'])->name('database.import');
+    Route::post('database/restore/{filename}', [Admin\DatabaseController::class, 'restore'])->where('filename', '[A-Za-z0-9_.\-]+')->name('database.restore');
+    Route::match(['delete', 'post'], 'database/backup/{filename}', [Admin\DatabaseController::class, 'destroy'])->where('filename', '[A-Za-z0-9_.\-]+')->name('database.destroy');
+    Route::post('database/migrate', [Admin\DatabaseController::class, 'runMigrations'])->name('database.migrate');
+    Route::post('database/seed', [Admin\DatabaseController::class, 'runSeeders'])->name('database.seed');
 
 });
 

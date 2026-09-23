@@ -6,18 +6,53 @@
 
 /* ─── Custom Properties ──────────────────────────────────────────────────── */
 :root {
-    /* Royal / Dark Blue Primary Palette */
-    --royalblue-950: #06152b; /* Midnight Royal Navy */
-    --royalblue-900: #0c2146; /* Deep Royal Navy */
-    --royalblue-800: #14356b; /* Classic Royal Navy */
-    --royalblue-700: #1d4ed8; /* Strong Royal Blue (Headings & Accents) */
-    --royalblue-600: #2563eb; /* Vibrant Royal Blue (Primary Buttons & CTAs) */
-    --royalblue-500: #3b82f6; /* Ocean Blue */
-    --royalblue-400: #60a5fa; /* Light Accent Blue */
-    --royalblue-300: #93c5fd; /* Soft Sky Blue */
-    --royalblue-200: #bfdbfe; /* Glacial Ice Blue (Borders) */
-    --royalblue-100: #dbeafe; /* Subtle Ice Blue Tint */
-    --royalblue-50:  #eff6ff; /* Clean Light Blue Surface */
+    /* ═══════════════════════════════════════════════════════════════════════
+       MST OFFICIAL BRAND SYSTEM:
+       70% White / Ice Blue / Light Grey
+       20% Deep Navy / Royal Blue
+       10% MST Yellow / Silver Accents
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    /* MST Primary Deep Navy & Royal Palette (20%) */
+    --mst-navy: #091a36;        /* Deep Navy Primary (Headings, Hero, B2B, Footer) */
+    --mst-navy-deep: #06152b;   /* Midnight Navy (Deep Footer & Hero Backdrop) */
+    --mst-navy-mid: #0f274a;    /* Classic Corporate Navy */
+    --mst-royal: #1e3a8a;       /* Royal Blue */
+    --mst-royal-vibrant: #1d4ed8; /* Vibrant Royal Accent */
+    --mst-royal-btn: #2563eb;   /* Secondary Action Blue */
+    --mst-blue-sky: #38bdf8;    /* Cold-chain Sky Blue */
+
+    /* MST White & Ice Blue Canvas Palette (70%) */
+    --mst-white: #ffffff;       /* Main Canvas Background & White Cards */
+    --mst-ice-blue: #f0f7ff;    /* Secondary Ice Blue Background */
+    --mst-ice-light: #f8fafc;   /* Cool Light Grey Canvas */
+    --mst-ice-border: #bfdbfe;  /* Ice Blue Card Border */
+    --mst-silver: #cbd5e1;      /* Supporting Silver Border */
+    --mst-grey-light: #e2e8f0;  /* Divider / Border */
+    --mst-grey-muted: #64748b;  /* Slate Meta Text */
+    --mst-text-dark: #0f172a;   /* Deep Navy Charcoal Headings */
+    --mst-text-body: #1e293b;   /* Crisp Body Text */
+
+    /* MST Yellow Accent & High-Visibility CTAs (10%) */
+    --mst-yellow: #f59e0b;      /* MST Yellow / Amber CTA */
+    --mst-yellow-hover: #d97706; /* MST Yellow Hover */
+    --mst-yellow-light: #fef3c7; /* Light Yellow Badge Surface */
+    --mst-yellow-border: #fde68a; /* Yellow Badge Border */
+    --mst-yellow-text: #78350f;  /* Contrast text on light yellow */
+    --mst-yellow-btn-text: #091a36; /* Dark Navy text on yellow button */
+
+    /* Royal / Dark Blue Primary Palette (Backward Compatibility) */
+    --royalblue-950: #06152b;
+    --royalblue-900: #0c2146;
+    --royalblue-800: #14356b;
+    --royalblue-700: #1d4ed8;
+    --royalblue-600: #2563eb;
+    --royalblue-500: #3b82f6;
+    --royalblue-400: #60a5fa;
+    --royalblue-300: #93c5fd;
+    --royalblue-200: #bfdbfe;
+    --royalblue-100: #dbeafe;
+    --royalblue-50:  #eff6ff;
 
     /* Backward-Compatible Token Mappings (Instantly adapts all views) */
     --seagreen-950: #06152b;
@@ -362,46 +397,79 @@ p {
     text-align: center;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, var(--seagreen-700), var(--seagreen-600));
-    color: var(--white);
-    box-shadow: 0 4px 14px rgba(29, 78, 216, 0.25);
-    border-color: transparent;
+.btn-primary, .btn-yellow {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: #091a36;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    border: 1px solid #f59e0b;
 }
-.btn-primary:hover {
-    background: linear-gradient(135deg, var(--seagreen-800), var(--seagreen-700));
-    box-shadow: 0 6px 20px rgba(29, 78, 216, 0.35);
-    transform: translateY(-1px);
-    color: var(--white);
+.btn-primary:hover, .btn-yellow:hover {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+    transform: translateY(-2px);
+    color: #091a36;
+    border-color: #d97706;
 }
 
-.btn-secondary {
-    background: var(--white);
-    color: var(--text-primary);
-    border-color: var(--gray-300);
-    box-shadow: var(--shadow-sm);
+.btn-secondary, .btn-royal {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    font-weight: 700;
+    border: 1px solid #1d4ed8;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
-.btn-secondary:hover {
-    background: var(--seagreen-50);
-    border-color: var(--seagreen-600);
-    color: var(--seagreen-700);
-    transform: translateY(-1px);
+.btn-secondary:hover, .btn-royal:hover {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-color: #2563eb;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+}
+
+.btn-navy {
+    background: #091a36;
+    color: #ffffff;
+    border: 1px solid #1e3a8a;
+    font-weight: 700;
+}
+.btn-navy:hover {
+    background: #0f274a;
+    border-color: #2563eb;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.btn-white {
+    background: #ffffff;
+    color: #091a36;
+    border: 1.5px solid #cbd5e1;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+.btn-white:hover {
+    background: #f0f7ff;
+    border-color: #93c5fd;
+    color: #1d4ed8;
+    transform: translateY(-2px);
 }
 
 .btn-ghost {
     padding: 8px 18px;
     border-radius: var(--radius-full);
     font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    border: 1px solid var(--gray-300);
-    background: var(--white);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
     transition: var(--transition-base);
 }
 .btn-ghost:hover {
-    color: var(--seagreen-700);
-    border-color: var(--seagreen-500);
-    background: var(--seagreen-50);
+    color: #ffffff;
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.15);
+    transform: translateY(-2px);
 }
 
 .btn-primary-sm {

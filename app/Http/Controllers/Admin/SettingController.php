@@ -71,7 +71,7 @@ class SettingController extends Controller
 
             // reCAPTCHA
             'recaptcha_enabled', 'recaptcha_site_key', 'recaptcha_secret_key',
-            'recaptcha_on_contact', 'recaptcha_on_register',
+            'recaptcha_on_contact', 'recaptcha_on_login', 'recaptcha_on_register',
 
             // Payment & Stripe Settings
             'stripe_enabled', 'stripe_mode', 'stripe_test_key', 'stripe_test_secret',
@@ -81,7 +81,7 @@ class SettingController extends Controller
             'stripe_key', 'stripe_secret', 'whatsapp_api_key', 'webhook_signing_secret',
 
             // Store legacy contact
-            'store_name', 'store_tagline', 'store_address', 'store_phone',
+            'store_name', 'store_company_zh', 'store_tagline', 'store_address', 'store_phone',
             'store_phone_2', 'store_phone_3', 'store_map_url',
             'store_whatsapp', 'store_email', 'store_wholesale_email', 'store_hours',
             'social_facebook', 'social_instagram', 'social_whatsapp',
@@ -100,6 +100,7 @@ class SettingController extends Controller
         if ($tab === 'recaptcha') {
             Setting::set('recaptcha_enabled', $request->has('recaptcha_enabled') ? '1' : '0');
             Setting::set('recaptcha_on_contact', $request->has('recaptcha_on_contact') ? '1' : '0');
+            Setting::set('recaptcha_on_login', $request->has('recaptcha_on_login') ? '1' : '0');
             Setting::set('recaptcha_on_register', $request->has('recaptcha_on_register') ? '1' : '0');
         }
 

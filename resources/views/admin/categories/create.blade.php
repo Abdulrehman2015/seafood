@@ -344,6 +344,51 @@
     padding: 22px 12px;
     text-align: center;
 }
+
+/* ─── Category Icon Picker Grid ─── */
+.category-icon-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    scrollbar-width: thin;
+}
+.category-icon-picker-grid::-webkit-scrollbar {
+    width: 5px;
+}
+.category-icon-picker-grid::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+.icon-pick-btn {
+    height: 38px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    padding: 0;
+    user-select: none;
+}
+.icon-pick-btn:hover {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    transform: scale(1.15);
+}
+.icon-pick-btn.active {
+    background: #dbeafe !important;
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3) !important;
+}
 </style>
 @endpush
 
@@ -585,6 +630,107 @@
                            style="width:100%;height:40px;border-radius:8px">
                     <span style="font-size:0.72rem;color:#94a3b8;margin-top:2px;display:block">Lower numbers appear first (0 = top priority)</span>
                     @error('sort_order')<div class="form-error" style="color:#ef4444;font-size:0.8rem;margin-top:4px">{{ $message }}</div>@enderror
+                </div>
+            </div>
+
+            <!-- Card: Category Icon / Emoji Picker -->
+            <div class="card" style="padding:22px;border-radius:12px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                    <div style="font-weight:700;font-size:1rem;color:#0f172a;display:flex;align-items:center;gap:8px">
+                        <span>✨</span> Category Icon
+                    </div>
+                    <span class="badge" style="background:#eff6ff;color:#1d4ed8;font-size:0.75rem;padding:3px 8px;border-radius:6px;font-weight:600">Home &amp; Storefront</span>
+                </div>
+
+                <!-- Active Icon Preview & Input -->
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;background:#f8fafc;padding:12px;border-radius:10px;border:1px solid #e2e8f0">
+                    <div id="iconBigPreview" style="width:48px;height:48px;background:#ffffff;border:1.5px solid #cbd5e1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 2px 6px rgba(0,0,0,0.05);flex-shrink:0">
+                        {{ old('icon', '🐟') ?: '📁' }}
+                    </div>
+                    <div style="flex:1">
+                        <input type="text" name="icon" id="categoryIconInput" class="form-control" 
+                               value="{{ old('icon', '🐟') }}" 
+                               placeholder="Type or select icon below"
+                               style="height:38px;font-size:1rem;border-radius:8px">
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="clearCategoryIcon()" style="padding:6px 10px;font-size:0.8rem" title="Clear Icon">
+                        ✕
+                    </button>
+                </div>
+
+                <!-- Quick Icon Preset Palettes -->
+                <div style="font-size:0.76rem;font-weight:700;color:#475569;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em">
+                    Click to Choose an Icon:
+                </div>
+
+                <div class="category-icon-picker-grid">
+                    <!-- Seafood -->
+                    <button type="button" class="icon-pick-btn" data-icon="🐟" title="Fish">🐟</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🦐" title="Prawn / Shrimp">🦐</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🦀" title="Crab">🦀</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🦑" title="Squid">🦑</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🦞" title="Lobster">🦞</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🦪" title="Oyster / Shellfish">🦪</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🐠" title="Tropical Fish">🐠</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🐡" title="Blowfish">🐡</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🦈" title="Shark">🦈</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🐋" title="Whale">🐋</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🌊" title="Ocean Wave">🌊</button>
+                    <button type="button" class="icon-pick-btn" data-icon="⚓" title="Anchor">⚓</button>
+
+                    <!-- Meat & Poultry -->
+                    <button type="button" class="icon-pick-btn" data-icon="🥩" title="Meat / Steak">🥩</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍗" title="Poultry / Chicken">🍗</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍖" title="Meat on Bone">🍖</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🥓" title="Bacon">🥓</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🌭" title="Sausage">🌭</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍔" title="Patty / Burger">🍔</button>
+
+                    <!-- Frozen & Dim Sum -->
+                    <button type="button" class="icon-pick-btn" data-icon="❄️" title="Frozen / Cold Chain">❄️</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🥟" title="Dumpling / Dim Sum">🥟</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🧊" title="Ice / Chilled">🧊</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍱" title="Bento Meal">🍱</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍤" title="Fried Shrimp / Tempura">🍤</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍲" title="Hot Pot / Stew">🍲</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍜" title="Noodles / Ramen">🍜</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍙" title="Rice Ball / Sushi">🍙</button>
+
+                    <!-- Ingredients & Condiments -->
+                    <button type="button" class="icon-pick-btn" data-icon="🧂" title="Salt / Seasoning">🧂</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍳" title="Cooking / Egg">🍳</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍶" title="Sauce Bottle">🍶</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🥫" title="Canned Food">🥫</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🧄" title="Garlic">🧄</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🧅" title="Onion">🧅</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🌶️" title="Chili / Spicy">🌶️</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🫒" title="Olive / Oil">🫒</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🧀" title="Cheese / Dairy">🧀</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍋" title="Lemon / Citrus">🍋</button>
+
+                    <!-- Desserts & Bakery -->
+                    <button type="button" class="icon-pick-btn" data-icon="🍰" title="Cake / Pastry">🍰</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍡" title="Dango / Sweet Skewer">🍡</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍦" title="Soft Ice Cream">🍦</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍨" title="Ice Cream Bowl">🍨</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍧" title="Shaved Ice">🍧</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🧁" title="Cupcake">🧁</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍮" title="Pudding / Custard">🍮</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍩" title="Donut">🍩</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍞" title="Bread / Bakery">🍞</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🥐" title="Croissant">🥐</button>
+
+                    <!-- General -->
+                    <button type="button" class="icon-pick-btn" data-icon="📦" title="Package / Box">📦</button>
+                    <button type="button" class="icon-pick-btn" data-icon="⭐" title="Star / Featured">⭐</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🌟" title="Glowing Star">🌟</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🏷️" title="Tag / Brand">🏷️</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🛒" title="Cart">🛒</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🍽️" title="Dining / Restaurant">🍽️</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🥢" title="Chopsticks">🥢</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🥣" title="Bowl">🥣</button>
+                    <button type="button" class="icon-pick-btn" data-icon="🌐" title="Global Sourcing">🌐</button>
+                    <button type="button" class="icon-pick-btn" data-icon="📁" title="Folder / Category">📁</button>
                 </div>
             </div>
 
@@ -974,6 +1120,47 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         if (!container.contains(e.target)) {
             closeDropdown();
+        }
+    });
+});
+
+// ─── Category Icon Picker Helpers ───
+function selectCategoryIcon(icon) {
+    const input = document.getElementById('categoryIconInput');
+    const preview = document.getElementById('iconBigPreview');
+    if (input) input.value = icon;
+    if (preview) preview.textContent = icon || '📁';
+    
+    document.querySelectorAll('.icon-pick-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-icon') === icon);
+    });
+}
+
+function clearCategoryIcon() {
+    selectCategoryIcon('');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('categoryIconInput');
+    const preview = document.getElementById('iconBigPreview');
+    
+    if (input) {
+        input.addEventListener('input', function() {
+            const val = this.value.trim();
+            if (preview) preview.textContent = val || '📁';
+            document.querySelectorAll('.icon-pick-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-icon') === val);
+            });
+        });
+    }
+
+    document.querySelectorAll('.icon-pick-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const icon = this.getAttribute('data-icon');
+            selectCategoryIcon(icon);
+        });
+        if (input && input.value.trim() === btn.getAttribute('data-icon')) {
+            btn.classList.add('active');
         }
     });
 });

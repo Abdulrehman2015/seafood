@@ -166,20 +166,28 @@
                         <span>🏢</span> Company Identity
                     </div>
 
-                    <div class="settings-form-grid-2">
+                    <div class="settings-form-grid-3">
                         <div class="form-group">
-                            <label class="form-label" style="font-weight:700;color:#1e293b;font-size:0.875rem;margin-bottom:6px">Company / Store Name</label>
+                            <label class="form-label" style="font-weight:700;color:#1e293b;font-size:0.875rem;margin-bottom:6px">Company / Store Name (EN)</label>
                             <input type="text" name="store_name" id="input_store_name" class="form-control settings-input"
                                    value="{{ old('store_name', $settings['store_name'] ?? '') }}"
-                                   placeholder="Mika Import and Export SDN Bhd"
+                                   placeholder="MST Import & Export Sdn. Bhd."
                                    style="border-radius:10px;height:42px">
-                            <div style="font-size:0.75rem;color:#64748b;margin-top:4px">Used in footer copyright and invoices</div>
+                            <div style="font-size:0.75rem;color:#64748b;margin-top:4px">Used in footer copyright, contact cards, and invoices</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="font-weight:700;color:#1e293b;font-size:0.875rem;margin-bottom:6px">Company Name (Chinese)</label>
+                            <input type="text" name="store_company_zh" class="form-control settings-input"
+                                   value="{{ old('store_company_zh', $settings['store_company_zh'] ?? '') }}"
+                                   placeholder="镁嘉国际贸易有限公司"
+                                   style="border-radius:10px;height:42px">
+                            <div style="font-size:0.75rem;color:#64748b;margin-top:4px">Shown in Contact Facility card & header</div>
                         </div>
                         <div class="form-group">
                             <label class="form-label" style="font-weight:700;color:#1e293b;font-size:0.875rem;margin-bottom:6px">Store Tagline / Slogan</label>
                             <input type="text" name="store_tagline" class="form-control settings-input"
                                    value="{{ old('store_tagline', $settings['store_tagline'] ?? '') }}"
-                                   placeholder="Premium frozen seafood for retail, wholesale & trading..."
+                                   placeholder="Flow with Integrity, Grow with Strength"
                                    style="border-radius:10px;height:42px">
                             <div style="font-size:0.75rem;color:#64748b;margin-top:4px">Shown in the footer brand description</div>
                         </div>
@@ -1315,27 +1323,106 @@
                     </div>
                 </div>
 
-                <!-- Action Card -->
-                <div style="border:1.5px solid #e0e7ff;background:#f5f7ff;border-radius:12px;padding:20px;margin-bottom:24px">
-                    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
-                        <div style="max-width:560px">
-                            <h3 style="font-size:1rem;font-weight:800;color:#1e3a8a;margin:0 0 6px 0">Ready to download a fresh database snapshot?</h3>
-                            <p style="font-size:0.85rem;color:#475569;line-height:1.6;margin:0">
-                                Clicking the button below generates an instantaneous, complete SQL dump of all tables (products, categories, customer accounts, orders, quotations, reviews, and configuration settings) and downloads it directly to your device.
+                <!-- Action Cards: Export & Import Grid -->
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(360px, 1fr));gap:20px;margin-bottom:24px">
+                    <!-- Export Card -->
+                    <div style="border:1.5px solid #e0e7ff;background:#f5f7ff;border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between">
+                        <div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                                <span style="font-size:1.5rem">📥</span>
+                                <h3 style="font-size:1.05rem;font-weight:800;color:#1e3a8a;margin:0">Export Database (.sql)</h3>
+                            </div>
+                            <p style="font-size:0.85rem;color:#475569;line-height:1.6;margin:0 0 16px 0">
+                                Generates an instantaneous, complete SQL dump of all tables (products, categories, users, orders, RFQs, policies, translations, settings) and downloads it directly to your device.
                             </p>
                         </div>
                         <div>
-                            <a href="{{ route('admin.database.download', ['filename' => 'mst_mysql_backup_' . date('Y-m-d_His') . '.sql']) }}" download="mst_mysql_backup_{{ date('Y-m-d_His') }}.sql" class="btn btn-primary" style="background:#2563eb;border-color:#2563eb;padding:12px 24px;font-size:0.95rem;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,0.25);border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:8px">
+                            <a href="{{ route('admin.database.download', ['filename' => 'mst_mysql_backup_' . date('Y-m-d_His') . '.sql']) }}" download="mst_mysql_backup_{{ date('Y-m-d_His') }}.sql" class="btn btn-primary" style="background:#2563eb;border-color:#2563eb;padding:12px 22px;font-size:0.92rem;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,0.25);border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;width:100%;justify-content:center">
                                 <span>📥</span>
-                                <span>Download MySQL (.sql)</span>
+                                <span>Download SQL Snapshot</span>
                             </a>
                         </div>
+                    </div>
+
+                    <!-- Import Card -->
+                    <div style="border:1.5px solid #fed7aa;background:#fffbeb;border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between">
+                        <form id="dbImportForm" action="{{ route('admin.database.import') }}" method="POST" enctype="multipart/form-data" style="display:flex;flex-direction:column;height:100%;justify-content:space-between">
+                            @csrf
+                            <div>
+                                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                                    <span style="font-size:1.5rem">📤</span>
+                                    <h3 style="font-size:1.05rem;font-weight:800;color:#9a3412;margin:0">Import Database (.sql / .gz)</h3>
+                                </div>
+                                <p style="font-size:0.85rem;color:#78350f;line-height:1.6;margin:0 0 14px 0">
+                                    Upload and execute a <code style="background:#fef3c7;padding:2px 6px;border-radius:4px;font-weight:700">.sql</code> or <code style="background:#fef3c7;padding:2px 6px;border-radius:4px;font-weight:700">.sql.gz</code> dump directly into the active database.
+                                </p>
+
+                                <div style="margin-bottom:14px">
+                                    <label style="display:block;border:2px dashed #f59e0b;background:#ffffff;border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all 0.2s" ondragover="event.preventDefault();this.style.background='#fef3c7'" ondragleave="this.style.background='#ffffff'" ondrop="handleSqlFileDrop(event)">
+                                        <input type="file" name="sql_file" id="sqlFileInput" accept=".sql,.gz,.txt" required style="display:none" onchange="handleSqlFileSelect(this)">
+                                        <div style="font-size:1.3rem;margin-bottom:4px">📁</div>
+                                        <div id="sqlFilePrompt" style="font-size:0.84rem;font-weight:700;color:#9a3412">Click or drag &amp; drop .sql file here</div>
+                                        <div id="sqlFileInfo" style="display:none;font-size:0.8rem;color:#16a34a;font-weight:700;margin-top:4px"></div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="button" onclick="promptImportConfirm()" class="btn" style="background:#ea580c;border-color:#ea580c;color:#ffffff;padding:12px 22px;font-size:0.92rem;font-weight:700;box-shadow:0 4px 12px rgba(234,88,12,0.25);border-radius:8px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer">
+                                    <span>🚀</span>
+                                    <span>Upload &amp; Import Database</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Database Maintenance & Migration Tools Card -->
+                <div style="border:1.5px solid #e2e8f0;background:#ffffff;border-radius:12px;padding:20px;margin-bottom:24px">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px">
+                        <div>
+                            <h3 style="font-size:0.95rem;font-weight:800;color:#0f172a;margin:0 0 4px 0">⚡ Database Maintenance &amp; Migrations</h3>
+                            <p style="font-size:0.82rem;color:#64748b;margin:0">
+                                Run pending Laravel migrations or reseed application datasets without terminal access.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;flex-wrap:wrap;gap:12px">
+                        <!-- Run Migrations Button -->
+                        <form id="formRunMigrations" action="{{ route('admin.database.migrate') }}" method="POST" style="margin:0">
+                            @csrf
+                            <button type="button" onclick="promptMigrateConfirm()" class="btn btn-secondary" style="font-size:0.85rem;font-weight:700;padding:9px 16px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;border-color:#cbd5e1;color:#1e293b;background:#f8fafc">
+                                <span>🛠️</span>
+                                <span>Run Pending Migrations (<code style="font-size:0.8rem">migrate --force</code>)</span>
+                            </button>
+                        </form>
+
+                        <!-- Reseed Translations -->
+                        <form action="{{ route('admin.database.seed') }}" method="POST" style="margin:0">
+                            @csrf
+                            <input type="hidden" name="seeder_class" value="Database\Seeders\TranslationSeeder">
+                            <button type="submit" class="btn btn-secondary" style="font-size:0.85rem;font-weight:600;padding:9px 16px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;border-color:#cbd5e1;color:#334155;background:#ffffff" onclick="return confirm('Reseed multilingual translation dictionary into database?')">
+                                <span>🌐</span>
+                                <span>Reseed Translations</span>
+                            </button>
+                        </form>
+
+                        <!-- Reseed Catalogue -->
+                        <form action="{{ route('admin.database.seed') }}" method="POST" style="margin:0">
+                            @csrf
+                            <input type="hidden" name="seeder_class" value="Database\Seeders\MultilingualCatalogueSeeder">
+                            <button type="submit" class="btn btn-secondary" style="font-size:0.85rem;font-weight:600;padding:9px 16px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;border-color:#cbd5e1;color:#334155;background:#ffffff" onclick="return confirm('Reseed multilingual product titles and descriptions?')">
+                                <span>🐟</span>
+                                <span>Reseed Product Translations</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
 
                 <!-- Existing Backups Info -->
                 @php
-                    $backupFiles = array_merge(glob(storage_path('app/backups/*.sql')), glob(storage_path('app/backups/*.mysql')));
+                    $backupFiles = array_merge(glob(storage_path('app/backups/*.sql')), glob(storage_path('app/backups/*.mysql')), glob(storage_path('app/backups/*.gz')));
                     if (!empty($backupFiles)) {
                         usort($backupFiles, fn($a, $b) => filemtime($b) <=> filemtime($a));
                     }
@@ -1367,10 +1454,13 @@
                                     </td>
                                     <td style="padding:10px 14px;text-align:right">
                                         <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px">
+                                            <button type="button" class="btn btn-sm" onclick="openRestoreBackupModal('{{ basename($bFile) }}', '{{ route('admin.database.restore', ['filename' => basename($bFile)]) }}', '{{ number_format(filesize($bFile) / 1024, 1) }} KB')" style="background:#fff7ed;border:1.5px solid #fdba74;color:#c2410c;font-size:0.75rem;padding:4px 10px;border-radius:6px;font-weight:700;transition:all 0.15s ease;cursor:pointer">
+                                                🔄 Restore
+                                            </button>
                                             <button type="button" class="btn btn-sm" onclick="openDeleteBackupModal('{{ basename($bFile) }}', '{{ route('admin.database.destroy', ['filename' => basename($bFile)]) }}', 'backup-row-{{ md5(basename($bFile)) }}', '{{ number_format(filesize($bFile) / 1024, 1) }} KB')" style="background:#ffffff;border:1.5px solid #ef4444;color:#ef4444;font-size:0.75rem;padding:4px 10px;border-radius:6px;font-weight:700;transition:all 0.15s ease;cursor:pointer" onmouseover="this.style.background='#ef4444';this.style.color='#ffffff'" onmouseout="this.style.background='#ffffff';this.style.color='#ef4444'">
                                                 Delete
                                             </button>
-                                            <a href="{{ route('admin.database.download', ['filename' => basename($bFile)]) }}" download="{{ preg_replace('/\.(sql|mysql)$/i', '', basename($bFile)) }}.sql" class="btn btn-secondary btn-sm" style="font-size:0.75rem;padding:4px 10px;border-radius:6px;font-weight:600">
+                                            <a href="{{ route('admin.database.download', ['filename' => basename($bFile)]) }}" download="{{ preg_replace('/\.(sql|mysql|gz)$/i', '', basename($bFile)) }}.sql" class="btn btn-secondary btn-sm" style="font-size:0.75rem;padding:4px 10px;border-radius:6px;font-weight:600">
                                                 Download
                                             </a>
                                         </div>
@@ -1389,9 +1479,188 @@
 
                 <!-- Security & Notice Box -->
                 <div style="margin-top:24px;padding:14px 16px;background:#fefce8;border:1px solid #fef08a;border-radius:8px;font-size:0.8rem;color:#854d0e;line-height:1.5">
-                    <strong>Security Notice:</strong> Database dumps contain sensitive customer data, order details, and encrypted authentication credentials. Always store downloaded backups in a safe, encrypted location.
+                    <strong>Security Notice:</strong> Database operations directly modify your live database tables. Always ensure you have downloaded a fresh SQL snapshot before performing imports or restores.
                 </div>
             </div>
+        </div>
+
+        <!-- ================= TAB: RECAPTCHA SETTINGS ================= -->
+        <div id="tab-recaptcha" class="settings-pane card" style="display:none;background:white;border-radius:14px;border:1.5px solid #e2e8f0;box-shadow:0 1px 4px rgba(0,0,0,0.04);overflow:hidden">
+            <div style="padding:18px 24px;border-bottom:1.5px solid #e2e8f0;background:#f8fafc;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+                <div>
+                    <h2 style="font-size:1.15rem;font-weight:800;color:#0f172a;margin:0;display:flex;align-items:center;gap:8px">
+                        <span>🛡️</span> Google reCAPTCHA Settings
+                    </h2>
+                    <p style="font-size:0.82rem;color:#64748b;margin:4px 0 0">
+                        Protect contact inquiries, user login, and account registrations against automated bots and spam
+                    </p>
+                </div>
+                @php
+                    $isRecaptchaActive = ($settings['recaptcha_enabled'] ?? '0') === '1' && !empty($settings['recaptcha_site_key']) && !empty($settings['recaptcha_secret_key']);
+                @endphp
+                <div>
+                    @if($isRecaptchaActive)
+                        <span style="display:inline-flex;align-items:center;gap:6px;background:#dcfce7;color:#15803d;border:1px solid #86efac;padding:5px 12px;border-radius:999px;font-size:0.75rem;font-weight:700">
+                            <span style="width:7px;height:7px;border-radius:50%;background:#16a34a"></span>
+                            reCAPTCHA Active
+                        </span>
+                    @elseif(($settings['recaptcha_enabled'] ?? '0') === '1')
+                        <span style="display:inline-flex;align-items:center;gap:6px;background:#fef9c3;color:#854d0e;border:1px solid #fde047;padding:5px 12px;border-radius:999px;font-size:0.75rem;font-weight:700">
+                            <span>⚠️</span> Keys Incomplete
+                        </span>
+                    @else
+                        <span style="display:inline-flex;align-items:center;gap:6px;background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;padding:5px 12px;border-radius:999px;font-size:0.75rem;font-weight:700">
+                            <span>⚪</span> Disabled
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            <form action="{{ route('admin.settings.update') }}" method="POST" style="padding:24px">
+                @csrf
+                <input type="hidden" name="tab" value="recaptcha">
+
+                <!-- 1. Master Toggle Card -->
+                <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+                    <div>
+                        <div style="font-weight:800;font-size:0.95rem;color:#0f172a;display:flex;align-items:center;gap:8px">
+                            <span>🤖</span> Enable Google reCAPTCHA Protection
+                        </div>
+                        <div style="font-size:0.8rem;color:#64748b;margin-top:3px">
+                            When enabled, verification is required on all activated forms below before submission.
+                        </div>
+                    </div>
+                    <label class="switch-toggle" style="margin:0">
+                        <input type="checkbox" name="recaptcha_enabled" value="1" {{ ($settings['recaptcha_enabled'] ?? '0') === '1' ? 'checked' : '' }}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <!-- 2. Google API Keys Section -->
+                <div style="margin-bottom:24px">
+                    <div style="font-size:0.88rem;font-weight:800;color:#0f172a;margin-bottom:14px;display:flex;align-items:center;gap:6px">
+                        <span>🔑</span> API Credentials (Google reCAPTCHA v2 Checkbox)
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" class="settings-form-grid-2">
+                        <!-- Site Key -->
+                        <div class="form-group mb-0">
+                            <label class="form-label" style="font-weight:700;color:#334155;font-size:0.85rem">
+                                Google Site Key (Public) <span class="required" style="color:#ef4444">*</span>
+                            </label>
+                            <input type="text" name="recaptcha_site_key" class="form-control"
+                                   value="{{ old('recaptcha_site_key', $settings['recaptcha_site_key'] ?? '') }}"
+                                   placeholder="e.g. 6LdXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                                   style="font-family:monospace;font-size:0.85rem;background:#ffffff">
+                            <div style="font-size:0.75rem;color:#64748b;margin-top:4px">
+                                The public key used to render the widget on client browsers.
+                            </div>
+                        </div>
+
+                        <!-- Secret Key -->
+                        <div class="form-group mb-0">
+                            <label class="form-label" style="font-weight:700;color:#334155;font-size:0.85rem">
+                                Google Secret Key (Private) <span class="required" style="color:#ef4444">*</span>
+                            </label>
+                            <div style="position:relative">
+                                <input type="password" name="recaptcha_secret_key" id="recaptcha_secret_key" class="form-control"
+                                       value="{{ old('recaptcha_secret_key', $settings['recaptcha_secret_key'] ?? '') }}"
+                                       placeholder="e.g. 6LdXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                                       style="font-family:monospace;font-size:0.85rem;background:#ffffff;padding-right:40px">
+                                <button type="button" onclick="togglePasswordVisibility('recaptcha_secret_key')"
+                                        style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:#64748b;cursor:pointer;padding:4px 8px;font-size:0.9rem" title="Show/Hide Key">
+                                    👁
+                                </button>
+                            </div>
+                            <div style="font-size:0.75rem;color:#64748b;margin-top:4px">
+                                Server-side verification secret. Kept secure and never sent to client browsers.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Form Placement Toggles Section -->
+                <div style="margin-bottom:24px">
+                    <div style="font-size:0.88rem;font-weight:800;color:#0f172a;margin-bottom:14px;display:flex;align-items:center;gap:6px">
+                        <span>🎯</span> Form Placement &amp; Individual Activation
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:14px" class="settings-form-grid-3">
+
+                        <!-- Placement 1: Contact Us -->
+                        <div style="border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;background:#ffffff;display:flex;flex-direction:column;justify-content:space-between;gap:12px">
+                            <div>
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                                    <div style="font-size:1.4rem">📍</div>
+                                    <label class="switch-toggle" style="margin:0">
+                                        <input type="checkbox" name="recaptcha_on_contact" value="1" {{ ($settings['recaptcha_on_contact'] ?? '1') === '1' ? 'checked' : '' }}>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a">Contact &amp; RFQ Form</div>
+                                <div style="font-size:0.78rem;color:#64748b;margin-top:3px;line-height:1.4">
+                                    Active on <code style="font-size:0.72rem;background:#f1f5f9;padding:1px 4px;border-radius:4px">/en/contact</code> sourcing RFQ inquiries.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Placement 2: Login -->
+                        <div style="border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;background:#ffffff;display:flex;flex-direction:column;justify-content:space-between;gap:12px">
+                            <div>
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                                    <div style="font-size:1.4rem">🔐</div>
+                                    <label class="switch-toggle" style="margin:0">
+                                        <input type="checkbox" name="recaptcha_on_login" value="1" {{ ($settings['recaptcha_on_login'] ?? '1') === '1' ? 'checked' : '' }}>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a">Customer &amp; Admin Login</div>
+                                <div style="font-size:0.78rem;color:#64748b;margin-top:3px;line-height:1.4">
+                                    Active on <code style="font-size:0.72rem;background:#f1f5f9;padding:1px 4px;border-radius:4px">/login</code> to protect against brute-force attacks.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Placement 3: Registration -->
+                        <div style="border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;background:#ffffff;display:flex;flex-direction:column;justify-content:space-between;gap:12px">
+                            <div>
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                                    <div style="font-size:1.4rem">📝</div>
+                                    <label class="switch-toggle" style="margin:0">
+                                        <input type="checkbox" name="recaptcha_on_register" value="1" {{ ($settings['recaptcha_on_register'] ?? '1') === '1' ? 'checked' : '' }}>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a">Customer Registration</div>
+                                <div style="font-size:0.78rem;color:#64748b;margin-top:3px;line-height:1.4">
+                                    Active on <code style="font-size:0.72rem;background:#f1f5f9;padding:1px 4px;border-radius:4px">/register</code> to block fake bot signups.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 4. Setup Guidance & Instructions Card -->
+                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:18px 20px;margin-bottom:24px">
+                    <div style="font-weight:700;font-size:0.86rem;color:#1e40af;margin-bottom:6px;display:flex;align-items:center;gap:6px">
+                        <span>💡</span> How to get your Google reCAPTCHA Keys:
+                    </div>
+                    <ol style="margin:0;padding-left:20px;font-size:0.8rem;color:#1e3a8a;line-height:1.6">
+                        <li>Visit the <a href="https://www.google.com/recaptcha/admin" target="_blank" style="color:#2563eb;font-weight:700;text-decoration:underline">Google reCAPTCHA Admin Console ↗</a> and sign in.</li>
+                        <li>Register a new site, choose <strong>reCAPTCHA v2 ("I'm not a robot" Checkbox)</strong>.</li>
+                        <li>Add your authorized domains: <code style="background:#dbeafe;padding:1px 4px;border-radius:3px">127.0.0.1</code>, <code style="background:#dbeafe;padding:1px 4px;border-radius:3px">localhost</code>, and your production domain (e.g. <code style="background:#dbeafe;padding:1px 4px;border-radius:3px">mst.my</code>).</li>
+                        <li>Copy the generated <strong>Site Key</strong> and <strong>Secret Key</strong> into the fields above and click <strong>Save reCAPTCHA Settings</strong>.</li>
+                    </ol>
+                </div>
+
+                <!-- Action Button -->
+                <div style="display:flex;justify-content:flex-end">
+                    <button type="submit" class="btn btn-primary" style="background:#1d4ed8;border-color:#1d4ed8;padding:10px 24px;font-weight:700;font-size:0.9rem;display:inline-flex;align-items:center;gap:8px">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Save reCAPTCHA Settings</span>
+                    </button>
+                </div>
+            </form>
         </div>
 
     </div>
@@ -1415,6 +1684,62 @@
             <div style="padding:12px 18px;border-top:1px solid var(--gray-200);display:flex;justify-content:flex-end;gap:8px;background:#f8fafc">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="closeTestEmailModal()">Cancel</button>
                 <button type="submit" class="btn btn-primary btn-sm" style="background:#5b5bf0;border-color:#5b5bf0">Send Test Email</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Database Import Confirmation -->
+<div id="importConfirmModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.6);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(3px);padding:16px;">
+    <div style="background:white;border-radius:14px;width:100%;max-width:460px;padding:24px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1),0 10px 10px -5px rgba(0,0,0,0.04);">
+        <div style="width:48px;height:48px;border-radius:50%;background:#ffedd5;color:#ea580c;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:14px;">
+            ⚠️
+        </div>
+        <h3 style="font-size:1.15rem;font-weight:700;color:#0f172a;margin:0 0 6px;">Confirm Database Import</h3>
+        <p style="font-size:0.875rem;color:#64748b;line-height:1.5;margin:0 0 16px;">
+            You are about to execute the uploaded SQL file into database <strong style="color:#0f172a">`{{ config('database.connections.mysql.database', 'oceanfresh') }}`</strong>. This may overwrite or update existing tables.
+        </p>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 14px;margin-bottom:20px;">
+            <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;color:#92400e;font-weight:700;margin-bottom:4px">Selected File</div>
+            <div id="importConfirmFilename" style="font-size:0.85rem;font-weight:700;color:#78350f;word-break:break-all;font-family:monospace"></div>
+            <div id="importConfirmFilesize" style="font-size:0.75rem;color:#b45309;margin-top:4px"></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
+            <button type="button" onclick="closeImportConfirmModal()" class="btn btn-secondary" style="flex:1;min-width:100px;">
+                Cancel
+            </button>
+            <button type="button" id="btnExecuteImport" onclick="executeDatabaseImport()" class="btn" style="flex:1;min-width:140px;font-weight:700;background:#ea580c;border-color:#ea580c;color:#ffffff;display:inline-flex;align-items:center;justify-content:center;gap:6px">
+                <span id="importBtnSpinner" style="display:none">⏳</span>
+                <span id="importBtnText">Yes, Import Now</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Database Restore Confirmation -->
+<div id="restoreBackupModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.6);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(3px);padding:16px;">
+    <div style="background:white;border-radius:14px;width:100%;max-width:460px;padding:24px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1),0 10px 10px -5px rgba(0,0,0,0.04);">
+        <form id="restoreBackupForm" method="POST">
+            @csrf
+            <div style="width:48px;height:48px;border-radius:50%;background:#ffedd5;color:#ea580c;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:14px;">
+                🔄
+            </div>
+            <h3 style="font-size:1.15rem;font-weight:700;color:#0f172a;margin:0 0 6px;">Restore Database Archive</h3>
+            <p style="font-size:0.875rem;color:#64748b;line-height:1.5;margin:0 0 16px;">
+                Are you sure you want to restore the database from this stored archive? This will execute all SQL queries inside the archive.
+            </p>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;margin-bottom:20px;">
+                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;color:#94a3b8;font-weight:700;margin-bottom:4px">Archive File</div>
+                <div id="restoreBackupFilename" style="font-size:0.85rem;font-weight:700;color:#0f172a;word-break:break-all;font-family:monospace"></div>
+                <div id="restoreBackupFilesize" style="font-size:0.75rem;color:#64748b;margin-top:4px"></div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
+                <button type="button" onclick="closeRestoreBackupModal()" class="btn btn-secondary" style="flex:1;min-width:100px;">
+                    Cancel
+                </button>
+                <button type="submit" id="btnExecuteRestore" class="btn" style="flex:1;min-width:140px;font-weight:700;background:#ea580c;border-color:#ea580c;color:#ffffff;display:inline-flex;align-items:center;justify-content:center;gap:6px">
+                    <span>Yes, Restore</span>
+                </button>
             </div>
         </form>
     </div>
@@ -1747,6 +2072,98 @@ function initAppearanceTab() {
             const val = copyrightInput.value.trim();
             copyrightPreview.textContent = val || ('© ' + new Date().getFullYear() + ' Mika Import and Export SDN Bhd. All rights reserved.');
         });
+    }
+}
+
+// ─── Database Import & Restore Functions ──────────────────────────────
+function handleSqlFileSelect(input) {
+    const file = input.files && input.files[0];
+    const infoEl = document.getElementById('sqlFileInfo');
+    const promptEl = document.getElementById('sqlFilePrompt');
+    if (file) {
+        const sizeFormatted = (file.size / 1024 < 1024) 
+            ? (file.size / 1024).toFixed(1) + ' KB' 
+            : (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+        if (infoEl) {
+            infoEl.style.display = 'block';
+            infoEl.textContent = '✓ Selected: ' + file.name + ' (' + sizeFormatted + ')';
+        }
+        if (promptEl) {
+            promptEl.textContent = 'File ready to import';
+        }
+    }
+}
+
+function handleSqlFileDrop(event) {
+    event.preventDefault();
+    const dt = event.dataTransfer;
+    if (dt && dt.files && dt.files.length) {
+        const input = document.getElementById('sqlFileInput');
+        if (input) {
+            input.files = dt.files;
+            handleSqlFileSelect(input);
+        }
+    }
+}
+
+function promptImportConfirm() {
+    const input = document.getElementById('sqlFileInput');
+    if (!input || !input.files || !input.files.length) {
+        alert('Please select a .sql or .sql.gz file to import first.');
+        input && input.click();
+        return;
+    }
+    const file = input.files[0];
+    const nameEl = document.getElementById('importConfirmFilename');
+    const sizeEl = document.getElementById('importConfirmFilesize');
+    const modal = document.getElementById('importConfirmModal');
+
+    if (nameEl) nameEl.textContent = file.name;
+    if (sizeEl) {
+        const sizeFormatted = (file.size / 1024 < 1024) 
+            ? (file.size / 1024).toFixed(1) + ' KB' 
+            : (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+        sizeEl.textContent = 'File Size: ' + sizeFormatted;
+    }
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeImportConfirmModal() {
+    const modal = document.getElementById('importConfirmModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function executeDatabaseImport() {
+    const btn = document.getElementById('btnExecuteImport');
+    const spinner = document.getElementById('importBtnSpinner');
+    const text = document.getElementById('importBtnText');
+    if (btn) btn.disabled = true;
+    if (spinner) spinner.style.display = 'inline-block';
+    if (text) text.textContent = 'Importing SQL... Please wait';
+
+    document.getElementById('dbImportForm')?.submit();
+}
+
+function openRestoreBackupModal(filename, actionUrl, fileSize) {
+    const modal = document.getElementById('restoreBackupModal');
+    const form = document.getElementById('restoreBackupForm');
+    const nameEl = document.getElementById('restoreBackupFilename');
+    const sizeEl = document.getElementById('restoreBackupFilesize');
+
+    if (form) form.action = actionUrl;
+    if (nameEl) nameEl.textContent = filename;
+    if (sizeEl) sizeEl.textContent = fileSize ? 'File Size: ' + fileSize : '';
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeRestoreBackupModal() {
+    const modal = document.getElementById('restoreBackupModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function promptMigrateConfirm() {
+    if (confirm('Run pending database migrations (migrate --force)? This will create or update any missing database tables.')) {
+        document.getElementById('formRunMigrations')?.submit();
     }
 }
 

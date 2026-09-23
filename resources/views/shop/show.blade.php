@@ -160,7 +160,7 @@
                             </span>
                         </div>
 
-                        <div class="js-product-approx-note" data-base-rm="{{ $product->getPriceForGroup($group) ?? 0 }}" style="{{ $currentCurrency !== 'MYR' && !empty($displayPrice['base_rm']) ? '' : 'display:none' }};margin-top:4px;font-size:0.85rem;color:#64748b;font-weight:500">
+                        <div class="js-product-approx-note" data-base-rm="{{ $product->getPriceForGroup($group) ?? 0 }}" style="display:{{ ($currentCurrency !== 'MYR' && !empty($displayPrice['base_rm'])) ? 'block' : 'none' }};margin-top:4px;font-size:0.85rem;color:#64748b;font-weight:500">
                             Approx. <strong>RM {{ number_format($displayPrice['base_rm'] ?? $product->getPriceForGroup($group), 2) }}</strong> (billed in MYR at checkout)
                         </div>
 
@@ -266,11 +266,23 @@
                         </div>
                     @endif
                 </form>
-                @elseif($group === 'trading' && $price === null)
-                    <div class="mb-5">
-                        <a href="{{ route('quotations.create') }}?product={{ $product->id }}" class="btn btn-primary btn-lg btn-block" style="padding:14px;font-weight:700">
-                            📋 Request for Quotation (Bulk Order)
-                        </a>
+                @elseif($price === null && $product->isInStock())
+                    <div class="product-purchase-cluster mb-5">
+                        <p style="font-size:0.88rem;color:#475569;margin-bottom:12px">
+                            @t('shop.price_on_request_desc', 'This item is priced based on volume and market rate. Inquire below for an instant quote:')
+                        </p>
+                        <div class="product-actions-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                            <a href="{{ route('contact') }}?subject={{ urlencode('Pricing Inquiry: ' . $product->name) }}" class="btn-product-cta btn-cta-add-cart" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #2563eb, #1d4ed8);color:#ffffff;height:48px;border-radius:10px;font-weight:700">
+                                <span class="btn-cta-inner">
+                                    <span>📋 @t('shop.request_quote', 'Request a Quote')</span>
+                                </span>
+                            </a>
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $settings['store_whatsapp'] ?? '601112710260') }}?text={{ urlencode('Hi MST, I would like to request pricing for: ' . $product->name . ' (' . url()->current() . ')') }}" target="_blank" class="btn-product-cta btn-cta-buy-now" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;background:#25D366;color:#ffffff;border:none;height:48px;border-radius:10px;font-weight:700">
+                                <span class="btn-cta-inner">
+                                    <span>💬 WhatsApp Quote</span>
+                                </span>
+                            </a>
+                        </div>
                     </div>
                 @elseif(!$product->isInStock())
                     <div class="alert alert-danger mb-5" style="background:#fee2e2;color:#991b1b;border:1px solid #fecaca;padding:12px 16px;border-radius:10px">
@@ -280,10 +292,10 @@
 
                 <!-- Key Assurances -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:var(--space-3) 0;border-top:1px solid var(--gray-200);border-bottom:1px solid var(--gray-200);margin-bottom:var(--space-4);font-size:0.8rem;color:var(--gray-600)">
-                    <div style="display:flex;align-items:center;gap:6px">❄️ Flash Frozen at -18°C</div>
-                    <div style="display:flex;align-items:center;gap:6px">🚚 Temperature-Controlled Logistics</div>
-                    <div style="display:flex;align-items:center;gap:6px">🛡️ Halal & HACCP Certified</div>
-                    <div style="display:flex;align-items:center;gap:6px">🏪 Johor Bahru (SILC) Self-Collection Ready</div>
+                    <div style="display:flex;align-items:center;gap:6px">❄️ @t('shop.assurance_coldchain', 'Cold Storage (-18°C to -25°C)')</div>
+                    <div style="display:flex;align-items:center;gap:6px">🚚 @t('shop.assurance_logistics', 'Cold-Chain Delivery Available')</div>
+                    <div style="display:flex;align-items:center;gap:6px">🛡️ @t('shop.assurance_food_safety', 'Food Safety & Hygiene Standards')</div>
+                    <div style="display:flex;align-items:center;gap:6px">🏪 @t('shop.assurance_silc_pickup', 'SILC Facility Self-Collection')</div>
                 </div>
 
                 <!-- Share Buttons with Vector SVG Icons -->
@@ -361,7 +373,7 @@
                             </tr>
                             <tr>
                                 <td style="font-weight:600;color:var(--gray-700)">Storage Temperature</td>
-                                <td style="color:var(--gray-900);font-weight:700;color:#0f766e">❄️ {{ $product->storage_temp ?? '-18°C' }} or colder</td>
+                                <td style="color:var(--gray-900);font-weight:700;color:#0f766e">{{ $product->getStorageIcon() }} {{ $product->storage_temp ?? '-18°C' }}</td>
                             </tr>
                             <tr>
                                 <td style="font-weight:600;color:var(--gray-700)">Shelf Life</td>
@@ -372,12 +384,11 @@
                                 <td style="color:var(--gray-900)">Master Export Corrugated Carton (MOQ: {{ $product->moq_wholesale }} {{ $product->unit }})</td>
                             </tr>
                             <tr>
-                                <td style="font-weight:600;color:var(--gray-700)">Certifications</td>
+                                <td style="font-weight:600;color:var(--gray-700)">Quality &amp; Standards</td>
                                 <td style="color:var(--gray-900)">
                                     <span style="display:inline-flex;gap:6px;flex-wrap:wrap">
-                                        <span class="badge" style="background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0">✓ JAKIM Halal</span>
-                                        <span class="badge" style="background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">✓ HACCP Safety</span>
-                                        <span class="badge" style="background:#f8fafc;color:#475569;border:1px solid #e2e8f0">✓ ISO 22000</span>
+                                        <span class="badge" style="background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0">✓ Established Supplier Sourcing</span>
+                                        <span class="badge" style="background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">✓ Cold-Chain Integrity (-18°C to -25°C)</span>
                                     </span>
                                 </td>
                             </tr>
@@ -399,8 +410,8 @@
                 <div class="card" style="padding:var(--space-6);border-radius:14px;border:1px solid var(--gray-200);background:white;max-width:800px;line-height:1.7;color:var(--gray-700)">
                     <h3 style="font-size:1.1rem;color:var(--gray-900);font-weight:700;margin-bottom:var(--space-2)">Storage Recommendations</h3>
                     <ul style="padding-left:20px;margin-bottom:var(--space-4)">
-                        <li>Keep strictly frozen at <strong>-18°C</strong> or below until ready for preparation.</li>
-                        <li>Do not refreeze thawed seafood to preserve texture, moisture, and natural sweetness.</li>
+                        <li>Keep strictly frozen at <strong>-18°C to -25°C</strong> or below until ready for preparation.</li>
+                        <li>Do not refreeze thawed products to preserve texture, moisture, and quality.</li>
                         <li>For optimal results, thaw in refrigerator (0°C to 4°C) for 8-12 hours before cooking.</li>
                     </ul>
                     @if($product->storage_temp)
@@ -427,12 +438,24 @@
             </div>
         </div>
 
+        <!-- Customised Sourcing Box on Product Page -->
+        <div style="margin-top:var(--space-8);background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px">
+            <div>
+                <div style="font-size:0.75rem;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">🔍 @t('shop.custom_sourcing_label', 'CUSTOMISED SOURCING AVAILABLE')</div>
+                <div style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:2px">@t('shop.custom_spec_title', 'Need a Different Specification, Cut, Origin or Bulk Volume?')</div>
+                <div style="font-size:0.86rem;color:#64748b">@t('shop.custom_spec_desc', 'Tell us your exact requirements — pack size, grade, origin, and volume. We can source according to your needs.')</div>
+            </div>
+            <a href="{{ route('contact') }}#quote" class="btn btn-primary" style="font-weight:700;padding:9px 20px;border-radius:8px">
+                @t('shop.inquire_custom_spec', 'Inquire Custom Sourcing →')
+            </a>
+        </div>
+
         <!-- Related Products Section -->
         @if($related->count())
-        <div style="margin-top:var(--space-16)">
+        <div style="margin-top:var(--space-12)">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-6)">
-                <h2 style="font-family:var(--font-heading);color:var(--gray-900);font-size:1.5rem;margin:0">Related Seafood Items</h2>
-                <a href="{{ route('shop.index') }}" style="color:var(--seagreen-700);font-weight:600;font-size:0.9rem;text-decoration:none">View Full Catalogue →</a>
+                <h2 style="font-family:var(--font-heading);color:var(--gray-900);font-size:1.5rem;margin:0">@t('shop.related_products_title', 'Related Products')</h2>
+                <a href="{{ route('shop.index') }}" style="color:var(--seagreen-700);font-weight:600;font-size:0.9rem;text-decoration:none">@t('common.view_all_products', 'View Full Catalogue') →</a>
             </div>
             <div class="products-grid">
                 @foreach($related as $rel)
@@ -463,6 +486,9 @@
                                      style="font-size:1.15rem;font-weight:800;color:var(--seagreen-800);font-family:var(--font-heading);margin-bottom:8px"
                                 >
                                     <span class="price-amount">{{ $relDisplay['formatted'] }}</span>
+                                    <span class="price-base-rm" style="display:{{ ($currentCurrency !== 'MYR' && !empty($relDisplay['base_rm'])) ? 'block' : 'none' }};font-size:0.75rem;font-weight:500;color:#64748b;margin-top:2px">
+                                        RM {{ number_format($rel->getPriceForGroup($group), 2) }}
+                                    </span>
                                 </div>
                                 <a href="{{ route('shop.show', $rel) }}" class="btn btn-secondary btn-sm btn-block" style="font-weight:600">View Product</a>
                             </div>
@@ -747,16 +773,18 @@
     transition: transform 0.2s ease;
 }
 
-/* Add to Cart: Royal / Deep Blue */
+/* Add to Cart: MST Yellow Primary CTA */
 .btn-cta-add-cart {
-    background: linear-gradient(135deg, #1e40af 0%, #0f274a 100%);
-    color: #ffffff;
-    box-shadow: 0 4px 14px rgba(30, 64, 175, 0.28);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #091a36;
+    font-weight: 800;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
 }
 .btn-cta-add-cart:hover {
-    background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.38);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+    color: #091a36;
 }
 .btn-cta-add-cart:hover .btn-cta-svg {
     transform: scale(1.1);
@@ -765,16 +793,16 @@
     transform: scale(0.98);
 }
 
-/* Buy Now: High-Conversion Amber/Orange */
+/* Buy Now: Deep Navy / Royal Blue Secondary Action */
 .btn-cta-buy-now {
-    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    background: linear-gradient(135deg, #091a36 0%, #1e40af 100%);
     color: #ffffff;
-    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.32);
+    box-shadow: 0 4px 14px rgba(9, 26, 54, 0.28);
 }
 .btn-cta-buy-now:hover {
-    background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+    background: linear-gradient(135deg, #0f274a 0%, #2563eb 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(234, 88, 12, 0.42);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.38);
 }
 .btn-cta-buy-now:hover .btn-cta-svg {
     transform: scale(1.15) rotate(-5deg);

@@ -136,7 +136,7 @@
                                     <td align="center" style="font-size: 12px; color: #64748b; line-height: 1.6;">
                                         <strong style="color: #1e293b;">MST IMPORT &amp; EXPORT SDN. BHD.</strong><br>
                                         7 Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia<br>
-                                        <span style="color: #94a3b8; font-size: 11px;">{{ __t('email.cold_chain_cert', 'Halal & HACCP Certified Cold-Chain Sourcing & Seafood Distribution', [], $mailLoc) }}</span>
+                                        <span style="color: #94a3b8; font-size: 11px;">{{ __t('email.cold_chain_cert', 'Cold-Chain Sourcing, Trading & Distribution Platform', [], $mailLoc) }}</span>
                                     </td>
                                 </tr>
                                 <tr>

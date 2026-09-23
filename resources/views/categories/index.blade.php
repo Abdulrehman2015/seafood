@@ -16,13 +16,13 @@
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
             <div style="max-width:720px">
                 <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(20,184,166,0.25);border:1px solid rgba(94,234,212,0.4);padding:4px 12px;border-radius:999px;font-size:0.75rem;font-weight:700;color:#5eead4;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">
-                    ❄️ Cold Chain Certified Distributor
+                    ❄️ Cold-Chain Sourcing &amp; Supply Platform
                 </span>
                 <h1 style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.9rem,4vw,2.8rem);margin-bottom:10px;letter-spacing:-0.02em;line-height:1.2">
                     Browse All Product Categories
                 </h1>
                 <p style="color:#ccfbf1;font-size:1.02rem;line-height:1.6;margin:0">
-                    From wild-caught ocean delicacies and Norwegian salmon to Japanese Meltique beef, handcrafted dim sum, and steamboat essentials — direct from world-renowned producers to Malaysian kitchens.
+                    Supplying seafood, meat, frozen food and selected food ingredients to commercial customers across Malaysia, Singapore and regional markets.
                 </p>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -30,7 +30,7 @@
                     <span>View All Products</span>
                     <span>→</span>
                 </a>
-                <a href="https://wa.me/601112710260?text=Hello%20Mika%20Import%20%26%20Export%2C%20I%20would%20like%20to%20request%20the%20complete%20wholesale%20product%20catalog%20and%20price%20list." target="_blank" class="btn" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);font-weight:600;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center;gap:6px">
+                <a href="https://wa.me/601112710260?text=Hello%20MST%20Import%20%26%20Export%2C%20I%20would%20like%20to%20request%20the%20complete%20wholesale%20product%20catalog%20and%20price%20list." target="_blank" class="btn" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);font-weight:600;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center;gap:6px">
                     <span>💬 Request Catalog PDF</span>
                 </a>
             </div>
@@ -203,8 +203,8 @@
                     <div style="font-size:0.8rem;color:#e2e8f0;margin-top:2px">Deep Frozen Storage</div>
                 </div>
                 <div style="background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.15)">
-                    <div style="font-size:1.4rem;font-weight:800;color:#5eead4">100% Halal</div>
-                    <div style="font-size:0.8rem;color:#e2e8f0;margin-top:2px">JAKIM &amp; HACCP Certified</div>
+                    <div style="font-size:1.4rem;font-weight:800;color:#5eead4">Quality Assured</div>
+                    <div style="font-size:0.8rem;color:#e2e8f0;margin-top:2px">Food-Safety &amp; Cold-Chain Handling</div>
                 </div>
                 <div style="background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.15)">
                     <div style="font-size:1.4rem;font-weight:800;color:#5eead4">Direct Sourcing</div>

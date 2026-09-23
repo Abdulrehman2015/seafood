@@ -19,11 +19,8 @@
             <div style="display:flex;align-items:center;gap:8px">
                 <span class="walkin-live-badge">
                     <span class="pulse-dot"></span>
-                    @t('walkin.live_counter_active', 'In-Store Express Mode')
+                    @t('walkin.live_counter_active', 'In-Store Express Menu')
                 </span>
-                <a href="{{ route('walkin.exit') }}" class="walkin-exit-btn" title="@t('walkin.exit_hint', 'Exit in-store mode and return to standard shop')">
-                    ✕ @t('walkin.exit', 'Exit In-Store')
-                </a>
             </div>
         </div>
 
@@ -308,16 +305,22 @@
                                 @endif
                             </a>
 
-                            <!-- Dainty Badges Container -->
-                            <div class="card-badges-top">
-                                <span class="product-badge badge-walkin-in-store">🏪 @t('walkin.in_store', 'In-Store')</span>
-                                @if($product->origin)
+                            <!-- Badges Container -->
+                            @if($product->origin)
+                                <div class="card-badges-top">
                                     <span class="product-badge badge-origin">🌍 {{ $product->origin }}</span>
-                                @endif
-                            </div>
+                                </div>
+                            @endif
 
                             @if($product->storage_temp)
-                                <span class="product-badge-temp">❄️ {{ $product->storage_temp }} IQF</span>
+                                @php
+                                    $tempLower = strtolower($product->storage_temp);
+                                    $isLive = str_contains($tempLower, 'live');
+                                    $isChilled = str_contains($tempLower, 'chilled');
+                                    $badgeIcon = $product->getStorageIcon();
+                                    $badgeSuffix = ($isLive || $isChilled) ? '' : ' IQF';
+                                @endphp
+                                <span class="product-badge-temp">{{ $badgeIcon }} {{ $product->storage_temp }}{{ $badgeSuffix }}</span>
                             @endif
                         </div>
 
@@ -340,7 +343,7 @@
                                     <span class="product-meta-item">⚖️ {{ $product->weight }}</span>
                                 @endif
                                 @if($product->storage_temp)
-                                    <span class="product-meta-item">❄️ {{ $product->storage_temp }}</span>
+                                    <span class="product-meta-item">{{ $product->getStorageIcon() }} {{ $product->storage_temp }}</span>
                                 @endif
                             </div>
 
@@ -473,7 +476,7 @@
     background: linear-gradient(135deg, #091a36 0%, #0f274a 45%, #1e3a8a 100%);
     color: #ffffff;
     border-bottom: 1px solid #1e3a8a;
-    padding-top: calc(75px + var(--space-6));
+    padding-top: calc(78px + 28px);
     padding-bottom: var(--space-8);
     overflow: hidden;
 }
@@ -643,21 +646,22 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #091a36;
     padding: 10px 20px;
     border-radius: 12px;
     font-weight: 700;
     font-size: 0.92rem;
     text-decoration: none;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+    border: 1px solid #fde68a;
     transition: all 0.2s ease;
 }
 .btn-walkin-hero-checkout:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.55);
+    color: #091a36;
 }
 
 /* ─── 4-Step Stepper ─── */
@@ -1323,20 +1327,21 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #091a36;
     border: none;
     border-radius: 10px;
     font-weight: 700;
     font-size: 0.85rem;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(29, 78, 216, 0.2);
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
     transition: all 0.15s ease;
 }
 .btn-card-add-cart:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.35);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.45);
+    color: #091a36;
 }
 
 /* ─── Empty Card ─── */
@@ -1576,21 +1581,22 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #091a36;
     padding: 10px 22px;
     border-radius: 10px;
     font-weight: 800;
     font-size: 0.92rem;
     text-decoration: none;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+    border: 1px solid #fde68a;
     transition: all 0.2s ease;
 }
 .btn-dock-checkout:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.55);
+    color: #091a36;
 }
 
 /* ─── Responsive Breakpoints ─── */
@@ -1606,6 +1612,9 @@
 }
 
 @media (max-width: 860px) {
+    .walkin-hero-section {
+        padding-top: calc(78px + 30px);
+    }
     .walkin-header-grid {
         grid-template-columns: 1fr;
         gap: 16px;
@@ -1633,46 +1642,184 @@
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 12px !important;
     }
+    .product-card {
+        border-radius: 14px !important;
+    }
     .product-card-body {
-        padding: 10px 12px !important;
+        padding: 10px 10px 12px !important;
+    }
+    .product-card-top-meta {
+        margin-bottom: 2px !important;
+    }
+    .product-category {
+        font-size: 0.68rem !important;
+    }
+    .product-sku {
+        font-size: 0.64rem !important;
     }
     .product-name {
-        font-size: 0.88rem !important;
+        font-size: 0.85rem !important;
+        line-height: 1.3 !important;
         height: 2.6em !important;
-        margin-bottom: 4px !important;
+        margin: 2px 0 4px !important;
+    }
+    .product-meta {
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        margin-bottom: 6px !important;
+        min-height: auto !important;
+        flex-wrap: wrap !important;
+    }
+    .product-meta-item {
+        font-size: 0.65rem !important;
+        padding: 2px 5px !important;
+        border-radius: 4px !important;
+    }
+    .product-price-row {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: baseline !important;
+        justify-content: space-between !important;
+        margin-top: auto !important;
+        margin-bottom: 8px !important;
+        padding-top: 6px !important;
+        border-top: 1px solid #f1f5f9 !important;
     }
     .product-price {
-        font-size: 1.12rem !important;
+        font-size: 1.1rem !important;
+        display: flex !important;
+        align-items: baseline !important;
+        gap: 3px !important;
+        white-space: nowrap !important;
     }
-    .btn-card-add-cart,
+    .price-unit-sub {
+        font-size: 0.7rem !important;
+        color: #64748b !important;
+    }
+    .badge-walkin-pill {
+        display: none !important;
+    }
+    .product-card-actions {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 5px !important;
+        align-items: center !important;
+        width: 100% !important;
+        margin-top: auto !important;
+    }
     .btn-card-details {
-        height: 35px !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
+        min-width: 44px !important;
+        padding: 0 8px !important;
+        height: 34px !important;
+        font-size: 0.78rem !important;
+        border-radius: 8px !important;
+        white-space: nowrap !important;
+    }
+    .btn-card-add-cart {
+        flex: 1 1 auto !important;
+        width: auto !important;
+        height: 34px !important;
         font-size: 0.8rem !important;
         border-radius: 8px !important;
+        white-space: nowrap !important;
     }
     .card-badges-top {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 4px !important;
-        right: auto !important;
+        position: absolute !important;
+        top: 6px !important;
+        left: 6px !important;
+        right: 6px !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+        z-index: 3 !important;
     }
-    .card-badges-top .badge-walkin-in-store,
     .card-badges-top .badge-origin {
-        font-size: 0.62rem !important;
-        padding: 2px 6px !important;
-        margin-left: 0 !important;
+        font-size: 0.65rem !important;
+        padding: 2px 7px !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        color: #0f172a !important;
+        border-radius: 6px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
     }
     .product-badge-temp {
-        font-size: 0.62rem !important;
+        font-size: 0.65rem !important;
         padding: 2px 6px !important;
-        bottom: 6px !important;
-        left: 6px !important;
+    .walkin-stepper-wrap {
+        padding: 8px 12px !important;
+        margin-top: 8px !important;
+    }
+    .walkin-stepper {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 6px !important;
+        overflow: visible !important;
+    }
+    .step-item:not(.step-active) .step-info {
+        display: none !important;
+    }
+    .step-item:not(.step-active) {
+        padding: 0 !important;
+        gap: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        opacity: 0.65 !important;
+    }
+    .step-item.step-completed:not(.step-active) {
+        opacity: 0.9 !important;
+    }
+    .step-item:not(.step-active) .step-icon {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.72rem !important;
+    }
+    .step-item.step-active {
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 5px 12px !important;
+        gap: 8px !important;
+        border-radius: 999px !important;
+        background: rgba(56, 189, 248, 0.22) !important;
+        border: 1.5px solid #38bdf8 !important;
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.35) !important;
+        flex-shrink: 0 !important;
+    }
+    .step-item.step-active .step-icon {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 0.78rem !important;
+    }
+    .step-item.step-active .step-info {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .step-item.step-active .step-num {
+        font-size: 0.6rem !important;
+        color: #7dd3fc !important;
+        text-transform: uppercase !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+    }
+    .step-item.step-active .step-label {
+        font-size: 0.78rem !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        white-space: nowrap !important;
+        line-height: 1.15 !important;
+    }
+    .step-divider {
+        flex: 1 1 auto !important;
+        min-width: 8px !important;
+        height: 2px !important;
     }
 }
 
 @media (max-width: 500px) {
     .walkin-hero-section {
-        padding-top: calc(65px + var(--space-4));
+        padding-top: calc(78px + 32px);
         padding-bottom: var(--space-5);
     }
     .walkin-hero-title {
@@ -1682,31 +1829,27 @@
         font-size: 0.82rem;
     }
     .walkin-stepper-wrap {
-        padding: 8px 10px;
-    }
-    .step-item {
-        gap: 6px;
-    }
-    .step-label {
-        font-size: 0.72rem;
+        padding: 6px 10px !important;
     }
     .walkin-layout .products-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 10px !important;
+        gap: 8px !important;
     }
     .product-card-body {
-        padding: 8px 10px !important;
+        padding: 8px 8px 10px !important;
     }
     .product-name {
-        font-size: 0.82rem !important;
+        font-size: 0.8rem !important;
+        line-height: 1.25 !important;
     }
     .product-price {
-        font-size: 1.05rem !important;
+        font-size: 1.02rem !important;
     }
     .btn-card-add-cart,
     .btn-card-details {
-        height: 33px !important;
-        font-size: 0.78rem !important;
+        height: 32px !important;
+        font-size: 0.76rem !important;
+        border-radius: 7px !important;
     }
     .walkin-bottom-dock {
         padding: 10px 0;

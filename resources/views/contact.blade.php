@@ -786,9 +786,9 @@
         height: 52px;
         position: relative;
         z-index: 5;
-        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
-        color: #ffffff;
-        font-weight: 700;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #091a36;
+        font-weight: 800;
         font-size: 1.02rem;
         border-radius: 10px;
         border: none;
@@ -797,17 +797,18 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
-        box-shadow: 0 4px 16px rgba(29, 78, 216, 0.35);
+        box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
         transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .contact-submit-btn:hover {
-        background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
-        box-shadow: 0 8px 24px rgba(29, 78, 216, 0.45);
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45);
         transform: translateY(-1px);
+        color: #091a36;
     }
     .contact-submit-btn:active {
         transform: translateY(0);
-        box-shadow: 0 2px 8px rgba(29, 78, 216, 0.3);
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
     }
 
     /* ─── 3. Location & Map Section ───────────────────────────────────────── */
@@ -1151,7 +1152,7 @@
         <div class="breadcrumb" style="margin-bottom:var(--space-2)">
             <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 @t('nav.home', 'Home')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">@t('contact.title', 'Contact Us & RFQ')</span>
+            <span style="font-weight:600;color:#ffffff">@t('contact.title', 'Contact Us')</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
             <div>
@@ -1162,18 +1163,18 @@
                     <span style="color:#bae6fd;font-size:0.8rem">@t('contact.hero_location', 'Iskandar Puteri, Johor Bahru · Regional & International Supply')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.75rem,3.5vw,2.4rem);margin-bottom:6px;letter-spacing:-0.02em">
-                    @t('contact.header_title', 'Contact Us — MST Import and Export')
+                    @t('contact.header_title', 'Contact Us — MST Import & Export')
                 </h1>
                 <div style="color:#93c5fd;font-size:0.88rem;font-weight:700;margin-bottom:8px">
                     镁嘉国际贸易有限公司 · MST IMPORT &amp; EXPORT SDN. BHD.
                 </div>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.95rem;max-width:720px;line-height:1.5;margin:0">
-                    @t('contact.subtitle', 'Have questions about our frozen seafood, meats, food ingredients, customised sourcing, or cold-chain distribution? Reach out directly to our commercial team for prompt quotations and dedicated assistance.')
+                    @t('contact.subtitle', 'Have questions about bulk orders, product sourcing, cold-chain distribution, or customised supply? Our team is ready to help.')
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 <div class="contact-hero-badge-tag">
-                    @t('contact.prompt_response', '⚡ Prompt Quote Response Within 24 Hours')
+                    @t('contact.prompt_response', '⚡ Response Target: Within 24 Hours')
                 </div>
             </div>
         </div>
@@ -1182,86 +1183,118 @@
 
 <div class="contact-page-container">
 
-    <!-- 1. Top 4 Contact Info Cards -->
+    <!-- 1. Top 4 Contact Action Channels (Contact MST) -->
     <div class="contact-top-cards">
         
-        <!-- Card 1: Facility & Cold Storage Hub -->
+        <!-- Card 1: Facility & Cold Hub -->
         <div class="contact-top-card">
             <div class="contact-icon-bubble">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                     <circle cx="12" cy="10" r="3"></circle>
                 </svg>
             </div>
             <h3 class="contact-card-title">@t('contact.card1_title', 'Facility & Cold Hub')</h3>
-            <div class="contact-card-main-title">
-                @t('about.company_name_full', 'MST Import and Export Sdn Bhd')
+            <div class="contact-card-main-title">{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</div>
+            <div style="color:#2563eb;font-weight:700;font-size:0.84rem;margin-bottom:6px">
+                {{ $settings['store_company_zh'] ?? '镁嘉国际贸易有限公司' }}
             </div>
-            <div style="font-size:0.78rem;color:#2563eb;font-weight:700;margin-bottom:4px">
-                镁嘉国际贸易有限公司
+            <div class="contact-card-sub" style="margin-bottom:10px">
+                {{ $settings['store_address'] ?? 'No. 7, Jalan SiLC 2/18, Kawasan Perindustrian SiLC, 79200 Iskandar Puteri, Johor, Malaysia' }}
             </div>
-            <div class="contact-card-sub">
-                @t('contact.card1_address', 'No. 7, Jalan SiLC 2/18, Kawasan Perindustrian SiLC, 79200 Iskandar Puteri, Johor, Malaysia')
-            </div>
-            <a href="https://maps.app.goo.gl/jLMaDYCNJ6vfk376A" target="_blank" rel="noopener" 
-               style="margin-top:8px;font-size:0.78rem;font-weight:700;color:#2563eb;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
-                <span>@t('contact.view_on_maps', 'View on Google Maps')</span>
-                <span>&rarr;</span>
+            <a href="{{ !empty($settings['store_map_url']) ? $settings['store_map_url'] : '#silc-facility' }}" {{ !empty($settings['store_map_url']) ? 'target="_blank" rel="noopener"' : '' }} style="margin-top:auto;font-size:0.82rem;font-weight:700;color:#2563eb;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
+                <span>@t('contact.view_on_google_maps', 'View on Google Maps →')</span>
             </a>
         </div>
 
         <!-- Card 2: Direct Hotlines -->
         <div class="contact-top-card">
             <div class="contact-icon-bubble">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                 </svg>
             </div>
             <h3 class="contact-card-title">@t('contact.card2_title', 'Direct Hotlines')</h3>
-            <a href="tel:0132800168" class="contact-card-main-link">
-                013-280 0168
+            @php
+                $primaryPhone = $settings['store_phone'] ?? '013-280 0168';
+                $phone2 = $settings['store_phone_2'] ?? '011-1436 0109';
+                $phone3 = $settings['store_phone_3'] ?? '011-1271 0260';
+                $cleanPrimaryPhone = preg_replace('/[^0-9+]/', '', $primaryPhone);
+                $cleanPhone2 = preg_replace('/[^0-9+]/', '', $phone2);
+                $cleanPhone3 = preg_replace('/[^0-9+]/', '', $phone3);
+            @endphp
+            <a href="tel:{{ $cleanPrimaryPhone }}" class="contact-card-main-link">
+                {{ $primaryPhone }}
             </a>
-            <div class="contact-card-sub">
-                <div style="color:#1d4ed8;font-weight:600;font-size:0.82rem">Alt: 011-1436 0109</div>
-                <div style="color:#1d4ed8;font-weight:600;font-size:0.82rem">WhatsApp: 011-1271 0260</div>
-                <div style="margin-top:4px">@t('contact.operating_hours_val', 'Mon – Sat: 8:00 AM – 6:00 PM')</div>
+            <div class="contact-card-sub" style="display:flex;flex-direction:column;gap:3px">
+                @if(!empty($phone2))
+                    <div><a href="tel:{{ $cleanPhone2 }}" style="color:#1d4ed8;font-weight:600;font-size:0.82rem;text-decoration:none">Alt: {{ $phone2 }}</a></div>
+                @endif
+                @if(!empty($phone3))
+                    <div><a href="https://wa.me/{{ (str_starts_with($cleanPhone3, '0') ? '60' . substr($cleanPhone3, 1) : $cleanPhone3) }}" target="_blank" rel="noopener" style="color:#1d4ed8;font-weight:600;font-size:0.82rem;text-decoration:none">WhatsApp: {{ $phone3 }}</a></div>
+                @endif
+                <div style="margin-top:4px;color:#64748b;font-size:0.78rem">{{ $settings['store_hours'] ?? 'Mon – Sat: 8:00 AM – 6:00 PM' }}</div>
                 <div style="color:#94a3b8;font-size:0.75rem">@t('contact.closed_val', 'Sunday & PH: Closed')</div>
             </div>
         </div>
 
-        <!-- Card 3: Email Contacts -->
+        <!-- Card 3: Email Us -->
         <div class="contact-top-card">
             <div class="contact-icon-bubble">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                     <polyline points="22,6 12,13 2,6"></polyline>
                 </svg>
             </div>
             <h3 class="contact-card-title">@t('contact.card3_title', 'Email Us')</h3>
-            <a href="mailto:mikatrading15@gmail.com" class="contact-card-main-link" style="word-break:break-all">
-                mikatrading15@gmail.com
+            @php
+                $storeEmail = $settings['store_email'] ?? 'mikatrading15@gmail.com';
+            @endphp
+            <a href="mailto:{{ $storeEmail }}" class="contact-card-main-link" style="word-break:break-all">
+                {{ $storeEmail }}
             </a>
             <div class="contact-card-sub">
-                <div style="color:#1d4ed8;font-weight:600;font-size:0.8rem">@t('contact.card3_sub', 'B2B Wholesale & Custom RFQ')</div>
-                <div style="margin-top:2px">@t('contact.card3_response', 'Guaranteed Response Within 24 Hours')</div>
+                <div style="color:#1d4ed8;font-weight:600;font-size:0.82rem">
+                    {{ !empty($settings['store_wholesale_email']) && !str_contains($settings['store_wholesale_email'], '@') ? $settings['store_wholesale_email'] : __t('contact.card3_sub', 'B2B Wholesale & Custom RFQ') }}
+                </div>
+                <div style="margin-top:4px;color:#64748b;font-size:0.78rem">@t('contact.card3_response', 'Response Target: Within 24 Hours')</div>
             </div>
         </div>
 
         <!-- Card 4: WhatsApp Support -->
         <div class="contact-top-card">
             <div class="contact-icon-bubble">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
                     <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
                 </svg>
             </div>
             <h3 class="contact-card-title">@t('contact.card4_title', 'WhatsApp Support')</h3>
-            <a href="https://wa.me/601112710260" target="_blank" rel="noopener" class="contact-card-main-link">
-                +60 11-1271 0260
+            @php
+                $waUrl = $settings['social_whatsapp'] ?? 'https://wa.me/601112710260';
+                $waDisplay = '+60 11-1271 0260';
+                if (!empty($settings['social_whatsapp'])) {
+                    if (str_contains($settings['social_whatsapp'], 'wa.me/')) {
+                        $rawNum = preg_replace('/[^0-9]/', '', substr($settings['social_whatsapp'], strpos($settings['social_whatsapp'], 'wa.me/') + 6));
+                        if (str_starts_with($rawNum, '60')) {
+                            $waDisplay = '+60 ' . substr($rawNum, 2, 2) . '-' . substr($rawNum, 4);
+                        } else {
+                            $waDisplay = $rawNum;
+                        }
+                    } elseif (preg_match('/[0-9]/', $settings['social_whatsapp'])) {
+                        $waDisplay = $settings['social_whatsapp'];
+                    }
+                } elseif (!empty($settings['store_phone_3'])) {
+                    $waDisplay = $settings['store_phone_3'];
+                    $waUrl = 'https://wa.me/' . preg_replace('/[^0-9]/', '', (str_starts_with($settings['store_phone_3'], '0') ? '60' . substr($settings['store_phone_3'], 1) : $settings['store_phone_3']));
+                }
+            @endphp
+            <a href="{{ $waUrl }}" target="_blank" rel="noopener" class="contact-card-main-link">
+                {{ $waDisplay }}
             </a>
             <div class="contact-card-sub">
-                @t('contact.card4_sub1', 'Fast Chat & Inquiries')<br>
-                @t('contact.card4_sub2', 'Live Support Online')
+                <div style="color:#64748b;font-size:0.82rem">@t('contact.card4_sub1', 'Fast Chat & Inquiries')</div>
+                <div style="margin-top:2px;color:#94a3b8;font-size:0.78rem">@t('contact.card4_sub2', 'Live Support Online')</div>
             </div>
         </div>
 
@@ -1270,7 +1303,7 @@
     <!-- 2. Main Consultation Split Section: 4-Step Process & RFQ Form -->
     <div class="consultation-split-wrapper">
         
-        <!-- Left Panel: The 4-Step Sourcing Process (Section 7.1) -->
+        <!-- Left Panel: The 4-Step Sourcing Process -->
         <div class="consultation-blue-panel">
             {{-- Background ambient glows & grid matching Homepage Hero --}}
             <div class="panel-orb-1"></div>
@@ -1297,9 +1330,9 @@
                     <div class="consultation-step-item">
                         <div class="step-number-box">01</div>
                         <div>
-                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step1_title', 'Select Requirement')</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step1_title', 'SELECT YOUR REQUIREMENT')</div>
                             <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
-                                @t('contact.step1_desc', 'Choose from our core categories (Seafood, Meat, Frozen Food, Food Ingredients, Cuisine Ingredients, Desserts) or specify a customised sourcing request.')
+                                @t('contact.step1_desc', 'Choose from our core categories, including Seafood, Meat, Frozen Food, Food Ingredients, Cuisine Ingredients and Desserts, or submit a customised sourcing request.')
                             </div>
                         </div>
                     </div>
@@ -1308,9 +1341,9 @@
                     <div class="consultation-step-item">
                         <div class="step-number-box">02</div>
                         <div>
-                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step2_title', 'Tell Us Your Requirements')</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step2_title', 'TELL US YOUR REQUIREMENTS')</div>
                             <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
-                                @t('contact.step2_desc', 'Specify your target volume (kg, cartons, pallets), pack size, origin preference, delivery frequency, or customized product specifications.')
+                                @t('contact.step2_desc', 'Specify your target volume (kg, cartons or pallets), pack size, origin preference, delivery frequency, or customised product specifications.')
                             </div>
                         </div>
                     </div>
@@ -1319,9 +1352,12 @@
                     <div class="consultation-step-item">
                         <div class="step-number-box">03</div>
                         <div>
-                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step3_title', 'Receive a Quotation')</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step3_title', 'RECEIVE A QUOTATION')</div>
                             <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
-                                @t('contact.step3_desc', 'Our commercial team evaluates availability or coordinates with our network, providing a transparent, competitive quotation within 24 hours.')
+                                @t('contact.step3_desc', 'Our commercial team evaluates availability or coordinates with our sourcing network and provides a transparent, competitive quotation.')
+                            </div>
+                            <div style="margin-top:4px;font-size:0.75rem;font-weight:700;color:#93c5fa">
+                                ⚡ @t('contact.step3_target', 'Response Target: Within 24 Hours')
                             </div>
                         </div>
                     </div>
@@ -1330,9 +1366,9 @@
                     <div class="consultation-step-item">
                         <div class="step-number-box">04</div>
                         <div>
-                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step4_title', 'Arrange Supply & Logistics')</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step4_title', 'ARRANGE SUPPLY & LOGISTICS')</div>
                             <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
-                                @t('contact.step4_desc', 'Scheduled temperature-controlled logistics (-18°C to -25°C) across Malaysia & Singapore, regional export, or self-collection at our SILC facility.')
+                                @t('contact.step4_desc', 'Temperature-controlled supply and logistics across Malaysia, Singapore and selected regional markets, with export coordination and self-collection available at our SILC facility.')
                             </div>
                         </div>
                     </div>
@@ -1348,13 +1384,13 @@
                     </svg>
                 </div>
                 <div style="font-size:0.82rem;color:rgba(255,255,255,0.85);line-height:1.4">
-                    <strong style="color:#ffffff;">@t('contact.trust_label', 'Cold-Chain & HACCP Assurance:')</strong> @t('contact.trust_desc', 'Stored at -18°C to -25°C with unbroken cold-chain integrity and certified handling.')
+                    <strong style="color:#ffffff;">@t('contact.trust_label', 'Cold-Chain & Food Safety:')</strong> @t('contact.trust_desc', 'Temperature-controlled storage at -18°C to -25°C, supported by controlled handling and cold-chain procedures.')
                 </div>
             </div>
 
         </div>
 
-        <!-- Right Panel: White Card RFQ & Inquiry Form (Section 7.2) -->
+        <!-- Right Panel: White Card RFQ & Inquiry Form -->
         <div class="consultation-white-panel">
             
             <div style="font-size:0.75rem;font-weight:800;letter-spacing:1.2px;color:#2563eb;text-transform:uppercase;margin-bottom:6px">
@@ -1366,7 +1402,7 @@
             </h3>
 
             <p style="font-size:0.92rem;color:#64748b;margin:0 0 24px;line-height:1.5">
-                @t('contact.form_desc', 'Tell us about your requirements. Whether you need standard catalog items, wholesale quantities, or tailored sourcing, our team will get back to you within 24 hours.')
+                @t('contact.form_desc', 'Tell us about your requirements. Whether you need standard catalogue items, wholesale quantities, or tailored sourcing, our team will review your request and respond within 24 hours.')
             </p>
 
             @if(session('success'))
@@ -1386,7 +1422,7 @@
                 <div class="consultation-form-grid-3">
                     <div>
                         <label class="form-label-custom">
-                            @t('contact.full_name', 'Full name') <span style="color:#ef4444">*</span>
+                            @t('contact.full_name', 'Full Name') <span style="color:#ef4444">*</span>
                         </label>
                         <input type="text" name="name" class="form-control-custom" 
                                value="{{ old('name', auth()->user()?->name) }}" required 
@@ -1396,7 +1432,7 @@
 
                     <div>
                         <label class="form-label-custom">
-                            @t('contact.email_address', 'Email address') <span style="color:#ef4444">*</span>
+                            @t('contact.email_address', 'Email Address') <span style="color:#ef4444">*</span>
                         </label>
                         <input type="email" name="email" class="form-control-custom" 
                                value="{{ old('email', auth()->user()?->email) }}" required 
@@ -1418,7 +1454,7 @@
                 <!-- Row 2: Multi-select Interests Dropdown -->
                 <div class="form-group-custom form-group-interests" id="interestsFormGroup">
                     <label class="form-label-custom" for="interestsMultiSelectTrigger">
-                        @t('contact.interested_in', 'I am interested in:') <span style="font-weight:400;color:#64748b">@t('contact.select_multiple_hint', '(Select multiple from dropdown)')</span>
+                        @t('contact.interested_in', 'I am interested in:') <span style="font-weight:400;color:#64748b">@t('contact.select_multiple_hint', '(Select multiple)')</span>
                     </label>
                     <div class="searchable-select-container multi-select-container" id="interestsMultiSelectContainer">
                         <div class="searchable-trigger multi-select-trigger" id="interestsMultiSelectTrigger" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false">
@@ -1441,7 +1477,7 @@
                                     <span class="searchable-search-icon">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <circle cx="11" cy="11" r="8"></circle>
-                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                         </svg>
                                     </span>
                                     <input type="text" class="searchable-search-input" id="interestsSearchInput" placeholder="{{ __t('contact.filter_interests', 'Filter interests...') }}" autocomplete="off">
@@ -1461,11 +1497,12 @@
                                         'Frozen Food' => ['label' => __t('contact.interest_frozen_label', 'Frozen Food'), 'icon' => '❄️', 'desc' => __t('contact.interest_frozen_desc', 'Processed & ready-to-cook products')],
                                         'Food Ingredients' => ['label' => __t('contact.interest_food_ing_label', 'Food Ingredients'), 'icon' => '🧂', 'desc' => __t('contact.interest_food_ing_desc', 'Commercial seasonings, pastes & bases')],
                                         'Cuisine Ingredients' => ['label' => __t('contact.interest_cuisine_label', 'Cuisine Ingredients'), 'icon' => '🌏', 'desc' => __t('contact.interest_cuisine_desc', 'Regional & Asian culinary specialties')],
-                                        'Desserts & Snacks' => ['label' => __t('contact.interest_desserts_label', 'Desserts & Snacks'), 'icon' => '🍰', 'desc' => __t('contact.interest_desserts_desc', 'Pastries, dim sum & snack items')],
-                                        'Customised Sourcing' => ['label' => __t('contact.interest_sourcing_label', 'Customised Sourcing'), 'icon' => '🔍', 'desc' => __t('contact.interest_sourcing_desc', 'Tailored specs & bulk import services')],
-                                        'Wholesale Supply' => ['label' => __t('contact.interest_wholesale_label', 'Wholesale Supply'), 'icon' => '🏭', 'desc' => __t('contact.interest_wholesale_desc', 'B2B food service & contract supply')],
-                                        'Trading & Export' => ['label' => __t('contact.interest_trading_label', 'Trading & Export'), 'icon' => '📦', 'desc' => __t('contact.interest_trading_desc', 'Cross-border logistics & export trade')],
-                                        'Other' => ['label' => __t('contact.interest_other_label', 'Other'), 'icon' => '📋', 'desc' => __t('contact.interest_other_desc', 'Other specific inquiries & custom requests')],
+                                        'Desserts' => ['label' => __t('contact.interest_desserts_label', 'Desserts'), 'icon' => '🍰', 'desc' => __t('contact.interest_desserts_desc', 'Pastries, desserts & sweet cuisine items')],
+                                        'Customised Sourcing' => ['label' => __t('contact.interest_sourcing_label', 'Customised Sourcing'), 'icon' => '🔍', 'desc' => __t('contact.interest_sourcing_desc', 'Tailored specs, origin sourcing & bulk import')],
+                                        'Wholesale Supply' => ['label' => __t('contact.interest_wholesale_label', 'Wholesale Supply'), 'icon' => '🏭', 'desc' => __t('contact.interest_wholesale_desc', 'B2B commercial food service & contract supply')],
+                                        'Cold-Chain Distribution' => ['label' => __t('contact.interest_coldchain_label', 'Cold-Chain Distribution'), 'icon' => '🚚', 'desc' => __t('contact.interest_coldchain_desc', 'Temperature-controlled storage & distribution')],
+                                        'Trading & Export' => ['label' => __t('contact.interest_trading_label', 'Trading & Export'), 'icon' => '📦', 'desc' => __t('contact.interest_trading_desc', 'Cross-border logistics & regional export trade')],
+                                        'Other Sourcing Requirements' => ['label' => __t('contact.interest_other_label', 'Other Sourcing Requirements'), 'icon' => '📋', 'desc' => __t('contact.interest_other_desc', 'Other specific inquiries & custom requests')],
                                     ];
                                     $oldInterests = (array) old('interests', []);
                                 @endphp
@@ -1504,14 +1541,14 @@
                 <div class="consultation-form-grid-2">
                     <div class="field-col-category">
                         <label class="form-label-custom">
-                            @t('contact.specific_category', 'Specific Category') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(optional)')</span>
+                            @t('contact.specific_category', 'Specific Category') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
                         </label>
                         <!-- Custom Searchable Category Dropdown -->
                         <div class="searchable-select-container" id="categorySelectContainer">
                             <input type="hidden" name="subject" id="categoryHiddenInput" value="{{ old('subject') }}">
                             <div class="searchable-trigger" id="categoryTrigger" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false">
                                 <span class="searchable-selected-text {{ old('subject') ? '' : 'placeholder' }}" id="categoryTriggerText">
-                                    {{ old('subject') ? old('subject') : __t('contact.select_category_placeholder', 'Select category (optional)...') }}
+                                    {{ old('subject') ? old('subject') : __t('contact.select_category_placeholder', 'Select category (Optional)...') }}
                                 </span>
                                 <span class="searchable-arrow">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1575,14 +1612,14 @@
 
                     <div class="field-col-product">
                         <label class="form-label-custom">
-                            @t('contact.product_item', 'Product / Item') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(optional)')</span>
+                            @t('contact.product_item', 'Product / Item') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
                         </label>
                         <!-- Custom Searchable Product Dropdown -->
                         <div class="searchable-select-container disabled" id="productSelectContainer">
                             <input type="hidden" name="product" id="productHiddenInput" value="{{ old('product') }}">
                             <div class="searchable-trigger" id="productTrigger" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false">
                                 <span class="searchable-selected-text {{ old('product') ? '' : 'placeholder' }}" id="productTriggerText">
-                                    {{ old('product') ? old('product') : __t('contact.select_product_placeholder', 'Select product (optional)...') }}
+                                    {{ old('product') ? old('product') : __t('contact.select_product_placeholder', 'Select product (Optional)...') }}
                                 </span>
                                 <span class="searchable-arrow">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1610,24 +1647,26 @@
                     </div>
                 </div>
 
-                <!-- Row 4: Requirements / Description (Section 7.2) -->
+                <!-- Row 4: Requirements / Description -->
                 <div class="form-group-custom" style="margin-bottom:24px">
                     <label class="form-label-custom">
                         @t('contact.requirements_desc', 'Requirements / Description') <span style="color:#ef4444">*</span>
                     </label>
                     <textarea name="message" class="form-control-custom" rows="4" required 
-                              placeholder="{{ __t('contact.message_placeholder', 'Please describe your requirements in detail: target volume (e.g. 500kg, cartons), preferred pack size, origin specifications, delivery frequency or location...') }}">{{ old('message') }}</textarea>
+                              placeholder="{{ __t('contact.message_placeholder', 'Specify your target volume (kg, cartons or pallets), pack size, origin preference, delivery frequency, or customised product specifications...') }}">{{ old('message') }}</textarea>
                     @error('message')<div style="color:#ef4444;font-size:0.78rem;margin-top:4px">{{ $message }}</div>@enderror
                 </div>
 
+                <!-- Google reCAPTCHA Protection -->
+                <x-recaptcha context="contact" />
+
                 <!-- Submit Button -->
                 <button type="submit" class="contact-submit-btn">
-                    <span>@t('contact.submit_btn', 'Submit Sourcing RFQ & Inquiry')</span>
-                    <span style="font-size:1.2rem">&rarr;</span>
+                    <span>@t('contact.submit_btn', 'Submit Sourcing RFQ & Inquiry →')</span>
                 </button>
 
                 <p style="text-align:center;font-size:0.8rem;color:#64748b;margin:14px 0 0">
-                    @t('contact.submit_footer', 'Our procurement and commercial team will review your specifications and get in touch within 24 hours.')
+                    @t('contact.submit_footer', 'Our procurement and commercial team will review your specifications and respond within 24 hours.')
                 </p>
             </form>
 
@@ -1635,8 +1674,8 @@
 
     </div>
 
-    <!-- 3. Facility & SILC Cold Storage Location (Section 7.3) -->
-    <div class="contact-location-section">
+    <!-- 3. Facility & Collection Centre -->
+    <div class="contact-location-section" id="silc-facility">
         <div class="contact-location-heading" style="text-align:center;margin-bottom:36px">
             <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.75rem;font-weight:800;letter-spacing:0.8px;padding:6px 16px;border-radius:30px;display:inline-flex;align-items:center;gap:6px;text-transform:uppercase;margin-bottom:12px">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1651,7 +1690,7 @@
             </h2>
 
             <p style="font-size:0.95rem;color:#64748b;max-width:680px;margin:0 auto;line-height:1.5">
-                @t('contact.facility_subtitle', 'Centrally located at SiLC Iskandar Puteri, Johor. Open for customer visits, pre-arranged wholesale inspections, and walk-in counter collections.')
+                @t('contact.facility_subtitle', 'Centrally located at SiLC Iskandar Puteri, Johor. Open for customer visits, pre-arranged wholesale inspections, and walk-in counter collections during operating hours.')
             </p>
         </div>
 
@@ -1679,7 +1718,7 @@
                         </div>
                         <div>
                             <div style="font-size:1.2rem;font-weight:800;color:#0f172a;line-height:1.2;margin-bottom:2px">
-                                @t('about.company_name_full', 'MST Import and Export Sdn Bhd')
+                                MST Import &amp; Export Sdn. Bhd.
                             </div>
                             <div style="font-size:0.82rem;font-weight:700;color:#1d4ed8;margin-bottom:4px">
                                 镁嘉国际贸易有限公司
@@ -1692,7 +1731,7 @@
 
                     <div style="border-top:1px solid #f1f5f9;margin-bottom:22px"></div>
 
-                    <!-- 4 Contact Points -->
+                    <!-- Facility Address & Operating Hours -->
                     <div style="display:flex;flex-direction:column;gap:20px">
                         
                         <!-- 1. Facility Address -->
@@ -1704,7 +1743,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">@t('contact.facility_address_label', 'Facility & Hub Address')</div>
+                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">@t('contact.facility_address_label', 'Facility & Cold Storage Address')</div>
                                 <div style="font-size:0.85rem;color:#64748b;line-height:1.45">
                                     No. 7, Jalan SiLC 2/18, Kawasan Perindustrian SiLC, 79200 Iskandar Puteri, Johor, Malaysia
                                 </div>
@@ -1730,63 +1769,19 @@
                             </div>
                         </div>
 
-                        <!-- 3. Direct Email -->
-                        <div style="display:flex;align-items:flex-start;gap:14px">
-                            <div style="color:#2563eb;margin-top:2px">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                    <polyline points="22,6 12,13 2,6"></polyline>
-                                </svg>
-                            </div>
-                            <div>
-                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">@t('contact.email_contacts_label', 'Email Contacts')</div>
-                                <div style="font-size:0.85rem">
-                                    <a href="mailto:mikatrading15@gmail.com" style="color:#2563eb;text-decoration:none;word-break:break-all;font-weight:600">
-                                        mikatrading15@gmail.com
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 4. Phone Hotlines -->
-                        <div style="display:flex;align-items:flex-start;gap:14px">
-                            <div style="color:#2563eb;margin-top:2px">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">@t('contact.phone_hotlines_label', 'Phone Hotlines')</div>
-                                <div style="font-size:0.85rem;display:flex;flex-direction:column;gap:3px">
-                                    <div>
-                                        <a href="tel:0132800168" style="color:#2563eb;font-weight:700;text-decoration:none">
-                                            013-280 0168
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <a href="tel:01114360109" style="color:#2563eb;font-weight:600;text-decoration:none">
-                                            011-1436 0109
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <a href="https://wa.me/601112710260" target="_blank" rel="noopener" style="color:#2563eb;font-weight:600;text-decoration:none">
-                                            011-1271 0260 (WhatsApp)
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
 
-                <!-- Walk-In Collection Info Banner -->
-                <div style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;padding:14px 18px;border-radius:12px;font-size:0.85rem;font-weight:600;display:flex;align-items:center;gap:10px;margin-top:24px">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                    <span>@t('contact.walkin_banner', 'Walk-in wholesale counter with QR instant collection tokens available during business hours.')</span>
+                <!-- Google Maps Direction Button -->
+                <div style="margin-top:28px">
+                    <a href="https://maps.app.goo.gl/jLMaDYCNJ6vfk376A" target="_blank" rel="noopener" 
+                       style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);color:#ffffff;padding:12px 22px;border-radius:10px;font-size:0.9rem;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(37,99,235,0.3);width:100%;box-sizing:border-box;transition:all 0.15s ease">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span>@t('contact.view_on_maps_btn', 'View Location on Google Maps →')</span>
+                    </a>
                 </div>
             </div>
 
@@ -1796,7 +1791,7 @@
                 <!-- Map Floating Card -->
                 <div class="map-overlay-badge">
                     <div>
-                        <div style="font-weight:800;font-size:0.98rem;color:#0f172a;line-height:1.25">@t('about.company_name_full', 'MST Import and Export Sdn Bhd')</div>
+                        <div style="font-weight:800;font-size:0.98rem;color:#0f172a;line-height:1.25">MST Import &amp; Export Sdn. Bhd.</div>
                         <div style="font-size:0.75rem;font-weight:700;color:#2563eb">镁嘉国际贸易有限公司</div>
                         <div class="map-badge-desc" style="font-size:0.78rem;color:#64748b;margin:4px 0 10px;line-height:1.35">No. 7, Jalan SiLC 2/18, SiLC Johor</div>
                     </div>
@@ -1808,7 +1803,7 @@
                                 <polyline points="15 3 21 3 21 9"></polyline>
                                 <line x1="10" y1="14" x2="21" y2="3"></line>
                             </svg>
-                            <span>@t('contact.open_maps', 'Open in Google Maps')</span>
+                            <span>@t('contact.open_maps', 'View Location on Google Maps →')</span>
                         </a>
                     </div>
                 </div>

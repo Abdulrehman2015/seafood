@@ -21,7 +21,7 @@ class Product extends Model
         'retail_price', 'walkin_price', 'wholesale_price', 'trading_price',
         'price_sgd', 'price_usd', 'wholesale_price_sgd', 'wholesale_price_usd',
         'trading_price_sgd', 'trading_price_usd',
-        'weight', 'unit', 'origin', 'storage_temp', 'brand',
+        'weight', 'unit', 'origin', 'storage_temp', 'storage_icon', 'brand',
         'specifications', 'images', 'thumbnail',
         'stock_quantity', 'track_stock',
         'moq', 'moq_wholesale', 'moq_trading',
@@ -257,6 +257,21 @@ class Product extends Model
             return $unitMapBm[strtolower($value)] ?? $value;
         }
         return $value;
+    }
+
+    public function getStorageIcon(): string
+    {
+        if (!empty($this->storage_icon)) {
+            return trim($this->storage_icon);
+        }
+        $st = strtolower($this->storage_temp ?? '');
+        if (str_contains($st, 'live')) {
+            return '🦀';
+        }
+        if (str_contains($st, 'chilled')) {
+            return '🧊';
+        }
+        return '❄️';
     }
 
     public function getRouteKeyName(): string

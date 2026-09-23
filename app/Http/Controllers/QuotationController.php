@@ -21,16 +21,27 @@ class QuotationController extends Controller
         return view('account.quotations', compact('quotations'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $products = Product::active()->where('is_rfq_only', true)
-            ->orWhere(function ($q) {
+        $categories = \App\Models\Category::where('is_active', true)
+            ->whereHas('products', function ($q) {
                 $q->active();
             })
+            ->orderBy('sort_order')
             ->orderBy('name')
             ->get();
 
-        return view('quotation.create', compact('products'));
+        $products = Product::active()
+            ->with('category')
+            ->orderBy('name')
+            ->get();
+
+        $selectedProduct = null;
+        if ($request->filled('product')) {
+            $selectedProduct = Product::with('category')->find($request->product);
+        }
+
+        return view('quotation.create', compact('products', 'categories', 'selectedProduct'));
     }
 
     public function store(Request $request)
@@ -64,7 +75,9 @@ class QuotationController extends Controller
 
     public function show(Quotation $quotation)
     {
-        $this->authorize('view', $quotation);
+        if ($quotation->user_id !== Auth::id()) {
+            abort(403);
+        }
         $quotation->load('items.product');
 
         return view('quotation.show', compact('quotation'));
@@ -72,7 +85,9 @@ class QuotationController extends Controller
 
     public function accept(Quotation $quotation)
     {
-        $this->authorize('update', $quotation);
+        if ($quotation->user_id !== Auth::id()) {
+            abort(403);
+        }
 
         if ($quotation->status !== 'quoted') {
             return back()->with('error', 'This quotation cannot be accepted at this stage.');
@@ -86,7 +101,9 @@ class QuotationController extends Controller
 
     public function reject(Quotation $quotation)
     {
-        $this->authorize('update', $quotation);
+        if ($quotation->user_id !== Auth::id()) {
+            abort(403);
+        }
 
         $quotation->update(['status' => 'rejected']);
 

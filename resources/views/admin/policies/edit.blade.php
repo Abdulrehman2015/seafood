@@ -1,221 +1,355 @@
 @extends('layouts.admin')
-
-@section('title', 'Edit Page — ' . $policy->title)
+@section('title', 'Edit Page: ' . $policy->title . ' — MST Admin')
 
 @push('styles')
 <script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+<style>
+    .lang-tab-btn {
+        background: transparent;
+        border: 1px solid transparent;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .lang-tab-btn:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+    .lang-tab-btn.active {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-color: #bfdbfe;
+        font-weight: 700;
+    }
+
+    .insert-html-btn {
+        background: #f8fafc;
+        border: 1.5px solid #cbd5e1;
+        color: #1e40af;
+        border-radius: 8px;
+        padding: 5px 12px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .insert-html-btn:hover {
+        background: #eff6ff;
+        border-color: #2563eb;
+        color: #2563eb;
+    }
+
+    .html-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 21, 43, 0.65);
+        backdrop-filter: blur(4px);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .html-modal-card {
+        background: #ffffff;
+        border-radius: 14px;
+        width: 100%;
+        max-width: 620px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+    .html-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .html-modal-close {
+        border: none;
+        background: transparent;
+        font-size: 1.2rem;
+        color: #94a3b8;
+        cursor: pointer;
+        line-height: 1;
+    }
+    .html-modal-close:hover {
+        color: #ef4444;
+    }
+    .html-modal-footer {
+        padding: 14px 20px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+</style>
 @endpush
 
 @section('content')
-<div style="max-width:1050px;margin:0 auto">
-    <!-- Breadcrumb & Header -->
-    <div style="margin-bottom:24px">
-        <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#64748b;margin-bottom:8px">
-            <a href="{{ route('admin.policies.index') }}" style="color:#2563eb;text-decoration:none;font-weight:600">Policies & Pages</a>
-            <span>/</span>
-            <span>Edit Page</span>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-            <div>
-                <h1 class="admin-page-title" style="margin:0 0 4px 0;font-size:1.4rem">✏️ Edit: {{ $policy->title }}</h1>
-                <p style="margin:0;font-size:0.85rem;color:#64748b">
-                    Edit content in visual <strong>CKEditor</strong> mode or HTML source mode with live translation tabs.
-                </p>
-            </div>
-            <div style="display:flex;gap:8px">
-                <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => $policy->slug]) }}" target="_blank" class="btn btn-secondary">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                    <span>View Live</span>
-                </a>
-                <a href="{{ route('admin.policies.index') }}" class="btn btn-secondary">
-                    ← Back to List
-                </a>
-            </div>
-        </div>
+<!-- Topbar Navigation -->
+<div class="admin-topbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--gray-200);">
+    <div>
+        <a href="{{ route('admin.policies.index') }}" class="text-sm" style="color:var(--seagreen-700);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:6px;font-weight:600">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to Policies &amp; Pages
+        </a>
+        <h1 class="admin-page-title" style="margin:0;font-size:clamp(1.4rem,3vw,1.85rem);">Edit Page: {{ $policy->title }}</h1>
+        <p class="text-sm text-muted" style="margin:4px 0 0;">Update policy terms, multi-language content, search engine SEO tags, and publishing status</p>
     </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => $policy->slug]) }}" target="_blank" class="btn btn-secondary" style="display:inline-flex;align-items:center;gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span>View Live</span>
+        </a>
+        <a href="{{ route('admin.policies.index') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" form="policyForm" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Save Changes
+        </button>
+    </div>
+</div>
 
-    @if($errors->any())
-        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px 18px;margin-bottom:20px;color:#b91c1c;font-size:0.85rem">
-            <div style="font-weight:700;margin-bottom:6px">Please resolve the following errors:</div>
-            <ul style="margin:0;padding-left:20px">
-                @foreach($errors->all() as $err)
-                    <li>{{ $err }}</li>
-                @endforeach
-            </ul>
+@if ($errors->any())
+    <div class="alert alert-danger mb-6" style="background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;border-radius:12px;padding:14px 18px;margin-bottom:24px;">
+        <div style="font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;">
+            <span>⚠️</span> Please correct the errors below before submitting:
         </div>
-    @endif
+        <ul style="margin:0;padding-left:20px;font-size:0.875rem;">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
-    <form method="POST" action="{{ route('admin.policies.update', $policy) }}" id="policyForm">
-        @csrf
-        @method('PUT')
+<form id="policyForm" action="{{ route('admin.policies.update', $policy) }}" method="POST">
+    @csrf
+    @method('PUT')
 
-        <div style="display:grid;grid-template-columns:2.5fr 1fr;gap:24px;align-items:start">
-            <!-- Left Column: Main Content -->
-            <div style="display:flex;flex-direction:column;gap:20px">
-                
-                <!-- Main Card -->
-                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
-                    <h3 style="margin:0 0 16px 0;font-size:1rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
-                        📝 Page Information & Content
-                    </h3>
+    <div class="admin-form-layout">
 
-                    <!-- Title -->
-                    <div style="margin-bottom:16px">
-                        <label style="display:block;font-size:0.84rem;font-weight:700;color:#334155;margin-bottom:6px">
-                            Page Title (English) <span style="color:#ef4444">*</span>
-                        </label>
-                        <input type="text" name="title" id="pageTitle" value="{{ old('title', $policy->title) }}" required placeholder="e.g. Privacy Policy" class="form-control" style="font-size:0.95rem;font-weight:600">
-                    </div>
+        <!-- ─── Main Information Column ─────────────────────────────────── -->
+        <div style="display:flex;flex-direction:column;gap:20px;min-width:0;">
 
-                    <!-- Slug -->
-                    <div style="margin-bottom:16px">
-                        <label style="display:block;font-size:0.84rem;font-weight:700;color:#334155;margin-bottom:6px">
-                            URL Slug <span style="color:#ef4444">*</span>
-                        </label>
-                        <div style="display:flex;align-items:center;gap:6px">
-                            <span style="font-size:0.84rem;color:#64748b;background:#f1f5f9;border:1px solid #cbd5e1;padding:8px 12px;border-radius:6px">/en/policy/</span>
-                            <input type="text" name="slug" id="pageSlug" value="{{ old('slug', $policy->slug) }}" required placeholder="privacy-policy" class="form-control" style="flex:1">
-                        </div>
-                    </div>
-
-                    <!-- Summary / Excerpt -->
-                    <div style="margin-bottom:20px">
-                        <label style="display:block;font-size:0.84rem;font-weight:700;color:#334155;margin-bottom:6px">
-                            Brief Summary / Subtitle (Optional)
-                        </label>
-                        <textarea name="summary" rows="2" placeholder="Short description of this policy that appears below the hero title on the page..." class="form-control">{{ old('summary', $policy->summary) }}</textarea>
-                    </div>
-
-                    <!-- Language Tabs for Content -->
-                    <div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid #e2e8f0;padding-bottom:10px;flex-wrap:wrap;gap:8px">
-                            <label style="font-size:0.88rem;font-weight:700;color:#0f172a;margin:0">
-                                Page Content Editor
-                            </label>
-                            <div style="display:flex;gap:4px">
-                                <button type="button" class="lang-tab-btn active" onclick="switchLangTab('en')" id="tabBtn_en">🇺🇸 English</button>
-                                <button type="button" class="lang-tab-btn" onclick="switchLangTab('zh')" id="tabBtn_zh">
-                                    🇨🇳 中文 @if(!empty($policy->content_zh)) ✓ @endif
-                                </button>
-                                <button type="button" class="lang-tab-btn" onclick="switchLangTab('bm')" id="tabBtn_bm">
-                                    🇲🇾 Bahasa Melayu @if(!empty($policy->content_bm)) ✓ @endif
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- English Tab -->
-                        <div id="langTab_en" class="lang-content-panel">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                                <span style="font-size:0.8rem;font-weight:700;color:#2563eb">🇺🇸 English Content (Default)</span>
-                                <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('content_en')">
-                                    <strong>&lt;/&gt;</strong> Insert Custom HTML
-                                </button>
-                            </div>
-                            <textarea name="content" id="content_en" required>{{ old('content', $policy->content) }}</textarea>
-                        </div>
-
-                        <!-- Chinese Tab -->
-                        <div id="langTab_zh" class="lang-content-panel" style="display:none">
-                            <div style="margin-bottom:14px">
-                                <label style="display:block;font-size:0.82rem;font-weight:700;color:#475569;margin-bottom:5px">Chinese Page Title (Optional)</label>
-                                <input type="text" name="title_zh" value="{{ old('title_zh', $policy->title_zh) }}" placeholder="e.g. 隐私政策 / 服务条款" class="form-control" style="font-weight:600">
-                            </div>
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                                <span style="font-size:0.8rem;font-weight:700;color:#059669">🇨🇳 Chinese Content (中文)</span>
-                                <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('content_zh')">
-                                    <strong>&lt;/&gt;</strong> Insert Custom HTML
-                                </button>
-                            </div>
-                            <textarea name="content_zh" id="content_zh">{{ old('content_zh', $policy->content_zh) }}</textarea>
-                        </div>
-
-                        <!-- Malay Tab -->
-                        <div id="langTab_bm" class="lang-content-panel" style="display:none">
-                            <div style="margin-bottom:14px">
-                                <label style="display:block;font-size:0.82rem;font-weight:700;color:#475569;margin-bottom:5px">Malay Page Title (Optional)</label>
-                                <input type="text" name="title_bm" value="{{ old('title_bm', $policy->title_bm) }}" placeholder="e.g. Dasar Privasi / Terma & Syarat" class="form-control" style="font-weight:600">
-                            </div>
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                                <span style="font-size:0.8rem;font-weight:700;color:#d97706">🇲🇾 Malay Content (Bahasa Melayu)</span>
-                                <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('content_bm')">
-                                    <strong>&lt;/&gt;</strong> Insert Custom HTML
-                                </button>
-                            </div>
-                            <textarea name="content_bm" id="content_bm">{{ old('content_bm', $policy->content_bm) }}</textarea>
-                        </div>
-                    </div>
+            <!-- Basic Info Card -->
+            <div class="card" style="padding:24px;border-radius:12px;">
+                <div class="card-header" style="display:flex;align-items:center;gap:10px;margin-bottom:20px;border-bottom:1px solid #f1f5f9;padding-bottom:14px;">
+                    <span style="font-size:1.25rem;">📄</span>
+                    <div class="card-title" style="font-size:1.1rem;font-weight:700;color:#0f172a;margin:0;">General Information</div>
                 </div>
 
-                <!-- SEO Settings Card -->
-                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
-                    <h3 style="margin:0 0 14px 0;font-size:0.95rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
-                        🔍 Search Engine Optimization (SEO)
-                    </h3>
-                    <div style="margin-bottom:14px">
-                        <label style="display:block;font-size:0.82rem;font-weight:600;color:#475569;margin-bottom:5px">Custom Meta Title</label>
-                        <input type="text" name="meta_title" value="{{ old('meta_title', $policy->meta_title) }}" placeholder="Leave blank to use page title" class="form-control">
-                    </div>
-                    <div>
-                        <label style="display:block;font-size:0.82rem;font-weight:600;color:#475569;margin-bottom:5px">Meta Description</label>
-                        <textarea name="meta_description" rows="2" placeholder="Short description for Google search results..." class="form-control">{{ old('meta_description', $policy->meta_description) }}</textarea>
-                    </div>
+                <!-- Page Title -->
+                <div class="form-group mb-4">
+                    <label class="form-label" style="font-weight:700;color:#334155;margin-bottom:6px;display:block;">
+                        Page Title (🇬🇧 English Base) <span class="required" style="color:#ef4444;">*</span>
+                    </label>
+                    <input type="text" name="title" id="pageTitle" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}"
+                           value="{{ old('title', $policy->title) }}" placeholder="e.g. Privacy Policy, Terms & Conditions, Wholesale FAQ" required autofocus>
+                    @error('title')<div class="form-error" style="color:#ef4444;font-size:0.8rem;margin-top:4px;">{{ $message }}</div>@enderror
                 </div>
 
+                <!-- URL Slug -->
+                <div class="form-group mb-4">
+                    <label class="form-label" style="font-weight:700;color:#334155;margin-bottom:6px;display:block;">
+                        URL Slug <span class="required" style="color:#ef4444;">*</span>
+                    </label>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span style="font-size:0.84rem;color:#64748b;background:#f1f5f9;border:1px solid #cbd5e1;padding:8px 14px;border-radius:6px;font-weight:600;">/en/policy/</span>
+                        <input type="text" name="slug" id="pageSlug" class="form-control {{ $errors->has('slug') ? 'is-invalid' : '' }}"
+                               value="{{ old('slug', $policy->slug) }}" placeholder="privacy-policy" required style="flex:1;">
+                    </div>
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Public URL key for this policy page</div>
+                    @error('slug')<div class="form-error" style="color:#ef4444;font-size:0.8rem;margin-top:4px;">{{ $message }}</div>@enderror
+                </div>
+
+                <!-- Summary / Subtitle -->
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-weight:700;color:#334155;margin-bottom:6px;display:block;">
+                        Brief Summary / Hero Subtitle (Optional)
+                    </label>
+                    <textarea name="summary" class="form-control" rows="2"
+                              placeholder="Short 1-2 sentence description that appears below the hero title on the policy page...">{{ old('summary', $policy->summary) }}</textarea>
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Displayed in header banner of the public page</div>
+                </div>
             </div>
 
-            <!-- Right Column: Publishing Controls -->
-            <div style="display:flex;flex-direction:column;gap:20px">
-                <!-- Publish Card -->
-                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
-                    <h3 style="margin:0 0 14px 0;font-size:0.95rem;font-weight:700;color:#0f172a">
-                        🚀 Publish Settings
-                    </h3>
-
-                    <!-- Status -->
-                    <div style="margin-bottom:16px">
-                        <label style="display:block;font-size:0.82rem;font-weight:700;color:#334155;margin-bottom:6px">Status</label>
-                        <select name="status" class="form-control" style="font-weight:600">
-                            <option value="published" {{ old('status', $policy->status) === 'published' ? 'selected' : '' }}>🟢 Published (Visible in Footer)</option>
-                            <option value="draft" {{ old('status', $policy->status) === 'draft' ? 'selected' : '' }}>🟡 Draft (Hidden)</option>
-                        </select>
-                        <div style="font-size:0.75rem;color:#64748b;margin-top:6px;line-height:1.4">
-                            Published pages appear automatically in the footer under <strong>Quick Links</strong>.
-                        </div>
+            <!-- Page Content Editor Card with Multilingual Tabs -->
+            <div class="card" style="padding:24px;border-radius:12px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;border-bottom:1px solid #f1f5f9;padding-bottom:14px;flex-wrap:wrap;gap:10px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:1.25rem;">✍️</span>
+                        <div class="card-title" style="font-size:1.1rem;font-weight:700;color:#0f172a;margin:0;">Page Content Editor</div>
                     </div>
-
-                    <!-- Sort Order -->
-                    <div style="margin-bottom:20px">
-                        <label style="display:block;font-size:0.82rem;font-weight:700;color:#334155;margin-bottom:6px">Footer Display Order</label>
-                        <input type="number" name="sort_order" value="{{ old('sort_order', $policy->sort_order) }}" min="0" class="form-control">
-                        <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px">Lower numbers appear first.</div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div style="display:flex;flex-direction:column;gap:10px">
-                        <button type="submit" class="btn btn-primary" style="width:100%;padding:10px;font-weight:700;font-size:0.9rem">
-                            💾 Update Page
+                    <!-- Language Selection Tabs -->
+                    <div style="display:flex;gap:6px;background:#f8fafc;padding:4px;border-radius:10px;border:1px solid #e2e8f0;">
+                        <button type="button" class="lang-tab-btn active" onclick="switchLangTab('en')" id="tabBtn_en">
+                            <span>🇬🇧</span> English
                         </button>
-                        <a href="{{ route('admin.policies.index') }}" class="btn btn-secondary" style="width:100%">
-                            Cancel
+                        <button type="button" class="lang-tab-btn" onclick="switchLangTab('zh')" id="tabBtn_zh">
+                            <span>🇨🇳</span> 中文 @if(!empty($policy->content_zh)) <span style="font-size:0.75rem;color:#059669;">✓</span> @endif
+                        </button>
+                        <button type="button" class="lang-tab-btn" onclick="switchLangTab('bm')" id="tabBtn_bm">
+                            <span>🇲🇾</span> Bahasa Melayu @if(!empty($policy->content_bm)) <span style="font-size:0.75rem;color:#059669;">✓</span> @endif
+                        </button>
+                    </div>
+                </div>
+
+                <!-- English Content Panel -->
+                <div id="langTab_en" class="lang-content-panel">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <span style="font-size:0.84rem;font-weight:700;color:#1d4ed8;display:flex;align-items:center;gap:6px;">
+                            <span>🇬🇧</span> English Content (Primary / Default)
+                        </span>
+                        <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('content_en')">
+                            <strong>&lt;/&gt;</strong> Insert Custom HTML
+                        </button>
+                    </div>
+                    <textarea name="content" id="content_en" required>{{ old('content', $policy->content) }}</textarea>
+                </div>
+
+                <!-- Chinese Content Panel -->
+                <div id="langTab_zh" class="lang-content-panel" style="display:none;">
+                    <div class="form-group mb-4" style="background:#f8fafc;padding:14px;border-radius:10px;border:1px solid #e2e8f0;">
+                        <label class="form-label" style="color:#dc2626;font-weight:700;margin-bottom:6px;display:block;">
+                            🇨🇳 Chinese Page Title (Optional)
+                        </label>
+                        <input type="text" name="title_zh" value="{{ old('title_zh', $policy->title_zh) }}" placeholder="e.g. 隐私政策 / 服务条款 / 批发常见问题" class="form-control" style="font-weight:600;">
+                        <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Displayed when Simplified Chinese is active</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <span style="font-size:0.84rem;font-weight:700;color:#dc2626;display:flex;align-items:center;gap:6px;">
+                            <span>🇨🇳</span> Chinese Content (简体中文)
+                        </span>
+                        <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('content_zh')">
+                            <strong>&lt;/&gt;</strong> Insert Custom HTML
+                        </button>
+                    </div>
+                    <textarea name="content_zh" id="content_zh">{{ old('content_zh', $policy->content_zh) }}</textarea>
+                </div>
+
+                <!-- Malay Content Panel -->
+                <div id="langTab_bm" class="lang-content-panel" style="display:none;">
+                    <div class="form-group mb-4" style="background:#f8fafc;padding:14px;border-radius:10px;border:1px solid #e2e8f0;">
+                        <label class="form-label" style="color:#059669;font-weight:700;margin-bottom:6px;display:block;">
+                            🇲🇾 Malay Page Title (Optional)
+                        </label>
+                        <input type="text" name="title_bm" value="{{ old('title_bm', $policy->title_bm) }}" placeholder="e.g. Dasar Privasi / Terma & Syarat / Soalan Lazim Borong" class="form-control" style="font-weight:600;">
+                        <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Displayed when Bahasa Melayu is active</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <span style="font-size:0.84rem;font-weight:700;color:#059669;display:flex;align-items:center;gap:6px;">
+                            <span>🇲🇾</span> Malay Content (Bahasa Melayu)
+                        </span>
+                        <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('content_bm')">
+                            <strong>&lt;/&gt;</strong> Insert Custom HTML
+                        </button>
+                    </div>
+                    <textarea name="content_bm" id="content_bm">{{ old('content_bm', $policy->content_bm) }}</textarea>
+                </div>
+            </div>
+
+            <!-- SEO Settings Card -->
+            <div class="card" style="padding:24px;border-radius:12px;">
+                <div class="card-header" style="display:flex;align-items:center;gap:10px;margin-bottom:18px;border-bottom:1px solid #f1f5f9;padding-bottom:14px;">
+                    <span style="font-size:1.25rem;">🔍</span>
+                    <div class="card-title" style="font-size:1.1rem;font-weight:700;color:#0f172a;margin:0;">Search Engine Optimization (SEO)</div>
+                </div>
+                <div class="form-group mb-4">
+                    <label class="form-label" style="font-weight:600;color:#475569;margin-bottom:6px;display:block;">Custom Meta Title</label>
+                    <input type="text" name="meta_title" value="{{ old('meta_title', $policy->meta_title) }}" placeholder="Leave blank to use default page title" class="form-control">
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Title shown in browser tabs and search engine listings</div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-weight:600;color:#475569;margin-bottom:6px;display:block;">Meta Description</label>
+                    <textarea name="meta_description" rows="2" placeholder="Concise summary for Google search engine results..." class="form-control">{{ old('meta_description', $policy->meta_description) }}</textarea>
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Recommended length: 150–160 characters</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ─── Sidebar Column: Media & Settings ────────────────────────── -->
+        <div style="display:flex;flex-direction:column;gap:20px;min-width:0;">
+
+            <!-- Publishing Settings Card -->
+            <div class="card" style="padding:22px;border-radius:12px;">
+                <div class="card-header" style="display:flex;align-items:center;gap:10px;margin-bottom:16px;border-bottom:1px solid #f1f5f9;padding-bottom:12px;">
+                    <span style="font-size:1.1rem;">🚀</span>
+                    <div class="card-title" style="font-size:1rem;font-weight:700;color:#0f172a;margin:0;">Publish Settings</div>
+                </div>
+
+                <!-- Status -->
+                <div class="form-group mb-4">
+                    <label class="form-label" style="font-weight:700;color:#334155;margin-bottom:6px;display:block;">Page Status</label>
+                    <select name="status" class="form-control" style="font-weight:600;">
+                        <option value="published" {{ old('status', $policy->status) === 'published' ? 'selected' : '' }}>🟢 Published (Visible)</option>
+                        <option value="draft" {{ old('status', $policy->status) === 'draft' ? 'selected' : '' }}>🟡 Draft (Hidden)</option>
+                    </select>
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:6px;line-height:1.4;">
+                        Published pages automatically link in the footer under <strong>Quick Links</strong>.
+                    </div>
+                </div>
+
+                <!-- Sort Order -->
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-weight:700;color:#334155;margin-bottom:6px;display:block;">Footer Display Order</label>
+                    <input type="number" name="sort_order" value="{{ old('sort_order', $policy->sort_order) }}" min="0" class="form-control">
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Lower numbers (0, 1, 2...) appear first in navigation</div>
+                </div>
+            </div>
+
+            <!-- Page Meta Card -->
+            <div class="card" style="padding:20px;border-radius:12px;background:#f8fafc;">
+                <div class="card-header" style="display:flex;align-items:center;gap:8px;margin-bottom:12px;border-bottom:1px solid #e2e8f0;padding-bottom:10px;">
+                    <span style="font-size:1rem;">ℹ️</span>
+                    <div class="card-title" style="font-size:0.92rem;font-weight:700;color:#1e293b;margin:0;">Page Meta Details</div>
+                </div>
+                <div style="font-size:0.8rem;color:#64748b;display:flex;flex-direction:column;gap:8px;">
+                    <div><strong style="color:#334155;">Page ID:</strong> #{{ $policy->id }}</div>
+                    <div><strong style="color:#334155;">Created:</strong> {{ $policy->created_at->format('M d, Y H:i') }}</div>
+                    <div><strong style="color:#334155;">Last Modified:</strong> {{ $policy->updated_at->format('M d, Y H:i') }}</div>
+                    <div>
+                        <strong style="color:#334155;">Live URL:</strong><br>
+                        <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => $policy->slug]) }}" target="_blank" style="color:#1d4ed8;word-break:break-all;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:4px;margin-top:2px;">
+                            <span>/{{ app()->getLocale() }}/policy/{{ $policy->slug }}</span>
+                            <span>↗</span>
                         </a>
                     </div>
                 </div>
-
-                <!-- Page Meta Details -->
-                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-size:0.8rem;color:#64748b">
-                    <div style="font-weight:700;color:#334155;margin-bottom:8px">ℹ️ Page Meta</div>
-                    <div style="margin-bottom:4px"><strong>Created:</strong> {{ $policy->created_at->format('M d, Y H:i') }}</div>
-                    <div style="margin-bottom:4px"><strong>Last Modified:</strong> {{ $policy->updated_at->format('M d, Y H:i') }}</div>
-                    <div><strong>Live URL:</strong> <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => $policy->slug]) }}" target="_blank" style="color:#2563eb;word-break:break-all">/{{ app()->getLocale() }}/policy/{{ $policy->slug }}</a></div>
-                </div>
             </div>
+
+            <!-- Submit Buttons Card -->
+            <div class="card action-buttons-card" style="padding:20px;border-radius:12px;display:flex;flex-direction:column;gap:12px;">
+                <button type="submit" class="btn btn-primary btn-block" style="padding:12px;font-size:0.95rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;margin:0;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Save Changes
+                </button>
+                <a href="{{ route('admin.policies.index') }}" class="btn btn-secondary btn-block" style="text-align:center;padding:10px;margin:0;">
+                    Cancel &amp; Return
+                </a>
+            </div>
+
         </div>
-    </form>
-</div>
+
+    </div>
+</form>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->
 <!-- INSERT CUSTOM HTML POPUP MODAL                                              -->
@@ -240,99 +374,12 @@
         </div>
     </div>
 </div>
+@endsection
 
-<style>
-    .lang-tab-btn {
-        background: transparent;
-        border: 1px solid transparent;
-        padding: 5px 12px;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: #64748b;
-        cursor: pointer;
-        transition: all 0.12s ease;
-    }
-    .lang-tab-btn:hover {
-        background: #f1f5f9;
-        color: #0f172a;
-    }
-    .lang-tab-btn.active {
-        background: #eff6ff;
-        color: #2563eb;
-        border-color: #bfdbfe;
-    }
-
-    .insert-html-btn {
-        background: #f8fafc;
-        border: 1.5px solid #cbd5e1;
-        color: #1e40af;
-        border-radius: 6px;
-        padding: 4px 10px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.12s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-    }
-    .insert-html-btn:hover {
-        background: #eff6ff;
-        border-color: #2563eb;
-        color: #2563eb;
-    }
-
-    .html-modal-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(6, 21, 43, 0.65);
-        backdrop-filter: blur(4px);
-        z-index: 999999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
-    .html-modal-card {
-        background: #ffffff;
-        border-radius: 14px;
-        width: 100%;
-        max-width: 600px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        overflow: hidden;
-    }
-    .html-modal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 20px;
-        background: #f8fafc;
-        border-bottom: 1px solid #e2e8f0;
-    }
-    .html-modal-close {
-        border: none;
-        background: transparent;
-        font-size: 1.1rem;
-        color: #94a3b8;
-        cursor: pointer;
-    }
-    .html-modal-close:hover {
-        color: #ef4444;
-    }
-    .html-modal-footer {
-        padding: 12px 20px;
-        background: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-        display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-    }
-</style>
-
+@push('scripts')
 <script>
     const ckConfig = {
-        height: 380,
+        height: 420,
         extraPlugins: 'sourcearea,format,font,colorbutton,justify,table',
         removePlugins: 'exportpdf',
         allowedContent: true, // Allow all HTML tags without stripping
@@ -373,7 +420,7 @@
         document.querySelectorAll('.lang-tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.lang-content-panel').forEach(p => p.style.display = 'none');
 
-        document.getElementById(`tabBtn_${lang}`).classList.add('active');
+        document.getElementById(`tabBtn_${lang}`)?.classList.add('active');
         document.getElementById(`langTab_${lang}`).style.display = 'block';
     }
 
@@ -399,10 +446,10 @@
     }
 
     // Ensure all CKEditor instances update their underlying textarea on form submit
-    document.getElementById('policyForm').addEventListener('submit', () => {
+    document.getElementById('policyForm')?.addEventListener('submit', () => {
         for (let instance in CKEDITOR.instances) {
             CKEDITOR.instances[instance].updateElement();
         }
     });
 </script>
-@endsection
+@endpush

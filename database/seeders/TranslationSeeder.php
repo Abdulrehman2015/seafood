@@ -273,9 +273,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'home',
                 'key'     => 'hero_subtitle',
-                'text_en' => 'Serving hotels, premier restaurants, supermarkets, and wholesale traders across Malaysia & Singapore with certified fresh frozen seafood.',
-                'text_zh' => '专为马来西亚及新加坡的高端餐饮、星级酒店、连锁超市和大宗贸易商提供符合国际认证的高品质冷冻海鲜。',
-                'text_bm' => 'Membekalkan hotel, restoran terkemuka, pasar raya dan pemborong di seluruh Malaysia & Singapura dengan makanan laut beku berkualiti tinggi disahkan.',
+                'text_en' => 'Serving hotels, premier restaurants, supermarkets, and wholesale traders across Malaysia & Singapore with quality frozen seafood and food products.',
+                'text_zh' => '为马来西亚与新加坡的酒店、高端餐厅、超市及批发贸易商提供高品质冷冻海鲜与食品。',
+                'text_bm' => 'Membekalkan hotel, restoran terkemuka, pasar raya dan pedagang borong di seluruh Malaysia & Singapura dengan makanan laut dan produk makanan sejuk beku berkualiti.',
             ],
             [
                 'group'   => 'home',
@@ -819,16 +819,16 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'home',
                 'key'     => 'float_fresh_catch',
-                'text_en' => 'Fresh Catch Daily',
-                'text_zh' => '源头深海直捕',
-                'text_bm' => 'Tangkapan Segar Harian',
+                'text_en' => 'QUALITY FROZEN PRODUCTS',
+                'text_zh' => '优质冷冻产品',
+                'text_bm' => 'PRODUK SEJUK BEKU BERKUALITI',
             ],
             [
                 'group'   => 'home',
                 'key'     => 'float_iqf_frozen',
                 'text_en' => 'IQF Frozen at Source',
-                'text_zh' => '原产地 IQF 单冻锁鲜',
-                'text_bm' => 'Bekuan IQF di Sumber',
+                'text_zh' => '产地源头 IQF 急冻',
+                'text_bm' => 'IQF Dibekukan di Sumber',
             ],
             [
                 'group'   => 'home',
@@ -2177,6 +2177,43 @@ class TranslationSeeder extends Seeder
                 'text_en' => 's',
                 'text_zh' => '秒',
                 'text_bm' => 's',
+            ],
+
+            // ─── Cookie Consent Banner ─────────────────────────────────────
+            [
+                'group'   => 'cookie',
+                'key'     => 'banner_title',
+                'text_en' => 'We value your privacy',
+                'text_zh' => '我们重视您的隐私',
+                'text_bm' => 'Kami menghargai privasi anda',
+            ],
+            [
+                'group'   => 'cookie',
+                'key'     => 'banner_desc',
+                'text_en' => 'We use essential cookies to make our store work properly, and optional cookies to remember your preferred language and currency. We do not sell your personal information.',
+                'text_zh' => '我们使用必要的 Cookie 来确保商城正常运行，并使用可选 Cookie 来记住您的首选语言和货币。我们不会出售您的个人信息。',
+                'text_bm' => 'Kami menggunakan kuki penting untuk memastikan kedai kami berfungsi dengan baik, dan kuki pilihan untuk mengingati bahasa dan mata wang pilihan anda. Kami tidak menjual maklumat peribadi anda.',
+            ],
+            [
+                'group'   => 'cookie',
+                'key'     => 'learn_more',
+                'text_en' => 'Privacy & Cookie Policy',
+                'text_zh' => '隐私与 Cookie 政策',
+                'text_bm' => 'Dasar Privasi & Kuki',
+            ],
+            [
+                'group'   => 'cookie',
+                'key'     => 'essential_only',
+                'text_en' => 'Essential Only',
+                'text_zh' => '仅必要 Cookie',
+                'text_bm' => 'Penting Sahaja',
+            ],
+            [
+                'group'   => 'cookie',
+                'key'     => 'accept_all',
+                'text_en' => 'Accept All',
+                'text_zh' => '全部接受',
+                'text_bm' => 'Terima Semua',
             ],
         ];
 

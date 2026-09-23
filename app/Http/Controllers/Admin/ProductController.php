@@ -219,6 +219,7 @@ class ProductController extends Controller
             'unit'               => 'required|string|max:20',
             'origin'             => 'nullable|string|max:100',
             'storage_temp'       => 'nullable|string|max:50',
+            'storage_icon'       => 'nullable|string|max:20',
             'brand'              => 'nullable|string|max:100',
             'stock_quantity'     => 'required|integer|min:0',
             'track_stock'        => 'nullable|boolean',

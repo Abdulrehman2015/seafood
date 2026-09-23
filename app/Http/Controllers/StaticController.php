@@ -34,7 +34,7 @@ class StaticController extends Controller
 
     public function contactSubmit(Request $request)
     {
-        $request->validate([
+        $rules = [
             'name'        => 'required|string|max:200',
             'email'       => 'required|email|max:255',
             'phone'       => 'required|string|max:30',
@@ -44,6 +44,21 @@ class StaticController extends Controller
             'product'     => 'nullable|string|max:200',
             'budget'      => 'nullable|string|max:200',
             'message'     => 'required|string|max:5000',
+        ];
+
+        if (\App\Models\Setting::isRecaptchaEnabled('contact')) {
+            $rules['g-recaptcha-response'] = [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (!\App\Models\Setting::verifyRecaptcha($value, $request->ip())) {
+                        $fail(__t('auth.recaptcha_failed', 'reCAPTCHA verification failed. Please complete the captcha again.'));
+                    }
+                },
+            ];
+        }
+
+        $request->validate($rules, [
+            'g-recaptcha-response.required' => __t('auth.recaptcha_required', 'Please verify that you are not a robot.'),
         ]);
 
         $interestsList = !empty($request->interests) && is_array($request->interests)

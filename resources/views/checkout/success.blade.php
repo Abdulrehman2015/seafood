@@ -17,7 +17,11 @@
             <div>
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:2px 9px;border-radius:999px;font-size:0.7rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
-                        🎉 @t('checkout.payment_confirmed', 'Payment Confirmed')
+                        @if($order->payment_method === 'cash')
+                            💵 @t('checkout.badge_pay_counter', 'Pay Cash at Counter')
+                        @else
+                            🎉 @t('checkout.payment_confirmed', 'Payment Confirmed')
+                        @endif
                     </span>
                     <span style="color:#bae6fd;font-size:0.78rem">@t('checkout.order_number', 'Order') #{{ $order->order_number }}</span>
                 </div>
@@ -25,7 +29,11 @@
                     @t('checkout.order_confirmation', 'Order Confirmation')
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.88rem;max-width:680px;line-height:1.4;margin:0">
-                    @t('checkout.success_subtitle', 'Thank you for your order! Your payment has been received and your frozen seafood is being prepared.')
+                    @if($order->payment_method === 'cash')
+                        @t('checkout.cash_confirmed_subtitle', 'Thank you for your order! Your in-store order is confirmed. Please show your token and pay cash at Counter 2 upon collection.')
+                    @else
+                        @t('checkout.success_subtitle', 'Thank you for your order! Your payment has been received and your frozen seafood is being prepared.')
+                    @endif
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -49,12 +57,22 @@
             <!-- ═══════════════════════════════════════════════════════════════════════ -->
             
             <div style="text-align:center;margin-bottom:var(--space-4)">
-                <div style="font-size:2.8rem;margin-bottom:6px;animation:bounceIn 0.6s ease">🎉</div>
+                <div style="font-size:2.8rem;margin-bottom:6px;animation:bounceIn 0.6s ease">
+                    {{ $order->payment_method === 'cash' ? '💵' : '🎉' }}
+                </div>
                 <h1 style="font-size:1.6rem;font-family:var(--font-heading);color:var(--seagreen-900);margin-bottom:4px">
-                    @t('checkout.payment_successful', 'Payment Successful!')
+                    @if($order->payment_method === 'cash')
+                        @t('checkout.order_confirmed_cash', 'Order Confirmed (Pay at Counter)')
+                    @else
+                        @t('checkout.payment_successful', 'Payment Successful!')
+                    @endif
                 </h1>
                 <p class="text-sm text-muted" style="margin:0">
-                    @t('checkout.success_subtitle', 'Your seafood order is placed and being prepared at our counter.')
+                    @if($order->payment_method === 'cash')
+                        @t('checkout.cash_instruction_subtitle', 'Your order is being prepared. Please show this collection token at Counter 2 to pay cash and collect your seafood.')
+                    @else
+                        @t('checkout.success_subtitle', 'Your seafood order is placed and being prepared at our counter.')
+                    @endif
                 </p>
             </div>
 
@@ -84,14 +102,25 @@
                     </div>
                     
                     <div style="margin-bottom:var(--space-3)">
-                        <span style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;padding:6px 14px;border-radius:20px;font-weight:700;font-size:0.8rem;border:1px solid #fde68a">
-                            <span style="width:8px;height:8px;background:#f59e0b;border-radius:50%;animation:pulseDot 1.5s infinite"></span>
-                            @t('checkout.preparing_at_counter', 'Preparing at Store Counter')
-                        </span>
+                        @if($order->payment_method === 'cash')
+                            <span style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;padding:6px 14px;border-radius:20px;font-weight:700;font-size:0.8rem;border:1px solid #fde68a">
+                                <span style="width:8px;height:8px;background:#f59e0b;border-radius:50%;animation:pulseDot 1.5s infinite"></span>
+                                💵 @t('checkout.cash_due_amount', 'Due at Counter:') RM {{ number_format($order->total, 2) }}
+                            </span>
+                        @else
+                            <span style="display:inline-flex;align-items:center;gap:6px;background:#dcfce7;color:#166534;padding:6px 14px;border-radius:20px;font-weight:700;font-size:0.8rem;border:1px solid #86efac">
+                                <span style="width:8px;height:8px;background:#22c55e;border-radius:50%;animation:pulseDot 1.5s infinite"></span>
+                                ✓ @t('checkout.paid_via_stripe', 'Paid via Stripe') · @t('checkout.preparing_at_counter', 'Preparing at Store Counter')
+                            </span>
+                        @endif
                     </div>
 
                     <p style="font-size:0.85rem;color:var(--gray-600);max-width:400px;margin:0 auto;line-height:1.4">
-                        @t('checkout.counter_instruction', 'Please proceed to Counter 2 (Express Collection) and show this token to collect your packed seafood.')
+                        @if($order->payment_method === 'cash')
+                            @t('checkout.cash_counter_instruction', 'Please proceed to Counter 2 (Express Collection), show this token, pay cash and collect your packed seafood.')
+                        @else
+                            @t('checkout.counter_instruction', 'Please proceed to Counter 2 (Express Collection) and show this token to collect your packed seafood.')
+                        @endif
                     </p>
                 </div>
 
@@ -111,8 +140,12 @@
                                 @t('checkout.phone', 'Phone:') <strong>{{ $order->customer_phone }}</strong>
                             </div>
                         @endif
-                        <div style="font-size:0.75rem;color:var(--seagreen-700);margin-top:2px">
-                            @t('checkout.paid', 'Paid:') RM {{ number_format($order->total, 2) }} ({{ ucfirst(str_replace('_', ' ', $order->payment_method ?? 'card')) }})
+                        <div style="font-size:0.75rem;margin-top:2px">
+                            @if($order->payment_method === 'cash')
+                                <span style="color:#d97706;font-weight:700">💵 @t('checkout.payment_due_cash', 'Amount Due (Cash):') RM {{ number_format($order->total, 2) }}</span>
+                            @else
+                                <span style="color:var(--seagreen-700);font-weight:600">@t('checkout.paid', 'Paid:') RM {{ number_format($order->total, 2) }} ({{ ucfirst(str_replace('_', ' ', $order->payment_method ?? 'card')) }})</span>
+                            @endif
                         </div>
                     </div>
                 </div>

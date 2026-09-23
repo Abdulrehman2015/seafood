@@ -10,9 +10,12 @@ class WalkInMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // Ensure the request has a valid walk-in session
+        // Ensure walk-in session is active so public visitors can browse walk-in prices and products seamlessly
         if (!session('walkin_session')) {
-            return redirect()->route('walkin.entry');
+            session([
+                'walkin_session'    => true,
+                'walkin_started_at' => now()->toDateTimeString(),
+            ]);
         }
 
         return $next($request);

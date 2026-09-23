@@ -109,10 +109,13 @@ class CustomerController extends Controller
             'business_type'   => 'nullable|string|max:100',
             'address'         => 'nullable|string|max:500',
             'city'            => 'nullable|string|max:100',
-            'state'           => 'nullable|string|max:100',
-            'postcode'        => 'nullable|string|max:20',
-            'approval_status' => 'required|in:pending,approved,rejected',
+            'state'            => 'nullable|string|max:100',
+            'postcode'         => 'nullable|string|max:20',
+            'approval_status'  => 'required|in:pending,approved,rejected',
+            'marketing_opt_in' => 'nullable|boolean',
         ]);
+
+        $validated['marketing_opt_in'] = $request->boolean('marketing_opt_in');
 
         if ($validated['approval_status'] === 'approved') {
             if ($user->approval_status !== 'approved') {

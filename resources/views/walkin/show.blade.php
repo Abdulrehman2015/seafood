@@ -3,7 +3,7 @@
 
 @section('content')
 <!-- Walk-in Ocean Header Banner -->
-<div class="walkin-hero-section" style="position:relative;background:linear-gradient(135deg, #091a36 0%, #0f274a 45%, #1e3a8a 100%);color:#ffffff;border-bottom:1px solid #1e3a8a;padding-top:calc(75px + var(--space-6));padding-bottom:var(--space-6);overflow:hidden">
+<div class="walkin-hero-section" style="position:relative;background:linear-gradient(135deg, #091a36 0%, #0f274a 45%, #1e3a8a 100%);color:#ffffff;border-bottom:1px solid #1e3a8a;padding-top:calc(78px + 28px);padding-bottom:var(--space-6);overflow:hidden">
     <div style="position:absolute;inset:0;opacity:0.08;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:24px 24px;pointer-events:none"></div>
     
     <div class="container" style="position:relative;z-index:2">
@@ -67,7 +67,14 @@
                     <span class="badge-tag-gray">{{ $product->category->name }}</span>
                 @endif
                 @if($product->storage_temp)
-                    <span class="badge-tag-cyan">❄️ {{ $product->storage_temp }} IQF</span>
+                    @php
+                        $tempLower = strtolower($product->storage_temp);
+                        $isLive = str_contains($tempLower, 'live');
+                        $isChilled = str_contains($tempLower, 'chilled');
+                        $badgeIcon = $product->getStorageIcon();
+                        $badgeSuffix = ($isLive || $isChilled) ? '' : ' IQF';
+                    @endphp
+                    <span class="badge-tag-cyan">{{ $badgeIcon }} {{ $product->storage_temp }}{{ $badgeSuffix }}</span>
                 @endif
             </div>
 
@@ -130,7 +137,7 @@
                     @endif
                     @if($product->storage_temp)
                         <div class="spec-name">@t('walkin.storage_temp', 'Storage Temperature')</div>
-                        <div class="spec-val">{{ $product->storage_temp }}</div>
+                        <div class="spec-val">{{ $product->getStorageIcon() }} {{ $product->storage_temp }}</div>
                     @endif
                     @if($product->brand)
                         <div class="spec-name">@t('walkin.brand', 'Brand')</div>

@@ -1,179 +1,267 @@
 @extends('layouts.admin')
-
-@section('title', 'Add New Policy / Page')
+@section('title', 'Add New Policy / Page — MST Admin')
 
 @push('styles')
 <script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+<style>
+    .insert-html-btn {
+        background: #f8fafc;
+        border: 1.5px solid #cbd5e1;
+        color: #1e40af;
+        border-radius: 8px;
+        padding: 5px 12px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .insert-html-btn:hover {
+        background: #eff6ff;
+        border-color: #2563eb;
+        color: #2563eb;
+    }
+
+    .html-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 21, 43, 0.65);
+        backdrop-filter: blur(4px);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .html-modal-card {
+        background: #ffffff;
+        border-radius: 14px;
+        width: 100%;
+        max-width: 620px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+    .html-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .html-modal-close {
+        border: none;
+        background: transparent;
+        font-size: 1.2rem;
+        color: #94a3b8;
+        cursor: pointer;
+        line-height: 1;
+    }
+    .html-modal-close:hover {
+        color: #ef4444;
+    }
+    .html-modal-footer {
+        padding: 14px 20px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+</style>
 @endpush
 
 @section('content')
-<div style="max-width:1050px;margin:0 auto">
-    <!-- Breadcrumb & Header -->
-    <div style="margin-bottom:24px">
-        <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#64748b;margin-bottom:8px">
-            <a href="{{ route('admin.policies.index') }}" style="color:#2563eb;text-decoration:none;font-weight:600">Policies & Pages</a>
-            <span>/</span>
-            <span>Create New Page</span>
+<!-- Topbar Navigation -->
+<div class="admin-topbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--gray-200);">
+    <div>
+        <a href="{{ route('admin.policies.index') }}" class="text-sm" style="color:var(--seagreen-700);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:6px;font-weight:600">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to Policies &amp; Pages
+        </a>
+        <h1 class="admin-page-title" style="margin:0;font-size:clamp(1.4rem,3vw,1.85rem);">Add New Policy / Page</h1>
+        <p class="text-sm text-muted" style="margin:4px 0 0;">Compose legal, shipping, and store policies with rich visual editor and multi-language translations</p>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <a href="{{ route('admin.policies.index') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" form="policyForm" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Create Page
+        </button>
+    </div>
+</div>
+
+<!-- Translation Workflow Notice Banner -->
+<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:14px;">
+    <div style="font-size:1.5rem;flex-shrink:0;">🌐</div>
+    <div style="font-size:0.86rem;color:#1e40af;line-height:1.45;">
+        <strong>English First Workflow:</strong> Create your primary English policy page here using CKEditor. Once saved, you can add Chinese (中文) and Malay (Bahasa Melayu) translations directly by clicking the <strong>+ ZH</strong> or <strong>+ BM</strong> buttons on the pages list!
+    </div>
+</div>
+
+@if ($errors->any())
+    <div class="alert alert-danger mb-6" style="background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;border-radius:12px;padding:14px 18px;margin-bottom:24px;">
+        <div style="font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;">
+            <span>⚠️</span> Please correct the errors below before submitting:
         </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-            <div>
-                <h1 class="admin-page-title" style="margin:0 0 4px 0;font-size:1.4rem">✨ Add New Page (English Default)</h1>
-                <p style="margin:0;font-size:0.85rem;color:#64748b">
-                    Compose your page using the full visual <strong>CKEditor</strong> with HTML Source editing and Insert HTML tools.
-                </p>
+        <ul style="margin:0;padding-left:20px;font-size:0.875rem;">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+<form id="policyForm" action="{{ route('admin.policies.store') }}" method="POST">
+    @csrf
+
+    <div class="admin-form-layout">
+
+        <!-- ─── Main Information Column ─────────────────────────────────── -->
+        <div style="display:flex;flex-direction:column;gap:20px;min-width:0;">
+
+            <!-- Basic Info Card -->
+            <div class="card" style="padding:24px;border-radius:12px;">
+                <div class="card-header" style="display:flex;align-items:center;gap:10px;margin-bottom:20px;border-bottom:1px solid #f1f5f9;padding-bottom:14px;">
+                    <span style="font-size:1.25rem;">📄</span>
+                    <div class="card-title" style="font-size:1.1rem;font-weight:700;color:#0f172a;margin:0;">General Information</div>
+                </div>
+
+                <!-- Page Title -->
+                <div class="form-group mb-4">
+                    <label class="form-label" style="font-weight:700;color:#334155;margin-bottom:6px;display:block;">
+                        Page Title (🇬🇧 English Base) <span class="required" style="color:#ef4444;">*</span>
+                    </label>
+                    <input type="text" name="title" id="pageTitle" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}"
+                           value="{{ old('title') }}" placeholder="e.g. Privacy Policy, Terms & Conditions, Wholesale FAQ" required autofocus>
+                    @error('title')<div class="form-error" style="color:#ef4444;font-size:0.8rem;margin-top:4px;">{{ $message }}</div>@enderror
+                </div>
+
+                <!-- URL Slug -->
+                <div class="form-group mb-4">
+                    <label class="form-label" style="font-weight:700;color:#334155;margin-bottom:6px;display:block;">
+                        URL Slug
+                    </label>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span style="font-size:0.84rem;color:#64748b;background:#f1f5f9;border:1px solid #cbd5e1;padding:8px 14px;border-radius:6px;font-weight:600;">/en/policy/</span>
+                        <input type="text" name="slug" id="pageSlug" class="form-control {{ $errors->has('slug') ? 'is-invalid' : '' }}"
+                               value="{{ old('slug') }}" placeholder="privacy-policy" style="flex:1;">
+                    </div>
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Auto-generated from title if left blank</div>
+                    @error('slug')<div class="form-error" style="color:#ef4444;font-size:0.8rem;margin-top:4px;">{{ $message }}</div>@enderror
+                </div>
+
+                <!-- Summary / Subtitle -->
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-weight:700;color:#334155;margin-bottom:6px;display:block;">
+                        Brief Summary / Hero Subtitle (Optional)
+                    </label>
+                    <textarea name="summary" class="form-control" rows="2"
+                              placeholder="Short 1-2 sentence description shown in the header banner of the public page...">{{ old('summary') }}</textarea>
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Displayed under the title on the storefront policy page</div>
+                </div>
             </div>
-            <a href="{{ route('admin.policies.index') }}" class="btn btn-secondary">
-                ← Back to List
-            </a>
-        </div>
-    </div>
 
-    <!-- Notification / Workflow Tip -->
-    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px">
-        <div style="font-size:1.4rem">🌐</div>
-        <div style="font-size:0.84rem;color:#1e40af">
-            <strong>English First Workflow:</strong> Create your primary English page here using CKEditor. Once saved, click the <strong>+ ZH</strong> or <strong>+ BM</strong> buttons on the pages list to add Chinese & Malay translations!
-        </div>
-    </div>
-
-    @if($errors->any())
-        <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px 18px;margin-bottom:20px;color:#b91c1c;font-size:0.85rem">
-            <div style="font-weight:700;margin-bottom:6px">Please resolve the following errors:</div>
-            <ul style="margin:0;padding-left:20px">
-                @foreach($errors->all() as $err)
-                    <li>{{ $err }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('admin.policies.store') }}" id="policyForm">
-        @csrf
-
-        <div style="display:grid;grid-template-columns:2.5fr 1fr;gap:24px;align-items:start">
-            <!-- Left Column: Content with CKEditor -->
-            <div style="display:flex;flex-direction:column;gap:20px">
-                
-                <!-- Main Card -->
-                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;border-bottom:1px solid #f1f5f9;padding-bottom:10px">
-                        <h3 style="margin:0;font-size:1rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
-                            📝 Page Content (English)
-                        </h3>
-                        <span style="font-size:0.75rem;font-weight:700;background:#eff6ff;color:#2563eb;padding:3px 8px;border-radius:6px;border:1px solid #bfdbfe">
-                            🇺🇸 Default Language
+            <!-- Page Content Editor Card -->
+            <div class="card" style="padding:24px;border-radius:12px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;border-bottom:1px solid #f1f5f9;padding-bottom:14px;flex-wrap:wrap;gap:10px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:1.25rem;">✍️</span>
+                        <div class="card-title" style="font-size:1.1rem;font-weight:700;color:#0f172a;margin:0;">Page Content (English Default)</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:0.75rem;font-weight:700;background:#eff6ff;color:#1d4ed8;padding:4px 10px;border-radius:6px;border:1px solid #bfdbfe;">
+                            🇬🇧 Primary Language
                         </span>
-                    </div>
-
-                    <!-- Title -->
-                    <div style="margin-bottom:16px">
-                        <label style="display:block;font-size:0.84rem;font-weight:700;color:#334155;margin-bottom:6px">
-                            Page Title (English) <span style="color:#ef4444">*</span>
-                        </label>
-                        <input type="text" name="title" id="pageTitle" value="{{ old('title') }}" required placeholder="e.g. Privacy Policy, Terms & Conditions, Wholesale FAQ" class="form-control" style="font-size:0.95rem;font-weight:600">
-                    </div>
-
-                    <!-- Slug -->
-                    <div style="margin-bottom:16px">
-                        <label style="display:block;font-size:0.84rem;font-weight:700;color:#334155;margin-bottom:6px">
-                            URL Slug
-                        </label>
-                        <div style="display:flex;align-items:center;gap:6px">
-                            <span style="font-size:0.84rem;color:#64748b;background:#f1f5f9;border:1px solid #cbd5e1;padding:8px 12px;border-radius:6px">/en/policy/</span>
-                            <input type="text" name="slug" id="pageSlug" value="{{ old('slug') }}" placeholder="privacy-policy" class="form-control" style="flex:1">
-                        </div>
-                        <span style="font-size:0.75rem;color:#94a3b8;margin-top:4px;display:block">Auto-generated from title if left blank.</span>
-                    </div>
-
-                    <!-- Summary / Excerpt -->
-                    <div style="margin-bottom:20px">
-                        <label style="display:block;font-size:0.84rem;font-weight:700;color:#334155;margin-bottom:6px">
-                            Brief Summary / Subtitle (Optional)
-                        </label>
-                        <textarea name="summary" rows="2" placeholder="Short description of this policy shown under the title on the page..." class="form-control">{{ old('summary') }}</textarea>
-                    </div>
-
-                    <!-- CKEditor Content Area -->
-                    <div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px">
-                            <label style="font-size:0.88rem;font-weight:700;color:#0f172a;margin:0">
-                                Page Content <span style="color:#ef4444">*</span>
-                            </label>
-                            <div style="display:flex;align-items:center;gap:6px">
-                                <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('pageContent')">
-                                    <strong>&lt;/&gt;</strong> Insert Custom HTML
-                                </button>
-                            </div>
-                        </div>
-
-                        <textarea name="content" id="pageContent" required>{{ old('content', '<h2>1. Overview</h2><p>Write your policy content here...</p>') }}</textarea>
+                        <button type="button" class="insert-html-btn" onclick="openInsertHtmlModal('pageContent')">
+                            <strong>&lt;/&gt;</strong> Insert Custom HTML
+                        </button>
                     </div>
                 </div>
 
-                <!-- SEO Settings Card -->
-                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
-                    <h3 style="margin:0 0 14px 0;font-size:0.95rem;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px">
-                        🔍 Search Engine Optimization (SEO)
-                    </h3>
-                    <div style="margin-bottom:14px">
-                        <label style="display:block;font-size:0.82rem;font-weight:600;color:#475569;margin-bottom:5px">Custom Meta Title</label>
-                        <input type="text" name="meta_title" value="{{ old('meta_title') }}" placeholder="Leave blank to use page title" class="form-control">
-                    </div>
-                    <div>
-                        <label style="display:block;font-size:0.82rem;font-weight:600;color:#475569;margin-bottom:5px">Meta Description</label>
-                        <textarea name="meta_description" rows="2" placeholder="Short description for Google search results..." class="form-control">{{ old('meta_description') }}</textarea>
-                    </div>
+                <div class="form-group mb-0">
+                    <textarea name="content" id="pageContent" required>{{ old('content', '<h2>1. Overview</h2><p>Write your policy content here...</p>') }}</textarea>
                 </div>
-
             </div>
 
-            <!-- Right Column: Publishing Controls -->
-            <div style="display:flex;flex-direction:column;gap:20px">
-                <!-- Publish Card -->
-                <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
-                    <h3 style="margin:0 0 14px 0;font-size:0.95rem;font-weight:700;color:#0f172a">
-                        🚀 Publish Settings
-                    </h3>
+            <!-- SEO Settings Card -->
+            <div class="card" style="padding:24px;border-radius:12px;">
+                <div class="card-header" style="display:flex;align-items:center;gap:10px;margin-bottom:18px;border-bottom:1px solid #f1f5f9;padding-bottom:14px;">
+                    <span style="font-size:1.25rem;">🔍</span>
+                    <div class="card-title" style="font-size:1.1rem;font-weight:700;color:#0f172a;margin:0;">Search Engine Optimization (SEO)</div>
+                </div>
+                <div class="form-group mb-4">
+                    <label class="form-label" style="font-weight:600;color:#475569;margin-bottom:6px;display:block;">Custom Meta Title</label>
+                    <input type="text" name="meta_title" value="{{ old('meta_title') }}" placeholder="Leave blank to use default page title" class="form-control">
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Title shown in browser tabs and search engine listings</div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-weight:600;color:#475569;margin-bottom:6px;display:block;">Meta Description</label>
+                    <textarea name="meta_description" rows="2" placeholder="Concise summary for Google search engine results..." class="form-control">{{ old('meta_description') }}</textarea>
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Recommended length: 150–160 characters</div>
+                </div>
+            </div>
 
-                    <!-- Status -->
-                    <div style="margin-bottom:16px">
-                        <label style="display:block;font-size:0.82rem;font-weight:700;color:#334155;margin-bottom:6px">Status</label>
-                        <select name="status" class="form-control" style="font-weight:600">
-                            <option value="published" {{ old('status', 'published') === 'published' ? 'selected' : '' }}>🟢 Published (Visible in Footer)</option>
-                            <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>🟡 Draft (Hidden)</option>
-                        </select>
-                        <div style="font-size:0.75rem;color:#64748b;margin-top:6px;line-height:1.4">
-                            Published pages appear automatically in the footer under <strong>Quick Links</strong>.
-                        </div>
-                    </div>
+        </div>
 
-                    <!-- Sort Order -->
-                    <div style="margin-bottom:20px">
-                        <label style="display:block;font-size:0.82rem;font-weight:700;color:#334155;margin-bottom:6px">Footer Display Order</label>
-                        <input type="number" name="sort_order" value="{{ old('sort_order', $nextSortOrder) }}" min="0" class="form-control">
-                        <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px">Lower numbers appear first.</div>
-                    </div>
+        <!-- ─── Sidebar Column: Media & Settings ────────────────────────── -->
+        <div style="display:flex;flex-direction:column;gap:20px;min-width:0;">
 
-                    <!-- Submit Button -->
-                    <div style="display:flex;flex-direction:column;gap:10px">
-                        <button type="submit" class="btn btn-primary" style="width:100%;padding:10px;font-weight:700;font-size:0.9rem">
-                            💾 Save & Publish Page
-                        </button>
-                        <a href="{{ route('admin.policies.index') }}" class="btn btn-secondary" style="width:100%">
-                            Cancel
-                        </a>
+            <!-- Publishing Settings Card -->
+            <div class="card" style="padding:22px;border-radius:12px;">
+                <div class="card-header" style="display:flex;align-items:center;gap:10px;margin-bottom:16px;border-bottom:1px solid #f1f5f9;padding-bottom:12px;">
+                    <span style="font-size:1.1rem;">🚀</span>
+                    <div class="card-title" style="font-size:1rem;font-weight:700;color:#0f172a;margin:0;">Publish Settings</div>
+                </div>
+
+                <!-- Status -->
+                <div class="form-group mb-4">
+                    <label class="form-label" style="font-weight:700;color:#334155;margin-bottom:6px;display:block;">Page Status</label>
+                    <select name="status" class="form-control" style="font-weight:600;">
+                        <option value="published" {{ old('status', 'published') === 'published' ? 'selected' : '' }}>🟢 Published (Visible)</option>
+                        <option value="draft" {{ old('status', 'published') === 'draft' ? 'selected' : '' }}>🟡 Draft (Hidden)</option>
+                    </select>
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:6px;line-height:1.4;">
+                        Published pages automatically appear in the footer under <strong>Quick Links</strong>.
                     </div>
                 </div>
 
-                <!-- Next Steps Card -->
-                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-size:0.8rem;color:#64748b;line-height:1.5">
-                    <div style="font-weight:700;color:#334155;margin-bottom:6px">📋 Next Step: Adding Translations</div>
+                <!-- Sort Order -->
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-weight:700;color:#334155;margin-bottom:6px;display:block;">Footer Display Order</label>
+                    <input type="number" name="sort_order" value="{{ old('sort_order', $nextSortOrder ?? 0) }}" min="0" class="form-control">
+                    <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Lower numbers (0, 1, 2...) appear first in navigation</div>
+                </div>
+            </div>
+
+            <!-- Translations Guide Card -->
+            <div class="card" style="padding:20px;border-radius:12px;background:#f8fafc;">
+                <div class="card-header" style="display:flex;align-items:center;gap:8px;margin-bottom:12px;border-bottom:1px solid #e2e8f0;padding-bottom:10px;">
+                    <span style="font-size:1rem;">📋</span>
+                    <div class="card-title" style="font-size:0.92rem;font-weight:700;color:#1e293b;margin:0;">Next Step: Translations</div>
+                </div>
+                <div style="font-size:0.8rem;color:#64748b;line-height:1.5;">
                     After saving, you can translate this page into Chinese (中文) and Malay (Bahasa Melayu) with full CKEditor support by clicking <strong>+ ZH</strong> and <strong>+ BM</strong> on the pages list!
                 </div>
             </div>
+
+            <!-- Submit Buttons Card -->
+            <div class="card action-buttons-card" style="padding:20px;border-radius:12px;display:flex;flex-direction:column;gap:12px;">
+                <button type="submit" class="btn btn-primary btn-block" style="padding:12px;font-size:0.95rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;margin:0;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Create Page
+                </button>
+                <a href="{{ route('admin.policies.index') }}" class="btn btn-secondary btn-block" style="text-align:center;padding:10px;margin:0;">
+                    Cancel &amp; Return
+                </a>
+            </div>
+
         </div>
-    </form>
-</div>
+
+    </div>
+</form>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->
 <!-- INSERT CUSTOM HTML POPUP MODAL                                              -->
@@ -198,82 +286,16 @@
         </div>
     </div>
 </div>
+@endsection
 
-<style>
-    .insert-html-btn {
-        background: #f8fafc;
-        border: 1.5px solid #cbd5e1;
-        color: #1e40af;
-        border-radius: 6px;
-        padding: 5px 12px;
-        font-size: 0.78rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.12s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-    }
-    .insert-html-btn:hover {
-        background: #eff6ff;
-        border-color: #2563eb;
-        color: #2563eb;
-    }
-
-    .html-modal-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(6, 21, 43, 0.65);
-        backdrop-filter: blur(4px);
-        z-index: 999999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
-    .html-modal-card {
-        background: #ffffff;
-        border-radius: 14px;
-        width: 100%;
-        max-width: 600px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        overflow: hidden;
-    }
-    .html-modal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 20px;
-        background: #f8fafc;
-        border-bottom: 1px solid #e2e8f0;
-    }
-    .html-modal-close {
-        border: none;
-        background: transparent;
-        font-size: 1.1rem;
-        color: #94a3b8;
-        cursor: pointer;
-    }
-    .html-modal-close:hover {
-        color: #ef4444;
-    }
-    .html-modal-footer {
-        padding: 12px 20px;
-        background: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-        display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-    }
-</style>
-
+@push('scripts')
 <script>
     // Initialize CKEditor on pageContent
     let editorInstance = null;
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof CKEDITOR !== 'undefined') {
             editorInstance = CKEDITOR.replace('pageContent', {
-                height: 380,
+                height: 420,
                 extraPlugins: 'sourcearea,format,font,colorbutton,justify,table',
                 removePlugins: 'exportpdf',
                 allowedContent: true, // Allow all HTML tags without stripping
@@ -298,12 +320,12 @@
     const slugInput = document.getElementById('pageSlug');
     let manualSlug = false;
 
-    slugInput.addEventListener('input', () => {
+    slugInput?.addEventListener('input', () => {
         manualSlug = slugInput.value.trim().length > 0;
     });
 
-    titleInput.addEventListener('input', () => {
-        if (!manualSlug) {
+    titleInput?.addEventListener('input', () => {
+        if (!manualSlug && slugInput) {
             slugInput.value = titleInput.value
                 .toLowerCase()
                 .trim()
@@ -334,10 +356,10 @@
     }
 
     // Ensure CKEditor syncs with form submit
-    document.getElementById('policyForm').addEventListener('submit', () => {
+    document.getElementById('policyForm')?.addEventListener('submit', () => {
         for (let instance in CKEDITOR.instances) {
             CKEDITOR.instances[instance].updateElement();
         }
     });
 </script>
-@endsection
+@endpush

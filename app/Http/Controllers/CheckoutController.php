@@ -113,7 +113,7 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Initiate Stripe Official Hosted Checkout Session (redirects directly to checkout.stripe.com).
+     * Initiate Stripe Official Hosted Checkout Session or create immediate Cash order.
      */
     public function store(Request $request)
     {
@@ -125,6 +125,7 @@ class CheckoutController extends Controller
         $rules = [
             'fulfillment_type' => 'required|in:delivery,self_collection',
             'customer_notes'   => 'nullable|string|max:1000',
+            'payment_method'   => 'nullable|in:cash,stripe,online',
         ];
 
         if ($isWalkin) {
@@ -141,26 +142,21 @@ class CheckoutController extends Controller
 
         $request->validate($rules);
 
+        $paymentMethod = $request->input('payment_method', 'stripe');
+        if ($paymentMethod === 'online') {
+            $paymentMethod = 'stripe';
+        }
+
         $cartItems = $this->cart->getItems();
 
         if ($cartItems->isEmpty()) {
-            return redirect()->route('shop.index')->with('error', 'Cart is empty.');
+            return redirect()->route($isWalkin ? 'walkin.shop' : 'shop.index')->with('error', 'Cart is empty.');
         }
 
         foreach ($cartItems as $item) {
             if (!$item->product || !$item->product->is_active) {
-                return redirect()->route('cart.index')->with('error', 'One or more items in your cart are no longer available.');
+                return redirect()->route($isWalkin ? 'walkin.shop' : 'cart.index')->with('error', 'One or more items in your cart are no longer available.');
             }
-        }
-
-        $stripeSecret = \App\Models\Setting::getStripeSecretKey();
-        $currency     = strtolower(\App\Models\Setting::get('stripe_currency', 'myr'));
-
-        // Check if API secret key is placeholder or empty
-        $isPlaceholder = empty($stripeSecret) || str_contains($stripeSecret, 'YOUR_TEST_SECRET') || str_contains($stripeSecret, 'YOUR_SECRET');
-
-        if ($isPlaceholder) {
-            return back()->with('error', '⚠️ Stripe Secret Key is not configured yet. Please paste your Stripe Secret Key (sk_test_... or sk_live_...) in Admin Panel → Store Settings → Payment Integrations to redirect to Stripe\'s Official Hosted Checkout page.');
         }
 
         $payload = [
@@ -175,12 +171,9 @@ class CheckoutController extends Controller
             'postcode'         => $request->postcode,
             'group'            => $group,
             'user_id'          => Auth::id(),
+            'payment_method'   => $paymentMethod,
         ];
 
-        // Set Stripe Secret Key
-        Stripe::setApiKey($stripeSecret);
-
-        $lineItems = [];
         $snapshotItems = [];
         $calculatedSubtotal = 0;
 
@@ -198,18 +191,6 @@ class CheckoutController extends Controller
                 'subtotal'     => $lineSubtotal,
                 'track_stock'  => (bool) $item->product->track_stock,
             ];
-
-            $lineItems[] = [
-                'price_data' => [
-                    'currency'     => $currency,
-                    'product_data' => [
-                        'name'        => $item->product->name,
-                        'description' => 'SKU: ' . ($item->product->sku ?? 'N/A'),
-                    ],
-                    'unit_amount'  => (int) round($price * 100),
-                ],
-                'quantity'   => $item->quantity,
-            ];
         }
 
         $expectedTotalCents = (int) round($calculatedSubtotal * 100);
@@ -219,6 +200,40 @@ class CheckoutController extends Controller
         $payload['expected_total']       = $calculatedSubtotal;
         $payload['expected_total_cents'] = $expectedTotalCents;
 
+        // ─── Case 1: Immediate Cash Order (e.g. Walk-in Counter Cash) ─────
+        if ($paymentMethod === 'cash') {
+            $paymentRef = 'CASH-' . strtoupper(\Illuminate\Support\Str::random(6));
+            return $this->processOrderDirectly($payload, $snapshotItems, 'cash', $paymentRef);
+        }
+
+        // ─── Case 2: Online Payment (Stripe Official Hosted Checkout) ─────
+        $stripeSecret = \App\Models\Setting::getStripeSecretKey();
+        $currency     = strtolower(\App\Models\Setting::get('stripe_currency', 'myr'));
+
+        // Check if API secret key is placeholder or empty
+        $isPlaceholder = empty($stripeSecret) || str_contains($stripeSecret, 'YOUR_TEST_SECRET') || str_contains($stripeSecret, 'YOUR_SECRET');
+
+        if ($isPlaceholder) {
+            return back()->with('error', '⚠️ Stripe Secret Key is not configured yet. Please paste your Stripe Secret Key (sk_test_... or sk_live_...) in Admin Panel → Store Settings → Payment Integrations to redirect to Stripe\'s Official Hosted Checkout page.');
+        }
+
+        Stripe::setApiKey($stripeSecret);
+
+        $lineItems = [];
+        foreach ($snapshotItems as $item) {
+            $lineItems[] = [
+                'price_data' => [
+                    'currency'     => $currency,
+                    'product_data' => [
+                        'name'        => $item['product_name'],
+                        'description' => 'SKU: ' . ($item['product_sku'] ?? 'N/A'),
+                    ],
+                    'unit_amount'  => (int) round($item['unit_price'] * 100),
+                ],
+                'quantity'   => $item['quantity'],
+            ];
+        }
+
         session(['stripe_checkout_payload' => $payload]);
 
         try {
@@ -227,7 +242,7 @@ class CheckoutController extends Controller
                 'line_items'           => $lineItems,
                 'mode'                 => 'payment',
                 'success_url'          => route('checkout.stripe.success') . '?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url'           => route('checkout.stripe.cancel'),
+                'cancel_url'           => $isWalkin ? route('walkin.checkout') : route('checkout.stripe.cancel'),
                 'customer_email'       => $payload['customer_email'] ?: null,
                 'metadata'             => [
                     'user_id'              => Auth::id() ?? 'guest',
@@ -325,6 +340,10 @@ class CheckoutController extends Controller
      */
     public function stripeCancel()
     {
+        $payload = session('stripe_checkout_payload', []);
+        if (($payload['customer_group'] ?? '') === 'walkin' || ($payload['group'] ?? '') === 'walkin' || session('walkin_session')) {
+            return redirect()->route('walkin.checkout')->with('info', 'Checkout process was canceled on Stripe. You can try again or choose to pay cash at the counter.');
+        }
         return redirect()->route('checkout.index')->with('info', 'Checkout process was canceled on Stripe.');
     }
 
@@ -338,7 +357,9 @@ class CheckoutController extends Controller
         $total    = $payload['expected_total'] ?? $subtotal;
         $order    = null;
 
-        DB::transaction(function () use ($payload, $snapshotItems, $group, $subtotal, $total, $paymentMethod, $paymentRef, &$order) {
+        $isPaid = ($paymentMethod === 'stripe');
+
+        DB::transaction(function () use ($payload, $snapshotItems, $group, $subtotal, $total, $paymentMethod, $paymentRef, $isPaid, &$order) {
             $user = Auth::user();
 
             $shippingAddress = null;
@@ -358,15 +379,15 @@ class CheckoutController extends Controller
                 'customer_email'        => $payload['customer_email'] ?? $user?->email,
                 'customer_phone'        => $payload['customer_phone'] ?? $user?->phone,
                 'status'                => 'confirmed',
-                'payment_status'        => 'paid',
+                'payment_status'        => $isPaid ? 'paid' : 'unpaid',
                 'payment_method'        => $paymentMethod,
                 'payment_reference'     => $paymentRef,
-                'paid_at'               => now(),
-                'fulfillment_type'      => $payload['fulfillment_type'] ?? 'delivery',
+                'paid_at'               => $isPaid ? now() : null,
+                'fulfillment_type'      => $payload['fulfillment_type'] ?? 'self_collection',
                 'shipping_address'      => $shippingAddress,
                 'subtotal'              => $subtotal,
                 'total'                 => $total,
-                'stripe_payment_intent' => $paymentRef,
+                'stripe_payment_intent' => $isPaid ? $paymentRef : null,
                 'customer_notes'        => $payload['customer_notes'] ?? null,
             ]);
 
@@ -417,7 +438,11 @@ class CheckoutController extends Controller
             \Illuminate\Support\Facades\Log::error("Failed to send admin order notification for #{$order->order_number}: " . $e->getMessage());
         }
 
-        return redirect()->route('checkout.success', $order)->with('success', 'Order placed successfully!');
+        $successMsg = ($paymentMethod === 'cash') 
+            ? 'Walk-in order confirmed! Please show your collection token at Counter 2.' 
+            : 'Order placed successfully!';
+
+        return redirect()->route('checkout.success', $order)->with('success', $successMsg);
     }
 
     public function success(Order $order)
@@ -427,7 +452,11 @@ class CheckoutController extends Controller
                 abort(403, 'Unauthorized to view this order.');
             }
         } else {
-            if (session('last_placed_order_id') !== $order->id && !Auth::user()?->isAdmin()) {
+            $isAuthorizedGuest = session('last_placed_order_id') === $order->id 
+                || Auth::user()?->isAdmin() 
+                || (session('walkin_session') && $order->customer_group === 'walkin' && $order->created_at->diffInHours(now()) < 4);
+
+            if (!$isAuthorizedGuest) {
                 abort(403, 'Unauthorized to view this order.');
             }
         }

@@ -354,8 +354,50 @@
                         <input type="text" name="origin" class="form-control" value="{{ old('origin') }}" placeholder="e.g. Norway, Malaysia, Japan">
                     </div>
                     <div class="form-group mb-0">
-                        <label class="form-label">Storage Temperature</label>
-                        <input type="text" name="storage_temp" class="form-control" value="{{ old('storage_temp', '-18°C') }}" placeholder="e.g. -18°C Frozen">
+                        <label class="form-label" style="display:flex;justify-content:space-between;align-items:center;">
+                            <span>Storage Temperature</span>
+                            <span style="font-size:0.75rem;font-weight:600;color:var(--text-muted)">Badge Icon</span>
+                        </label>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <div style="position:relative;width:64px;flex-shrink:0;">
+                                <input type="text" name="storage_icon" id="storage_icon" class="form-control text-center"
+                                       value="{{ old('storage_icon', '❄️') }}"
+                                       style="text-align:center;font-size:1.3rem;padding:6px 4px;cursor:pointer;"
+                                       title="Select or type icon/emoji" placeholder="❄️" maxlength="10">
+                            </div>
+                            <input type="text" name="storage_temp" id="storage_temp" class="form-control" style="flex:1;"
+                                   value="{{ old('storage_temp', '-18°C') }}" placeholder="e.g. Live / Chilled, -18°C Frozen">
+                        </div>
+                        <!-- Quick Preset Icon Picker -->
+                        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;align-items:center;">
+                            <span style="font-size:0.72rem;color:var(--text-muted);margin-right:2px;">Presets:</span>
+                            @php
+                                $presetIcons = [
+                                    '🦀' => 'Live Crab / Crustacean',
+                                    '❄️' => 'IQF Frozen (-18°C)',
+                                    '🧊' => 'Chilled / Ice (0-4°C)',
+                                    '🐟' => 'Fish / Fresh Catch',
+                                    '🥩' => 'Meat / Poultry',
+                                    '🦞' => 'Lobster',
+                                    '🦐' => 'Prawn / Shrimp',
+                                    '🦑' => 'Squid / Octopus',
+                                    '🦪' => 'Oyster / Shellfish',
+                                    '🧂' => 'Ingredients / Sauces',
+                                    '🍰' => 'Dessert / Pastry',
+                                    '📦' => 'Ambient / Pack',
+                                    '🌡️' => 'Cold Chain / Temp'
+                                ];
+                            @endphp
+                            @foreach($presetIcons as $ico => $lbl)
+                                <button type="button" class="btn-icon-preset" onclick="selectStorageIcon('{{ $ico }}')"
+                                        title="{{ $lbl }}"
+                                        style="border:1px solid #cbd5e1;background:#ffffff;border-radius:6px;padding:3px 6px;font-size:1.05rem;cursor:pointer;line-height:1;transition:all 0.15s ease;"
+                                        onmouseover="this.style.background='#eff6ff';this.style.borderColor='#3b82f6';this.style.transform='scale(1.15)'"
+                                        onmouseout="this.style.background='#ffffff';this.style.borderColor='#cbd5e1';this.style.transform='none'">
+                                    {{ $ico }}
+                                </button>
+                            @endforeach
+                        </div>
                     </div>
                     <div class="form-group mb-0">
                         <label class="form-label">Brand / Producer</label>
@@ -689,6 +731,14 @@ function removeSpecRow(btn) {
 
 function addPresetSpec(key, defaultVal) {
     addSpecRow(key, defaultVal);
+}
+
+function selectStorageIcon(icon) {
+    const el = document.getElementById('storage_icon');
+    if (el) {
+        el.value = icon;
+        el.focus();
+    }
 }
 </script>
 @endpush

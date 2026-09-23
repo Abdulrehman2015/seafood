@@ -139,13 +139,16 @@
                                      alt="{{ $cat->name }}" 
                                      style="width:48px;height:48px;object-fit:cover;border-radius:10px;border:1px solid #e2e8f0;background:#f8fafc;display:block;">
                             @else
-                                <div style="width:48px;height:48px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:1.5rem;border:1px solid #e2e8f0;">
-                                    📁
+                                <div style="width:48px;height:48px;background:#f8fafc;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:1.6rem;border:1px solid #e2e8f0;">
+                                    {{ $cat->icon ?: '📁' }}
                                 </div>
                             @endif
                         </td>
                         <td style="padding:12px 16px;">
                             <div style="font-weight:700;color:#0f172a;font-size:0.95rem;margin-bottom:3px;display:flex;align-items:center;gap:6px;">
+                                @if($cat->icon && $cat->image)
+                                    <span style="font-size:1.05rem;" title="Category Icon">{{ $cat->icon }}</span>
+                                @endif
                                 <a href="{{ route('admin.categories.edit', $cat) }}" style="color:inherit;text-decoration:none;">
                                     {{ $cat->name }}
                                 </a>
@@ -243,12 +246,17 @@
                          alt="{{ $cat->name }}" 
                          class="cat-card-img">
                 @else
-                    <div class="cat-card-img">📁</div>
+                    <div class="cat-card-img" style="font-size:1.6rem;display:flex;align-items:center;justify-content:center;background:#f8fafc;">
+                        {{ $cat->icon ?: '📁' }}
+                    </div>
                 @endif
 
                 <div class="cat-card-info">
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px;">
                         <h3 class="cat-card-title">
+                            @if($cat->icon && $cat->image)
+                                <span style="font-size:0.95rem;margin-right:2px;">{{ $cat->icon }}</span>
+                            @endif
                             <a href="{{ route('admin.categories.edit', $cat) }}" style="color:inherit;text-decoration:none;">
                                 {{ $cat->name }}
                             </a>

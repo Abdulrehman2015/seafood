@@ -58,7 +58,7 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
     @php
-        $keywords = !empty($activePageSeo?->meta_keywords) ? $activePageSeo->meta_keywords : ($settings['meta_keywords'] ?? 'fresh seafood, frozen salmon, king prawns, lobsters, seafood export, b2b seafood, cold-chain distribution, MST import export');
+        $keywords = !empty($activePageSeo?->meta_keywords) ? $activePageSeo->meta_keywords : ($settings['meta_keywords'] ?? 'frozen food sourcing, seafood, meat, frozen food, food ingredients, cold-chain distribution, customised sourcing, MST import export');
     @endphp
     @if(!empty($keywords))
         <meta name="keywords" content="{{ $keywords }}">
@@ -75,8 +75,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ cdn_img('favicon-32x32.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url('/apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ url('/site.webmanifest') }}">
-    <meta name="apple-mobile-web-app-title" content="{{ $settings['store_name'] ?? 'MST Seafood' }}">
-    <meta name="application-name" content="{{ $settings['store_name'] ?? 'MST Seafood' }}">
+    <meta name="apple-mobile-web-app-title" content="{{ $settings['store_name'] ?? 'MST Import & Export' }}">
+    <meta name="application-name" content="{{ $settings['store_name'] ?? 'MST Import & Export' }}">
     <meta name="theme-color" content="#06152b">
     <meta name="msapplication-TileColor" content="#06152b">
     <meta name="msapplication-TileImage" content="{{ url('/apple-touch-icon.png') }}">
@@ -168,8 +168,8 @@
             overflow: hidden !important;
             background: linear-gradient(135deg, #06152b 0%, #0c2146 40%, #14356b 75%, #1d4ed8 100%) !important;
             border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
-            padding: var(--space-16, 4rem) 0 var(--space-8, 2rem) !important;
-            margin-top: var(--space-16, 4rem) !important;
+            padding: 4rem 0 2rem !important;
+            margin-top: 4rem !important;
             color: #cbd5e1 !important;
         }
         .footer-bg-glow {
@@ -208,9 +208,31 @@
             background-size: 60px 60px;
             pointer-events: none;
         }
-        .footer .container {
+        .footer-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 24px;
             position: relative;
             z-index: 1;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+            gap: 40px;
+            margin-bottom: 48px;
+        }
+        .footer-col {
+            display: flex;
+            flex-direction: column;
+        }
+        .footer-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            text-decoration: none;
         }
         .footer-brand .logo-brand {
             color: #ffffff !important;
@@ -229,6 +251,7 @@
             color: #cbd5e1 !important;
             max-width: 320px;
             line-height: 1.7 !important;
+            margin-bottom: 16px;
         }
         .footer-heading {
             font-family: var(--font-heading, inherit) !important;
@@ -237,7 +260,19 @@
             color: #ffffff !important;
             text-transform: uppercase !important;
             letter-spacing: 0.08em !important;
-            margin-bottom: var(--space-4, 1rem) !important;
+            margin-bottom: 1rem !important;
+        }
+        .footer-links {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+        .footer-links li {
+            margin: 0 !important;
+            padding: 0 !important;
         }
         .footer-links a {
             font-size: 0.88rem !important;
@@ -251,32 +286,30 @@
             color: #60a5fa !important;
             transform: translateX(3px);
         }
-        .footer-contact .contact-item {
-            font-size: 0.875rem !important;
-            color: #cbd5e1 !important;
-            line-height: 1.55 !important;
-        }
-        .footer-contact .contact-item a {
-            color: #cbd5e1 !important;
-            text-decoration: none !important;
-            transition: color 0.18s ease !important;
-        }
-        .footer-contact .contact-item a:hover {
-            color: #60a5fa !important;
-            text-decoration: underline !important;
-        }
         .footer-bottom {
-            padding-top: var(--space-6, 1.5rem) !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-top: 1.5rem !important;
             border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
             color: #94a3b8 !important;
         }
         .footer-bottom p {
             color: #94a3b8 !important;
             margin: 0;
+            font-size: 0.85rem;
+        }
+        .footer-bottom-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
         }
         .footer-bottom-links a {
             color: #94a3b8 !important;
             text-decoration: none !important;
+            font-size: 0.85rem;
             transition: color 0.18s ease !important;
         }
         .footer-bottom-links a:hover {
@@ -295,8 +328,44 @@
             flex-shrink: 0;
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
-
         .footer-social-icon:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        /* ─── Footer Responsive Grid ─── */
+        @media (max-width: 1024px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+            }
+        }
+        @media (max-width: 640px) {
+            .footer {
+                padding: 3rem 0 1.5rem !important;
+                margin-top: 2.5rem !important;
+            }
+            .footer-container {
+                padding: 0 16px;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 28px;
+                margin-bottom: 28px;
+            }
+            .footer-desc {
+                max-width: 100%;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+            .footer-bottom-links {
+                justify-content: center;
+                gap: 14px;
+            }
+        }
             transform: translateY(-2px);
             filter: brightness(1.1);
         }
@@ -481,7 +550,7 @@
         .page-switch-loader {
             position: fixed;
             inset: 0;
-            z-index: 9999999;
+            z-index: 2147483647 !important;
             background: radial-gradient(circle at 50% 38%, rgba(10, 36, 74, 0.95) 0%, rgba(4, 18, 38, 0.98) 100%);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -752,12 +821,10 @@
         }
 
         .main-content {
-            transition: opacity 0.24s cubic-bezier(0.4, 0, 0.2, 1), transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: opacity, transform;
+            transition: opacity 0.24s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .main-content.lang-transitioning {
             opacity: 0.35;
-            transform: translateY(2px);
         }
     </style>
     @stack('styles')
@@ -845,7 +912,20 @@
                                 <circle cx="20" cy="21" r="1"></circle>
                                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                             </svg>
-                            <span>@t('nav.shop', 'Shop')</span>
+                            <span>@t('nav.products', 'Products')</span>
+                        </span>
+                        <span class="mobile-chevron">›</span>
+                    </a>
+                    <a href="{{ route('walkin.shop') }}"
+                        class="nav-link {{ request()->routeIs('walkin.*') ? 'active' : '' }}">
+                        <span class="nav-link-content">
+                            <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                            </svg>
+                            <span>@t('nav.walkin_menu', 'Walk-in Menu')</span>
                         </span>
                         <span class="mobile-chevron">›</span>
                     </a>
@@ -1010,12 +1090,6 @@
                 </div>
             </div>
             <div class="nav-actions">
-                @if(session('walkin_session'))
-                    <div class="walkin-badge">
-                        <span>🏪 @t('common.walkin_mode', 'Walk-in Mode')</span>
-                        <a href="{{ route('walkin.exit') }}" class="walkin-exit">@t('common.exit', 'Exit')</a>
-                    </div>
-                @endif
                 @auth
                     <div class="group-badge group-{{ auth()->user()->customer_group }}">
                         {{ ucfirst(auth()->user()->customer_group) }}
@@ -1147,79 +1221,80 @@
             <div class="footer-grid-overlay"></div>
         </div>
 
-        <div class="container">
+        <div class="footer-container">
             <div class="footer-grid">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <img src="{{ cdn_img('logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}"
+                <div class="footer-brand footer-col">
+                    <a href="{{ route('home') }}" class="footer-logo">
+                        <img src="{{ cdn_img('logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import & Export Sdn. Bhd.' }}"
                             style="height:52px;width:52px;object-fit:contain;border-radius:10px;">
                         <div class="logo-text">
                             <span class="logo-brand">MST</span>
-                            <span class="logo-sub">@t('common.import_export_sdn_bhd', 'Import & Export Sdn Bhd')</span>
+                            <span class="logo-sub">@t('common.import_export_sdn_bhd', 'Import & Export Sdn. Bhd.')</span>
                         </div>
-                    </div>
+                    </a>
                     <p class="footer-desc">
                         @t('footer.tagline', $settings['store_tagline'] ?? 'Flow with Integrity, Grow with Strength')
                     </p>
-                    <div class="footer-social"
-                        style="display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap">
-                        <!-- WhatsApp -->
-                        <a href="{{ !empty($settings['social_whatsapp']) ? $settings['social_whatsapp'] : 'https://wa.me/60123456789' }}"
-                            target="_blank" class="footer-social-icon" title="WhatsApp"
-                            style="background:#25D366;box-shadow:0 2px 6px rgba(37,211,102,0.35)">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.41 5.82a8.18 8.18 0 0 1-5.83 2.42c-1.45 0-2.88-.38-4.14-1.11l-.3-.17-3.12.82.83-3.04-.19-.31a8.21 8.21 0 0 1-1.26-4.43c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.64c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.12.17 1.78 2.71 4.3 3.8 2.53 1.09 2.53.73 2.99.69.45-.04 1.47-.6 1.68-1.18.2-.58.2-1.08.14-1.18-.06-.1-.22-.16-.47-.28z" />
-                            </svg>
-                        </a>
-
-                        <!-- Facebook -->
-                        <a href="{{ !empty($settings['social_facebook']) ? $settings['social_facebook'] : 'https://facebook.com' }}"
-                            target="_blank" class="footer-social-icon" title="Facebook"
-                            style="background:#1877F2;box-shadow:0 2px 6px rgba(24,119,242,0.35)">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                            </svg>
-                        </a>
-
-                        <!-- Instagram -->
-                        <a href="{{ !empty($settings['social_instagram']) ? $settings['social_instagram'] : 'https://instagram.com' }}"
-                            target="_blank" class="footer-social-icon" title="Instagram"
-                            style="background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);box-shadow:0 2px 6px rgba(220,39,67,0.35)">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                            </svg>
-                        </a>
-
-                        <!-- TikTok -->
-                        <a href="{{ !empty($settings['social_tiktok']) ? $settings['social_tiktok'] : 'https://tiktok.com' }}"
-                            target="_blank" class="footer-social-icon" title="TikTok"
-                            style="background:#000000;box-shadow:0 2px 6px rgba(0,0,0,0.35)">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
-                            </svg>
-                        </a>
-
-                        <!-- X / Twitter -->
-                        <a href="{{ !empty($settings['social_twitter']) ? $settings['social_twitter'] : 'https://x.com' }}"
-                            target="_blank" class="footer-social-icon" title="X (Twitter)"
-                            style="background:#0f172a;box-shadow:0 2px 6px rgba(15,23,42,0.35)">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                            </svg>
-                        </a>
-                    </div>
+                    @php
+                        $validSocials = [];
+                        if (!empty($settings['social_whatsapp']) && !str_contains($settings['social_whatsapp'], '60123456789')) {
+                            $validSocials['whatsapp'] = $settings['social_whatsapp'];
+                        }
+                        if (!empty($settings['social_facebook']) && $settings['social_facebook'] !== 'https://facebook.com' && $settings['social_facebook'] !== 'https://www.facebook.com') {
+                            $validSocials['facebook'] = $settings['social_facebook'];
+                        }
+                        if (!empty($settings['social_instagram']) && $settings['social_instagram'] !== 'https://instagram.com' && $settings['social_instagram'] !== 'https://www.instagram.com') {
+                            $validSocials['instagram'] = $settings['social_instagram'];
+                        }
+                        if (!empty($settings['social_tiktok']) && $settings['social_tiktok'] !== 'https://tiktok.com' && $settings['social_tiktok'] !== 'https://www.tiktok.com') {
+                            $validSocials['tiktok'] = $settings['social_tiktok'];
+                        }
+                        if (!empty($settings['social_twitter']) && $settings['social_twitter'] !== 'https://x.com' && $settings['social_twitter'] !== 'https://twitter.com') {
+                            $validSocials['twitter'] = $settings['social_twitter'];
+                        }
+                    @endphp
+                    @if(!empty($validSocials))
+                        <div class="footer-social"
+                            style="display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap">
+                            @if(!empty($validSocials['whatsapp']))
+                                <a href="{{ $validSocials['whatsapp'] }}" target="_blank" class="footer-social-icon" title="WhatsApp"
+                                    style="background:#25D366;box-shadow:0 2px 6px rgba(37,211,102,0.35)">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.27-2.41 5.82a8.18 8.18 0 0 1-5.83 2.42c-1.45 0-2.88-.38-4.14-1.11l-.3-.17-3.12.82.83-3.04-.19-.31a8.21 8.21 0 0 1-1.26-4.43c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.64c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.12.17 1.78 2.71 4.3 3.8 2.53 1.09 2.53.73 2.99.69.45-.04 1.47-.6 1.68-1.18.2-.58.2-1.08.14-1.18-.06-.1-.22-.16-.47-.28z" /></svg>
+                                </a>
+                            @endif
+                            @if(!empty($validSocials['facebook']))
+                                <a href="{{ $validSocials['facebook'] }}" target="_blank" class="footer-social-icon" title="Facebook"
+                                    style="background:#1877F2;box-shadow:0 2px 6px rgba(24,119,242,0.35)">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
+                                </a>
+                            @endif
+                            @if(!empty($validSocials['instagram']))
+                                <a href="{{ $validSocials['instagram'] }}" target="_blank" class="footer-social-icon" title="Instagram"
+                                    style="background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);box-shadow:0 2px 6px rgba(220,39,67,0.35)">
+                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" /></svg>
+                                </a>
+                            @endif
+                            @if(!empty($validSocials['tiktok']))
+                                <a href="{{ $validSocials['tiktok'] }}" target="_blank" class="footer-social-icon" title="TikTok"
+                                    style="background:#000000;box-shadow:0 2px 6px rgba(0,0,0,0.35)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" /></svg>
+                                </a>
+                            @endif
+                            @if(!empty($validSocials['twitter']))
+                                <a href="{{ $validSocials['twitter'] }}" target="_blank" class="footer-social-icon" title="X (Twitter)"
+                                    style="background:#0f172a;box-shadow:0 2px 6px rgba(15,23,42,0.35)">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
                 </div>
                 <div class="footer-col">
                     <h4 class="footer-heading">@t('footer.quick_links', 'Quick Links')</h4>
                     <ul class="footer-links">
                         <li><a href="{{ route('home') }}">@t('nav.home', 'Home')</a></li>
-                        <li><a href="{{ route('shop.index') }}">@t('footer.shop_catalogue', 'Shop Catalogue')</a></li>
-                        <li><a href="{{ route('walkin.entry') }}">@t('footer.walkin_store', 'Walk-in Store (QR)')</a></li>
+                        <li><a href="{{ route('shop.index') }}">@t('footer.products_catalogue', 'Products')</a></li>
+                        <li><a href="{{ route('walkin.shop') }}">@t('nav.walkin_menu', 'Walk-in Menu')</a></li>
                         <li><a href="{{ route('about') }}">@t('nav.about', 'About Us')</a></li>
                         <li><a href="{{ route('contact') }}">@t('nav.contact', 'Contact Us')</a></li>
                         @php
@@ -1238,37 +1313,28 @@
                                 <li><a href="{{ route('shop.index', ['category' => $fCat->slug]) }}">{{ $fCat->name }}</a></li>
                             @endforeach
                         @else
-                            <li><a href="{{ route('shop.index') }}">@t('footer.all_fresh_seafood', 'All Fresh Seafood')</a></li>
+                            <li><a href="{{ route('shop.index') }}">@t('footer.all_products', 'All Products & Categories')</a></li>
                         @endif
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h4 class="footer-heading">@t('footer.location_contact', 'Store Location & Contact')</h4>
-                    <div class="footer-contact">
-                        <div class="contact-item">📍
-                            @t('footer.store_address', $settings['store_address'] ?? '7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia')
-                        </div>
-                        @php
-                            $footerPhones = array_filter([
-                                $settings['store_phone'] ?? '013-2800168',
-                                $settings['store_phone_2'] ?? '',
-                                $settings['store_phone_3'] ?? '',
-                            ]);
-                        @endphp
-                        @foreach($footerPhones as $fPhone)
-                            <div class="contact-item">📞 <a href="tel:{{ preg_replace('/[^0-9+]/', '', $fPhone) }}"
-                                    style="color:inherit;text-decoration:none">{{ $fPhone }}</a></div>
-                        @endforeach
-                        <div class="contact-item">✉ <a
-                                href="mailto:{{ $settings['store_email'] ?? 'mikatrading15@gmail.com' }}"
-                                style="color:inherit;text-decoration:none">{{ $settings['store_email'] ??
-                                'mikatrading15@gmail.com' }}</a></div>
-                        <div class="contact-item">🕐 @t('footer.store_hours', $settings['store_hours'] ?? 'Monday - Saturday: 8:00am - 6:00pm (Sunday & Public Holidays: Closed)')</div>
+                    <h4 class="footer-heading">@t('footer.sourcing_support_heading', 'Sourcing & Support')</h4>
+                    <p style="font-size:0.875rem;color:#cbd5e1;line-height:1.6;margin-bottom:14px">
+                        @t('footer.sourcing_desc', 'Cold-chain sourcing, wholesale supply & customized import distribution across regional & international markets.')
+                    </p>
+                    <div style="margin-bottom:14px">
+                        <a href="{{ route('contact') }}" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg, #2563eb, #1d4ed8);color:#ffffff;padding:8px 16px;border-radius:8px;font-weight:700;font-size:0.85rem;text-decoration:none;box-shadow:0 2px 8px rgba(37,99,235,0.35);transition:transform 0.15s ease">
+                            <span>@t('footer.contact_us_btn', 'Contact Us')</span>
+                            <span>&rarr;</span>
+                        </a>
+                    </div>
+                    <div style="font-size:0.82rem;color:#94a3b8;display:flex;align-items:center;gap:6px">
+                        <span>📍 @t('footer.hub_loc', 'SiLC Iskandar Puteri, Johor')</span>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>© {{ date('Y') }} @t('footer.company_name', rtrim($settings['store_name'] ?? 'MST Import and Export Sdn Bhd', '.')) · @t('footer.all_rights_reserved', 'All rights reserved.')</p>
+                <p>© {{ date('Y') }} @t('footer.company_name', 'MST Import & Export Sdn. Bhd.') · @t('footer.all_rights_reserved', 'All rights reserved.')</p>
                 <div class="footer-bottom-links">
                     <a href="{{ route('contact') }}">@t('footer.support', 'Support')</a>
                     <a href="{{ route('about') }}">@t('nav.about', 'About')</a>
@@ -1409,6 +1475,9 @@
             };
         }
 
+        window.calculatePriceForElement = calculatePriceForElement;
+        window.updatePageCurrencies = updatePageCurrencies;
+
         function updatePageCurrencies(targetCurrency) {
             const conf = window.AppCurrency || {};
             const curMeta = (conf.currencies && conf.currencies[targetCurrency]) || {};
@@ -1417,17 +1486,23 @@
             // 1. Update all standard product price blocks (.js-currency-price)
             document.querySelectorAll('.js-currency-price').forEach(el => {
                 const res = calculatePriceForElement(el, targetCurrency);
-                const amountEl = el.querySelector('.price-amount');
-                if (amountEl) {
-                    amountEl.textContent = res.formatted;
-                } else {
-                    el.textContent = res.formatted;
+                let amountEl = el.querySelector('.price-amount, .price-val');
+                let baseRmEl = el.querySelector('.price-base-rm, .price-sub-myr');
+
+                if (!amountEl) {
+                    el.innerHTML = '<span class="price-amount price-val"></span><span class="price-base-rm price-sub-myr"></span>';
+                    amountEl = el.querySelector('.price-amount');
+                    baseRmEl = el.querySelector('.price-base-rm');
                 }
 
-                const baseRmEl = el.querySelector('.price-base-rm');
+                if (amountEl) {
+                    amountEl.textContent = res.formatted;
+                }
+
                 if (baseRmEl) {
-                    if (targetCurrency !== 'MYR' && res.baseRm) {
-                        baseRmEl.textContent = 'RM ' + res.baseRm.toFixed(2);
+                    const rawBase = parseFloat(el.getAttribute('data-base-rm') || '0');
+                    if (targetCurrency !== 'MYR' && rawBase > 0) {
+                        baseRmEl.textContent = 'RM ' + rawBase.toFixed(2);
                         baseRmEl.style.display = 'block';
                     } else {
                         baseRmEl.style.display = 'none';
@@ -1446,10 +1521,33 @@
                 }
             });
 
+            // 2b. Update Quick View comparison price if modal is open
+            const qvBaseRmEl = document.getElementById('qvBaseRm');
+            if (qvBaseRmEl) {
+                const rawBase = parseFloat(document.getElementById('qvProductId')?.getAttribute('data-base-rm') || '0');
+                if (targetCurrency !== 'MYR' && rawBase > 0) {
+                    qvBaseRmEl.textContent = 'RM ' + rawBase.toFixed(2);
+                    qvBaseRmEl.style.display = 'block';
+                } else {
+                    qvBaseRmEl.style.display = 'none';
+                }
+            }
+
             // 3. Update cart items & totals if on cart page (.js-cart-item-price, .js-cart-item-subtotal, etc.)
             document.querySelectorAll('.js-cart-item-price').forEach(el => {
                 const res = calculatePriceForElement(el, targetCurrency);
                 el.textContent = res.formatted;
+                const parent = el.closest('.cart-item-unit-price');
+                const baseRm = parent ? parent.querySelector('.price-base-rm') : null;
+                if (baseRm) {
+                    const rawBase = parseFloat(el.getAttribute('data-base-rm') || '0');
+                    if (targetCurrency !== 'MYR' && rawBase > 0) {
+                        baseRm.textContent = '(RM ' + rawBase.toFixed(2) + ')';
+                        baseRm.style.display = 'inline';
+                    } else {
+                        baseRm.style.display = 'none';
+                    }
+                }
             });
             document.querySelectorAll('.js-cart-item-subtotal').forEach(el => {
                 const qty = parseInt(el.getAttribute('data-qty') || '1', 10);

@@ -22,7 +22,7 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request, \App\Services\CompanyVerificationService $verifier): RedirectResponse
     {
-        $request->validate([
+        $validationRules = [
             'name'            => ['required', 'string', 'max:255'],
             'email'           => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password'        => ['required', 'confirmed', Rules\Password::defaults()],
@@ -35,11 +35,27 @@ class RegisteredUserController extends Controller
             'city'            => ['required', 'string', 'max:100'],
             'state'           => ['required', 'string', 'max:100'],
             'postcode'        => ['required', 'string', 'max:10'],
-        ], [
-            'email.unique'               => __t('auth.email_already_registered', 'This email address is already registered. One email can only register one account.'),
-            'company_name.required_if'   => __t('auth.company_name_required', 'Company Name is required for wholesale and trading accounts.'),
-            'company_reg_no.required_if' => __t('auth.company_ssm_required', 'Company Registration Number (SSM) is required for wholesale and trading accounts.'),
-            'business_type.required_if'  => __t('auth.business_type_required', 'Business Nature / Type is required for wholesale and trading accounts.'),
+            'terms_consent'   => ['required', 'accepted'],
+        ];
+
+        if (\App\Models\Setting::isRecaptchaEnabled('register')) {
+            $validationRules['g-recaptcha-response'] = [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (!\App\Models\Setting::verifyRecaptcha($value, $request->ip())) {
+                        $fail(__t('auth.recaptcha_failed', 'reCAPTCHA verification failed. Please complete the captcha again.'));
+                    }
+                },
+            ];
+        }
+
+        $request->validate($validationRules, [
+            'terms_consent.accepted'        => __t('auth.terms_required', 'You must agree to the Terms of Service and Privacy Policy to register.'),
+            'email.unique'                  => __t('auth.email_already_registered', 'This email address is already registered. One email can only register one account.'),
+            'company_name.required_if'      => __t('auth.company_name_required', 'Company Name is required for wholesale and trading accounts.'),
+            'company_reg_no.required_if'    => __t('auth.company_ssm_required', 'Company Registration Number (SSM) is required for wholesale and trading accounts.'),
+            'business_type.required_if'     => __t('auth.business_type_required', 'Business Nature / Type is required for wholesale and trading accounts.'),
+            'g-recaptcha-response.required' => __t('auth.recaptcha_required', 'Please verify that you are not a robot.'),
         ]);
 
         // 1. Strict SSM Uniqueness Check for business accounts
@@ -66,22 +82,33 @@ class RegisteredUserController extends Controller
             default                => 'approved',
         };
 
+        $marketingOptIn = $request->boolean('marketing_opt_in');
+
         $user = User::create([
-            'name'             => $request->name,
-            'email'            => $request->email,
-            'preferred_locale' => current_locale(),
-            'password'         => Hash::make($request->password),
-            'customer_group'   => $request->customer_group,
-            'approval_status'  => $approvalStatus,
-            'phone'            => $request->phone,
-            'company_name'     => $request->company_name,
-            'company_reg_no'   => $request->company_reg_no,
-            'business_type'    => $request->business_type,
-            'address'          => $request->address,
-            'city'             => $request->city,
-            'state'            => $request->state,
-            'postcode'         => $request->postcode,
+            'name'               => $request->name,
+            'email'              => $request->email,
+            'preferred_locale'   => current_locale(),
+            'password'           => Hash::make($request->password),
+            'customer_group'     => $request->customer_group,
+            'approval_status'    => $approvalStatus,
+            'phone'              => $request->phone,
+            'company_name'       => $request->company_name,
+            'company_reg_no'     => $request->company_reg_no,
+            'business_type'      => $request->business_type,
+            'address'            => $request->address,
+            'city'               => $request->city,
+            'state'              => $request->state,
+            'postcode'           => $request->postcode,
+            'marketing_opt_in'   => $marketingOptIn,
+            'marketing_channels' => $marketingOptIn ? 'email,whatsapp' : null,
         ]);
+
+        if ($marketingOptIn) {
+            \App\Models\NewsletterSubscriber::updateOrCreate(
+                ['email' => $user->email],
+                ['status' => 'active', 'ip_address' => $request->ip()]
+            );
+        }
 
         event(new Registered($user));
 

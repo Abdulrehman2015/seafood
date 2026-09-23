@@ -14,29 +14,118 @@ class ShopController extends Controller
     public function index(Request $request)
     {
         $group = $this->pricing->resolveGroup();
+        $customerType = $request->get('customer_type', auth()->check() && in_array($group, ['wholesale', 'trading']) ? 'wholesale' : 'retail');
 
-        $categories = Category::active()->orderBy('sort_order')->get();
+        // Fetch primary parent categories with active children
+        $parentCategories = Category::active()
+            ->whereNull('parent_id')
+            ->with(['children' => fn($q) => $q->active()->orderBy('sort_order')])
+            ->orderBy('sort_order')
+            ->get();
 
-        $query = Product::active()->inStock()->with('category');
+        $allCategories = Category::active()->orderBy('sort_order')->get();
 
-        if ($request->filled('category')) {
-            $query->whereHas('category', fn($q) => $q->where('slug', $request->category));
+        $query = Product::active()->with('category');
+
+        // Availability filter
+        $availability = $request->get('availability');
+        if ($availability === 'in_stock') {
+            $query->inStock();
+        } elseif ($availability === 'pre_order') {
+            $query->where('is_rfq_only', true);
         }
 
+        // Category & Subcategory Resolution
+        $selectedCategorySlug = $request->get('category');
+        $selectedSubcategorySlug = $request->get('subcategory');
+
+        if ($selectedSubcategorySlug) {
+            $subCat = Category::active()->where('slug', $selectedSubcategorySlug)->first();
+            if ($subCat) {
+                $query->where('category_id', $subCat->id);
+            }
+        } elseif ($selectedCategorySlug) {
+            $cat = Category::active()->where('slug', $selectedCategorySlug)->with('children')->first();
+            if ($cat) {
+                if ($cat->children && $cat->children->isNotEmpty()) {
+                    $catIds = $cat->children->pluck('id')->push($cat->id)->all();
+                    $query->whereIn('category_id', $catIds);
+                } else {
+                    $query->where('category_id', $cat->id);
+                }
+            }
+        }
+
+        // Search Filter (name, SKU, brand, description, category)
         if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            $search = trim($request->search);
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('name_zh', 'like', "%{$search}%")
+                  ->orWhere('name_bm', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%")
+                  ->orWhere('brand', 'like', "%{$search}%")
+                  ->orWhere('origin', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhereHas('category', fn($cq) => $cq->where('name', 'like', "%{$search}%")->orWhere('name_zh', 'like', "%{$search}%"));
             });
         }
 
+        // Origin Filter
+        if ($request->filled('origin')) {
+            $query->where('origin', $request->origin);
+        }
+
+        // Brand Filter
+        if ($request->filled('brand')) {
+            $query->where('brand', $request->brand);
+        }
+
+        // Pack Size / Weight Filter
+        if ($request->filled('pack_size')) {
+            $query->where('weight', $request->pack_size);
+        }
+
+        // Storage / IQF Filter
+        if ($request->filled('storage')) {
+            if ($request->storage === 'iqf') {
+                $query->where('storage_temp', 'like', '%-18%')->where('name', 'not like', '%Live%');
+            } elseif ($request->storage === 'live') {
+                $query->where('storage_temp', 'like', '%Live%');
+            }
+        }
+
+        // Sorting
         $sort = $request->get('sort', 'sort_order');
-        $query->orderBy($sort === 'price_asc' ? "retail_price" : ($sort === 'price_desc' ? "retail_price" : 'sort_order'),
-                        $sort === 'price_desc' ? 'desc' : 'asc');
+        if ($sort === 'price_asc') {
+            $query->orderBy('retail_price', 'asc');
+        } elseif ($sort === 'price_desc') {
+            $query->orderBy('retail_price', 'desc');
+        } elseif ($sort === 'name') {
+            $query->orderBy('name', 'asc');
+        } else {
+            $query->orderBy('sort_order', 'asc')->orderBy('id', 'asc');
+        }
 
-        $products = $query->paginate(16)->withQueryString();
+        $products = $query->paginate(20)->withQueryString();
 
-        return view('shop.index', compact('products', 'categories', 'group'));
+        // Extract available filter options for dropdowns
+        $subcategories = Category::active()->whereNotNull('parent_id')->with('parent')->orderBy('sort_order')->get();
+        $availableOrigins = Product::active()->whereNotNull('origin')->where('origin', '!=', '')->distinct()->pluck('origin')->sort()->values();
+        $availableBrands = Product::active()->whereNotNull('brand')->where('brand', '!=', '')->distinct()->pluck('brand')->sort()->values();
+        $availablePackSizes = Product::active()->whereNotNull('weight')->where('weight', '!=', '')->distinct()->pluck('weight')->sort()->values();
+
+        return view('shop.index', compact(
+            'products',
+            'parentCategories',
+            'subcategories',
+            'allCategories',
+            'group',
+            'customerType',
+            'availableOrigins',
+            'availableBrands',
+            'availablePackSizes'
+        ));
     }
 
     public function categories()

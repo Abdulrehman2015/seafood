@@ -243,7 +243,30 @@
                         <input type="text" name="postcode" id="postcode" class="form-control {{ $errors->has('postcode') ? 'is-invalid' : '' }}" value="{{ old('postcode') }}" placeholder="79200" maxlength="5" pattern="[0-9]*" inputmode="numeric" required>
                         @error('postcode')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
+                <!-- Consent Checkboxes (Separated Terms and Optional Marketing) -->
+                <div class="consent-block" style="margin: 20px 0; display: flex; flex-direction: column; gap: 12px; background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                    <!-- 1. Mandatory Terms & Privacy Policy Consent -->
+                    <label class="consent-item" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.88rem; color: #334155;">
+                        <input type="checkbox" name="terms_consent" value="1" required style="margin-top: 3px; width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer;" {{ old('terms_consent') ? 'checked' : '' }}>
+                        <span>
+                            @t('auth.terms_consent_text', 'I agree to MST Import & Export Terms of Service and Privacy Policy.') <span class="required" style="color:#ef4444">*</span>
+                        </span>
+                    </label>
+                    @error('terms_consent')<div class="form-error" style="margin-top:-6px">{{ $message }}</div>@enderror
+
+                    <!-- 2. Optional Separate Marketing Opt-in -->
+                    <label class="consent-item" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.88rem; color: #334155;">
+                        <input type="checkbox" name="marketing_opt_in" value="1" style="margin-top: 3px; width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer;" {{ old('marketing_opt_in', true) ? 'checked' : '' }}>
+                        <span>
+                            <strong>@t('auth.marketing_opt_in_title', '🎁 Exclusive Offers & Updates (Optional)')</strong><br>
+                            <span style="color: #64748b; font-size: 0.82rem;">
+                                @t('auth.marketing_opt_in_desc', 'Yes, send me MST product updates, seasonal catch arrivals, promotions and special wholesale offers via WhatsApp & Email.')
+                            </span>
+                        </span>
+                    </label>
                 </div>
+
+                <x-recaptcha context="register" />
 
                 <div class="submit-section">
                     <button type="submit" id="submitBtn" class="btn btn-primary btn-lg btn-block register-submit-btn">

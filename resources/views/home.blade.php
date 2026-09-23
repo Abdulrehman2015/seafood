@@ -32,7 +32,7 @@
                 @if(current_locale() === 'zh')
                     不止是供货商。<br>
                     <span class="mika-hero-gradient">更是您值得信赖的</span><br>
-                    <span class="mika-hero-gradient">全球采购与供应链战略伙伴。</span>
+                    <span class="mika-hero-gradient">采购与供应链战略伙伴。</span>
                 @elseif(current_locale() === 'bm')
                     LEBIH DARIPADA PEMBEKAL.<br>
                     <span class="mika-hero-gradient">RAKAN STRATEGIK</span><br>
@@ -45,7 +45,7 @@
             </h1>
 
             <div style="font-size:1.05rem;font-weight:700;color:#93c5fd;margin-bottom:12px;letter-spacing:0.02em;">
-                @t('home.popular_categories_desc', 'Frozen Seafood · Meat · Frozen Food')
+                @t('home.hero_categories_highlight', 'Seafood · Meat · Frozen Food · Food Ingredients · Customised Sourcing')
             </div>
 
             <p class="mika-hero-sub">
@@ -78,7 +78,7 @@
                 <picture>
                     <source srcset="{{ cdn_img('hero-banner.webp') }}" type="image/webp">
                     <img src="{{ cdn_img('hero-banner.jpg') }}"
-                         alt="Premium frozen seafood — MST Import and Export Sdn Bhd"
+                         alt="Quality frozen seafood & food products — MST Import and Export Sdn Bhd"
                          class="mika-hero-img"
                          width="1376"
                          height="768"
@@ -87,9 +87,9 @@
                 </picture>
                 {{-- Floating feature cards --}}
                 <div class="mika-float-card mika-float-top">
-                    <span style="font-size:1.4rem">🐟</span>
+                    <span style="font-size:1.4rem">❄️</span>
                     <div>
-                        <div style="font-weight:700;font-size:0.8rem;color:#0f172a">@t('home.float_fresh_catch', 'Fresh Catch Daily')</div>
+                        <div style="font-weight:700;font-size:0.8rem;color:#0f172a">@t('home.float_fresh_catch', 'QUALITY FROZEN PRODUCTS')</div>
                         <div style="font-size:0.7rem;color:#64748b">@t('home.float_iqf_frozen', 'IQF Frozen at Source')</div>
                     </div>
                 </div>
@@ -278,7 +278,7 @@
 }
 
 .mika-hero-gradient {
-    background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 50%, #bfdbfe 100%);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #fef08a 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -287,7 +287,7 @@
 /* Subtitle */
 .mika-hero-sub {
     font-size: 1.05rem;
-    color: rgba(255,255,255,0.75);
+    color: rgba(255,255,255,0.85);
     line-height: 1.75;
     max-width: 540px;
     margin-bottom: 28px;
@@ -304,19 +304,20 @@
 .mika-pill {
     padding: 5px 14px;
     background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.18);
     border-radius: 999px;
     font-size: 0.78rem;
     font-weight: 600;
-    color: rgba(255,255,255,0.9);
+    color: rgba(255,255,255,0.95);
     backdrop-filter: blur(8px);
     transition: all 0.2s ease;
     cursor: default;
 }
 
 .mika-pill:hover {
-    background: rgba(255,255,255,0.15);
-    border-color: rgba(255,255,255,0.3);
+    background: rgba(245,158,11,0.15);
+    border-color: #f59e0b;
+    color: #fef08a;
     transform: translateY(-1px);
 }
 
@@ -333,22 +334,23 @@
     align-items: center;
     gap: 8px;
     padding: 14px 28px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: #ffffff;
-    font-weight: 700;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: #091a36;
+    font-weight: 800;
     font-size: 0.95rem;
     border-radius: 12px;
     text-decoration: none;
-    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45), 0 2px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4), 0 2px 6px rgba(0,0,0,0.2);
     transition: all 0.25s ease;
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid #f59e0b;
 }
 
 .mika-btn-primary:hover {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(37, 99, 235, 0.55);
-    color: #ffffff;
+    box-shadow: 0 12px 32px rgba(245, 158, 11, 0.55);
+    color: #091a36;
+    border-color: #d97706;
 }
 
 .mika-btn-ghost {
@@ -357,21 +359,21 @@
     gap: 8px;
     padding: 14px 28px;
     background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.9);
-    font-weight: 600;
+    color: #ffffff;
+    font-weight: 700;
     font-size: 0.95rem;
     border-radius: 12px;
     text-decoration: none;
-    border: 1px solid rgba(255,255,255,0.25);
+    border: 1px solid rgba(255,255,255,0.35);
     backdrop-filter: blur(10px);
     transition: all 0.25s ease;
 }
 
 .mika-btn-ghost:hover {
-    background: rgba(255,255,255,0.15);
-    border-color: rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.18);
+    border-color: #fbbf24;
+    color: #fbbf24;
     transform: translateY(-2px);
-    color: #ffffff;
 }
 
 /* ── Bottom Section: Full-Width Centered Stats Bar & Trust Badges ── */
@@ -1374,61 +1376,38 @@
 
 
 
-<!-- ─── Category Section (6 Categories + Custom Sourcing) ───────────────── -->
+<!-- ─── Category Section (Featured Categories from Admin + Custom Sourcing) ─── -->
+@if($categories->count())
 <section class="section category-section" style="padding-top: var(--space-16); padding-bottom: var(--space-12);">
     <div class="container">
         <div class="section-header" style="text-align:center;max-width:760px;margin:0 auto var(--space-10);">
-            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('home.categories_eyebrow', 'BROWSE BY CATEGORY')</div>
-            <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:10px;">@t('home.popular_categories_title', 'What Are You Looking For?')</h2>
-            <p class="section-subtitle" style="font-size:0.95rem;color:var(--text-muted);line-height:1.6;margin:0 auto;text-align:center;">
-                @t('home.popular_categories_desc', 'From seafood and meat to frozen food, food ingredients and cuisine-specific products, explore our growing range of products for restaurants, food businesses, retailers, wholesalers and trading partners.')
+            <div style="margin-bottom:12px">
+                <span class="badge" style="background:#eff6ff;color:#2563eb;font-size:0.75rem;padding:6px 16px;border-radius:999px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;display:inline-block;border:1px solid #dbeafe;">
+                    @t('home.categories_eyebrow', 'BROWSE BY CATEGORY')
+                </span>
+            </div>
+            <h2 class="section-title" style="font-size:clamp(1.75rem, 3.5vw, 2.35rem);font-weight:800;color:#0f172a;margin-bottom:10px;">@t('home.popular_categories_title', 'Explore Seafood Categories')</h2>
+            <p class="section-subtitle" style="font-size:0.95rem;color:#64748b;line-height:1.6;margin:0 auto;text-align:center;max-width:680px;">
+                @t('home.popular_categories_desc', 'Browse our premium selection sourced from wild-catch fisheries and sustainable aquaculture worldwide.')
             </p>
         </div>
 
-        <div class="categories-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:20px;">
-            <!-- 1. Seafood -->
-            <a href="{{ route('shop.index', ['category' => 'seafood-products']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
-                <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">🐟</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.seafood', 'SEAFOOD')</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.seafood_desc', 'Fish · Prawns · Squid · Crab · Shellfish & More')</div>
-            </a>
+        <div class="categories-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));gap:20px;">
+            @foreach($categories as $category)
+                <a href="{{ $category->url }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
+                    @if($category->image)
+                        <img src="{{ str_starts_with($category->image, 'http') ? $category->image : (str_starts_with($category->image, 'images/') ? asset($category->image) : asset('storage/'.$category->image)) }}" alt="{{ $category->name }}" style="width:48px;height:48px;object-fit:contain;margin-bottom:10px;">
+                    @else
+                        <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">{{ $category->icon ?: '📦' }}</span>
+                    @endif
+                    <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">{{ strtoupper($category->name) }}</div>
+                    @if($category->description)
+                        <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">{{ $category->description }}</div>
+                    @endif
+                </a>
+            @endforeach
 
-            <!-- 2. Meat -->
-            <a href="{{ route('shop.index', ['category' => 'meat-chicken']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
-                <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">🥩</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.meat', 'MEAT')</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.meat_desc', 'Chicken · Beef · Pork · Other Frozen Meat Products')</div>
-            </a>
-
-            <!-- 3. Frozen Food -->
-            <a href="{{ route('shop.index', ['category' => 'frozen-product-food']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
-                <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">❄️</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.frozen_food', 'FROZEN FOOD')</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.frozen_food_desc', 'Processed Foods · Ready-to-Cook · Snacks · Foodservice Products')</div>
-            </a>
-
-            <!-- 4. Food Ingredients -->
-            <a href="{{ route('shop.index', ['category' => 'steamboat']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
-                <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">🧂</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.food_ingredients', 'FOOD INGREDIENTS')</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.food_ingredients_desc', 'Raw Materials · Fish Paste · Sauces · Condiments · Cooking Ingredients')</div>
-            </a>
-
-            <!-- 5. Cuisine Ingredients -->
-            <a href="{{ route('shop.index', ['category' => 'dimsum']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
-                <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">🌏</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.cuisine_ingredients', 'CUISINE INGREDIENTS')</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.cuisine_ingredients_desc', 'Japanese · Korean · Chinese · Western Cuisine Ingredients')</div>
-            </a>
-
-            <!-- 6. Desserts & Sweet Treats -->
-            <a href="{{ route('shop.index', ['category' => 'dessert']) }}" class="category-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:all 0.25s ease;display:flex;flex-direction:column;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.02);" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#93c5fd';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.08)'" onmouseout="this.style.transform='none';this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.02)'">
-                <span class="category-icon" style="font-size:2.4rem;margin-bottom:10px;display:inline-block;">🍰</span>
-                <div class="category-name" style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:6px;">@t('cat.desserts', 'DESSERTS & SWEET TREATS')</div>
-                <div style="font-size:0.82rem;color:#64748b;line-height:1.5;">@t('cat.desserts_desc', 'Frozen Desserts · Pastries · Cakes · Sweet Products & More')</div>
-            </a>
-
-            <!-- 7. Customised Sourcing (Special Card) -->
+            <!-- Customised Sourcing (Special Card) -->
             <div class="category-card-sourcing">
                 <div class="sourcing-card-inner">
                     <div class="sourcing-card-content">
@@ -1454,6 +1433,7 @@
         </div>
     </div>
 </section>
+@endif
 
 <!-- ─── Featured Products ─────────────────────────────────────────────────── -->
 @if($featuredProducts->count())
@@ -1511,7 +1491,14 @@
                         </div>
 
                         @if($product->storage_temp)
-                            <span class="product-badge-temp">❄️ {{ $product->storage_temp }} IQF</span>
+                            @php
+                                $tempLower = strtolower($product->storage_temp);
+                                $isLive = str_contains($tempLower, 'live');
+                                $isChilled = str_contains($tempLower, 'chilled');
+                                $badgeIcon = $product->getStorageIcon();
+                                $badgeSuffix = ($isLive || $isChilled) ? '' : ' IQF';
+                            @endphp
+                            <span class="product-badge-temp">{{ $badgeIcon }} {{ $product->storage_temp }}{{ $badgeSuffix }}</span>
                         @endif
 
                         <!-- Quick View Hover Overlay Button (Desktop Only) -->
@@ -1524,7 +1511,14 @@
                             'weight' => $product->weight,
                             'unit' => $product->unit,
                             'storage_temp' => $product->storage_temp,
+                            'storage_icon' => $product->getStorageIcon(),
                             'price_formatted' => $priceFormatted,
+                            'base_rm' => $product->getPriceForGroup($group),
+                            'manual_sgd' => $product->price_sgd ?? '',
+                            'manual_usd' => $product->price_usd ?? '',
+                            'manual_wholesale_sgd' => $product->wholesale_price_sgd ?? '',
+                            'manual_wholesale_usd' => $product->wholesale_price_usd ?? '',
+                            'group' => $group,
                             'moq' => $product->getMoqForGroup($group) > 1 ? ($product->getMoqForGroup($group) . ' ' . $product->unit) : null,
                             'short_desc' => $product->short_description ?? $product->description,
                             'image' => $product->thumbnail ? cdn_storage($product->thumbnail) : null,
@@ -1548,7 +1542,9 @@
                         </h3>
                         <div class="product-meta">
                             @if($product->weight)<span class="product-meta-item">⚖️ {{ $product->weight }}</span>@endif
-                            @if($product->storage_temp)<span class="product-meta-item">❄️ {{ $product->storage_temp }}</span>@endif
+                            @if($product->storage_temp)
+                                <span class="product-meta-item">{{ $product->getStorageIcon() }} {{ $product->storage_temp }}</span>
+                            @endif
                         </div>
                         <div class="product-price-row">
                             @if($price !== null)
@@ -1563,7 +1559,7 @@
                                      @endif
                                 >
                                     <span class="price-amount">{{ $priceFormatted }}</span>
-                                    <span class="price-base-rm" style="{{ $currentCurrency !== 'MYR' && !empty($displayPrice['base_rm']) ? '' : 'display:none' }};font-size:0.75rem;font-weight:500;color:#64748b;display:block">
+                                    <span class="price-base-rm" style="display:{{ ($currentCurrency !== 'MYR' && !empty($displayPrice['base_rm'])) ? 'block' : 'none' }};font-size:0.75rem;font-weight:500;color:#64748b;margin-top:2px">
                                         RM {{ number_format($product->getPriceForGroup($group), 2) }}
                                     </span>
                                 </div>
@@ -1626,7 +1622,10 @@
                     <span>@t('shop.storage_label', 'Storage:') <strong id="qvStorage"></strong></span>
                 </div>
                 <div class="quickview-price-box">
-                    <div class="qv-current-price" id="qvPrice"></div>
+                    <div style="display:flex;flex-direction:column">
+                        <div class="qv-current-price" id="qvPrice"></div>
+                        <div class="qv-base-rm" id="qvBaseRm" style="display:none;font-size:0.8rem;color:#64748b;font-weight:500;margin-top:2px"></div>
+                    </div>
                     <div class="qv-weight" id="qvWeight"></div>
                 </div>
 
@@ -1780,57 +1779,57 @@
 </section>
 
 <!-- ─── 4.6 Customised Sourcing Spotlight ───────────────────────────────── -->
-<section class="section" style="padding:var(--space-16) 0;background:linear-gradient(145deg, #091a36 0%, #173b75 100%);color:#ffffff;">
+<section class="section" style="padding:var(--space-16) 0;background:linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);border-top:1px solid #bfdbfe;border-bottom:1px solid #e2e8f0;color:#0f172a;">
     <div class="container">
         <div style="max-width:820px;margin:0 auto 40px;text-align:center;">
-            <span style="background:rgba(255,255,255,0.15);color:#93c5fd;font-size:0.75rem;font-weight:700;padding:4px 14px;border-radius:999px;text-transform:uppercase;letter-spacing:0.08em;display:inline-block;margin-bottom:12px;">
+            <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.75rem;font-weight:700;padding:5px 16px;border-radius:999px;text-transform:uppercase;letter-spacing:0.08em;display:inline-block;margin-bottom:12px;">
                 ✨ @t('home.spotlight_eyebrow', 'CUSTOMISED SOURCING')
             </span>
-            <h2 style="font-family:var(--font-heading);font-size:clamp(1.6rem, 4vw, 2.3rem);color:#ffffff;margin-bottom:6px;line-height:1.25;">
+            <h2 style="font-family:var(--font-heading);font-size:clamp(1.6rem, 4vw, 2.3rem);color:#091a36;margin-bottom:6px;line-height:1.25;font-weight:800;">
                 @t('home.spotlight_title', "CAN'T FIND WHAT YOU NEED?")
             </h2>
-            <div style="font-size:1.25rem;font-weight:800;color:#60a5fa;margin-bottom:16px;">
+            <div style="font-size:1.25rem;font-weight:800;color:#1d4ed8;margin-bottom:16px;">
                 @t('home.spotlight_sub', 'YOU NEED IT. WE SOURCE IT.')
             </div>
-            <p style="color:#dbeafe;font-size:0.95rem;line-height:1.7;margin:0 0 24px;">
+            <p style="color:#475569;font-size:0.95rem;line-height:1.7;margin:0 0 24px;">
                 @t('home.spotlight_desc', 'Looking for a specific seafood, meat or frozen food product that is not currently listed in our catalogue? Tell us what you need — from product type and specifications to pack size, origin and quantity. Our team can work with our sourcing network to identify suitable products and supply options for your business. Whether you are a restaurant, food business, retailer, wholesaler or trading partner, we help simplify the sourcing process through one reliable supply partner.')
             </p>
             <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-                <a href="{{ route('contact') }}#quote" class="btn btn-primary" style="background:#2563eb;border-color:#2563eb;font-weight:700;padding:12px 24px;">
-                    @t('home.spotlight_btn_quote', 'REQUEST A QUOTE →')
+                <a href="{{ route('contact') }}#quote" class="btn btn-primary" style="background:linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);color:#091a36;border:1px solid #f59e0b;font-weight:800;padding:12px 26px;box-shadow:0 4px 14px rgba(245,158,11,0.35);">
+                    @t('home.spotlight_btn_quote', 'REQUEST A QUOTE / SOURCING →')
                 </a>
-                <a href="{{ route('contact') }}" class="btn btn-secondary" style="background:rgba(255,255,255,0.15);color:white;border-color:rgba(255,255,255,0.3);font-weight:700;padding:12px 22px;">
+                <a href="{{ route('contact') }}" class="btn btn-secondary" style="background:linear-gradient(135deg, #2563eb, #1d4ed8);color:#ffffff;border:1px solid #1d4ed8;font-weight:700;padding:12px 22px;">
                     @t('home.spotlight_btn_tell', 'TELL US WHAT YOU NEED →')
                 </a>
             </div>
         </div>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:20px;">
-            <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 20px;backdrop-filter:blur(8px);">
+            <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.02);transition:all 0.2s ease;" onmouseover="this.style.borderColor='#93c5fd';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.transform='none'">
                 <div style="font-size:2rem;margin-bottom:12px;">🔍</div>
-                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">@t('home.spotlight_f1_title', 'PRODUCT-SPECIFIC SOURCING')</h4>
-                <p style="font-size:0.85rem;color:#bfdbfe;line-height:1.6;margin:0;">
+                <h4 style="font-size:1rem;font-weight:800;color:#091a36;margin-bottom:6px;">@t('home.spotlight_f1_title', 'PRODUCT-SPECIFIC SOURCING')</h4>
+                <p style="font-size:0.85rem;color:#64748b;line-height:1.6;margin:0;">
                     @t('home.spotlight_f1_desc', 'Looking for a particular product or specification? Tell us your requirements.')
                 </p>
             </div>
-            <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 20px;backdrop-filter:blur(8px);">
+            <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.02);transition:all 0.2s ease;" onmouseover="this.style.borderColor='#93c5fd';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.transform='none'">
                 <div style="font-size:2rem;margin-bottom:12px;">🌏</div>
-                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">@t('home.spotlight_f2_title', 'MULTI-SOURCE NETWORK')</h4>
-                <p style="font-size:0.85rem;color:#bfdbfe;line-height:1.6;margin:0;">
+                <h4 style="font-size:1rem;font-weight:800;color:#091a36;margin-bottom:6px;">@t('home.spotlight_f2_title', 'MULTI-SOURCE NETWORK')</h4>
+                <p style="font-size:0.85rem;color:#64748b;line-height:1.6;margin:0;">
                     @t('home.spotlight_f2_desc', 'We work with sourcing partners to identify suitable products and supply options.')
                 </p>
             </div>
-            <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 20px;backdrop-filter:blur(8px);">
+            <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.02);transition:all 0.2s ease;" onmouseover="this.style.borderColor='#93c5fd';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.transform='none'">
                 <div style="font-size:2rem;margin-bottom:12px;">📦</div>
-                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">@t('home.spotlight_f3_title', 'FLEXIBLE QUANTITY')</h4>
-                <p style="font-size:0.85rem;color:#bfdbfe;line-height:1.6;margin:0;">
+                <h4 style="font-size:1rem;font-weight:800;color:#091a36;margin-bottom:6px;">@t('home.spotlight_f3_title', 'FLEXIBLE QUANTITY')</h4>
+                <p style="font-size:0.85rem;color:#64748b;line-height:1.6;margin:0;">
                     @t('home.spotlight_f3_desc', 'From regular supply to specific business requirements, we work around your needs.')
                 </p>
             </div>
-            <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 20px;backdrop-filter:blur(8px);">
+            <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:24px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.02);transition:all 0.2s ease;" onmouseover="this.style.borderColor='#93c5fd';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.transform='none'">
                 <div style="font-size:2rem;margin-bottom:12px;">🤝</div>
-                <h4 style="font-size:1rem;font-weight:800;color:#ffffff;margin-bottom:6px;">@t('home.spotlight_f4_title', 'ONE RELIABLE PARTNER')</h4>
-                <p style="font-size:0.85rem;color:#bfdbfe;line-height:1.6;margin:0;">
+                <h4 style="font-size:1rem;font-weight:800;color:#091a36;margin-bottom:6px;">@t('home.spotlight_f4_title', 'ONE RELIABLE PARTNER')</h4>
+                <p style="font-size:0.85rem;color:#64748b;line-height:1.6;margin:0;">
                     @t('home.spotlight_f4_desc', 'Source, coordinate and supply through one streamlined business relationship.')
                 </p>
             </div>
@@ -1838,76 +1837,64 @@
     </div>
 </section>
 
-<!-- ─── 4.7 Customer Testimonials (Professional B2B Focus) ─────────────── -->
-<section class="section" style="padding:var(--space-16) 0;background:#ffffff;border-top:1px solid #e2e8f0;">
+<!-- ─── 4.7 B2B Supply & Sourcing Partnership ─────────────── -->
+<section class="section" style="padding:var(--space-16) 0;background:linear-gradient(145deg, #091a36 0%, #0c2146 50%, #1e3a8a 100%);color:#ffffff;">
     <div class="container">
-        <div class="section-header" style="text-align:center;max-width:760px;margin:0 auto var(--space-10);">
-            <div class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;margin-bottom:8px">@t('home.testi_eyebrow', 'CUSTOMER TESTIMONIALS')</div>
-            <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:10px;">@t('home.testi_title', 'What Our Customers Say')</h2>
-            <p class="section-subtitle" style="font-size:0.95rem;color:var(--text-muted);line-height:1.6;margin:0 auto;text-align:center;">
-                @t('home.testi_subtitle', 'Long-term relationships are at the heart of MST. From restaurants and food businesses to retailers, wholesalers and trading partners, we value the trust our customers place in us to support their day-to-day supply needs.')
+        <div class="section-header" style="text-align:center;max-width:820px;margin:0 auto var(--space-10);">
+            <div class="section-eyebrow" style="background:rgba(245,158,11,0.18);color:#fbbf24;border:1px solid rgba(245,158,11,0.4);font-weight:700;margin-bottom:8px;padding:4px 14px;border-radius:999px;display:inline-block;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;">@t('home.partnership_eyebrow', 'TRUSTED SUPPLY & SOURCING PARTNER')</div>
+            <h2 class="section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.25rem);margin-bottom:10px;color:#ffffff;font-weight:800;">@t('home.partnership_title', 'Supporting Businesses Across Malaysia & Singapore')</h2>
+            <p class="section-subtitle" style="font-size:0.95rem;color:#cbd5e1;line-height:1.6;margin:0 auto;text-align:center;">
+                @t('home.partnership_subtitle', 'From independent restaurants and food businesses to supermarkets, wholesalers and regional trading partners, we provide consistent supply, strict cold-chain assurance and customized sourcing solutions.')
             </p>
         </div>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:24px;margin-bottom:36px;">
-            <!-- Review 1 -->
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:30px 26px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 10px rgba(0,0,0,0.02);">
-                <div>
-                    <div style="color:#eab308;font-size:1.1rem;margin-bottom:12px;">★★★★★</div>
-                    <blockquote style="margin:0 0 16px;color:#334155;font-size:0.95rem;line-height:1.7;font-style:italic;">
-                        @t('home.testi_q1', '“MST has been reliable in helping us source and supply the frozen food products we need. Their team is responsive and easy to work with.”')
-                    </blockquote>
-                </div>
-                <div style="font-weight:700;color:#0f172a;font-size:0.88rem;border-top:1px solid #e2e8f0;padding-top:12px;">
-                    @t('home.testi_a1', '— Restaurant Customer')
-                </div>
+            <!-- Pillar 1 -->
+            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:18px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;backdrop-filter:blur(10px);">
+                <div style="font-size:2.2rem;">❄️</div>
+                <div style="font-weight:800;color:#ffffff;font-size:1.08rem;">@t('home.pillar_coldchain_title', 'End-to-End Cold Chain')</div>
+                <p style="margin:0;color:#bfdbfe;font-size:0.9rem;line-height:1.6;">
+                    @t('home.pillar_coldchain_desc', 'Unbroken temperature management from origin facilities and frozen storage to dispatch, ensuring product freshness and optimal kitchen yield.')
+                </p>
             </div>
 
-            <!-- Review 2 -->
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:30px 26px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 10px rgba(0,0,0,0.02);">
-                <div>
-                    <div style="color:#eab308;font-size:1.1rem;margin-bottom:12px;">★★★★★</div>
-                    <blockquote style="margin:0 0 16px;color:#334155;font-size:0.95rem;line-height:1.7;font-style:italic;">
-                        @t('home.testi_q2', '“We appreciate the flexibility of their sourcing service. When we need a product that is not in the regular range, the team helps us look for suitable options.”')
-                    </blockquote>
-                </div>
-                <div style="font-weight:700;color:#0f172a;font-size:0.88rem;border-top:1px solid #e2e8f0;padding-top:12px;">
-                    @t('home.testi_a2', '— F&B Customer')
-                </div>
+            <!-- Pillar 2 -->
+            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:18px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;backdrop-filter:blur(10px);">
+                <div style="font-size:2.2rem;">🔍</div>
+                <div style="font-weight:800;color:#ffffff;font-size:1.08rem;">@t('home.pillar_sourcing_title', 'Customised Sourcing Network')</div>
+                <p style="margin:0;color:#bfdbfe;font-size:0.9rem;line-height:1.6;">
+                    @t('home.pillar_sourcing_desc', 'Looking for specific cuts, origins, packaging, or hard-to-find ingredients? We leverage our regional supplier network to source products tailored to your needs.')
+                </p>
             </div>
 
-            <!-- Review 3 -->
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:30px 26px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 10px rgba(0,0,0,0.02);">
-                <div>
-                    <div style="color:#eab308;font-size:1.1rem;margin-bottom:12px;">★★★★★</div>
-                    <blockquote style="margin:0 0 16px;color:#334155;font-size:0.95rem;line-height:1.7;font-style:italic;">
-                        @t('home.testi_q3', '“Good communication, reliable supply and straightforward service. MST has become one of our regular suppliers.”')
-                    </blockquote>
-                </div>
-                <div style="font-weight:700;color:#0f172a;font-size:0.88rem;border-top:1px solid #e2e8f0;padding-top:12px;">
-                    @t('home.testi_a3', '— Wholesale Customer')
-                </div>
+            <!-- Pillar 3 -->
+            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:18px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;backdrop-filter:blur(10px);">
+                <div style="font-size:2.2rem;">🤝</div>
+                <div style="font-weight:800;color:#ffffff;font-size:1.08rem;">@t('home.pillar_pricing_title', 'Tiered Volume & Trade Pricing')</div>
+                <p style="margin:0;color:#bfdbfe;font-size:0.9rem;line-height:1.6;">
+                    @t('home.pillar_pricing_desc', 'Transparent pricing tiers designed for retail walk-in, F&B food service, carton wholesale and container trading with fast RFQ turnaround.')
+                </p>
             </div>
         </div>
 
-        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:14px;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;backdrop-filter:blur(12px);">
             <div>
-                <div style="font-weight:800;color:#1e3a8a;font-size:1rem;margin-bottom:2px;">@t('home.testi_cta_title', 'BUILDING LONG-TERM BUSINESS RELATIONSHIPS')</div>
-                <div style="font-size:0.85rem;color:#3b82f6;font-weight:600;">@t('home.testi_cta_sub', 'Reliable Supply · Responsive Service · Flexible Sourcing')</div>
+                <div style="font-weight:800;color:#ffffff;font-size:1rem;margin-bottom:2px;">@t('home.testi_cta_title', 'BUILDING LONG-TERM BUSINESS RELATIONSHIPS')</div>
+                <div style="font-size:0.85rem;color:#93c5fd;font-weight:600;">@t('home.testi_cta_sub', 'Reliable Supply · Responsive Service · Flexible Sourcing')</div>
             </div>
-            <a href="{{ route('register') }}" class="btn btn-primary" style="font-weight:700;padding:10px 22px;">
+            <a href="{{ route('register') }}" class="btn btn-primary" style="background:linear-gradient(135deg, #fbbf24, #f59e0b);color:#091a36;font-weight:800;border:1px solid #f59e0b;padding:10px 22px;">
                 @t('home.testi_cta_btn', 'BECOME A CUSTOMER →')
             </a>
         </div>
     </div>
 </section>
 
-<!-- ─── 4.8 Seafood Tips & Insights + Newsletter ────────────────────────── -->
+<!-- ─── 4.8 Food Sourcing & Supply Insights + Newsletter ────────────────────────── -->
 <section class="section seafood-tips-section" style="padding:var(--space-16) 0;background:#f8fafc;border-top:1px solid #e2e8f0">
     <div class="container">
         <div class="culinary-advisory-grid">
             <div class="tips-left-content">
-                <span class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;">@t('home.tips_eyebrow', 'SEAFOOD TIPS & INSIGHTS')</span>
+                <span class="section-eyebrow" style="color:var(--seagreen-700);font-weight:700;">@t('home.tips_eyebrow', 'FOOD SOURCING & SUPPLY INSIGHTS')</span>
                 <h2 style="font-family:var(--font-heading);font-size:clamp(1.5rem, 3.5vw, 2rem);color:var(--gray-900);margin:8px 0 12px">
                     @t('home.tips_title', 'KNOW YOUR PRODUCT. BUY WITH CONFIDENCE.')
                 </h2>
@@ -1986,8 +1973,38 @@ function openQuickViewModal(data) {
     document.getElementById('qvTitle').textContent = data.name;
     document.getElementById('qvCategory').textContent = data.category;
     document.getElementById('qvSku').textContent = data.sku || 'N/A';
-    document.getElementById('qvStorage').textContent = (data.storage_temp || '-18°C') + ' IQF';
-    document.getElementById('qvPrice').textContent = data.price_formatted;
+    const st = data.storage_temp || '-18°C';
+    const isLiveOrChilled = /live|chilled/i.test(st);
+    const ico = data.storage_icon || (isLiveOrChilled ? '🦀' : '❄️');
+    document.getElementById('qvStorage').textContent = ico + ' ' + st + (isLiveOrChilled ? '' : ' IQF');
+    
+    // Resolve dynamic currency price & RM comparison for Quick View
+    const cur = window.AppCurrency?.current || 'MYR';
+    const qvPriceEl = document.getElementById('qvPrice');
+    const qvBaseRmEl = document.getElementById('qvBaseRm');
+    if (typeof calculatePriceForElement === 'function' && data.base_rm) {
+        const dummyEl = document.createElement('div');
+        dummyEl.setAttribute('data-base-rm', data.base_rm);
+        if (data.manual_sgd) dummyEl.setAttribute('data-manual-sgd', data.manual_sgd);
+        if (data.manual_usd) dummyEl.setAttribute('data-manual-usd', data.manual_usd);
+        if (data.manual_wholesale_sgd) dummyEl.setAttribute('data-manual-wholesale-sgd', data.manual_wholesale_sgd);
+        if (data.manual_wholesale_usd) dummyEl.setAttribute('data-manual-wholesale-usd', data.manual_wholesale_usd);
+        if (data.group) dummyEl.setAttribute('data-group', data.group);
+        const res = calculatePriceForElement(dummyEl, cur);
+        if (qvPriceEl) qvPriceEl.textContent = res.formatted;
+    } else if (qvPriceEl) {
+        qvPriceEl.textContent = data.price_formatted;
+    }
+
+    if (qvBaseRmEl) {
+        if (cur !== 'MYR' && data.base_rm) {
+            qvBaseRmEl.textContent = 'RM ' + parseFloat(data.base_rm).toFixed(2);
+            qvBaseRmEl.style.display = 'block';
+        } else {
+            qvBaseRmEl.style.display = 'none';
+        }
+    }
+
     document.getElementById('qvWeight').textContent = data.weight ? '(' + data.weight + ' / ' + data.unit + ')' : '';
     document.getElementById('qvDesc').textContent = data.short_desc || '';
     document.getElementById('qvOriginTag').textContent = '🌍 ' + (data.origin || 'Imported');

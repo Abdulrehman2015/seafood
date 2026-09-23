@@ -346,6 +346,18 @@
                 </div>
             </div>
 
+            <div class="form-group mb-3" style="background:#f8fafc;padding:12px 14px;border-radius:10px;border:1px solid #e2e8f0;margin-top:10px;">
+                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin:0;font-size:0.88rem;color:#334155;font-weight:600;">
+                    <input type="checkbox" name="marketing_opt_in" value="1" {{ old('marketing_opt_in', $user->marketing_opt_in) ? 'checked' : '' }} style="width:18px;height:18px;accent-color:#2563eb;cursor:pointer;">
+                    <span>
+                        📩 Marketing Consent Opt-In (WhatsApp &amp; Email Promotions)
+                    </span>
+                </label>
+                <div style="font-size:0.75rem;color:#64748b;margin-left:28px;margin-top:2px;">
+                    Customer consented to receive product updates, seasonal seafood catch arrivals, and promotions.
+                </div>
+            </div>
+
             <div style="margin-top:20px;display:flex;justify-content:flex-end;">
                 <button type="submit" class="btn btn-primary" style="font-weight:700;padding:11px 26px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">
                     💾 Save Changes
@@ -429,6 +441,19 @@
                             </form>
                         @else
                             <span style="color:#15803d;font-weight:600;">✓ Normal ({{ $user->email_otp_attempts }} attempts)</span>
+                        @endif
+                    </div>
+                </div>
+
+                <div>
+                    <div class="text-xs text-muted" style="color:#64748b;font-weight:600;">Marketing Consent</div>
+                    <div style="margin-top:2px;font-weight:600;">
+                        @if($user->marketing_opt_in)
+                            <span style="color:#15803d;display:inline-flex;align-items:center;gap:4px;">
+                                <span>📩</span> Consented (WhatsApp &amp; Email)
+                            </span>
+                        @else
+                            <span style="color:#64748b;">— Not Opted In</span>
                         @endif
                     </div>
                 </div>

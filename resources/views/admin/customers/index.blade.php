@@ -222,8 +222,11 @@
                                             <span style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;padding:1px 6px;border-radius:6px;font-size:0.68rem;font-weight:700;" title="Matches another customer's phone, SSM reg no, or company name">⚠️ Duplicate</span>
                                         @endif
                                     </div>
-                                    <div style="font-size:0.8rem;color:#64748b;display:flex;align-items:center;gap:4px;">
+                                    <div style="font-size:0.8rem;color:#64748b;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                                         <span>{{ $customer->email }}</span>
+                                        @if($customer->marketing_opt_in)
+                                            <span style="background:#ecfdf5;color:#047857;border:1px solid #a7f3d0;padding:1px 6px;border-radius:6px;font-size:0.68rem;font-weight:700;" title="Opted in for WhatsApp & Email promotions">📩 Marketing Opt-In</span>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

@@ -115,7 +115,7 @@
                                               data-manual-sgd="{{ $item->product?->price_sgd ?? '' }}"
                                               data-manual-usd="{{ $item->product?->price_usd ?? '' }}"
                                         >{{ $currencySymbol }} {{ number_format($curAmount, 2) }}</span>
-                                        <span class="price-base-rm" style="{{ $currentCurrency !== 'MYR' ? '' : 'display:none' }};font-size:0.75rem;color:#64748b;margin-left:3px">(RM {{ number_format($itemPrice, 2) }})</span>
+                                        <span class="price-base-rm" style="display:{{ $currentCurrency !== 'MYR' ? 'inline' : 'none' }};font-size:0.75rem;color:#64748b;margin-left:3px">(RM {{ number_format($itemPrice, 2) }})</span>
                                         <span class="unit-val">/ {{ $item->product?->unit ?? __t('cart.default_unit', 'unit') }}</span>
                                         @if($item->product?->weight)
                                             <span class="meta-sep">·</span>

@@ -87,67 +87,75 @@
 
 <div class="container" style="padding-top:var(--space-8);padding-bottom:var(--space-16)">
 
-    <!-- Mobile Collapsible Order Summary Banner (< 992px) -->
-    <div class="mobile-order-summary-card d-lg-none" onclick="toggleMobileSummary()">
-        <div class="mobile-summary-bar">
-            <div class="mobile-summary-left">
-                <span class="mobile-summary-icon">🛍️</span>
-                <div class="mobile-summary-text">
-                    <span id="mobileSummaryText">@t('walkin.show_order_summary', 'Show Order Summary')</span>
-                    <span class="mobile-summary-count">({{ $items->count() }} @t('walkin.items', 'items'))</span>
-                </div>
-                <span id="mobileSummaryChevron" class="mobile-summary-chevron">▼</span>
-            </div>
-            <div class="mobile-summary-right">
-                RM {{ number_format($totals['total'], 2) }}
-            </div>
-        </div>
-
-        <!-- Collapsible Content -->
-        <div id="mobileSummaryCollapse" class="mobile-summary-collapse" style="display:none" onclick="event.stopPropagation()">
-            <div class="mobile-summary-items">
-                @foreach($items as $item)
-                    @php $price = $item->product?->walkin_price ?? $item->product?->retail_price ?? 0; @endphp
-                    <div class="mobile-summary-item-row">
-                        <div class="mobile-item-thumb">
-                            @if($item->product?->thumbnail)
-                                <img src="{{ cdn_storage($item->product->thumbnail) }}" alt="{{ $item->product->name }}">
-                            @else
-                                <span class="thumb-emoji">🐟</span>
-                            @endif
-                            <span class="qty-badge">{{ $item->quantity }}</span>
-                        </div>
-                        <div class="mobile-item-details">
-                            <div class="mobile-item-name">{{ $item->product?->name }}</div>
-                            <div class="mobile-item-meta">{{ $item->product?->sku ?? 'IN-STORE' }} · {{ $item->quantity }} × RM {{ number_format($price, 2) }}</div>
-                        </div>
-                        <div class="mobile-item-price">
-                            RM {{ number_format($price * $item->quantity, 2) }}
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            <div class="mobile-summary-totals">
-                <div class="summary-line">
-                    <span>@t('walkin.subtotal', 'Subtotal')</span>
-                    <span>RM {{ number_format($totals['subtotal'], 2) }}</span>
-                </div>
-                <div class="summary-line">
-                    <span>@t('walkin.fulfillment', 'Fulfillment')</span>
-                    <span style="color:#059669;font-weight:700">@t('walkin.free_counter_pickup', 'Counter Self-Collection (FREE)')</span>
-                </div>
-                <div class="summary-line summary-grand-total">
-                    <span class="total-label">@t('walkin.total_to_pay', 'Total to Pay')</span>
-                    <span class="total-val">RM {{ number_format($totals['total'], 2) }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <form action="{{ route('checkout.store') }}" method="POST" id="checkoutForm">
         @csrf
         <input type="hidden" name="fulfillment_type" value="self_collection">
+
+        @if(session('error'))
+            <div class="alert alert-danger" style="background:#fee2e2;border:1px solid #ef4444;color:#991b1b;padding:14px 18px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;gap:12px">
+                <span style="font-size:1.2rem">⚠️</span>
+                <div>{{ session('error') }}</div>
+            </div>
+        @endif
+
+        <!-- Mobile Collapsible Order Summary Banner (< 992px) - OPEN BY DEFAULT -->
+        <div class="mobile-order-summary-card d-lg-none" onclick="toggleMobileSummary()">
+            <div class="mobile-summary-bar">
+                <div class="mobile-summary-left">
+                    <span class="mobile-summary-icon">🛍️</span>
+                    <span class="mobile-summary-title">
+                        <span id="mobileSummaryText">@t('walkin.hide_order_summary', 'Hide Order Summary')</span>
+                        <span class="mobile-summary-count-badge">({{ $items->count() }})</span>
+                    </span>
+                    <span id="mobileSummaryChevron" class="mobile-summary-chevron open">▼</span>
+                </div>
+                <div class="mobile-summary-right">
+                    RM {{ number_format($totals['total'], 2) }}
+                </div>
+            </div>
+
+            <!-- Collapsible Content (Open by default) -->
+            <div id="mobileSummaryCollapse" class="mobile-summary-collapse" onclick="event.stopPropagation()">
+                <div class="mobile-summary-items">
+                    @foreach($items as $item)
+                        @php $price = $item->product?->walkin_price ?? $item->product?->retail_price ?? 0; @endphp
+                        <div class="mobile-summary-item-row">
+                            <div class="mobile-item-thumb">
+                                @if($item->product?->thumbnail)
+                                    <img src="{{ cdn_storage($item->product->thumbnail) }}" alt="{{ $item->product->name }}">
+                                @else
+                                    <span class="thumb-emoji">🐟</span>
+                                @endif
+                                <span class="qty-badge">{{ $item->quantity }}</span>
+                            </div>
+                            <div class="mobile-item-details">
+                                <div class="mobile-item-name">{{ $item->product?->name }}</div>
+                                <div class="mobile-item-meta">{{ $item->product?->sku ?? 'IN-STORE' }} · {{ $item->quantity }} × RM {{ number_format($price, 2) }}</div>
+                            </div>
+                            <div class="mobile-item-price">
+                                RM {{ number_format($price * $item->quantity, 2) }}
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="mobile-summary-totals">
+                    <div class="summary-line">
+                        <span>@t('walkin.subtotal', 'Subtotal')</span>
+                        <span class="summary-val-dark">RM {{ number_format($totals['subtotal'], 2) }}</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>@t('walkin.fulfillment', 'Fulfillment')</span>
+                        <span class="summary-val-free">✓ @t('walkin.free_counter_pickup', 'Counter Self-Collection (FREE)')</span>
+                    </div>
+                    
+                    <div class="mobile-summary-grand-box">
+                        <span class="grand-label">@t('walkin.total_to_pay', 'Total to Pay')</span>
+                        <span class="grand-amount">RM {{ number_format($totals['total'], 2) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="walkin-checkout-grid">
 
@@ -209,35 +217,110 @@
                     <div class="form-card-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
                         <h3 class="form-card-title">
                             <span class="title-icon">💳</span>
-                            <span>@t('walkin.secure_payment', '3. Secure In-Store Payment')</span>
+                            <span>@t('walkin.select_payment_method', '3. Select Payment Method')</span>
                         </h3>
                         <div class="payment-shield-pill">
                             🔒 @t('walkin.ssl_badge', '256-bit SSL Encrypted')
                         </div>
                     </div>
-                    
-                    <div class="walkin-payment-alert">
-                        <strong>🔒 @t('walkin.instant_pay_title', 'Instant Phone Payment:')</strong> @t('walkin.payment_hint', 'Pay securely with Credit/Debit Card, Apple Pay, Google Pay, or FPX. You will immediately receive your Counter Collection Token.')
+
+                    <!-- Payment Selection Grid -->
+                    <div class="walkin-payment-options-grid">
+                        <!-- Option 1: Cash at Counter -->
+                        <label class="walkin-pay-tile {{ old('payment_method', 'cash') === 'cash' ? 'selected' : '' }}" id="payTileCash" onclick="onWalkinPaymentMethodChange('cash')">
+                            <input type="radio" name="payment_method" value="cash" id="radioCash" 
+                                   {{ old('payment_method', 'cash') === 'cash' ? 'checked' : '' }} 
+                                   onchange="onWalkinPaymentMethodChange('cash')">
+                            <div class="pay-tile-check">✓</div>
+                            <div class="pay-tile-icon">💵</div>
+                            <div class="pay-tile-content">
+                                <div class="pay-tile-title">@t('walkin.pay_cash_title', 'Cash at Counter')</div>
+                                <div class="pay-tile-desc">@t('walkin.pay_cash_desc', 'Pay cash directly at SILC Counter 2 upon collecting your packed seafood.')</div>
+                                <div class="pay-tile-badge badge-cash">@t('walkin.badge_pay_on_pickup', 'Pay on Collection')</div>
+                            </div>
+                        </label>
+
+                        <!-- Option 2: Online Payment via Stripe -->
+                        <label class="walkin-pay-tile {{ old('payment_method') === 'stripe' ? 'selected' : '' }}" id="payTileStripe" onclick="onWalkinPaymentMethodChange('stripe')">
+                            <input type="radio" name="payment_method" value="stripe" id="radioStripe" 
+                                   {{ old('payment_method') === 'stripe' ? 'checked' : '' }} 
+                                   onchange="onWalkinPaymentMethodChange('stripe')">
+                            <div class="pay-tile-check">✓</div>
+                            <div class="pay-tile-icon">💳</div>
+                            <div class="pay-tile-content">
+                                <div class="pay-tile-title">@t('walkin.pay_online_title', 'Online Payment (Stripe)')</div>
+                                <div class="pay-tile-desc">@t('walkin.pay_online_desc', 'Credit / Debit Card, Apple Pay, Google Pay, or FPX Online Banking.')</div>
+                                <div class="pay-tile-badge badge-stripe">@t('walkin.badge_official_stripe', 'Official Stripe Hosted')</div>
+                            </div>
+                        </label>
                     </div>
 
-                    <div class="payment-methods-badges-row">
-                        <span class="pay-chip">💳 Visa</span>
-                        <span class="pay-chip">💳 Mastercard</span>
-                        <span class="pay-chip">🍎 Apple Pay</span>
-                        <span class="pay-chip">🌐 Google Pay</span>
-                        <span class="pay-chip">🏦 FPX Online Banking</span>
+                    <!-- Detail Info Box: Cash -->
+                    <div id="cashInfoBox" class="walkin-pay-info-box cash-box" style="{{ old('payment_method', 'cash') === 'cash' ? '' : 'display:none' }}">
+                        <div class="info-box-header">
+                            <span class="info-icon">💵</span>
+                            <strong>@t('walkin.cash_info_title', 'Pay Cash at Counter 2:')</strong>
+                        </div>
+                        <p class="info-desc">
+                            @t('walkin.cash_info_desc', 'Your order is confirmed immediately and queued for packaging. Simply show your digital Collection Token to the cashier at Counter 2 to pay cash and collect your seafood.')
+                        </p>
+                        <div class="info-highlight-badge">
+                            ⚡ @t('walkin.instant_token_badge', 'Instant Collection Token Generated on Submission')
+                        </div>
                     </div>
 
-                    <!-- Payment Element Container -->
-                    <div id="payment-element" class="walkin-payment-box">
-                        <p class="text-muted text-sm text-center" style="padding:var(--space-3);color:#64748b">Connecting to secure gateway...</p>
+                    <!-- Detail Info Box: Online (Stripe) -->
+                    <div id="stripeInfoBox" class="walkin-pay-info-box stripe-box" style="{{ old('payment_method') === 'stripe' ? '' : 'display:none' }}">
+                        <div class="info-box-header">
+                            <span class="info-icon">🛡️</span>
+                            <strong>@t('walkin.stripe_info_title', 'Stripe Official Hosted Checkout:')</strong>
+                        </div>
+                        <p class="info-desc">
+                            @t('walkin.stripe_info_desc', 'You will be securely redirected to Stripe\'s official checkout page (checkout.stripe.com). Once your card or FPX payment is confirmed, you will automatically return here with your Collection Token.')
+                        </p>
+                        <div class="payment-methods-badges-row">
+                            <span class="pay-chip">💳 Visa</span>
+                            <span class="pay-chip">💳 Mastercard</span>
+                            <span class="pay-chip">🍎 Apple Pay</span>
+                            <span class="pay-chip">🌐 Google Pay</span>
+                        </div>
                     </div>
-                    <div id="payment-message" class="alert alert-danger mt-3" style="display:none;font-size:0.85rem"></div>
-                    <input type="hidden" name="payment_intent_id" id="paymentIntentId">
+                </div>
+
+                <!-- Mobile & Tablet Order Submission Card (< 992px) -->
+                <div class="walkin-mobile-submit-card d-lg-none">
+                    <div class="mobile-submit-total-row">
+                        <div class="total-breakdown">
+                            <span class="sub-label">@t('walkin.total_to_pay', 'Total to Pay')</span>
+                            <span class="sub-free-badge">✓ @t('walkin.free_counter_pickup', 'Counter Self-Collection (FREE)')</span>
+                        </div>
+                        <div class="total-price-val">
+                            RM {{ number_format($totals['total'], 2) }}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-walkin-pay-submit btn-mobile-submit" id="mobileSubmitBtn">
+                        <span id="mobileSubmitBtnIcon">{{ old('payment_method', 'cash') === 'cash' ? '💵' : '🔒' }}</span>
+                        <span id="mobileSubmitBtnText">
+                            @if(old('payment_method', 'cash') === 'cash')
+                                @t('walkin.confirm_cash_order', 'Confirm Order & Get Collection Token')
+                            @else
+                                @t('walkin.proceed_to_stripe', 'Proceed to Stripe Official Checkout →')
+                            @endif
+                        </span>
+                    </button>
+
+                    <div class="mobile-submit-trust-row">
+                        <span>⚡ @t('walkin.instant_token', 'Instant Token')</span>
+                        <span>•</span>
+                        <span>🏬 @t('walkin.counter_silc', 'SILC Counter 2')</span>
+                        <span>•</span>
+                        <span>❄️ -18°C IQF Packed</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Right: Sticky Order Summary -->
+            <!-- Right: Sticky Order Summary (Desktop >= 992px) -->
             <div class="walkin-checkout-sidebar">
                 <div class="walkin-order-summary-card">
                     <div class="summary-card-header">
@@ -283,7 +366,14 @@
                     </div>
 
                     <button type="submit" class="btn-walkin-pay-submit" id="submitBtn">
-                        🔒 @t('walkin.pay_and_get_token', 'Pay & Get Collection Token')
+                        <span id="submitBtnIcon">{{ old('payment_method', 'cash') === 'cash' ? '💵' : '🔒' }}</span>
+                        <span id="submitBtnText">
+                            @if(old('payment_method', 'cash') === 'cash')
+                                @t('walkin.confirm_cash_order', 'Confirm Order & Get Collection Token')
+                            @else
+                                @t('walkin.proceed_to_stripe', 'Proceed to Stripe Official Checkout →')
+                            @endif
+                        </span>
                     </button>
 
                     <div class="summary-footer-trust">
@@ -307,7 +397,7 @@
     background: linear-gradient(135deg, #091a36 0%, #0f274a 45%, #1e3a8a 100%);
     color: #ffffff;
     border-bottom: 1px solid #1e3a8a;
-    padding-top: calc(75px + var(--space-6));
+    padding-top: calc(78px + 28px);
     padding-bottom: var(--space-6);
     overflow: hidden;
 }
@@ -512,41 +602,74 @@
 /* ─── Mobile Collapsible Summary Bar (< 992px) ─── */
 .mobile-order-summary-card {
     background: #ffffff;
-    border: 1.5px solid #bfdbfe;
-    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 16px;
     margin-bottom: 20px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
     cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.mobile-order-summary-card:hover {
+    border-color: #93c5fd;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.08);
 }
 .mobile-summary-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 18px;
-    background: #eff6ff;
+    padding: 13px 18px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    gap: 12px;
+    user-select: none;
 }
 .mobile-summary-left {
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0;
+    flex: 1;
 }
-.mobile-summary-icon { font-size: 1.25rem; }
-.mobile-summary-text {
+.mobile-summary-icon {
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+.mobile-summary-title {
     font-size: 0.88rem;
     font-weight: 700;
-    color: #1e3a8a;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
 }
-.mobile-summary-count {
-    color: #64748b;
-    font-size: 0.78rem;
-    font-weight: normal;
-    margin-left: 2px;
+.mobile-summary-count-badge {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    flex-shrink: 0;
 }
 .mobile-summary-chevron {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: #2563eb;
     transition: transform 0.2s ease;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
 }
 .mobile-summary-chevron.open {
     transform: rotate(180deg);
@@ -555,13 +678,14 @@
     font-family: var(--font-heading);
     font-size: 1.15rem;
     font-weight: 800;
-    color: #1e3a8a;
+    color: #1e40af;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .mobile-summary-collapse {
-    padding: 16px 18px;
+    padding: 16px 18px 20px;
     background: #ffffff;
-    border-top: 1px solid #e2e8f0;
 }
 .mobile-summary-items {
     display: flex;
@@ -575,13 +699,13 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding-bottom: 10px;
+    padding-bottom: 12px;
     border-bottom: 1px solid #f1f5f9;
 }
 .mobile-item-thumb {
     position: relative;
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     border-radius: 10px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -598,8 +722,8 @@
 }
 .qty-badge {
     position: absolute;
-    top: -4px;
-    right: -4px;
+    top: -3px;
+    right: -3px;
     background: #1d4ed8;
     color: #ffffff;
     font-size: 0.65rem;
@@ -614,37 +738,56 @@
 }
 .mobile-item-details { flex: 1; min-width: 0; }
 .mobile-item-name {
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     font-weight: 700;
     color: #0f172a;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 2px;
 }
 .mobile-item-meta { font-size: 0.75rem; color: #64748b; }
-.mobile-item-price { font-size: 0.88rem; font-weight: 700; color: #1e3a8a; }
+.mobile-item-price { font-size: 0.92rem; font-weight: 800; color: #0f172a; white-space: nowrap; }
 
 .mobile-summary-totals {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    padding-top: 10px;
-    border-top: 1px solid #e2e8f0;
+    padding-top: 4px;
     font-size: 0.88rem;
 }
 .summary-line {
     display: flex;
     justify-content: space-between;
-    color: #475569;
+    align-items: center;
+    color: #64748b;
+    font-size: 0.88rem;
+    padding: 3px 0;
 }
-.summary-grand-total {
-    margin-top: 6px;
-    padding-top: 8px;
-    border-top: 2px dashed #cbd5e1;
-    font-size: 1.1rem;
+.summary-val-dark { font-weight: 700; color: #0f172a; }
+.summary-val-free { font-weight: 700; color: #059669; }
+
+.mobile-summary-grand-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-top: 10px;
 }
-.summary-grand-total .total-label { font-weight: 800; color: #0f172a; }
-.summary-grand-total .total-val { font-family: var(--font-heading); font-weight: 800; color: #1e3a8a; }
+.mobile-summary-grand-box .grand-label {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: #0f172a;
+}
+.mobile-summary-grand-box .grand-amount {
+    font-family: var(--font-heading);
+    font-size: 1.32rem;
+    font-weight: 900;
+    color: #1e40af;
+}
 
 /* ─── Main Checkout Grid ─── */
 .walkin-checkout-grid {
@@ -889,20 +1032,25 @@
     width: 100%;
     margin-top: 16px;
     padding: 14px;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: #ffffff;
-    border: none;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #091a36;
+    border: 1px solid #fde68a;
     border-radius: 12px;
     font-weight: 800;
-    font-size: 0.98rem;
+    font-size: 1rem;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 .btn-walkin-pay-submit:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.55);
+    color: #091a36;
 }
 .btn-walkin-pay-submit:disabled {
     opacity: 0.7;
@@ -922,6 +1070,62 @@
 }
 .trust-line { display: flex; align-items: center; gap: 4px; }
 
+/* ─── Mobile & Tablet Order Submission Card (< 992px) ─── */
+.walkin-mobile-submit-card {
+    display: none;
+    background: #ffffff;
+    border: 1.5px solid #bfdbfe;
+    border-radius: 16px;
+    padding: 20px 18px;
+    margin-top: 22px;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+}
+.mobile-submit-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+.total-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.total-breakdown .sub-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.04em;
+}
+.total-breakdown .sub-free-badge {
+    font-size: 0.75rem;
+    color: #059669;
+    font-weight: 700;
+}
+.total-price-val {
+    font-family: var(--font-heading);
+    font-size: 1.45rem;
+    font-weight: 900;
+    color: #1e40af;
+}
+.btn-mobile-submit {
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+}
+.mobile-submit-trust-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.74rem;
+    color: #64748b;
+    font-weight: 600;
+    flex-wrap: wrap;
+}
+
 /* ─── Responsive Breakpoints (Tablet & Mobile) ─── */
 @media (max-width: 991px) {
     .walkin-checkout-grid {
@@ -929,13 +1133,16 @@
         gap: 20px;
     }
     .walkin-checkout-sidebar {
-        display: none; /* Summary is shown in mobile collapsible bar */
+        display: none !important; /* Summary is shown in mobile collapsible bar */
+    }
+    .walkin-mobile-submit-card {
+        display: block !important;
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
     .walkin-hero-section {
-        padding-top: calc(65px + var(--space-4));
+        padding-top: calc(78px + 32px);
         padding-bottom: var(--space-5);
     }
     .walkin-hero-title {
@@ -945,13 +1152,72 @@
         font-size: 0.82rem;
     }
     .walkin-stepper-wrap {
-        padding: 8px 10px;
+        padding: 8px 12px !important;
+        margin-top: 8px !important;
     }
-    .step-item {
-        gap: 6px;
+    .walkin-stepper {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 6px !important;
+        overflow: visible !important;
     }
-    .step-label {
-        font-size: 0.72rem;
+    .step-item:not(.step-active) .step-info {
+        display: none !important;
+    }
+    .step-item:not(.step-active) {
+        padding: 0 !important;
+        gap: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        opacity: 0.65 !important;
+    }
+    .step-item.step-completed:not(.step-active) {
+        opacity: 0.9 !important;
+    }
+    .step-item:not(.step-active) .step-icon {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.72rem !important;
+    }
+    .step-item.step-active {
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 5px 12px !important;
+        gap: 8px !important;
+        border-radius: 999px !important;
+        background: rgba(56, 189, 248, 0.22) !important;
+        border: 1.5px solid #38bdf8 !important;
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.35) !important;
+        flex-shrink: 0 !important;
+    }
+    .step-item.step-active .step-icon {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 0.78rem !important;
+    }
+    .step-item.step-active .step-info {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .step-item.step-active .step-num {
+        font-size: 0.6rem !important;
+        color: #7dd3fc !important;
+        text-transform: uppercase !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+    }
+    .step-item.step-active .step-label {
+        font-size: 0.78rem !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        white-space: nowrap !important;
+        line-height: 1.15 !important;
+    }
+    .step-divider {
+        flex: 1 1 auto !important;
+        min-width: 8px !important;
+        height: 2px !important;
     }
     .form-grid-2 {
         grid-template-columns: 1fr;
@@ -967,11 +1233,149 @@
         padding: 16px;
     }
 }
+
+/* ─── Walk-in Payment Method Selection Tiles ─── */
+.walkin-payment-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 16px;
+}
+@media (max-width: 640px) {
+    .walkin-payment-options-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.walkin-pay-tile {
+    position: relative;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    cursor: pointer;
+    background: #ffffff;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.walkin-pay-tile:hover {
+    border-color: #93c5fd;
+    background: #f8fafc;
+}
+.walkin-pay-tile.selected {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+}
+.walkin-pay-tile input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.pay-tile-check {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: transparent;
+    transition: all 0.15s ease;
+}
+.walkin-pay-tile.selected .pay-tile-check {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #ffffff;
+}
+.pay-tile-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.pay-tile-content {
+    flex: 1;
+    min-width: 0;
+}
+.pay-tile-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+.pay-tile-desc {
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.35;
+    margin-bottom: 8px;
+}
+.pay-tile-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+.pay-tile-badge.badge-cash {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+.pay-tile-badge.badge-stripe {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+.walkin-pay-info-box {
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 4px;
+    animation: fadeIn 0.25s ease;
+}
+.walkin-pay-info-box.cash-box {
+    background: #fefce8;
+    border: 1.5px solid #fef08a;
+}
+.walkin-pay-info-box.stripe-box {
+    background: #eff6ff;
+    border: 1.5px solid #bfdbfe;
+}
+.walkin-pay-info-box .info-box-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+.walkin-pay-info-box .info-desc {
+    font-size: 0.82rem;
+    color: #475569;
+    line-height: 1.4;
+    margin: 0 0 10px 0;
+}
+.walkin-pay-info-box .info-highlight-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
 </style>
 @endpush
 
 @push('scripts')
-<script src="https://js.stripe.com/v3/"></script>
 <script>
 // Mobile Collapsible Order Summary Toggle
 function toggleMobileSummary() {
@@ -979,136 +1383,75 @@ function toggleMobileSummary() {
     const chevron = document.getElementById('mobileSummaryChevron');
     const text = document.getElementById('mobileSummaryText');
 
-    if (collapse.style.display === 'none') {
+    if (!collapse) return;
+
+    const isHidden = window.getComputedStyle(collapse).display === 'none';
+    if (isHidden) {
         collapse.style.display = 'block';
-        chevron.classList.add('open');
-        text.textContent = 'Hide Order Summary';
+        if (chevron) chevron.classList.add('open');
+        if (text) text.textContent = @json(__t('walkin.hide_order_summary', 'Hide Order Summary'));
     } else {
         collapse.style.display = 'none';
-        chevron.classList.remove('open');
-        text.textContent = 'Show Order Summary';
+        if (chevron) chevron.classList.remove('open');
+        if (text) text.textContent = @json(__t('walkin.show_order_summary', 'Show Order Summary'));
     }
 }
 
-let stripe, elements, paymentElement;
-const stripeKey = '{{ config("services.stripe.key") }}';
+// Payment method selection handler
+function onWalkinPaymentMethodChange(method) {
+    const radioCash = document.getElementById('radioCash');
+    const radioStripe = document.getElementById('radioStripe');
+    const payTileCash = document.getElementById('payTileCash');
+    const payTileStripe = document.getElementById('payTileStripe');
+    const cashInfoBox = document.getElementById('cashInfoBox');
+    const stripeInfoBox = document.getElementById('stripeInfoBox');
+    const btnIcon = document.getElementById('submitBtnIcon');
+    const btnText = document.getElementById('submitBtnText');
+    const mobileBtnIcon = document.getElementById('mobileSubmitBtnIcon');
+    const mobileBtnText = document.getElementById('mobileSubmitBtnText');
 
-async function initStripe() {
-    const isPlaceholder = !stripeKey || stripeKey.includes('YOUR_PUBLISHABLE_KEY');
+    const cashLabel = @json(__t('walkin.confirm_cash_order', 'Confirm Order & Get Collection Token'));
+    const stripeLabel = @json(__t('walkin.proceed_to_stripe', 'Proceed to Stripe Official Checkout →'));
 
-    if (isPlaceholder) {
-        showMockPaymentUI();
-        return;
-    }
-
-    try {
-        stripe = Stripe(stripeKey);
-        const res = await fetch('{{ route("checkout.paymentIntent") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
-        });
-        const data = await res.json();
-        if (data.clientSecret) {
-            elements = stripe.elements({
-                clientSecret: data.clientSecret,
-                appearance: {
-                    theme: 'stripe',
-                    variables: { colorPrimary: '#1d4ed8', fontFamily: 'Inter, sans-serif' }
-                }
-            });
-            paymentElement = elements.create('payment');
-            paymentElement.mount('#payment-element');
-        } else {
-            showMockPaymentUI();
-        }
-    } catch (err) {
-        showMockPaymentUI();
+    if (method === 'cash') {
+        if (radioCash) radioCash.checked = true;
+        payTileCash?.classList.add('selected');
+        payTileStripe?.classList.remove('selected');
+        if (cashInfoBox) cashInfoBox.style.display = 'block';
+        if (stripeInfoBox) stripeInfoBox.style.display = 'none';
+        if (btnIcon) btnIcon.textContent = '💵';
+        if (btnText) btnText.textContent = cashLabel;
+        if (mobileBtnIcon) mobileBtnIcon.textContent = '💵';
+        if (mobileBtnText) mobileBtnText.textContent = cashLabel;
+    } else {
+        if (radioStripe) radioStripe.checked = true;
+        payTileCash?.classList.remove('selected');
+        payTileStripe?.classList.add('selected');
+        if (cashInfoBox) cashInfoBox.style.display = 'none';
+        if (stripeInfoBox) stripeInfoBox.style.display = 'block';
+        if (btnIcon) btnIcon.textContent = '🔒';
+        if (btnText) btnText.textContent = stripeLabel;
+        if (mobileBtnIcon) mobileBtnIcon.textContent = '🔒';
+        if (mobileBtnText) mobileBtnText.textContent = stripeLabel;
     }
 }
 
-function showMockPaymentUI() {
-    document.getElementById('payment-element').innerHTML = `
-        <div style="text-align:center;padding:12px;background:#eff6ff;border-radius:10px;border:1px solid #bfdbfe">
-            <div style="font-weight:700;color:#1e3a8a;font-size:0.92rem;margin-bottom:4px">
-                ⚡ Express Demo Payment Mode Active
-            </div>
-            <p class="text-xs text-muted" style="margin-bottom:12px;color:#1d4ed8">
-                Live sandbox enabled. Tap below to simulate instant in-store payment and generate your collection token.
-            </p>
-            <button type="button" class="btn btn-primary btn-sm" onclick="simulateTestPayment()" style="background:#1d4ed8;border:none;border-radius:8px;padding:8px 18px;font-weight:700">
-                ⚡ Simulate Instant Payment (One-Touch)
-            </button>
-        </div>
-    `;
-}
-
-function simulateTestPayment() {
-    document.getElementById('paymentIntentId').value = 'pi_test_walkin_' + Math.random().toString(36).substring(2, 12);
-    document.getElementById('payment-element').innerHTML = `
-        <div style="background:#ecfdf5;color:#065f46;padding:12px;border-radius:10px;text-align:center;font-weight:700;font-size:0.9rem;border:1.5px solid #a7f3d0">
-            ✓ Payment Authorized (Simulated Test Mode)
-        </div>
-    `;
+// Form submission handler
+document.getElementById('checkoutForm')?.addEventListener('submit', function(e) {
     const btn = document.getElementById('submitBtn');
-    if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = '🔒 Complete & Get Collection Token →';
-    }
-}
+    const mobileBtn = document.getElementById('mobileSubmitBtn');
+    const selected = document.querySelector('input[name="payment_method"]:checked')?.value || 'cash';
+    const loadingHtml = selected === 'cash'
+        ? '<span>⏳</span> <span>' + @json(__t('walkin.generating_token', 'Generating Collection Token...')) + '</span>'
+        : '<span>⏳</span> <span>' + @json(__t('walkin.redirecting_stripe', 'Redirecting to Stripe...')) + '</span>';
 
-initStripe();
-
-document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-
-    // If simulated payment has been authorized
-    if (document.getElementById('paymentIntentId').value) {
-        if (btn) {
-            btn.disabled = true;
-            btn.innerHTML = 'Generating Collection Token...';
+    [btn, mobileBtn].forEach(b => {
+        if (b) {
+            b.style.pointerEvents = 'none';
+            b.style.opacity = '0.85';
+            b.innerHTML = loadingHtml;
         }
-        e.target.submit();
-        return;
-    }
-
-    // If Stripe is not loaded or in mock mode
-    if (!stripe || !elements) {
-        simulateTestPayment();
-        if (btn) {
-            btn.disabled = true;
-            btn.innerHTML = 'Generating Collection Token...';
-        }
-        e.target.submit();
-        return;
-    }
-
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = 'Processing Payment...';
-    }
-
-    const { error, paymentIntent } = await stripe.confirmPayment({
-        elements,
-        redirect: 'if_required'
     });
-
-    if (error) {
-        const msgEl = document.getElementById('payment-message');
-        msgEl.style.display = 'block';
-        msgEl.textContent = error.message;
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = '🔒 Pay & Get Collection Token';
-        }
-        return;
-    }
-
-    document.getElementById('paymentIntentId').value = paymentIntent.id;
-    e.target.submit();
 });
 </script>
 @endpush

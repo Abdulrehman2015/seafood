@@ -59,6 +59,19 @@
             margin: 0 !important;
         }
 
+        .admin-form-layout {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) 360px !important;
+            gap: 24px !important;
+            align-items: start !important;
+            width: 100% !important;
+        }
+        @media (max-width: 1100px) {
+            .admin-form-layout {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: #f8fafc;

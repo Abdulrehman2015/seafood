@@ -407,4 +407,89 @@ class Setting extends Model
 
         return array_values(array_unique(array_filter($emails)));
     }
+
+    /**
+     * Determine if Google reCAPTCHA is globally enabled and active for a specific context.
+     *
+     * @param string|null $context 'contact', 'login', 'register' or null for global check
+     */
+    public static function isRecaptchaEnabled(?string $context = null): bool
+    {
+        $globallyEnabled = static::get('recaptcha_enabled', '0') === '1';
+        $siteKey = static::getRecaptchaSiteKey();
+        $secretKey = static::getRecaptchaSecretKey();
+
+        // Must be globally enabled and have valid keys configured
+        if (!$globallyEnabled || empty($siteKey) || empty($secretKey)) {
+            return false;
+        }
+
+        if ($context === 'contact') {
+            return static::get('recaptcha_on_contact', '1') === '1';
+        }
+
+        if ($context === 'login') {
+            return static::get('recaptcha_on_login', '1') === '1';
+        }
+
+        if ($context === 'register') {
+            return static::get('recaptcha_on_register', '1') === '1';
+        }
+
+        return true;
+    }
+
+    /**
+     * Get Google reCAPTCHA Site Key with fallback.
+     */
+    public static function getRecaptchaSiteKey(): string
+    {
+        return trim(static::get('recaptcha_site_key', config('services.recaptcha.site_key', '')));
+    }
+
+    /**
+     * Get Google reCAPTCHA Secret Key with fallback.
+     */
+    public static function getRecaptchaSecretKey(): string
+    {
+        return trim(static::get('recaptcha_secret_key', config('services.recaptcha.secret_key', '')));
+    }
+
+    /**
+     * Verify Google reCAPTCHA response token against Google Verification API.
+     *
+     * @param string|null $token Response token from g-recaptcha-response
+     * @param string|null $ip Remote client IP address
+     * @return bool
+     */
+    public static function verifyRecaptcha(?string $token, ?string $ip = null): bool
+    {
+        if (empty($token)) {
+            return false;
+        }
+
+        $secretKey = static::getRecaptchaSecretKey();
+        if (empty($secretKey)) {
+            return true; // Gracefully pass if secret key is not set
+        }
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::asForm()
+                ->timeout(5)
+                ->post('https://www.google.com/recaptcha/api/siteverify', [
+                    'secret'   => $secretKey,
+                    'response' => $token,
+                    'remoteip' => $ip ?? request()->ip(),
+                ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                return isset($data['success']) && $data['success'] === true;
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('reCAPTCHA verification request error: ' . $e->getMessage());
+        }
+
+        return false;
+    }
 }
