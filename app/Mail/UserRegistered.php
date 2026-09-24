@@ -19,7 +19,7 @@ class UserRegistered extends Mailable
         public User $user,
         ?string $mailLocale = null
     ) {
-        $this->mailLocale = $mailLocale ?: ($user->preferred_locale ?? current_locale());
+        $this->mailLocale = $mailLocale ?: current_locale() ?: ($user->preferred_locale ?? 'en');
         $this->locale($this->mailLocale);
     }
 

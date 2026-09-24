@@ -23,6 +23,7 @@
         ['id' => 'payment',    'icon' => '💳', 'label' => 'Payment Integrations'],
         ['id' => 'currency',   'icon' => '💱', 'label' => 'Currency & Exchange'],
         ['id' => 'modules',    'icon' => '🧩', 'label' => 'Modules Settings'],
+        ['id' => 'order',      'icon' => '🛒', 'label' => 'Order Settings'],
         ['id' => 'tracking',   'icon' => '📊', 'label' => 'Website Tracking'],
         ['id' => 'appearance', 'icon' => '🎨', 'label' => 'Site Appearance'],
         ['id' => 'recaptcha',  'icon' => '🛡️', 'label' => 'reCAPTCHA Settings'],
@@ -1663,6 +1664,284 @@
             </form>
         </div>
 
+        <!-- ================= TAB: ORDER SETTINGS ================= -->
+        <div id="tab-order" class="settings-pane card" style="display:none;background:white;border-radius:14px;border:1.5px solid #e2e8f0;box-shadow:0 1px 4px rgba(0,0,0,0.04);overflow:hidden">
+            <div style="padding:18px 24px;border-bottom:1.5px solid #e2e8f0;background:#f8fafc;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+                <div>
+                    <h2 style="font-size:1.15rem;font-weight:800;color:#0f172a;margin:0;display:flex;align-items:center;gap:8px">
+                        <span>🛒</span> Order Settings
+                    </h2>
+                    <p style="font-size:0.82rem;color:#64748b;margin:4px 0 0">
+                        Configure minimum order amounts per customer type. When enabled, customers cannot place orders below the set threshold.
+                    </p>
+                </div>
+                <span id="orderMinBadge" style="font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid;
+                    {{ ($settings['order_minimum_enabled'] ?? '0') === '1' ? 'color:#059669;background:#ecfdf5;border-color:#a7f3d0' : 'color:#64748b;background:#f1f5f9;border-color:#e2e8f0' }}">
+                    {{ ($settings['order_minimum_enabled'] ?? '0') === '1' ? '● Minimums Active' : '○ Minimums Disabled' }}
+                </span>
+            </div>
+
+            <form action="{{ route('admin.settings.update') }}" method="POST" style="padding:clamp(16px, 3vw, 24px)" id="orderSettingsForm">
+                @csrf
+                <input type="hidden" name="tab" value="order">
+
+                {{-- Enable / Disable Toggle --}}
+                <div style="margin-bottom:28px;padding:20px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px">
+                    <div style="font-size:0.75rem;font-weight:800;color:#4f46e5;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:14px;display:flex;align-items:center;gap:6px">
+                        <span>⚙️</span> Minimum Order Enforcement
+                    </div>
+                    <div style="display:flex;gap:20px;flex-wrap:wrap">
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:14px 20px;border-radius:10px;border:2px solid;
+                            {{ ($settings['order_minimum_enabled'] ?? '0') === '1' ? 'border-color:#4f46e5;background:#eef2ff' : 'border-color:#e2e8f0;background:white' }}
+                            font-weight:700;font-size:0.9rem;flex:1;min-width:200px;transition:all 0.15s" id="labelMinEnabled">
+                            <input type="radio" name="order_minimum_enabled" value="1"
+                                {{ ($settings['order_minimum_enabled'] ?? '0') === '1' ? 'checked' : '' }}
+                                onchange="handleOrderMinToggle(this)"
+                                style="width:18px;height:18px;accent-color:#4f46e5">
+                            <span>
+                                <span style="display:block;color:#3730a3">✅ Enabled</span>
+                                <span style="font-weight:400;font-size:0.78rem;color:#6366f1">Minimum order amounts are enforced at checkout</span>
+                            </span>
+                        </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:14px 20px;border-radius:10px;border:2px solid;
+                            {{ ($settings['order_minimum_enabled'] ?? '0') !== '1' ? 'border-color:#4f46e5;background:#eef2ff' : 'border-color:#e2e8f0;background:white' }}
+                            font-weight:700;font-size:0.9rem;flex:1;min-width:200px;transition:all 0.15s" id="labelMinDisabled">
+                            <input type="radio" name="order_minimum_enabled" value="0"
+                                {{ ($settings['order_minimum_enabled'] ?? '0') !== '1' ? 'checked' : '' }}
+                                onchange="handleOrderMinToggle(this)"
+                                style="width:18px;height:18px;accent-color:#64748b">
+                            <span>
+                                <span style="display:block;color:#374151">🚫 Disabled</span>
+                                <span style="font-weight:400;font-size:0.78rem;color:#6b7280">No minimum enforced — all order amounts accepted</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                {{-- Minimum Amounts Per Customer Type --}}
+                <div id="orderMinFields" style="{{ ($settings['order_minimum_enabled'] ?? '0') !== '1' ? 'opacity:0.5;pointer-events:none;' : '' }}transition:opacity 0.2s">
+                    <div style="font-size:0.75rem;font-weight:800;color:#4f46e5;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:16px;display:flex;align-items:center;gap:6px">
+                        <span>💰</span> Minimum Order Amount by Customer Type (RM)
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+
+                        {{-- Retail --}}
+                        <div style="background:white;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;position:relative;overflow:hidden">
+                            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#10b981,#34d399)"></div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+                                <div style="width:40px;height:40px;border-radius:10px;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-size:1.3rem">🛍️</div>
+                                <div>
+                                    <div style="font-weight:800;font-size:0.95rem;color:#0f172a">Retail Customers</div>
+                                    <div style="font-size:0.75rem;color:#64748b">Walk-in & online retail orders</div>
+                                </div>
+                            </div>
+                            <label style="font-size:0.78rem;font-weight:700;color:#374151;display:block;margin-bottom:6px">Minimum Order Amount</label>
+                            <div style="position:relative">
+                                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:#10b981;font-size:0.9rem">RM</span>
+                                <input type="number" name="order_minimum_retail" id="order_minimum_retail"
+                                    min="0" step="0.01" placeholder="0.00"
+                                    value="{{ old('order_minimum_retail', $settings['order_minimum_retail'] ?? '0') }}"
+                                    class="form-control"
+                                    style="padding-left:42px;border-radius:10px;height:44px;font-size:1rem;font-weight:700;border-color:#d1fae5">
+                            </div>
+                            <div style="font-size:0.72rem;color:#6b7280;margin-top:8px">Set to 0 to disable minimum for this group</div>
+                        </div>
+
+                        {{-- Wholesale --}}
+                        <div style="background:white;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;position:relative;overflow:hidden">
+                            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#3b82f6,#60a5fa)"></div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+                                <div style="width:40px;height:40px;border-radius:10px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:1.3rem">🏢</div>
+                                <div>
+                                    <div style="font-weight:800;font-size:0.95rem;color:#0f172a">Wholesale Customers</div>
+                                    <div style="font-size:0.75rem;color:#64748b">Approved B2B wholesale buyers</div>
+                                </div>
+                            </div>
+                            <label style="font-size:0.78rem;font-weight:700;color:#374151;display:block;margin-bottom:6px">Minimum Order Amount</label>
+                            <div style="position:relative">
+                                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:#3b82f6;font-size:0.9rem">RM</span>
+                                <input type="number" name="order_minimum_wholesale" id="order_minimum_wholesale"
+                                    min="0" step="0.01" placeholder="0.00"
+                                    value="{{ old('order_minimum_wholesale', $settings['order_minimum_wholesale'] ?? '0') }}"
+                                    class="form-control"
+                                    style="padding-left:42px;border-radius:10px;height:44px;font-size:1rem;font-weight:700;border-color:#dbeafe">
+                            </div>
+                            <div style="font-size:0.72rem;color:#6b7280;margin-top:8px">Set to 0 to disable minimum for this group</div>
+                        </div>
+
+                        {{-- Trading --}}
+                        <div style="background:white;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;position:relative;overflow:hidden">
+                            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#8b5cf6,#a78bfa)"></div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+                                <div style="width:40px;height:40px;border-radius:10px;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:1.3rem">🌐</div>
+                                <div>
+                                    <div style="font-weight:800;font-size:0.95rem;color:#0f172a">Trading / Distribution</div>
+                                    <div style="font-size:0.75rem;color:#64748b">Import, export & distribution partners</div>
+                                </div>
+                            </div>
+                            <label style="font-size:0.78rem;font-weight:700;color:#374151;display:block;margin-bottom:6px">Minimum Order Amount</label>
+                            <div style="position:relative">
+                                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:#8b5cf6;font-size:0.9rem">RM</span>
+                                <input type="number" name="order_minimum_trading" id="order_minimum_trading"
+                                    min="0" step="0.01" placeholder="0.00"
+                                    value="{{ old('order_minimum_trading', $settings['order_minimum_trading'] ?? '0') }}"
+                                    class="form-control"
+                                    style="padding-left:42px;border-radius:10px;height:44px;font-size:1rem;font-weight:700;border-color:#ede9fe">
+                            </div>
+                            <div style="font-size:0.72rem;color:#6b7280;margin-top:8px">Set to 0 to disable minimum for this group</div>
+                        </div>
+
+                    </div>
+
+                    {{-- Info box --}}
+                    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:16px 20px;margin-top:20px">
+                        <div style="font-weight:700;font-size:0.86rem;color:#1e40af;margin-bottom:6px;display:flex;align-items:center;gap:6px">
+                            <span>💡</span> How wholesale/trading minimums work
+                        </div>
+                        <ul style="margin:0;padding-left:18px;font-size:0.8rem;color:#1e3a8a;line-height:1.7">
+                            <li>Minimums for wholesale and trading partners are enforced at checkout when enabled.</li>
+                            <li>A warning banner also appears on the cart page showing how much more is needed.</li>
+                            <li>Setting a value of <strong>RM 0.00</strong> disables the minimum for that specific customer group.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {{-- ================= B2C DELIVERY & TRANSPORTATION RULES SECTION ================= --}}
+                <div style="margin-top:32px;padding-top:28px;border-top:2px dashed #e2e8f0">
+                    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+                        <div>
+                            <div style="font-size:0.75rem;font-weight:800;color:#0284c7;text-transform:uppercase;letter-spacing:0.8px;display:flex;align-items:center;gap:6px">
+                                <span>🚚</span> B2C Delivery & Transportation Rate Rules
+                            </div>
+                            <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin:4px 0 0">
+                                Standard Delivery Threshold & Area Transportation Rates
+                            </h3>
+                        </div>
+                        <span style="font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid #bae6fd;color:#0369a1;background:#f0f9ff">
+                            ● Active B2C Delivery System
+                        </span>
+                    </div>
+
+                    <p style="font-size:0.82rem;color:#64748b;margin:0 0 20px;line-height:1.5">
+                        Orders at or above the threshold qualify for the standard local delivery arrangement (Free delivery). 
+                        Orders below the threshold are <strong>never blocked</strong>; instead, an area transportation charge is automatically calculated based on the customer's delivery location / zone. 
+                        <strong>Self-collection and walk-in orders are always exempt from thresholds and delivery charges.</strong>
+                    </p>
+
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:20px">
+                        {{-- Threshold --}}
+                        <div style="background:white;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;position:relative;overflow:hidden">
+                            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#0284c7,#38bdf8)"></div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+                                <div style="width:38px;height:38px;border-radius:10px;background:#e0f2fe;display:flex;align-items:center;justify-content:center;font-size:1.2rem">📦</div>
+                                <div>
+                                    <div style="font-weight:800;font-size:0.9rem;color:#0f172a">B2C Delivery Threshold</div>
+                                    <div style="font-size:0.72rem;color:#64748b">Free / standard local delivery</div>
+                                </div>
+                            </div>
+                            <label style="font-size:0.78rem;font-weight:700;color:#374151;display:block;margin-bottom:6px">Threshold Amount</label>
+                            <div style="position:relative">
+                                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:#0284c7;font-size:0.9rem">RM</span>
+                                <input type="number" name="delivery_b2c_free_threshold" id="delivery_b2c_free_threshold"
+                                    min="0" step="0.01" placeholder="100.00"
+                                    value="{{ old('delivery_b2c_free_threshold', $settings['delivery_b2c_free_threshold'] ?? '100.00') }}"
+                                    class="form-control"
+                                    style="padding-left:42px;border-radius:10px;height:44px;font-size:1rem;font-weight:700;border-color:#bae6fd">
+                            </div>
+                            <div style="font-size:0.72rem;color:#0284c7;margin-top:6px;font-weight:600">≥ RM 100: Eligible for standard delivery</div>
+                        </div>
+
+                        {{-- Local Johor Rate (< RM100) --}}
+                        <div style="background:white;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;position:relative;overflow:hidden">
+                            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#10b981,#34d399)"></div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+                                <div style="width:38px;height:38px;border-radius:10px;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-size:1.2rem">📍</div>
+                                <div>
+                                    <div style="font-weight:800;font-size:0.9rem;color:#0f172a">Local Johor Area Rate</div>
+                                    <div style="font-size:0.72rem;color:#64748b">JB, Skudai, Kulai, Iskandar Puteri</div>
+                                </div>
+                            </div>
+                            <label style="font-size:0.78rem;font-weight:700;color:#374151;display:block;margin-bottom:6px">Fee for orders &lt; RM 100</label>
+                            <div style="position:relative">
+                                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:#10b981;font-size:0.9rem">RM</span>
+                                <input type="number" name="delivery_fee_zone_local" id="delivery_fee_zone_local"
+                                    min="0" step="0.01" placeholder="10.00"
+                                    value="{{ old('delivery_fee_zone_local', $settings['delivery_fee_zone_local'] ?? '10.00') }}"
+                                    class="form-control"
+                                    style="padding-left:42px;border-radius:10px;height:44px;font-size:1rem;font-weight:700;border-color:#a7f3d0">
+                            </div>
+                            <div style="font-size:0.72rem;color:#059669;margin-top:6px;font-weight:600">Local direct cold-chain fleet rate</div>
+                        </div>
+
+                        {{-- Outstation Peninsular Rate (< RM100) --}}
+                        <div style="background:white;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;position:relative;overflow:hidden">
+                            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+                                <div style="width:38px;height:38px;border-radius:10px;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:1.2rem">🚛</div>
+                                <div>
+                                    <div style="font-weight:800;font-size:0.9rem;color:#0f172a">Outstation Peninsular Rate</div>
+                                    <div style="font-size:0.72rem;color:#64748b">KL, Selangor, Melaka, Perak, etc.</div>
+                                </div>
+                            </div>
+                            <label style="font-size:0.78rem;font-weight:700;color:#374151;display:block;margin-bottom:6px">Fee for orders &lt; RM 100</label>
+                            <div style="position:relative">
+                                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:#d97706;font-size:0.9rem">RM</span>
+                                <input type="number" name="delivery_fee_zone_outstation" id="delivery_fee_zone_outstation"
+                                    min="0" step="0.01" placeholder="20.00"
+                                    value="{{ old('delivery_fee_zone_outstation', $settings['delivery_fee_zone_outstation'] ?? '20.00') }}"
+                                    class="form-control"
+                                    style="padding-left:42px;border-radius:10px;height:44px;font-size:1rem;font-weight:700;border-color:#fde68a">
+                            </div>
+                            <div style="font-size:0.72rem;color:#b45309;margin-top:6px;font-weight:600">Sub-zero courier logistics rate</div>
+                        </div>
+
+                        {{-- Fallback Default Rate (< RM100) --}}
+                        <div style="background:white;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px;position:relative;overflow:hidden">
+                            <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#64748b,#94a3b8)"></div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+                                <div style="width:38px;height:38px;border-radius:10px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:1.2rem">🌐</div>
+                                <div>
+                                    <div style="font-weight:800;font-size:0.9rem;color:#0f172a">Default Fallback Rate</div>
+                                    <div style="font-size:0.72rem;color:#64748b">Other/unspecified regions</div>
+                                </div>
+                            </div>
+                            <label style="font-size:0.78rem;font-weight:700;color:#374151;display:block;margin-bottom:6px">Fee for orders &lt; RM 100</label>
+                            <div style="position:relative">
+                                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:#475569;font-size:0.9rem">RM</span>
+                                <input type="number" name="delivery_fee_default" id="delivery_fee_default"
+                                    min="0" step="0.01" placeholder="15.00"
+                                    value="{{ old('delivery_fee_default', $settings['delivery_fee_default'] ?? '15.00') }}"
+                                    class="form-control"
+                                    style="padding-left:42px;border-radius:10px;height:44px;font-size:1rem;font-weight:700;border-color:#cbd5e1">
+                            </div>
+                            <div style="font-size:0.72rem;color:#475569;margin-top:6px;font-weight:600">Fallback general delivery rate</div>
+                        </div>
+                    </div>
+
+                    {{-- Policy Summary Alert --}}
+                    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px 20px">
+                        <div style="font-weight:700;font-size:0.86rem;color:#15803d;margin-bottom:6px;display:flex;align-items:center;gap:6px">
+                            <span>✅</span> Policy Rules Summary
+                        </div>
+                        <ul style="margin:0;padding-left:18px;font-size:0.8rem;color:#166534;line-height:1.7">
+                            <li><strong>RM 100 &amp; Above:</strong> Eligible for standard local delivery arrangement (RM 0.00 delivery fee).</li>
+                            <li><strong>Below RM 100:</strong> Customers can place orders without blocking; transportation fee is calculated based on customer's delivery zone.</li>
+                            <li><strong>Self-Collection / Walk-in:</strong> 100% Free with no minimum order threshold.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {{-- Action Button --}}
+                <div style="display:flex;justify-content:flex-end;margin-top:24px">
+                    <button type="submit" class="btn btn-primary" style="background:#4f46e5;border-color:#4f46e5;padding:10px 24px;font-weight:700;font-size:0.9rem;display:inline-flex;align-items:center;gap:8px">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Save Order &amp; Delivery Settings</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
     </div>
 
 </div>
@@ -1812,6 +2091,50 @@ function switchSettingsTab(tabId, event) {
     const targetPane = document.getElementById(`tab-${tabId}`);
     if (targetPane) {
         targetPane.style.display = 'block';
+    }
+}
+
+function handleOrderMinToggle(radio) {
+    const isEnabled = radio.value === '1';
+
+    // Update label card borders & backgrounds
+    const labelEnabled  = document.getElementById('labelMinEnabled');
+    const labelDisabled = document.getElementById('labelMinDisabled');
+    if (labelEnabled && labelDisabled) {
+        if (isEnabled) {
+            labelEnabled.style.borderColor  = '#4f46e5';
+            labelEnabled.style.background   = '#eef2ff';
+            labelDisabled.style.borderColor = '#e2e8f0';
+            labelDisabled.style.background  = 'white';
+        } else {
+            labelDisabled.style.borderColor = '#4f46e5';
+            labelDisabled.style.background  = '#eef2ff';
+            labelEnabled.style.borderColor  = '#e2e8f0';
+            labelEnabled.style.background   = 'white';
+        }
+    }
+
+    // Fade / enable the fields container
+    const fieldsEl = document.getElementById('orderMinFields');
+    if (fieldsEl) {
+        fieldsEl.style.opacity        = isEnabled ? '1' : '0.5';
+        fieldsEl.style.pointerEvents  = isEnabled ? 'auto' : 'none';
+    }
+
+    // Update the header badge live
+    const badge = document.getElementById('orderMinBadge');
+    if (badge) {
+        if (isEnabled) {
+            badge.textContent     = '● Minimums Active';
+            badge.style.color     = '#059669';
+            badge.style.background = '#ecfdf5';
+            badge.style.borderColor = '#a7f3d0';
+        } else {
+            badge.textContent     = '○ Minimums Disabled';
+            badge.style.color     = '#64748b';
+            badge.style.background = '#f1f5f9';
+            badge.style.borderColor = '#e2e8f0';
+        }
     }
 }
 

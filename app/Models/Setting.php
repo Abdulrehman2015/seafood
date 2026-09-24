@@ -227,6 +227,12 @@ class Setting extends Model
                 'recaptcha_on_contact'    => '1',
                 'recaptcha_on_register'   => '1',
 
+                // Order Minimum Settings
+                'order_minimum_enabled'   => '0',
+                'order_minimum_retail'    => '0',
+                'order_minimum_wholesale' => '0',
+                'order_minimum_trading'   => '0',
+
                 // Site Keys & Stripe Payment Integrations
                 'stripe_enabled'          => '1',
                 'stripe_mode'             => 'test',

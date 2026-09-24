@@ -826,7 +826,7 @@
             <ol>
                 <li>{{ __t('invoice.note_1', 'Please notice us of discrepancy if any, within 7 days , otherwise this invoice will be considered confirmed.') }}</li>
                 <li>{{ __t('invoice.note_2', 'Goods sold and delivered are not returnable and exchangeable. Otherwise a cancellation fee of 20% on purchase price will be imposed.') }}</li>
-                <li>{{ __t('invoice.note_3', 'All cheques to be crossed & made payable to "MST IMPORT AND EXPORT SDN BHD" or to our MAYBANK A/C NO:551342155505 and email the bank in slip to mikatrading15@gmail.com or 011-14360109.') }}</li>
+                <li>{{ __t('invoice.note_3', 'All cheques to be crossed & made payable to "MST IMPORT AND EXPORT SDN BHD" or to our MAYBANK A/C NO:551342155505 and email the bank in slip to mikatrading15@gmail.com or WhatsApp +60 11-1271 0260.') }}</li>
                 <li>{{ __t('invoice.note_4', 'Interest will be charged at 1.5% per month on overdue payments.') }}</li>
             </ol>
         </div>

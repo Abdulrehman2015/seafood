@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title', __t('contact.meta_title', 'Contact Us & RFQ Sourcing — MST Import and Export Sdn Bhd'))
-@section('meta_description', __t('contact.meta_desc', 'Contact MST Import and Export Sdn Bhd. Request a quote for frozen seafood, meats, frozen foods, food ingredients, or customised sourcing across Malaysia, Singapore, and regional markets.'))
+@section('title', __t('contact.header_title', 'Contact MST') . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd'))
+@section('meta_description', __t('contact.subtitle', 'Have questions about products, wholesale supply, customised sourcing or cold-chain distribution? Tell us what you need and our team will assist you.'))
 
 @section('content')
 <!-- Local Leaflet CSS (Same-Origin for strict CSP & ad-blocker compliance) -->
@@ -46,19 +46,6 @@
         color: #7dd3fc;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-    }
-    .contact-hero-badge-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.84rem;
-        padding: 8px 16px;
-        border-radius: 999px;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-        background: rgba(9, 26, 54, 0.85);
-        color: #7dd3fc;
-        border: 1px solid rgba(59, 130, 246, 0.6);
-        backdrop-filter: blur(8px);
     }
 
     /* ─── 1. Top 4 Contact Action Cards ───────────────────────────────────── */
@@ -115,7 +102,7 @@
         font-size: 0.92rem;
         font-weight: 800;
         color: #0f172a;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         line-height: 1.3;
     }
     .contact-card-main-link {
@@ -575,19 +562,11 @@
         font-size: 0.90rem;
     }
     textarea.form-control-custom::placeholder,
-    textarea.form-control-custom::-webkit-input-placeholder,
-    textarea.form-control-custom::-moz-placeholder,
-    textarea.form-control-custom:-ms-input-placeholder,
-    .form-control-custom::placeholder,
-    .form-control-custom::-webkit-input-placeholder,
-    .form-control-custom::-moz-placeholder,
-    .form-control-custom:-ms-input-placeholder {
-        font-size: 0.78rem !important;
+    .form-control-custom::placeholder {
+        font-size: 0.80rem !important;
         font-weight: 400 !important;
         color: #94a3b8 !important;
         line-height: 1.45 !important;
-        opacity: 1 !important;
-        -webkit-text-fill-color: #94a3b8 !important;
     }
 
     /* ─── Custom Searchable Select Styles ─────────────────────────────────── */
@@ -599,71 +578,50 @@
     .searchable-select-container.open {
         z-index: 2200 !important;
     }
-    .form-group-interests {
-        position: relative;
-        z-index: 25;
-    }
-    .form-group-interests.has-open-dropdown,
-    .form-group-custom:has(.multi-select-container.open) {
-        z-index: 3500 !important;
-    }
-    .multi-select-container {
-        position: relative;
-        width: 100%;
-        z-index: 25;
-    }
-    .multi-select-container.open {
-        z-index: 3500 !important;
-    }
     .searchable-trigger {
-        width: 100%;
         height: 46px;
-        padding: 0 14px;
-        border: 1.5px solid #cbd5e1;
         border-radius: 9px;
-        background: #ffffff;
-        font-size: 0.92rem;
-        color: #0f172a;
+        border: 1.5px solid #cbd5e1;
+        padding: 0 14px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         cursor: pointer;
-        transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+        background: #ffffff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
         user-select: none;
-        box-sizing: border-box;
     }
     .searchable-trigger:hover {
         border-color: #93c5fd;
-        background: #f8fafc;
     }
     .searchable-select-container.open .searchable-trigger {
         border-color: #2563eb;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-        background: #ffffff;
     }
     .searchable-select-container.disabled .searchable-trigger {
         background: #f8fafc;
-        border-color: #e2e8f0;
-        color: #94a3b8;
         cursor: not-allowed;
+        opacity: 0.7;
+        border-color: #e2e8f0;
     }
     .searchable-selected-text {
+        font-size: 0.90rem;
+        color: #0f172a;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        padding-right: 8px;
-        font-size: 0.92rem;
+        font-weight: 500;
     }
     .searchable-selected-text.placeholder {
         color: #94a3b8;
-        font-weight: 400 !important;
-        font-size: 0.88rem !important;
+        font-weight: 400;
+        font-size: 0.82rem;
     }
     .searchable-arrow {
         color: #64748b;
+        transition: transform 0.2s ease;
         display: flex;
         align-items: center;
-        transition: transform 0.2s ease;
         flex-shrink: 0;
     }
     .searchable-select-container.open .searchable-arrow {
@@ -671,25 +629,25 @@
         color: #2563eb;
     }
     .searchable-dropdown-panel {
+        display: none;
         position: absolute;
         top: calc(100% + 6px);
         left: 0;
         right: 0;
-        background: #ffffff;
+        background: #ffffff !important;
         border: 1px solid #cbd5e1;
         border-radius: 12px;
         box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.22), 0 6px 14px rgba(15, 23, 42, 0.12);
-        padding: 8px;
-        z-index: 2500 !important;
-        display: none;
+        padding: 10px;
+        z-index: 3500 !important;
         animation: fadeInSelect 0.15s ease-out;
+    }
+    .searchable-select-container.open .searchable-dropdown-panel {
+        display: block;
     }
     @keyframes fadeInSelect {
         from { opacity: 0; transform: translateY(-4px); }
         to { opacity: 1; transform: translateY(0); }
-    }
-    .searchable-select-container.open .searchable-dropdown-panel {
-        display: block;
     }
     .searchable-search-wrapper {
         position: relative;
@@ -701,47 +659,44 @@
         top: 50%;
         transform: translateY(-50%);
         color: #94a3b8;
-        pointer-events: none;
         display: flex;
         align-items: center;
     }
     .searchable-search-input {
         width: 100%;
-        height: 38px;
-        padding: 0 10px 0 34px !important;
-        border: 1px solid #e2e8f0;
+        height: 36px;
+        padding: 0 10px 0 32px;
         border-radius: 7px;
-        background: #f8fafc;
-        font-size: 0.86rem;
+        border: 1px solid #cbd5e1;
+        font-size: 0.84rem;
         color: #0f172a;
-        outline: none;
-        transition: border-color 0.15s, box-shadow 0.15s;
+        background: #f8fafc;
         box-sizing: border-box;
     }
     .searchable-search-input:focus {
-        background: #ffffff;
+        outline: none;
         border-color: #2563eb;
-        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        background: #ffffff;
     }
     .searchable-options-list {
-        max-height: 220px;
+        max-height: 210px;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
         gap: 2px;
-        scrollbar-width: thin;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
     }
     .searchable-option-item {
         padding: 8px 12px;
-        border-radius: 6px;
-        font-size: 0.88rem;
-        color: #1e293b;
+        border-radius: 7px;
+        font-size: 0.86rem;
+        color: #334155;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        transition: all 0.15s ease;
+        transition: background 0.12s ease;
     }
     .searchable-option-item:hover {
         background: #eff6ff;
@@ -752,395 +707,247 @@
         color: #1e40af;
         font-weight: 700;
     }
-    .searchable-option-badge {
-        font-size: 0.72rem;
-        font-weight: 700;
-        padding: 2px 8px;
-        border-radius: 12px;
-        background: #e2e8f0;
-        color: #475569;
-    }
-    .searchable-option-item.selected .searchable-option-badge {
-        background: #bfdbfe;
-        color: #1e40af;
-    }
-    .searchable-no-results {
-        padding: 14px 10px;
-        text-align: center;
-        font-size: 0.84rem;
-        color: #94a3b8;
-    }
     .searchable-check-icon {
         display: none;
         color: #2563eb;
-        margin-left: 6px;
-        flex-shrink: 0;
     }
     .searchable-option-item.selected .searchable-check-icon {
-        display: inline-flex;
+        display: flex;
+    }
+    .searchable-option-badge {
+        font-size: 0.72rem;
+        background: #f1f5f9;
+        color: #64748b;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+    .searchable-no-results {
+        padding: 12px;
+        text-align: center;
+        font-size: 0.82rem;
+        color: #94a3b8;
     }
 
-    /* ─── Submit Button ───────────────────────────────────────────────────── */
+    /* Submit Button */
     .contact-submit-btn {
         width: 100%;
         height: 52px;
-        position: relative;
-        z-index: 5;
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        color: #091a36;
-        font-weight: 800;
-        font-size: 1.02rem;
-        border-radius: 10px;
+        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+        color: #ffffff;
         border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.02rem;
         cursor: pointer;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        gap: 8px;
+        transition: all 0.2s ease;
     }
     .contact-submit-btn:hover {
-        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-        box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45);
-        transform: translateY(-1px);
-        color: #091a36;
-    }
-    .contact-submit-btn:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
     }
 
-    /* ─── 3. Location & Map Section ───────────────────────────────────────── */
+    /* ─── 3. Facility & Map Section ───────────────────────────────────────── */
+    .contact-location-section {
+        margin-bottom: 64px;
+    }
     .location-split-grid {
         display: grid;
-        grid-template-columns: 1fr 1.35fr;
-        gap: 26px;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 28px;
         align-items: stretch;
-        margin-bottom: 70px;
     }
     .office-info-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
         border-radius: 20px;
-        padding: 34px;
-        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
+        padding: 34px 30px;
+        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
     }
     .map-embed-wrapper {
-        border: 1px solid #e2e8f0;
         border-radius: 20px;
         overflow: hidden;
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+        min-height: 420px;
         position: relative;
-        background: #f8fafc;
-        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
-        min-height: 520px;
-        height: 100%;
     }
     #contactMap {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
         width: 100%;
         height: 100%;
-        min-height: 520px;
-        z-index: 1;
-    }
-    .map-overlay-badge {
-        position: absolute;
-        top: 18px;
-        left: 18px;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 14px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-        padding: 14px 18px;
-        z-index: 500;
-        border: 1px solid rgba(226, 232, 240, 0.9);
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        max-width: 300px;
+        min-height: 420px;
     }
 
-    /* ─── TABLET RESPONSIVE (1024px and below) ────────────────────────────── */
+    /* ─── 4. Pre-Footer Sourcing CTA Section ──────────────────────────────── */
+    .contact-cta-section {
+        background: linear-gradient(135deg, #07152b 0%, #0e2448 60%, #1e40af 100%);
+        border-radius: 24px;
+        padding: 48px 40px;
+        color: #ffffff;
+        box-shadow: 0 16px 36px rgba(7, 21, 43, 0.12);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+    .contact-cta-glow {
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .contact-cta-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 28px;
+    }
+    .contact-cta-text {
+        max-width: 620px;
+    }
+    .contact-cta-title {
+        font-family: var(--font-heading);
+        font-size: clamp(1.5rem, 2.5vw, 1.95rem);
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0 0 10px;
+        letter-spacing: -0.02em;
+    }
+    .contact-cta-desc {
+        color: #bae6fd;
+        font-size: 0.95rem;
+        line-height: 1.55;
+        margin: 0;
+    }
+    .contact-cta-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .btn-cta-quote {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 12px 22px;
+        border-radius: 12px;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .btn-cta-quote:hover {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        transform: translateY(-2px);
+    }
+    .btn-cta-wa {
+        background: #25D366;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 12px 20px;
+        border-radius: 12px;
+        text-decoration: none;
+        box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .btn-cta-wa:hover {
+        background: #22c55e;
+        transform: translateY(-2px);
+    }
+    .btn-cta-products {
+        background: rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 12px 20px;
+        border-radius: 12px;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(8px);
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .btn-cta-products:hover {
+        background: rgba(255, 255, 255, 0.22);
+        transform: translateY(-2px);
+    }
+
+    /* ─── Responsive Queries ──────────────────────────────────────────────── */
     @media (max-width: 1024px) {
-        .contact-page-container {
-            padding: 36px 20px 64px;
-        }
-        /* Top cards keep natural order at top */
         .contact-top-cards {
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 40px;
         }
-        .contact-top-card {
-            padding: 24px 16px;
-        }
-
-        /* Split wrapper stacks naturally: Process on top, RFQ form on bottom */
         .consultation-split-wrapper {
-            display: flex;
-            flex-direction: column;
-            border-radius: 20px;
-            margin-bottom: 56px;
+            grid-template-columns: 1fr;
         }
         .consultation-blue-panel {
-            padding: 36px 30px;
-            border-radius: 20px 20px 0 0;
+            border-radius: 24px 24px 0 0;
+            padding: 36px 28px;
         }
         .consultation-white-panel {
-            padding: 36px 30px;
-            border-radius: 0 0 20px 20px;
+            border-radius: 0 0 24px 24px;
+            padding: 36px 28px;
         }
-
-        /* Tablet Form inputs layout: 2 cols for name/email, full width for phone */
-        .consultation-form-grid-3 {
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-        .consultation-form-grid-3 > div:nth-child(3) {
-            grid-column: span 2;
-        }
-        .consultation-form-grid-2 {
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        /* Map and Office stack */
         .location-split-grid {
             grid-template-columns: 1fr;
-            gap: 22px;
-            margin-bottom: 56px;
-        }
-        .office-info-card {
-            padding: 28px 24px;
-            border-radius: 18px;
-        }
-        .map-embed-wrapper {
-            min-height: 420px;
-            height: 420px;
-            border-radius: 18px;
-        }
-        #contactMap {
-            min-height: 420px;
-            height: 420px;
         }
     }
 
-    /* ─── TABLET PORTRAIT / INTERMEDIATE (860px and below) ────────────────── */
-    @media (max-width: 860px) {
-        .consultation-form-grid-2 {
-            grid-template-columns: 1fr !important;
+    @media (max-width: 680px) {
+        .contact-page-container {
+            padding: 24px 16px 60px;
+        }
+        .contact-top-cards {
+            grid-template-columns: 1fr;
             gap: 14px;
         }
-    }
-
-    /* ─── MOBILE RESPONSIVE (640px and below) ─────────────────────────────── */
-    @media (max-width: 640px) {
-        .contact-hero-section {
-            padding-top: calc(78px + 30px);
-            padding-bottom: 28px;
-        }
-        .contact-page-container {
-            padding: 20px 14px 48px;
-        }
-
-        /* Top 4 Cards in 2x2 grid for mobile - compact, tap-friendly */
-        .contact-top-cards {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 26px;
-        }
-        .contact-top-card {
-            padding: 18px 10px;
-            border-radius: 16px;
-        }
-        .contact-icon-bubble {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-        }
-        .contact-card-title {
-            font-size: 0.88rem;
-            margin-bottom: 3px;
-        }
-        .contact-card-main-title {
-            font-size: 0.82rem;
-            line-height: 1.25;
-            margin-bottom: 2px;
-        }
-        .contact-card-main-link {
-            font-size: 0.84rem;
-            line-height: 1.25;
-            margin-bottom: 2px;
-        }
-        .contact-card-sub {
-            font-size: 0.72rem;
-            line-height: 1.35;
-        }
-
-        /* Split wrapper on mobile */
-        .consultation-split-wrapper {
-            border-radius: 18px;
-            margin-bottom: 36px;
-        }
-        .consultation-blue-panel {
-            padding: 24px 16px;
-            border-radius: 18px 18px 0 0;
-        }
-        .sourcing-step-badge {
-            font-size: 0.68rem;
-            padding: 4px 12px;
-            margin-bottom: 16px;
-        }
-        .sourcing-panel-title {
-            font-size: 1.55rem;
-            margin-bottom: 20px;
-        }
-        .consultation-step-item {
-            gap: 12px;
-        }
-        .step-number-box {
-            width: 34px;
-            height: 34px;
-            border-radius: 9px;
-            font-size: 0.88rem;
-        }
-        .sourcing-trust-box {
-            padding: 12px 14px;
-            gap: 10px;
-            border-radius: 12px;
-            margin-top: 18px;
-        }
-        .sourcing-trust-icon {
-            width: 34px;
-            height: 34px;
-        }
-
-        /* White Form Panel on mobile */
-        .consultation-white-panel {
-            padding: 24px 16px;
-            border-radius: 0 0 18px 18px;
-        }
-        .consultation-white-panel h3 {
-            font-size: 1.6rem !important;
-            margin-bottom: 4px !important;
-        }
-
-        /* Form grids single column on mobile */
         .consultation-form-grid-3,
         .consultation-form-grid-2 {
-            grid-template-columns: 1fr !important;
-            gap: 14px;
-            margin-bottom: 14px;
-        }
-        .consultation-form-grid-3 > div:nth-child(3) {
-            grid-column: auto;
-        }
-        .form-group-custom {
-            margin-bottom: 14px;
-        }
-
-        /* Form Controls on mobile */
-        .form-control-custom,
-        .searchable-trigger {
-            font-size: 15px;
-            height: 48px;
-            border-radius: 9px;
-        }
-        .searchable-selected-text {
-            font-size: 0.90rem;
-        }
-        .searchable-selected-text.placeholder {
-            font-size: 0.86rem !important;
-            font-weight: 400 !important;
-            color: #94a3b8 !important;
-        }
-        textarea.form-control-custom {
-            font-size: 15px;
-            min-height: 95px;
-            font-weight: 400 !important;
-        }
-        textarea.form-control-custom::placeholder,
-        textarea.form-control-custom::-webkit-input-placeholder,
-        textarea.form-control-custom::-moz-placeholder,
-        textarea.form-control-custom:-ms-input-placeholder,
-        .form-control-custom::placeholder,
-        .form-control-custom::-webkit-input-placeholder,
-        .form-control-custom::-moz-placeholder,
-        .form-control-custom:-ms-input-placeholder {
-            font-size: 0.75rem !important;
-            font-weight: 400 !important;
-            color: #94a3b8 !important;
-            line-height: 1.4 !important;
-            opacity: 1 !important;
-            -webkit-text-fill-color: #94a3b8 !important;
-        }
-        .searchable-search-input {
-            font-size: 15px;
-            height: 40px;
-        }
-        .searchable-dropdown-panel,
-        .multi-select-dropdown-panel {
-            max-height: 270px;
-            border-radius: 10px;
-        }
-        .contact-submit-btn {
-            height: 50px;
-            font-size: 0.96rem;
-            border-radius: 9px;
-        }
-
-        /* Office Card & Map on mobile */
-        .location-split-grid {
-            gap: 18px;
-            margin-bottom: 40px;
-        }
-        .office-info-card {
-            padding: 20px 16px;
-            border-radius: 16px;
-        }
-        .map-embed-wrapper {
-            min-height: 330px;
-            height: 330px;
-            border-radius: 16px;
-        }
-        #contactMap {
-            min-height: 330px;
-            height: 330px;
-        }
-        /* Sleek compact pill badge on mobile so map remains interactive */
-        .map-overlay-badge {
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            max-width: none;
-            padding: 10px 12px;
-            border-radius: 10px;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
-        .map-overlay-badge .map-badge-desc {
-            display: none;
-        }
-    }
-
-    /* ─── ULTRA-SMALL MOBILE (360px and below) ────────────────────────────── */
-    @media (max-width: 360px) {
-        .contact-top-cards {
             grid-template-columns: 1fr;
-            gap: 10px;
+            gap: 14px;
         }
-        .contact-top-card {
-            padding: 16px 14px;
+        .consultation-white-panel {
+            padding: 28px 18px;
+        }
+        .consultation-blue-panel {
+            padding: 30px 20px;
+        }
+        .contact-cta-section {
+            padding: 32px 20px;
+        }
+        .contact-cta-actions {
+            width: 100%;
+            flex-direction: column;
+        }
+        .btn-cta-quote, .btn-cta-wa, .btn-cta-products {
+            width: 100%;
+            justify-content: center;
+            box-sizing: border-box;
         }
     }
 </style>
@@ -1152,41 +959,34 @@
         <div class="breadcrumb" style="margin-bottom:var(--space-2)">
             <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 @t('nav.home', 'Home')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">@t('contact.title', 'Contact Us')</span>
+            <span style="font-weight:600;color:#ffffff">@t('contact.header_title', 'Contact MST')</span>
         </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
-            <div>
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap">
-                    <span class="contact-hero-pill">
-                        @t('contact.hero_pill', '📍 Sourcing & Customer Support')
-                    </span>
-                    <span style="color:#bae6fd;font-size:0.8rem">@t('contact.hero_location', 'Iskandar Puteri, Johor Bahru · Regional & International Supply')</span>
-                </div>
-                <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.75rem,3.5vw,2.4rem);margin-bottom:6px;letter-spacing:-0.02em">
-                    @t('contact.header_title', 'Contact Us — MST Import & Export')
-                </h1>
-                <div style="color:#93c5fd;font-size:0.88rem;font-weight:700;margin-bottom:8px">
-                    镁嘉国际贸易有限公司 · MST IMPORT &amp; EXPORT SDN. BHD.
-                </div>
-                <p class="page-subtitle" style="color:#e0f2fe;font-size:0.95rem;max-width:720px;line-height:1.5;margin:0">
-                    @t('contact.subtitle', 'Have questions about bulk orders, product sourcing, cold-chain distribution, or customised supply? Our team is ready to help.')
-                </p>
+        <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap">
+                <span class="contact-hero-pill">
+                    📍 @t('contact.hero_pill', 'Sourcing & Customer Support')
+                </span>
+                <span style="color:#bae6fd;font-size:0.82rem">@t('contact.hero_location', 'Iskandar Puteri, Johor · Malaysia, Singapore & Selected Regional Markets')</span>
             </div>
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-                <div class="contact-hero-badge-tag">
-                    @t('contact.prompt_response', '⚡ Response Target: Within 24 Hours')
-                </div>
+            <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.8rem,3.5vw,2.5rem);margin-bottom:6px;letter-spacing:-0.02em">
+                @t('contact.header_title', 'Contact MST')
+            </h1>
+            <div style="color:#93c5fd;font-size:0.9rem;font-weight:700;margin-bottom:8px">
+                镁嘉国际贸易有限公司 · MST IMPORT &amp; EXPORT SDN. BHD.
             </div>
+            <p class="page-subtitle" style="color:#e0f2fe;font-size:0.95rem;max-width:740px;line-height:1.55;margin:0">
+                @t('contact.subtitle', 'Have questions about products, wholesale supply, customised sourcing or cold-chain distribution? Tell us what you need and our team will assist you.')
+            </p>
         </div>
     </div>
 </div>
 
 <div class="contact-page-container">
 
-    <!-- 1. Top 4 Contact Action Channels (Contact MST) -->
+    <!-- ─── 1. Top 4 Contact Action Channels ────────────────────────────────── -->
     <div class="contact-top-cards">
         
-        <!-- Card 1: Facility & Cold Hub -->
+        <!-- Card 1: Facility & Collection Centre -->
         <div class="contact-top-card">
             <div class="contact-icon-bubble">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1194,17 +994,20 @@
                     <circle cx="12" cy="10" r="3"></circle>
                 </svg>
             </div>
-            <h3 class="contact-card-title">@t('contact.card1_title', 'Facility & Cold Hub')</h3>
-            <div class="contact-card-main-title">{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</div>
+            <h2 class="contact-card-title">@t('contact.card1_title', 'Facility & Collection Centre')</h2>
+            <div class="contact-card-main-title">MST IMPORT &amp; EXPORT SDN. BHD.</div>
             <div style="color:#2563eb;font-weight:700;font-size:0.84rem;margin-bottom:6px">
-                {{ $settings['store_company_zh'] ?? '镁嘉国际贸易有限公司' }}
+                镁嘉国际贸易有限公司
             </div>
-            <div class="contact-card-sub" style="margin-bottom:10px">
-                {{ $settings['store_address'] ?? 'No. 7, Jalan SiLC 2/18, Kawasan Perindustrian SiLC, 79200 Iskandar Puteri, Johor, Malaysia' }}
+            <div class="contact-card-sub" style="margin-bottom:6px;font-size:0.82rem;line-height:1.4">
+                7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia
             </div>
-            <div style="margin-top:auto;padding-top:12px;width:100%">
-                <a href="{{ !empty($settings['store_map_url']) ? $settings['store_map_url'] : '#silc-facility' }}" {{ !empty($settings['store_map_url']) ? 'target="_blank" rel="noopener"' : '' }} style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:7px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
-                    <span>📍 @t('contact.view_on_google_maps', 'View Location') →</span>
+            <p class="contact-card-sub" style="margin-bottom:12px;font-size:0.78rem;color:#64748b;line-height:1.4">
+                @t('contact.card1_desc', 'Our SILC facility supports product handling, order preparation, cold-chain storage and customer collection.')
+            </p>
+            <div style="margin-top:auto;padding-top:8px;width:100%">
+                <a href="https://maps.app.goo.gl/jLMaDYCNJ6vfk376A" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:8px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
+                    <span>📍 @t('contact.view_on_google_maps', 'View on Google Maps →')</span>
                 </a>
             </div>
         </div>
@@ -1216,28 +1019,18 @@
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                 </svg>
             </div>
-            <h3 class="contact-card-title">@t('contact.card2_title', 'Direct Hotlines')</h3>
-            @php
-                $primaryPhone = $settings['store_phone'] ?? '013-280 0168';
-                $phone2 = $settings['store_phone_2'] ?? '011-1436 0109';
-                $phone3 = $settings['store_phone_3'] ?? '011-1271 0260';
-                $cleanPrimaryPhone = preg_replace('/[^0-9+]/', '', $primaryPhone);
-                $cleanPhone2 = preg_replace('/[^0-9+]/', '', $phone2);
-                $cleanPhone3 = preg_replace('/[^0-9+]/', '', $phone3);
-            @endphp
-            <a href="tel:{{ $cleanPrimaryPhone }}" class="contact-card-main-link">
-                {{ $primaryPhone }}
+            <h2 class="contact-card-title">@t('contact.card2_title', 'Direct Hotlines')</h2>
+            <a href="tel:+60132800168" class="contact-card-main-link" style="font-size:1.05rem">
+                +6013-2800168
             </a>
             <div class="contact-card-sub" style="display:flex;flex-direction:column;gap:3px">
-                @if(!empty($phone2))
-                    <div><a href="tel:{{ $cleanPhone2 }}" style="color:#1d4ed8;font-weight:600;font-size:0.82rem;text-decoration:none">Alt: {{ $phone2 }}</a></div>
-                @endif
-                <div style="margin-top:4px;color:#64748b;font-size:0.78rem">{{ $settings['store_hours'] ?? 'Mon – Sat: 8:00 AM – 6:00 PM' }}</div>
-                <div style="color:#94a3b8;font-size:0.75rem">@t('contact.closed_val', 'Sunday & PH: Closed')</div>
+                <div><a href="tel:+601114360109" style="color:#1d4ed8;font-weight:600;font-size:0.84rem;text-decoration:none">Alt: +6011-14360109</a></div>
+                <div style="margin-top:6px;color:#0f172a;font-weight:600;font-size:0.8rem">Monday – Saturday: 8:00 AM – 6:00 PM</div>
+                <div style="color:#64748b;font-size:0.76rem">Sunday &amp; Public Holidays: Closed</div>
             </div>
             <div style="margin-top:auto;padding-top:12px;width:100%">
-                <a href="tel:{{ $cleanPrimaryPhone }}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:7px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
-                    <span>📞 @t('contact.btn_call', 'Call Hotline')</span>
+                <a href="tel:+60132800168" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:8px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
+                    <span>📞 @t('contact.btn_call', 'Call Us')</span>
                 </a>
             </div>
         </div>
@@ -1250,21 +1043,20 @@
                     <polyline points="22,6 12,13 2,6"></polyline>
                 </svg>
             </div>
-            <h3 class="contact-card-title">@t('contact.card3_title', 'Email Us')</h3>
-            @php
-                $storeEmail = $settings['store_email'] ?? 'mikatrading15@gmail.com';
-            @endphp
-            <a href="mailto:{{ $storeEmail }}" class="contact-card-main-link" style="word-break:break-all">
-                {{ $storeEmail }}
+            <h2 class="contact-card-title">@t('contact.card3_title', 'Email Us')</h2>
+            <a href="mailto:mikatrading15@gmail.com" class="contact-card-main-link" style="word-break:break-all">
+                mikatrading15@gmail.com
             </a>
             <div class="contact-card-sub">
-                <div style="color:#1d4ed8;font-weight:600;font-size:0.82rem">
-                    {{ !empty($settings['store_wholesale_email']) && !str_contains($settings['store_wholesale_email'], '@') ? $settings['store_wholesale_email'] : __t('contact.card3_sub', 'B2B Wholesale & Custom RFQ') }}
+                <div style="color:#1d4ed8;font-weight:700;font-size:0.83rem">
+                    @t('contact.card3_sub', 'B2B Wholesale & Custom RFQ')
                 </div>
-                <div style="margin-top:4px;color:#64748b;font-size:0.78rem">@t('contact.card3_response', 'Response Target: Within 24 Hours')</div>
+                <div style="margin-top:4px;color:#64748b;font-size:0.78rem;line-height:1.4">
+                    @t('contact.card3_desc', 'For wholesale enquiries, customised sourcing and quotation requests.')
+                </div>
             </div>
             <div style="margin-top:auto;padding-top:12px;width:100%">
-                <a href="mailto:{{ $storeEmail }}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:7px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
+                <a href="mailto:mikatrading15@gmail.com" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:8px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
                     <span>✉️ @t('contact.btn_email', 'Send Email')</span>
                 </a>
             </div>
@@ -1278,35 +1070,17 @@
                     <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
                 </svg>
             </div>
-            <h3 class="contact-card-title">@t('contact.card4_title', 'WhatsApp Support')</h3>
-            @php
-                $waUrl = $settings['social_whatsapp'] ?? 'https://wa.me/601112710260';
-                $waDisplay = '+60 11-1271 0260';
-                if (!empty($settings['social_whatsapp'])) {
-                    if (str_contains($settings['social_whatsapp'], 'wa.me/')) {
-                        $rawNum = preg_replace('/[^0-9]/', '', substr($settings['social_whatsapp'], strpos($settings['social_whatsapp'], 'wa.me/') + 6));
-                        if (str_starts_with($rawNum, '60')) {
-                            $waDisplay = '+60 ' . substr($rawNum, 2, 2) . '-' . substr($rawNum, 4);
-                        } else {
-                            $waDisplay = $rawNum;
-                        }
-                    } elseif (preg_match('/[0-9]/', $settings['social_whatsapp'])) {
-                        $waDisplay = $settings['social_whatsapp'];
-                    }
-                } elseif (!empty($settings['store_phone_3'])) {
-                    $waDisplay = $settings['store_phone_3'];
-                    $waUrl = 'https://wa.me/' . preg_replace('/[^0-9]/', '', (str_starts_with($settings['store_phone_3'], '0') ? '60' . substr($settings['store_phone_3'], 1) : $settings['store_phone_3']));
-                }
-            @endphp
-            <a href="{{ $waUrl }}" target="_blank" rel="noopener" class="contact-card-main-link">
-                {{ $waDisplay }}
+            <h2 class="contact-card-title">@t('contact.card4_title', 'WhatsApp Support')</h2>
+            <a href="https://wa.me/601112710260" target="_blank" rel="noopener" class="contact-card-main-link">
+                +60 11-12710260
             </a>
             <div class="contact-card-sub">
-                <div style="color:#64748b;font-size:0.82rem">@t('contact.card4_sub1', 'Fast Chat & Inquiries')</div>
-                <div style="margin-top:2px;color:#94a3b8;font-size:0.78rem">@t('contact.card4_sub2', 'Live Support Online')</div>
+                <div style="color:#64748b;font-size:0.82rem;line-height:1.45">
+                    @t('contact.card4_desc', 'Product Enquiries · Wholesale · Sourcing Requests')
+                </div>
             </div>
             <div style="margin-top:auto;padding-top:12px;width:100%">
-                <a href="{{ $waUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:#ffffff;font-size:0.82rem;font-weight:700;padding:7px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;box-shadow:0 2px 6px rgba(37,211,102,0.3);transition:transform 0.15s ease;">
+                <a href="https://wa.me/601112710260" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:#ffffff;font-size:0.82rem;font-weight:700;padding:8px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;box-shadow:0 2px 6px rgba(37,211,102,0.3);transition:transform 0.15s ease;">
                     <span>💬 @t('contact.btn_whatsapp', 'WhatsApp Us')</span>
                 </a>
             </div>
@@ -1314,12 +1088,11 @@
 
     </div>
 
-    <!-- 2. Main Consultation Split Section: 4-Step Process & RFQ Form -->
-    <div class="consultation-split-wrapper">
+    <!-- ─── 2. Main Sourcing & Consultation Split Section ─────────────────── -->
+    <div class="consultation-split-wrapper" id="rfq-form">
         
         <!-- Left Panel: The 4-Step Sourcing Process -->
         <div class="consultation-blue-panel">
-            {{-- Background ambient glows & grid matching Homepage Hero --}}
             <div class="panel-orb-1"></div>
             <div class="panel-orb-2"></div>
             <div class="panel-grid-overlay"></div>
@@ -1344,9 +1117,9 @@
                     <div class="consultation-step-item">
                         <div class="step-number-box">01</div>
                         <div>
-                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step1_title', 'SELECT YOUR REQUIREMENT')</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step1_title', '01 — SELECT YOUR REQUIREMENT')</div>
                             <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
-                                @t('contact.step1_desc', 'Choose from our core categories, including Seafood, Meat, Frozen Food, Food Ingredients, Cuisine Ingredients and Desserts, or submit a customised sourcing request.')
+                                @t('contact.step1_desc', 'Choose from our core categories, including Seafood, Meat, Frozen Food, Food Ingredients and Cuisine Ingredients, or submit a customised sourcing request.')
                             </div>
                         </div>
                     </div>
@@ -1355,9 +1128,9 @@
                     <div class="consultation-step-item">
                         <div class="step-number-box">02</div>
                         <div>
-                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step2_title', 'TELL US YOUR REQUIREMENTS')</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step2_title', '02 — TELL US YOUR REQUIREMENTS')</div>
                             <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
-                                @t('contact.step2_desc', 'Specify your target volume (kg, cartons or pallets), pack size, origin preference, delivery frequency, or customised product specifications.')
+                                @t('contact.step2_desc', 'Specify your target volume (kg, cartons or pallets), pack size, origin preference, delivery frequency and any product specifications or sourcing requirements.')
                             </div>
                         </div>
                     </div>
@@ -1366,12 +1139,9 @@
                     <div class="consultation-step-item">
                         <div class="step-number-box">03</div>
                         <div>
-                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step3_title', 'RECEIVE A QUOTATION')</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step3_title', '03 — RECEIVE A QUOTATION')</div>
                             <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
-                                @t('contact.step3_desc', 'Our commercial team evaluates availability or coordinates with our sourcing network and provides a transparent, competitive quotation.')
-                            </div>
-                            <div style="margin-top:4px;font-size:0.75rem;font-weight:700;color:#93c5fa">
-                                ⚡ @t('contact.step3_target', 'Response Target: Within 24 Hours')
+                                @t('contact.step3_desc', 'Our commercial team reviews your requirements, checks availability or coordinates with our sourcing network, and provides a quotation based on product specification, quantity and supply conditions.')
                             </div>
                         </div>
                     </div>
@@ -1380,9 +1150,9 @@
                     <div class="consultation-step-item">
                         <div class="step-number-box">04</div>
                         <div>
-                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step4_title', 'ARRANGE SUPPLY & LOGISTICS')</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step4_title', '04 — ARRANGE SUPPLY & LOGISTICS')</div>
                             <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
-                                @t('contact.step4_desc', 'Temperature-controlled supply and logistics across Malaysia, Singapore and selected regional markets, with export coordination and self-collection available at our SILC facility.')
+                                @t('contact.step4_desc', 'Arrange delivery, collection or other suitable logistics according to your order requirements and destination.')
                             </div>
                         </div>
                     </div>
@@ -1397,8 +1167,8 @@
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     </svg>
                 </div>
-                <div style="font-size:0.82rem;color:rgba(255,255,255,0.85);line-height:1.4">
-                    <strong style="color:#ffffff;">@t('contact.trust_label', 'Cold-Chain & Food Safety:')</strong> @t('contact.trust_desc', 'Temperature-controlled storage at -18°C to -25°C, supported by controlled handling and cold-chain procedures.')
+                <div style="font-size:0.82rem;color:rgba(255,255,255,0.88);line-height:1.45">
+                    <strong style="color:#ffffff;">@t('contact.trust_label', 'Cold-Chain Handling:')</strong> @t('contact.trust_desc', 'Temperature-controlled storage and product handling are maintained according to product requirements.')
                 </div>
             </div>
 
@@ -1411,12 +1181,12 @@
                 @t('contact.form_eyebrow', 'REQUEST FOR QUOTATION & INQUIRY')
             </div>
             
-            <h3 style="font-size:2.1rem;font-weight:800;color:#0f172a;margin:0 0 6px;letter-spacing:-0.5px">
+            <h2 style="font-size:2rem;font-weight:800;color:#0f172a;margin:0 0 6px;letter-spacing:-0.5px">
                 @t('contact.form_title', 'Submit Your Sourcing RFQ')
-            </h3>
+            </h2>
 
             <p style="font-size:0.92rem;color:#64748b;margin:0 0 24px;line-height:1.5">
-                @t('contact.form_desc', 'Tell us about your requirements. Whether you need standard catalogue items, wholesale quantities, or tailored sourcing, our team will review your request and respond within 24 hours.')
+                @t('contact.form_desc', 'Tell us about your requirements. Whether you need standard catalogue items, wholesale quantities or customised sourcing, provide your requirements and our team will review them with you.')
             </p>
 
             @if(session('success'))
@@ -1465,7 +1235,7 @@
                     </div>
                 </div>
 
-                <!-- Row 2: Multi-select Interests Dropdown -->
+                <!-- Row 2: Multi-select Interests Dropdown (Section 18) -->
                 <div class="form-group-custom form-group-interests" id="interestsFormGroup">
                     <label class="form-label-custom" for="interestsMultiSelectTrigger">
                         @t('contact.interested_in', 'I am interested in:') <span style="font-weight:400;color:#64748b">@t('contact.select_multiple_hint', '(Select multiple)')</span>
@@ -1491,7 +1261,7 @@
                                     <span class="searchable-search-icon">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <circle cx="11" cy="11" r="8"></circle>
-                                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                         </svg>
                                     </span>
                                     <input type="text" class="searchable-search-input" id="interestsSearchInput" placeholder="{{ __t('contact.filter_interests', 'Filter interests...') }}" autocomplete="off">
@@ -1506,17 +1276,16 @@
                             <div class="searchable-options-list multi-select-options-list" id="interestsOptionsList" role="listbox" aria-multiselectable="true">
                                 @php
                                     $interestOptions = [
-                                        'Seafood' => ['label' => __t('contact.interest_seafood_label', 'Seafood'), 'icon' => '🐟', 'desc' => __t('contact.interest_seafood_desc', 'Wild & farmed fresh-frozen seafood')],
-                                        'Meat' => ['label' => __t('contact.interest_meat_label', 'Meat'), 'icon' => '🥩', 'desc' => __t('contact.interest_meat_desc', 'Poultry, beef, lamb & speciality meats')],
-                                        'Frozen Food' => ['label' => __t('contact.interest_frozen_label', 'Frozen Food'), 'icon' => '❄️', 'desc' => __t('contact.interest_frozen_desc', 'Processed & ready-to-cook products')],
-                                        'Food Ingredients' => ['label' => __t('contact.interest_food_ing_label', 'Food Ingredients'), 'icon' => '🧂', 'desc' => __t('contact.interest_food_ing_desc', 'Commercial seasonings, pastes & bases')],
-                                        'Cuisine Ingredients' => ['label' => __t('contact.interest_cuisine_label', 'Cuisine Ingredients'), 'icon' => '🌏', 'desc' => __t('contact.interest_cuisine_desc', 'Regional & Asian culinary specialties')],
-                                        'Desserts' => ['label' => __t('contact.interest_desserts_label', 'Desserts'), 'icon' => '🍰', 'desc' => __t('contact.interest_desserts_desc', 'Pastries, desserts & sweet cuisine items')],
-                                        'Customised Sourcing' => ['label' => __t('contact.interest_sourcing_label', 'Customised Sourcing'), 'icon' => '🔍', 'desc' => __t('contact.interest_sourcing_desc', 'Tailored specs, origin sourcing & bulk import')],
-                                        'Wholesale Supply' => ['label' => __t('contact.interest_wholesale_label', 'Wholesale Supply'), 'icon' => '🏭', 'desc' => __t('contact.interest_wholesale_desc', 'B2B commercial food service & contract supply')],
-                                        'Cold-Chain Distribution' => ['label' => __t('contact.interest_coldchain_label', 'Cold-Chain Distribution'), 'icon' => '🚚', 'desc' => __t('contact.interest_coldchain_desc', 'Temperature-controlled storage & distribution')],
-                                        'Trading & Export' => ['label' => __t('contact.interest_trading_label', 'Trading & Export'), 'icon' => '📦', 'desc' => __t('contact.interest_trading_desc', 'Cross-border logistics & regional export trade')],
-                                        'Other Sourcing Requirements' => ['label' => __t('contact.interest_other_label', 'Other Sourcing Requirements'), 'icon' => '📋', 'desc' => __t('contact.interest_other_desc', 'Other specific inquiries & custom requests')],
+                                        'Walk-in / Retail' => ['label' => __t('contact.interest_retail_label', 'Walk-in / Retail'), 'icon' => '🏪', 'desc' => __t('contact.interest_retail_desc', 'Individual purchase & counter collection')],
+                                        'Wholesale Supply' => ['label' => __t('contact.interest_wholesale_label', 'Wholesale Supply'), 'icon' => '🏭', 'desc' => __t('contact.interest_wholesale_desc', 'B2B commercial food service & volume supply')],
+                                        'Trading' => ['label' => __t('contact.interest_trading_label', 'Trading'), 'icon' => '📦', 'desc' => __t('contact.interest_trading_desc', 'Distribution & trade supply')],
+                                        'Customised Sourcing' => ['label' => __t('contact.interest_sourcing_label', 'Customised Sourcing'), 'icon' => '🔍', 'desc' => __t('contact.interest_sourcing_desc', 'Tailored specifications & origin sourcing')],
+                                        'Seafood' => ['label' => __t('contact.interest_seafood_label', 'Seafood'), 'icon' => '🐟', 'desc' => __t('contact.interest_seafood_desc', 'Fresh-frozen seafood & marine catch')],
+                                        'Meat' => ['label' => __t('contact.interest_meat_label', 'Meat'), 'icon' => '🥩', 'desc' => __t('contact.interest_meat_desc', 'Poultry, beef, lamb & specialty meats')],
+                                        'Frozen Food' => ['label' => __t('contact.interest_frozen_label', 'Frozen Food'), 'icon' => '❄️', 'desc' => __t('contact.interest_frozen_desc', 'Processed & ready-to-cook items')],
+                                        'Food Ingredients' => ['label' => __t('contact.interest_food_ing_label', 'Food Ingredients'), 'icon' => '🧂', 'desc' => __t('contact.interest_food_ing_desc', 'Commercial seasonings, surimi & bases')],
+                                        'Cuisine Ingredients' => ['label' => __t('contact.interest_cuisine_label', 'Cuisine Ingredients'), 'icon' => '🌏', 'desc' => __t('contact.interest_cuisine_desc', 'Japanese, Korean & regional specialties')],
+                                        'Other' => ['label' => __t('contact.interest_other_label', 'Other'), 'icon' => '📋', 'desc' => __t('contact.interest_other_desc', 'Other special requirements & inquiries')],
                                     ];
                                     $oldInterests = (array) old('interests', []);
                                 @endphp
@@ -1551,7 +1320,7 @@
                     </div>
                 </div>
 
-                <!-- Row 3: Category & Product Selection -->
+                <!-- Row 3: Category & Product Selection (Optional) -->
                 <div class="consultation-form-grid-2">
                     <div class="field-col-category">
                         <label class="form-label-custom">
@@ -1661,7 +1430,69 @@
                     </div>
                 </div>
 
-                <!-- Row 4: Requirements / Description -->
+                <!-- Row 4: Optional B2B Commercial Information (Section 20) -->
+                <div class="consultation-form-grid-2">
+                    <div>
+                        <label class="form-label-custom">
+                            @t('contact.company_name_label', 'Company Name') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                        </label>
+                        <input type="text" name="company_name" class="form-control-custom" 
+                               value="{{ old('company_name', auth()->user()?->company_name) }}"
+                               placeholder="{{ __t('contact.company_name_placeholder', 'Your company name (Optional)') }}">
+                    </div>
+
+                    <div>
+                        <label class="form-label-custom">
+                            @t('contact.business_reg_no_label', 'Business Registration No.') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                        </label>
+                        <input type="text" name="business_reg_no" class="form-control-custom" 
+                               value="{{ old('business_reg_no', auth()->user()?->company_registration_no) }}"
+                               placeholder="{{ __t('contact.reg_no_placeholder', 'SSM / Business Reg No. (Optional)') }}">
+                    </div>
+                </div>
+
+                <div class="consultation-form-grid-2">
+                    <div>
+                        <label class="form-label-custom">
+                            @t('contact.order_volume_label', 'Estimated Order Volume') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                        </label>
+                        <input type="text" name="order_volume" class="form-control-custom" 
+                               value="{{ old('order_volume') }}"
+                               placeholder="{{ __t('contact.order_volume_placeholder', 'e.g., 500kg / 20 cartons / monthly') }}">
+                    </div>
+
+                    <div>
+                        <label class="form-label-custom">
+                            @t('contact.delivery_location_label', 'Delivery / Collection Location') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                        </label>
+                        <input type="text" name="delivery_location" class="form-control-custom" 
+                               value="{{ old('delivery_location') }}"
+                               placeholder="{{ __t('contact.delivery_location_placeholder', 'e.g., Johor Bahru / Singapore / SILC Counter 2') }}">
+                    </div>
+                </div>
+
+                <!-- Preferred Contact Method -->
+                <div class="form-group-custom" style="margin-bottom:18px">
+                    <label class="form-label-custom">
+                        @t('contact.preferred_contact_method', 'Preferred Contact Method') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                    </label>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+                        <label style="display:inline-flex;align-items:center;gap:6px;font-size:0.88rem;color:#334155;cursor:pointer;background:#f8fafc;border:1px solid #cbd5e1;padding:6px 14px;border-radius:8px;font-weight:600;">
+                            <input type="radio" name="contact_preference" value="whatsapp" {{ old('contact_preference', 'whatsapp') === 'whatsapp' ? 'checked' : '' }}>
+                            <span>💬 WhatsApp</span>
+                        </label>
+                        <label style="display:inline-flex;align-items:center;gap:6px;font-size:0.88rem;color:#334155;cursor:pointer;background:#f8fafc;border:1px solid #cbd5e1;padding:6px 14px;border-radius:8px;font-weight:600;">
+                            <input type="radio" name="contact_preference" value="phone" {{ old('contact_preference') === 'phone' ? 'checked' : '' }}>
+                            <span>📞 @t('contact.phone_call', 'Phone Call')</span>
+                        </label>
+                        <label style="display:inline-flex;align-items:center;gap:6px;font-size:0.88rem;color:#334155;cursor:pointer;background:#f8fafc;border:1px solid #cbd5e1;padding:6px 14px;border-radius:8px;font-weight:600;">
+                            <input type="radio" name="contact_preference" value="email" {{ old('contact_preference') === 'email' ? 'checked' : '' }}>
+                            <span>✉️ Email</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Row 5: Requirements / Description -->
                 <div class="form-group-custom" style="margin-bottom:24px">
                     <label class="form-label-custom">
                         @t('contact.requirements_desc', 'Requirements / Description') <span style="color:#ef4444">*</span>
@@ -1676,11 +1507,11 @@
 
                 <!-- Submit Button -->
                 <button type="submit" class="contact-submit-btn">
-                    <span>@t('contact.submit_btn', 'Submit Sourcing RFQ & Inquiry →')</span>
+                    <span>@t('contact.submit_btn', 'Submit Enquiry / RFQ →')</span>
                 </button>
 
                 <p style="text-align:center;font-size:0.8rem;color:#64748b;margin:14px 0 0">
-                    @t('contact.submit_footer', 'Our procurement and commercial team will review your specifications and respond within 24 hours.')
+                    @t('contact.submit_footer', 'Our commercial team will review your requirements and contact you regarding availability, pricing and next steps.')
                 </p>
             </form>
 
@@ -1688,7 +1519,7 @@
 
     </div>
 
-    <!-- 3. Facility & Collection Centre -->
+    <!-- ─── 3. Facility & Collection Centre ───────────────────────────────── -->
     <div class="contact-location-section" id="silc-facility">
         <div class="contact-location-heading" style="text-align:center;margin-bottom:36px">
             <span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.75rem;font-weight:800;letter-spacing:0.8px;padding:6px 16px;border-radius:30px;display:inline-flex;align-items:center;gap:6px;text-transform:uppercase;margin-bottom:12px">
@@ -1700,17 +1531,17 @@
             </span>
 
             <h2 style="font-size:2.3rem;font-weight:800;color:#0f172a;margin:0 0 10px;letter-spacing:-0.5px">
-                @t('contact.facility_title', 'Visit Our SILC Cold Hub')
+                @t('contact.facility_title', 'Visit Our SILC Facility')
             </h2>
 
             <p style="font-size:0.95rem;color:#64748b;max-width:680px;margin:0 auto;line-height:1.5">
-                @t('contact.facility_subtitle', 'Centrally located at SiLC Iskandar Puteri, Johor. Open for customer visits, pre-arranged wholesale inspections, and walk-in counter collections during operating hours.')
+                @t('contact.facility_subtitle', 'Located in SILC, Iskandar Puteri, Johor, our facility supports product handling, order preparation and customer collection.')
             </p>
         </div>
 
         <div class="location-split-grid">
             
-            <!-- Left Column: Detailed Office & Facility Card -->
+            <!-- Left Column: Detailed Facility Card -->
             <div class="office-info-card">
                 <div>
                     <!-- Card Header -->
@@ -1738,7 +1569,7 @@
                                 镁嘉国际贸易有限公司
                             </div>
                             <div style="color:#64748b;font-weight:600;font-size:0.83rem">
-                                @t('contact.facility_role', 'Central Cold Storage & Logistics Distribution Hub')
+                                @t('contact.facility_role_new', 'Facility & Collection Centre')
                             </div>
                         </div>
                     </div>
@@ -1757,9 +1588,9 @@
                                 </svg>
                             </div>
                             <div>
-                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">@t('contact.facility_address_label', 'Facility & Cold Storage Address')</div>
+                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">@t('contact.facility_address_label', 'Facility & Collection Address')</div>
                                 <div style="font-size:0.85rem;color:#64748b;line-height:1.45">
-                                    No. 7, Jalan SiLC 2/18, Kawasan Perindustrian SiLC, 79200 Iskandar Puteri, Johor, Malaysia
+                                    No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia
                                 </div>
                             </div>
                         </div>
@@ -1775,10 +1606,10 @@
                             <div>
                                 <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">@t('contact.operating_hours_label', 'Operating Hours')</div>
                                 <div style="font-size:0.85rem;color:#0f172a;font-weight:600;line-height:1.4">
-                                    @t('contact.hours_full', 'Monday – Saturday: 8:00 AM – 6:00 PM')
+                                    Monday – Saturday: 8:00 AM – 6:00 PM
                                 </div>
                                 <div style="font-size:0.8rem;color:#64748b;margin-top:2px">
-                                    @t('contact.sunday_closed', 'Sunday & Public Holidays: Closed')
+                                    Sunday &amp; Public Holidays: Closed
                                 </div>
                             </div>
                         </div>
@@ -1801,37 +1632,39 @@
 
             <!-- Right Column: Interactive Map Container -->
             <div class="map-embed-wrapper">
-                
-                <!-- Map Floating Card -->
-                <div class="map-overlay-badge">
-                    <div>
-                        <div style="font-weight:800;font-size:0.98rem;color:#0f172a;line-height:1.25">MST Import &amp; Export Sdn. Bhd.</div>
-                        <div style="font-size:0.75rem;font-weight:700;color:#2563eb">镁嘉国际贸易有限公司</div>
-                        <div class="map-badge-desc" style="font-size:0.78rem;color:#64748b;margin:4px 0 10px;line-height:1.35">No. 7, Jalan SiLC 2/18, SiLC Johor</div>
-                    </div>
-                    <div>
-                        <a href="https://maps.app.goo.gl/jLMaDYCNJ6vfk376A" target="_blank" rel="noopener"
-                           style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#ffffff;padding:7px 14px;border-radius:8px;font-size:0.78rem;font-weight:700;text-decoration:none;box-shadow:0 2px 8px rgba(37,99,235,0.3);white-space:nowrap">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                                <polyline points="15 3 21 3 21 9"></polyline>
-                                <line x1="10" y1="14" x2="21" y2="3"></line>
-                            </svg>
-                            <span>@t('contact.open_maps', 'View Location on Google Maps →')</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Interactive Map Container -->
                 <div id="contactMap"></div>
             </div>
 
         </div>
     </div>
 
+    <!-- ─── 4. Pre-Footer Sourcing CTA Section (Section 30) ────────────────── -->
+    <div class="contact-cta-section">
+        <div class="contact-cta-glow"></div>
+        <div class="contact-cta-content">
+            <div class="contact-cta-text">
+                <h2 class="contact-cta-title">@t('contact.cta_title', 'Not Sure What You Need?')</h2>
+                <p class="contact-cta-desc">
+                    @t('contact.cta_desc', 'Tell us your product, quantity, specification or sourcing requirement. We can help you identify suitable supply options.')
+                </p>
+            </div>
+            <div class="contact-cta-actions">
+                <a href="#rfq-form" class="btn-cta-quote">
+                    <span>📝 @t('contact.cta_rfq_btn', 'Request a Quote')</span>
+                </a>
+                <a href="https://wa.me/601112710260" target="_blank" rel="noopener" class="btn-cta-wa">
+                    <span>💬 @t('contact.cta_whatsapp_btn', 'WhatsApp Us')</span>
+                </a>
+                <a href="{{ route('shop.index') }}" class="btn-cta-products">
+                    <span>🐟 @t('contact.cta_products_btn', 'Browse Products')</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<!-- Local Leaflet JS Library (Same-origin to comply with CSP script-src 'self') -->
+<!-- Local Leaflet JS Library -->
 <script src="{{ asset('js/leaflet.js') }}"></script>
 
 <!-- Dynamic Searchable Dropdown & Category-Product Script -->
@@ -1910,7 +1743,6 @@
             });
         }
 
-        // Attach click handlers to initial category options
         bindCategoryOptionClicks();
 
         function bindCategoryOptionClicks() {
@@ -1935,7 +1767,6 @@
                 catTriggerText.classList.add('placeholder');
             }
 
-            // Mark selected
             catOptionsList.querySelectorAll('.searchable-option-item').forEach(el => {
                 if (el.getAttribute('data-value') === value) {
                     el.classList.add('selected');
@@ -1944,7 +1775,6 @@
                 }
             });
 
-            // Rebuild Product Dropdown for this category
             populateProductDropdown(value);
         }
 
@@ -2051,7 +1881,6 @@
                 prodTriggerText.classList.remove('placeholder');
             }
 
-            // Bind click events on newly created product options
             prodOptionsList.querySelectorAll('.searchable-option-item').forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -2150,7 +1979,6 @@
 
             interestsDisplay.innerHTML = pillsHtml;
 
-            // Bind tag remove buttons
             interestsDisplay.querySelectorAll('.selected-tag-remove').forEach(rmBtn => {
                 rmBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -2209,10 +2037,8 @@
             interestsNoResults.style.display = visibleCount === 0 ? 'block' : 'none';
         }
 
-        // Option checkbox click handling
         interestsOptionsList.querySelectorAll('.multi-select-option-item').forEach(item => {
             item.addEventListener('click', function(e) {
-                // If clicked directly on the input checkbox, change event handles it
                 if (e.target.tagName.toLowerCase() !== 'input') {
                     const cb = this.querySelector('input[type="checkbox"]');
                     if (cb) {
@@ -2271,22 +2097,18 @@
             });
         }
 
-        // Initialize display from initial checkboxes
         updateInterestsDisplay();
 
-        // Global document click to close dropdowns
         document.addEventListener('click', function() {
             closeAllDropdowns();
         });
 
-        // Close on Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeAllDropdowns();
             }
         });
 
-        // Initialize state if old values exist
         const initialCategory = "{{ old('subject') }}";
         const initialProduct = "{{ old('product', old('budget')) }}";
         if (initialCategory) {
@@ -2332,9 +2154,9 @@
             const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
             marker.bindPopup(`
                 <div style="font-family:sans-serif;padding:6px;min-width:220px">
-                    <div style="font-weight:800;font-size:0.95rem;color:#0f172a;margin-bottom:2px">{{ __t('about.company_name_full', 'MST Import and Export Sdn Bhd') }}</div>
+                    <div style="font-weight:800;font-size:0.95rem;color:#0f172a;margin-bottom:2px">MST Import &amp; Export Sdn. Bhd.</div>
                     <div style="font-size:0.78rem;font-weight:700;color:#2563eb;margin-bottom:4px">镁嘉国际贸易有限公司</div>
-                    <div style="color:#64748b;font-size:0.82rem;line-height:1.4">No. 7, Jalan SiLC 2/18, Kawasan Perindustrian SiLC, 79200 Iskandar Puteri, Johor</div>
+                    <div style="color:#64748b;font-size:0.82rem;line-height:1.4">No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor</div>
                     <div style="margin-top:8px">
                         <a href="https://maps.app.goo.gl/jLMaDYCNJ6vfk376A" target="_blank" rel="noopener" style="color:#2563eb;font-weight:700;font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
                             <span>{{ __t('contact.get_directions', 'Get Directions') }}</span>
@@ -2342,7 +2164,7 @@
                         </a>
                     </div>
                 </div>
-            `).bindTooltip("MST Import & Export (SiLC Hub)", { direction: "top", offset: [0, -36] });
+            `).bindTooltip("MST Import & Export (SILC Facility)", { direction: "top", offset: [0, -36] });
 
             setTimeout(() => {
                 map.invalidateSize();

@@ -156,6 +156,8 @@
                 {{-- OTP Verification Form --}}
                 <form method="POST" action="{{ route('otp.check') }}" id="otpForm">
                     @csrf
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    <input type="hidden" name="email" value="{{ $user->email }}">
                     <input type="hidden" name="otp" id="fullOtpInput">
 
                     <div style="margin-bottom:24px">
@@ -198,6 +200,8 @@
                     @if(!$hasUsedResend)
                     <form method="POST" action="{{ route('otp.resend') }}" id="resendForm" style="margin:0" onsubmit="this.querySelector('button').disabled=true; this.querySelector('button').innerText='{{ app(\App\Services\TranslationService::class)->translate('auth.otp_sending', 'Sending...') }}';">
                         @csrf
+                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+                        <input type="hidden" name="email" value="{{ $user->email }}">
                         <div style="font-size:0.86rem;color:#64748b;display:flex;align-items:center;gap:6px">
                             <span>@t('auth.otp_didnt_receive', "Didn't receive code?")</span>
                             <button type="submit"

@@ -29,12 +29,16 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = $request->user();
+        if ($user) {
+            $user->update(['preferred_locale' => current_locale()]);
+        }
 
         // Redirect unverified regular users to complete OTP verification
         if (!$user->isAdmin() && !$user->isEmailVerified()) {
             Auth::guard('web')->logout();
             $request->session()->put('otp_verify_user_id', $user->id);
-            return redirect()->route('otp.verify')->with('status', __t('auth.otp_login_unverified_notice', 'Please verify your email with the 6-digit verification code before logging in.'));
+            $request->session()->put('otp_verify_email', $user->email);
+            return redirect()->route('otp.verify', ['locale' => current_locale()])->with('status', __t('auth.otp_login_unverified_notice', 'Please verify your email with the 6-digit verification code before logging in.'));
         }
 
         if ($user->isAdmin()) {

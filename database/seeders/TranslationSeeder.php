@@ -7408,9 +7408,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'invoice',
                 'key'     => 'note_3',
-                'text_en' => 'All cheques to be crossed & made payable to "MST IMPORT AND EXPORT SDN BHD" or to our MAYBANK A/C NO:551342155505 and email the bank in slip to mikatrading15@gmail.com or 011-14360109.',
-                'text_zh' => '所有支票请划线并抬头注明 "MST IMPORT AND EXPORT SDN BHD" 或汇至马来亚银行账户 MAYBANK A/C NO:551342155505，并将存款凭条发送至 mikatrading15@gmail.com 或 011-14360109。',
-                'text_bm' => 'Semua cek hendaklah dipalang & dibayar kepada "MST IMPORT AND EXPORT SDN BHD" atau ke AKAUN MAYBANK KAMI NO:551342155505 dan e-melkan slip bank ke mikatrading15@gmail.com atau 011-14360109.',
+                'text_en' => 'All cheques to be crossed & made payable to "MST IMPORT AND EXPORT SDN BHD" or to our MAYBANK A/C NO:551342155505 and email the bank in slip to mikatrading15@gmail.com or +60 11-1271 0260.',
+                'text_zh' => '所有支票请划线并抬头注明 "MST IMPORT AND EXPORT SDN BHD" 或汇至马来亚银行账户 MAYBANK A/C NO:551342155505，并将存款凭条发送至 mikatrading15@gmail.com 或 +60 11-1271 0260。',
+                'text_bm' => 'Semua cek hendaklah dipalang & dibayar kepada "MST IMPORT AND EXPORT SDN BHD" atau ke AKAUN MAYBANK KAMI NO:551342155505 dan e-melkan slip bank ke mikatrading15@gmail.com atau +60 11-1271 0260.',
             ],
             [
                 'group'   => 'invoice',

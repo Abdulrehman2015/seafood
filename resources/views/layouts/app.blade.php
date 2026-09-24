@@ -513,7 +513,7 @@
             position: absolute;
             top: calc(100% + 10px);
             right: 0;
-            width: 240px;
+            width: 270px;
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 14px;
@@ -1155,7 +1155,7 @@
                 @else
                 <div class="mobile-drawer-auth-card">
                     <div class="mobile-drawer-auth-title">@t('nav.welcome_to', 'Welcome to') {{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</div>
-                    <div class="mobile-drawer-auth-sub">@t('nav.signin_sub', 'Sign in to track orders or access wholesale rates')</div>
+                    <div class="mobile-drawer-auth-sub">@t('nav.signin_sub', 'Sign in to manage your account or request business access')</div>
                     <div class="mobile-drawer-auth-buttons">
                         <a href="{{ route('login') }}" class="btn btn-primary"
                             style="flex:1;text-align:center;font-weight:700;padding:11px;border-radius:10px">@t('nav.sign_in', 'Sign In')</a>
@@ -1210,27 +1210,23 @@
                         <span class="currency-circle-code" id="activeCurrencyCode">{{ $currencyList[$currentCurrency]['label'] ?? 'RM' }}</span>
                     </button>
                     <div class="currency-dropdown" id="currencyDropdown">
-                        <div class="currency-dropdown-header">Select Currency</div>
+                        <div class="currency-dropdown-header">@t('nav.select_currency', 'Select Currency')</div>
                         @foreach($currencyList as $code => $cur)
                             <button type="button" class="currency-option {{ $currentCurrency === $code ? 'active' : '' }}" onclick="selectCurrency('{{ $code }}')" data-code="{{ $code }}">
                                 <span class="currency-option-pill">{{ $cur['label'] }}</span>
                                 <div class="currency-option-info">
-                                    <span class="currency-option-name">{{ $cur['name'] }}</span>
-                                    <span class="currency-option-rate">
-                                        @if($code === 'MYR')
-                                            Base Currency
-                                        @else
-                                            1 RM ≈ {{ $cur['symbol'] }} {{ number_format($currencyService->convert(1, $code), 4) }}
-                                        @endif
-                                    </span>
+                                    <span class="currency-option-name">{{ $cur['flag'] ?? '' }} {{ $cur['label'] }} — {{ $cur['name'] }}</span>
                                 </div>
                                 <span class="currency-option-check" style="{{ $currentCurrency === $code ? '' : 'display:none' }}">✓</span>
                             </button>
                         @endforeach
+                        <div class="currency-dropdown-note" style="padding:10px 12px;margin-top:6px;background:#f8fafc;border-top:1px solid #e2e8f0;font-size:0.73rem;color:#64748b;line-height:1.45;text-align:left;border-radius:0 0 10px 10px">
+                            ℹ️ @t('nav.currency_indicative_note', 'Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.')
+                        </div>
                     </div>
                 </div>
 
-                <a href="{{ route('cart.index') }}" class="cart-btn" id="cartBtn">
+                <a href="{{ route('cart.index') }}" class="cart-btn" id="cartBtn" aria-label="Shopping Cart">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"></path>
                         <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -1392,12 +1388,13 @@
                         @empty
                             <li><a href="{{ route('contact') }}">@t('footer.contact_support', 'Customer Support')</a></li>
                         @endforelse
+                        <li><a href="#" onclick="event.preventDefault(); if (typeof window.openCookieSettings === 'function') window.openCookieSettings();">@t('cookie.cookie_settings', 'Cookie Settings')</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h4 class="footer-heading">@t('footer.sourcing_support_heading', 'Sourcing & Support')</h4>
                     <p style="font-size:0.875rem;color:#cbd5e1;line-height:1.6;margin-bottom:14px">
-                        @t('footer.sourcing_desc', 'Cold-chain sourcing, wholesale supply & customized import distribution across regional & international markets.')
+                        @t('footer.sourcing_desc', 'Cold-chain sourcing, wholesale supply, trading and customized import & distribution support across regional and international markets.')
                     </p>
                     <div style="margin-bottom:14px">
                         <a href="{{ route('contact') }}" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg, #2563eb, #1d4ed8);color:#ffffff;padding:8px 16px;border-radius:8px;font-weight:700;font-size:0.85rem;text-decoration:none;box-shadow:0 2px 8px rgba(37,99,235,0.35);transition:transform 0.15s ease">
@@ -1405,18 +1402,26 @@
                             <span>&rarr;</span>
                         </a>
                     </div>
-                    <div style="font-size:0.82rem;color:#94a3b8;display:flex;align-items:center;gap:6px">
-                        <span>📍 @t('footer.hub_loc', 'SiLC Iskandar Puteri, Johor')</span>
+                    <div style="font-size:0.8rem;color:#94a3b8;line-height:1.6;display:flex;flex-direction:column;gap:5px;margin-bottom:12px;">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <span>📞</span>
+                            <a href="tel:+60132800168" style="color:#94a3b8;text-decoration:none;font-weight:500;">+60 13-280 0168</a>
+                            <span style="color:#475569;">·</span>
+                            <a href="tel:+601112710260" style="color:#94a3b8;text-decoration:none;font-weight:500;">+60 11-1271 0260</a>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <span>✉️</span>
+                            <a href="mailto:mikatrading15@gmail.com" style="color:#94a3b8;text-decoration:none;font-weight:500;">mikatrading15@gmail.com</a>
+                        </div>
+                    </div>
+                    <div style="font-size:0.8rem;color:#94a3b8;line-height:1.5;display:flex;align-items:flex-start;gap:6px">
+                        <span style="flex-shrink:0">📍</span>
+                        <span>7 Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia</span>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>© {{ date('Y') }} @t('footer.company_name', 'MST Import & Export Sdn. Bhd.') · @t('footer.all_rights_reserved', 'All rights reserved.')</p>
-                <div class="footer-bottom-credit" style="font-size:0.85rem;color:#94a3b8;display:inline-flex;align-items:center;gap:4px;">
-                    <span>Website by</span>
-                    <a href="https://wa.me/923176121524" target="_blank" rel="noopener noreferrer" style="color:#38bdf8;text-decoration:none;font-weight:700;transition:color 0.15s ease;" onmouseover="this.style.color='#7dd3fc';this.style.textDecoration='underline'" onmouseout="this.style.color='#38bdf8';this.style.textDecoration='none'">Abdul Rehman</a>
-                    <span>❤️</span>
-                </div>
+                <p>© 2026 @t('footer.company_name', 'MST Import & Export Sdn. Bhd.') · @t('footer.all_rights_reserved', 'All rights reserved.')</p>
             </div>
         </div>
     </footer>

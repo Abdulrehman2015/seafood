@@ -326,18 +326,68 @@
                 </div>
             </div>
 
+            <div class="form-grid-2">
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Position / Role</label>
+                    <input type="text" name="position_role" class="form-control" value="{{ old('position_role', $user->position_role) }}" placeholder="e.g. Purchasing Manager / Director" style="height:42px;border-radius:10px;border:1.5px solid #cbd5e1;">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Commercial Access</label>
+                    <select name="commercial_access" class="form-control custom-select-styled">
+                        <option value="Not Assigned" {{ old('commercial_access', $user->commercial_access) == 'Not Assigned' ? 'selected' : '' }}>Not Assigned</option>
+                        <option value="Trading / Quotation" {{ old('commercial_access', $user->commercial_access) == 'Trading / Quotation' ? 'selected' : '' }}>Trading / Quotation</option>
+                        <option value="Approved Trading Customer" {{ old('commercial_access', $user->commercial_access) == 'Approved Trading Customer' ? 'selected' : '' }}>Approved Trading Customer</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Country / Market</label>
+                    <input type="text" name="country_market" class="form-control" value="{{ old('country_market', $user->country_market) }}" placeholder="e.g. Malaysia / Singapore / Indonesia" style="height:42px;border-radius:10px;border:1.5px solid #cbd5e1;">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Destination / Delivery Country</label>
+                    <input type="text" name="destination_country" class="form-control" value="{{ old('destination_country', $user->destination_country) }}" placeholder="e.g. Singapore" style="height:42px;border-radius:10px;border:1.5px solid #cbd5e1;">
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Supply Arrangement</label>
+                    <input type="text" name="supply_arrangement" class="form-control" value="{{ old('supply_arrangement', $user->supply_arrangement) }}" placeholder="e.g. MST Delivery, Export Shipment" style="height:42px;border-radius:10px;border:1.5px solid #cbd5e1;">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Estimated Order Volume</label>
+                    <input type="text" name="order_volume" class="form-control" value="{{ old('order_volume', $user->order_volume) }}" placeholder="e.g. Bulk / Container, Regular Commercial" style="height:42px;border-radius:10px;border:1.5px solid #cbd5e1;">
+                </div>
+            </div>
+
             <div class="form-group mb-3">
-                <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Street Address</label>
+                <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Product / Category Interest</label>
+                <input type="text" name="product_interest" class="form-control" value="{{ old('product_interest', $user->product_interest) }}" placeholder="e.g. Frozen Seafood, Frozen Meat, Food Ingredients" style="height:42px;border-radius:10px;border:1.5px solid #cbd5e1;">
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Import / Distribution &amp; Sourcing Requirements</label>
+                <textarea name="sourcing_requirements" class="form-control" rows="3" placeholder="Commercial requirements, packaging, specifications..." style="border-radius:10px;border:1.5px solid #cbd5e1;">{{ old('sourcing_requirements', $user->sourcing_requirements) }}</textarea>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Street / Destination Address</label>
                 <textarea name="address" class="form-control" rows="2" placeholder="Full delivery or billing street address" style="border-radius:10px;border:1.5px solid #cbd5e1;">{{ old('address', $user->address) }}</textarea>
             </div>
 
             <div class="form-grid-3">
                 <div class="form-group mb-3">
                     <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">City</label>
-                    <input type="text" name="city" class="form-control" value="{{ old('city', $user->city) }}" placeholder="Kuala Lumpur" style="height:42px;border-radius:10px;border:1.5px solid #cbd5e1;">
+                    <input type="text" name="city" class="form-control" value="{{ old('city', $user->city) }}" placeholder="Kuala Lumpur / Singapore" style="height:42px;border-radius:10px;border:1.5px solid #cbd5e1;">
                 </div>
                 <div class="form-group mb-3">
-                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">State</label>
+                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">State / Region</label>
                     <input type="text" name="state" class="form-control" value="{{ old('state', $user->state) }}" placeholder="Selangor" style="height:42px;border-radius:10px;border:1.5px solid #cbd5e1;">
                 </div>
                 <div class="form-group mb-3">
@@ -382,6 +432,23 @@
                         {{ ucfirst($user->customer_group) }} Account
                     </div>
                 </div>
+
+                @if($user->customer_group === 'trading')
+                <div>
+                    <div class="text-xs text-muted" style="color:#64748b;font-weight:600;">Commercial Access</div>
+                    <div style="font-weight:700;color:#0f766e;margin-top:2px;">
+                        {{ $user->commercial_access ?? 'Not Assigned' }}
+                    </div>
+                </div>
+                @if($user->destination_country)
+                <div>
+                    <div class="text-xs text-muted" style="color:#64748b;font-weight:600;">Destination Country</div>
+                    <div style="font-weight:600;color:#0f172a;margin-top:2px;">
+                        {{ $user->destination_country }}
+                    </div>
+                </div>
+                @endif
+                @endif
 
                 <div>
                     <div class="text-xs text-muted" style="color:#64748b;font-weight:600;">Account Email</div>

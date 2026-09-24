@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', __t('shop.meta_title', 'Products Catalogue — MST Import & Export Sdn. Bhd.'))
-@section('meta_description', __t('shop.meta_desc', 'Explore seafood, meat, frozen foods, food ingredients and specialty products — with customised sourcing available across Malaysia, Singapore and regional markets.'))
+@section('title', __t('shop.meta_title', 'Products & Sourcing — MST Import & Export Sdn. Bhd.'))
+@section('meta_description', __t('shop.meta_desc', 'Explore selected frozen seafood, meat, food ingredients and specialty products from MST. Customised sourcing available based on product specification, origin, pack size and supply requirements.'))
 
 @section('content')
-<!-- Page Header / Hero Section (MST Deep Navy Brand Gradient — Matching About Us & Contact Us) -->
+<!-- Page Header / Hero Section (MST Deep Navy Brand Gradient) -->
 <div class="products-hero-section">
     <div class="products-hero-grid-pattern"></div>
     <div class="container products-hero-inner">
@@ -13,28 +13,22 @@
                     🏠 @t('nav.home', 'Home')
                 </a>
                 <span class="hero-crumb-sep">›</span>
-                <span class="hero-crumb-current">@t('shop.catalogue_title', 'Products Catalogue')</span>
-            </div>
-            
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
-                <span class="hero-usp-pill">
-                    ❄️ @t('shop.usp_frozen', 'Cold-Chain Certified')
-                </span>
-                <span class="hero-usp-pill">
-                    🌏 @t('shop.usp_sourcing', 'Direct Sourcing')
-                </span>
-                <span style="color:#bae6fd;font-size:0.8rem">@t('about.cold_chain_supply', 'Regional & International Cold-Chain Supply')</span>
+                <span class="hero-crumb-current">@t('shop.breadcrumb_products_sourcing', 'Products & Sourcing')</span>
             </div>
 
             <h1 class="products-hero-title">
-                @t('shop.catalogue_title', 'Products Catalogue')
+                @t('shop.hero_title', 'Products & Sourcing')
             </h1>
             
             <p class="products-hero-subtitle">
-                @t('shop.catalogue_subtitle', 'Explore seafood, meat, frozen foods, food ingredients and selected specialty products — with customised sourcing available for items not currently listed.')
+                @t('shop.hero_desc', 'Explore selected frozen seafood, meat, food ingredients and specialty products from MST.')
+            </p>
+            <p class="products-hero-subtitle" style="margin-top:6px;font-size:0.9rem;opacity:0.92">
+                @t('shop.hero_subdesc', 'We also provide customised sourcing based on product specification, origin, pack size, brand and supply requirements.')
             </p>
         </div>
 
+        <div class="hero-content-right">
             @auth
                 <div class="user-tier-pill">
                     ⭐ {{ match($group) {
@@ -46,7 +40,7 @@
                     } }}
                 </div>
             @else
-                <div style="font-size:0.85rem;padding:6px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb;font-weight:600">
+                <div class="brand-slogan-pill">
                     @t('about.motto', 'Flow with Integrity, Grow with Strength.')
                 </div>
             @endauth
@@ -54,7 +48,11 @@
     </div>
 </div>
 
-<div class="container" style="padding-top:14px;padding-bottom:60px">
+@php
+    $currentCustomerType = $customerType ?? request('customer_type', (auth()->check() && in_array($group, ['wholesale', 'trading'])) ? 'wholesale' : 'retail');
+@endphp
+
+<div class="container shop-container" id="shopMasterContainer" data-customer-mode="{{ $currentCustomerType }}" style="padding-top:16px;padding-bottom:60px">
 
     @php
         $selectedCatSlug = request('category');
@@ -97,6 +95,7 @@
             'india'         => '🇮🇳',
             'thailand'      => '🇹🇭',
             'vietnam'       => '🇻🇳',
+            'myanmar'       => '🇲🇲',
             'usa'           => '🇺🇸',
             'united states' => '🇺🇸',
             'canada'        => '🇨🇦',
@@ -128,6 +127,7 @@
             'meat'                => '🥩',
             'beef'                => '🥩',
             'chicken'             => '🍗',
+            'pork'                => '🥓',
             'poultry'             => '🍗',
             'frozen-food'         => '🥟',
             'dim-sum'             => '🥟',
@@ -136,10 +136,14 @@
             'desserts'            => '🍡',
             'hotpot'              => '🍲',
             'soup'                => '🍲',
+            'specialty'           => '⭐',
         ];
 
         $getCatIcon = function($cat) use ($catIcons) {
             if (!$cat) return '📁';
+            if (is_object($cat) && !empty($cat->icon)) {
+                return $cat->icon;
+            }
             $slug = is_object($cat) ? ($cat->slug ?? '') : strval($cat);
             $name = is_object($cat) ? ($cat->name ?? '') : strval($cat);
             $combined = strtolower($slug . ' ' . $name);
@@ -159,6 +163,8 @@
         if (!empty(request('brand'))) $activeFilterCount++;
         if (!empty(request('pack_size'))) $activeFilterCount++;
         if (!empty(request('availability'))) $activeFilterCount++;
+
+        $currentCurrency = app(\App\Services\CurrencyService::class)->getCurrentCurrency();
     @endphp
 
     <!-- ─── Search & Multi-Filter Bar ─── -->
@@ -182,7 +188,7 @@
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                         <input type="text" name="search" id="shopMainSearchInput" class="shop-main-search-input" 
-                               placeholder="@t('shop.search_placeholder_master', 'Search seafood, meat, ingredients, brands...')" 
+                               placeholder="@t('shop.search_placeholder_master', 'Search by product name, category, brand or item code...')" 
                                value="{{ request('search') }}" autocomplete="off">
                         <button type="button" class="search-clear-btn" id="searchClearBtn" onclick="clearSearchInput(event)" style="{{ request('search') ? '' : 'display:none;' }}" title="Clear">✕</button>
                     </div>
@@ -218,18 +224,29 @@
                            onclick="setCustomerType('retail')" 
                            data-type="retail"
                            class="cust-type-btn {{ $currentCustomerType === 'retail' ? 'active' : '' }}"
-                           title="Retail / Walk-in Catalog">
+                           title="@t('shop.type_retail_desc', 'Public browsing · Retail pricing · No login required')">
                             <span>🛍️ @t('shop.type_retail', 'Retail / Walk-in')</span>
                         </button>
                         <button type="button" 
                            onclick="setCustomerType('wholesale')" 
                            data-type="wholesale"
                            class="cust-type-btn {{ $currentCustomerType === 'wholesale' ? 'active' : '' }}"
-                           title="Wholesale / Business Supply">
-                            <span>🏢 @t('shop.type_wholesale', 'Wholesale')</span>
+                           title="@t('shop.type_wholesale_desc', 'Business verification required · Wholesale pricing')">
+                            <span>🏢 @t('shop.type_wholesale', 'Wholesale / Business')</span>
                         </button>
                     </div>
                 </div>
+            </div>
+
+            <!-- Customer Mode Description Caption -->
+            <div class="customer-mode-caption" id="custModeCaption">
+                @if($currentCustomerType === 'retail')
+                    <span class="mode-caption-tag">🛍️ @t('shop.type_retail', 'Retail / Walk-in'):</span>
+                    <span class="mode-caption-text">@t('shop.type_retail_desc', 'Public browsing · Retail pricing · No login required')</span>
+                @else
+                    <span class="mode-caption-tag">🏢 @t('shop.type_wholesale', 'Wholesale / Business'):</span>
+                    <span class="mode-caption-text">@t('shop.type_wholesale_desc', 'Business verification required · Wholesale pricing')</span>
+                @endif
             </div>
 
             <!-- 6 Searchable Dropdown Filters -->
@@ -453,7 +470,7 @@
                         <span class="dropdown-trigger-content">
                             <span class="dropdown-trigger-icon" id="icon-availability">{{ request('availability') === 'pre_order' ? '📦' : (request('availability') === 'in_stock' ? '🟢' : '⚡') }}</span>
                             <span class="dropdown-trigger-text" id="label-availability">
-                                {{ request('availability') === 'in_stock' ? __t('shop.in_stock', 'In Stock') : (request('availability') === 'pre_order' ? __t('shop.pre_order', 'Pre-Order / Custom Sourcing') : __t('shop.filter_availability', 'Availability')) }}
+                                {{ request('availability') === 'in_stock' ? __t('shop.in_stock', 'In Stock') : (request('availability') === 'pre_order' ? __t('shop.pre_order', 'Pre-Order / Sourcing Available') : __t('shop.filter_availability', 'Availability')) }}
                             </span>
                         </span>
                         <span class="dropdown-trigger-arrows">
@@ -482,8 +499,8 @@
                                 <span class="option-name">🟢 @t('shop.in_stock', 'In Stock')</span>
                                 @if(request('availability') === 'in_stock') <span class="option-check">✓</span> @endif
                             </button>
-                            <button type="button" class="dropdown-option-item {{ request('availability') === 'pre_order' ? 'selected' : '' }}" data-value="pre_order" data-label="@t('shop.pre_order', 'Pre-Order / Custom Sourcing')" onclick="selectDropdownOption('availability', 'pre_order', '{{ addslashes(__t('shop.pre_order', 'Pre-Order / Custom Sourcing')) }}', '📦')">
-                                <span class="option-name">📦 @t('shop.pre_order', 'Pre-Order / Custom Sourcing')</span>
+                            <button type="button" class="dropdown-option-item {{ request('availability') === 'pre_order' ? 'selected' : '' }}" data-value="pre_order" data-label="@t('shop.pre_order', 'Pre-Order / Sourcing Available')" onclick="selectDropdownOption('availability', 'pre_order', '{{ addslashes(__t('shop.pre_order', 'Pre-Order / Sourcing Available')) }}', '📦')">
+                                <span class="option-name">📦 @t('shop.pre_order', 'Pre-Order / Sourcing Available')</span>
                                 @if(request('availability') === 'pre_order') <span class="option-check">✓</span> @endif
                             </button>
                             <div class="dropdown-no-results" style="display:none;"><span>@t('shop.no_results', 'No options found')</span></div>
@@ -494,17 +511,17 @@
         </form>
     </div>
 
-    <!-- Business Pricing Sign-in Callout if Wholesale selected & not logged in as wholesale -->
-    @if($currentCustomerType === 'wholesale' && (!auth()->check() || $group === 'retail'))
-        <div class="business-pricing-banner" id="businessPricingBanner">
+    <!-- Business Pricing Sign-in Callout if not logged in as wholesale -->
+    @if(!auth()->check() || !in_array($group, ['wholesale', 'trading']))
+        <div class="business-pricing-banner" id="businessPricingBanner" style="{{ $currentCustomerType === 'wholesale' ? 'display:flex;' : 'display:none;' }}">
             <div class="business-banner-left">
                 <div class="business-banner-icon">💼</div>
                 <div>
                     <h3 class="business-banner-title">
-                        @t('shop.business_banner_title', 'Buying for Business? Sign in for Wholesale & Trading Pricing.')
+                        @t('shop.business_banner_title', 'Buying for Business? Business Verification Required for Wholesale Pricing.')
                     </h3>
                     <p class="business-banner-sub">
-                        @t('shop.business_banner_desc', 'Verified commercial accounts access volume tier pricing, flexible MOQ, consolidated cold-chain delivery and invoice terms.')
+                        @t('shop.business_banner_desc', 'Verified commercial accounts access wholesale volume rates, flexible MOQ, consolidated cold-chain delivery and invoice support.')
                     </p>
                 </div>
             </div>
@@ -512,7 +529,7 @@
                 <a href="{{ route('login') }}" class="btn-biz-signin">
                     @t('auth.sign_in', 'Sign In')
                 </a>
-                <a href="{{ route('quotations.create') }}" class="btn-biz-access">
+                <a href="{{ route('register', ['type' => 'wholesale']) }}" class="btn-biz-access">
                     @t('shop.request_wholesale_access', 'Request Wholesale Access →')
                 </a>
             </div>
@@ -520,20 +537,27 @@
     @endif
 
     <!-- ─── Main Shop Content (AJAX Updated) ─── -->
-    <div id="shopMainContent">
+    <div id="shopMainContent" style="position:relative">
+        <!-- Modern Page / Tab Switching Loader Bar -->
+        <div class="shop-tab-loader" id="shopTabLoader">
+            <div class="tab-loader-bar"></div>
+        </div>
         <div class="filter-loading-bar"></div>
 
         <!-- Active Filters Row & Results Header with Sort By -->
         <div class="shop-results-header" id="shopResultsHeader">
             <div class="results-header-left">
                 <div class="results-count-text">
-                    <span>@t('shop.showing', 'Showing') <strong>{{ $products->total() }}</strong> @t('shop.products_count', 'products')</span>
+                    <span>@t('shop.showing_selected', 'Showing') <strong>{{ $products->total() }}</strong> @t('shop.selected_products_count', 'selected products')</span>
                     @if(request('search'))
                         <span style="color:#64748b">@t('shop.for_keyword', 'for') "<strong>{{ request('search') }}</strong>"</span>
                     @endif
                     @if($activeParentCat)
                         <span style="color:#2563eb;font-weight:700">· {{ $activeParentCat->name }} @if($activeSubCat) &rsaquo; {{ $activeSubCat->name }} @endif</span>
                     @endif
+                </div>
+                <div class="sourcing-catalog-note">
+                    @t('shop.sourcing_catalog_note', 'Need something else? MST can source products beyond our online catalogue.')
                 </div>
 
                 @if($hasAnyFilter)
@@ -576,7 +600,7 @@
                         @endif
                         @if(request('availability'))
                             <a href="{{ route('shop.index', request()->except('availability', 'page')) }}" class="active-filter-badge">
-                                <span>Availability: {{ request('availability') === 'in_stock' ? 'In Stock' : 'Pre-Order' }}</span>
+                                <span>Availability: {{ request('availability') === 'in_stock' ? 'In Stock' : 'Pre-Order / Sourcing' }}</span>
                                 <span class="badge-x">✕</span>
                             </a>
                         @endif
@@ -623,7 +647,7 @@
                     <div class="searchable-dropdown-menu sort-dropdown-menu" id="menu-sort">
                         <div class="dropdown-options-list" id="list-sort">
                             <button type="button" class="dropdown-option-item {{ request('sort', 'sort_order') === 'sort_order' ? 'selected' : '' }}" data-value="sort_order" data-label="@t('shop.sort_featured', 'Sort: Featured')" onclick="selectDropdownOption('sort', 'sort_order', '{{ addslashes(__t('shop.sort_featured', 'Sort: Featured')) }}', '✨')">
-                                <span class="option-name">✨ @t('shop.sort_featured_opt', 'Featured Catches')</span>
+                                <span class="option-name">✨ @t('shop.sort_featured_opt', 'Featured Products')</span>
                                 @if(request('sort', 'sort_order') === 'sort_order') <span class="option-check">✓</span> @endif
                             </button>
                             <button type="button" class="dropdown-option-item {{ request('sort') === 'price_asc' ? 'selected' : '' }}" data-value="price_asc" data-label="@t('shop.sort_price_low', 'Price: Low to High')" onclick="selectDropdownOption('sort', 'price_asc', '{{ addslashes(__t('shop.sort_price_low', 'Price: Low to High')) }}', '💵')">
@@ -650,34 +674,54 @@
                 <div class="products-catalogue-grid">
                     @foreach($products as $product)
                         @php
-                            $displayPrice = $product->getDisplayPrice($group);
-                            $price = $displayPrice['amount'];
-                            $priceFormatted = $displayPrice['formatted'];
+                            $isApprovedWholesale = auth()->check() && in_array($group, ['wholesale', 'trading']);
                             
                             $tempLower = strtolower($product->storage_temp ?? '');
-                            $isLive = str_contains($tempLower, 'live') || str_contains(strtolower($product->name), 'live');
+                            $prodNameLower = strtolower($product->name ?? '');
+                            $isLive = str_contains($tempLower, 'live') || str_contains($prodNameLower, 'live');
                             $isChilled = str_contains($tempLower, 'chilled');
-                            
-                            $storageLabel = '❄️ -18°C Frozen';
+                            $isIqf = str_contains($prodNameLower, 'iqf') || str_contains($tempLower, 'iqf');
+
                             if ($isLive) {
                                 $storageLabel = '🦀 Live / Chilled';
                             } elseif ($isChilled) {
                                 $storageLabel = '🧊 0°C to 4°C Chilled';
-                            } elseif (str_contains(strtolower($product->name), 'iqf') || str_contains($tempLower, 'iqf')) {
-                                $storageLabel = '❄️ -18°C IQF';
+                            } elseif ($isIqf) {
+                                $storageLabel = '❄️ -18°C · IQF';
                             } elseif ($product->storage_temp) {
-                                $storageLabel = '❄️ ' . $product->storage_temp;
+                                $storageLabel = '❄️ Frozen · ' . $product->storage_temp;
+                            } else {
+                                $storageLabel = '❄️ Frozen · -18°C';
                             }
+
+                            // Availability status text
+                            $availabilityLabel = 'Available';
+                            $availabilityClass = 'avail-in-stock';
+                            if ($product->is_rfq_only) {
+                                $availabilityLabel = 'Pre-Order / Sourcing Available';
+                                $availabilityClass = 'avail-pre-order';
+                            } elseif ($product->track_stock && $product->stock_quantity <= 5) {
+                                $availabilityLabel = 'Limited Availability';
+                                $availabilityClass = 'avail-limited';
+                            }
+
+                            // Price calculation for current view
+                            $displayPrice = $product->getDisplayPrice($group);
+                            $priceFormatted = $displayPrice['formatted'];
+                            $basePriceAmount = $product->getPriceForGroup($group);
+
+                            // Sensitive or RFQ product check
+                            $isSensitiveOrRfq = $product->is_rfq_only || $product->retail_price === null;
                         @endphp
 
-                        <div class="product-item-card">
+                        <div class="product-item-card {{ $currentCustomerType === 'wholesale' && !$isApprovedWholesale ? 'card-wholesale-preview' : '' }}">
                             <!-- Product Image Container -->
                             <div class="product-img-box">
                                 <a href="{{ route('shop.show', $product) }}" class="product-img-link" title="{{ $product->name }}">
                                     @if($product->thumbnail)
                                         <img src="{{ cdn_storage($product->thumbnail) }}" alt="{{ $product->name }}" loading="lazy" class="card-product-img">
                                     @else
-                                        <div class="product-placeholder-icon">🐟</div>
+                                        <div class="product-placeholder-icon">📦</div>
                                     @endif
                                 </a>
 
@@ -687,7 +731,7 @@
                                         <span class="badge-featured">⭐ @t('shop.badge_featured', 'Featured')</span>
                                     @endif
                                     @if($product->origin)
-                                        <span class="badge-origin">🌍 {{ $product->origin }}</span>
+                                        <span class="badge-origin">{{ $getOriginFlag($product->origin) }} {{ $product->origin }}</span>
                                     @endif
                                 </div>
 
@@ -700,20 +744,25 @@
                                 <button type="button" class="btn-card-quickview js-quickview-btn"
                                     data-id="{{ $product->id }}"
                                     data-name="{{ $product->name }}"
-                                    data-category="{{ $product->category?->name ?? 'Seafood' }}"
+                                    data-category="{{ $product->category?->name ?? 'Products' }}"
                                     data-sku="{{ $product->sku ?? 'N/A' }}"
                                     data-origin="{{ $product->origin ?? '' }}"
                                     data-weight="{{ $product->weight ?? '' }}"
-                                    data-unit="{{ $product->unit ?? '' }}"
+                                    data-unit="{{ $product->unit ?? 'pack' }}"
                                     data-storage="{{ $storageLabel }}"
+                                    data-availability="{{ $availabilityLabel }}"
+                                    data-is-rfq="{{ $isSensitiveOrRfq ? '1' : '0' }}"
+                                    data-customer-type="{{ $currentCustomerType }}"
                                     data-price-formatted="{{ $priceFormatted }}"
-                                    data-base-rm="{{ $product->getPriceForGroup($group) ?? 0 }}"
-                                    data-manual-sgd="{{ $product->price_sgd ?? '' }}"
-                                    data-manual-usd="{{ $product->price_usd ?? '' }}"
+                                    data-base-rm="{{ ($isApprovedWholesale || $currentCustomerType === 'retail') && !$isSensitiveOrRfq ? ($basePriceAmount ?? 0) : 0 }}"
+                                    data-manual-sgd="{{ (!$isSensitiveOrRfq && ($currentCustomerType === 'retail' || $isApprovedWholesale)) ? ($product->price_sgd ?? '') : '' }}"
+                                    data-manual-usd="{{ (!$isSensitiveOrRfq && ($currentCustomerType === 'retail' || $isApprovedWholesale)) ? ($product->price_usd ?? '') : '' }}"
+                                    @if($isApprovedWholesale)
                                     data-manual-wholesale-sgd="{{ $product->wholesale_price_sgd ?? '' }}"
                                     data-manual-wholesale-usd="{{ $product->wholesale_price_usd ?? '' }}"
+                                    @endif
                                     data-group="{{ $group }}"
-                                    data-moq="{{ $product->getMoqForGroup($group) > 1 ? ($product->getMoqForGroup($group) . ' ' . $product->unit) : '' }}"
+                                    data-moq="{{ $isApprovedWholesale && $product->getMoqForGroup($group) > 1 ? ($product->getMoqForGroup($group) . ' ' . $product->unit) : '' }}"
                                     data-desc="{{ $product->short_description ?? $product->description ?? '' }}"
                                     data-image="{{ $product->thumbnail ? cdn_storage($product->thumbnail) : '' }}"
                                     data-url="{{ route('shop.show', $product) }}"
@@ -727,7 +776,7 @@
                             <div class="product-item-body">
                                 <!-- Category Tag & SKU -->
                                 <div class="card-meta-bar">
-                                    <span class="card-cat-name">{{ $product->category?->name ?? 'General' }}</span>
+                                    <span class="card-cat-name">{{ $product->category?->name ?? 'Products & Sourcing' }}</span>
                                     @if($product->sku)
                                         <span class="card-sku">{{ $product->sku }}</span>
                                     @endif
@@ -740,95 +789,204 @@
                                     </a>
                                 </h3>
 
-                                <!-- Pack Size / Weight -->
+                                <!-- Pack Size / Brand / Availability Row -->
                                 <div class="card-spec-row">
                                     @if($product->weight)
                                         <span class="spec-chip">📦 {{ $product->weight }}</span>
                                     @endif
                                     @if($product->brand && !str_contains($product->brand, 'SDN BHD'))
-                                        <span class="spec-chip">🏷️ {{ $product->brand }}</span>
+                                        <span class="spec-chip spec-brand">🏷️ {{ $product->brand }}</span>
                                     @endif
+                                    <span class="spec-chip {{ $availabilityClass }}">{{ $availabilityLabel }}</span>
                                 </div>
 
-                                <!-- Single Clean Price Display -->
+                                <!-- Pricing Block (Strict Server-Side Access Control) -->
                                 <div class="card-pricing-block">
-                                    @if($currentCustomerType === 'wholesale' && !auth()->check())
-                                        <div class="wholesale-prompt-price">
-                                            <span class="prompt-text">@t('shop.login_for_wholesale', 'Login for Wholesale Pricing')</span>
-                                            <a href="{{ route('login') }}" class="prompt-link">@t('auth.sign_in', 'Sign In') &rarr;</a>
-                                        </div>
-                                    @elseif($price !== null)
-                                        <div class="product-card-price js-currency-price"
-                                             data-base-rm="{{ $product->getPriceForGroup($group) ?? 0 }}"
-                                             data-manual-sgd="{{ $product->price_sgd ?? '' }}"
-                                             data-manual-usd="{{ $product->price_usd ?? '' }}"
-                                             @if(in_array($group, ['wholesale','trading']))
-                                             data-manual-wholesale-sgd="{{ $product->wholesale_price_sgd ?? '' }}"
-                                             data-manual-wholesale-usd="{{ $product->wholesale_price_usd ?? '' }}"
-                                             data-group="{{ $group }}"
-                                             @endif
-                                        >
-                                            <span class="price-amount price-val">{{ $priceFormatted }}</span>
-                                            <span class="price-base-rm price-sub-myr" style="display:{{ ($currentCurrency !== 'MYR' && !empty($displayPrice['base_rm'])) ? 'block' : 'none' }}">
-                                                RM {{ number_format($product->getPriceForGroup($group), 2) }}
-                                            </span>
-                                        </div>
-                                        @if(in_array($group, ['wholesale','trading']) && $product->getMoqForGroup($group) > 1)
-                                            <div class="moq-badge">MOQ: {{ $product->getMoqForGroup($group) }} {{ $product->unit }}</div>
+                                    <!-- Retail Pricing Mode Container -->
+                                    <div class="pricing-mode-retail">
+                                        @if($isSensitiveOrRfq)
+                                            <div class="price-on-request-box">
+                                                <span class="price-req-title">@t('shop.price_on_request', 'Price available upon request')</span>
+                                                <span class="price-req-sub">@t('shop.availability_subject_confirmation', 'Availability subject to stock and supply confirmation.')</span>
+                                            </div>
+                                        @else
+                                            <div class="product-card-price js-currency-price"
+                                                 data-base-rm="{{ $product->retail_price }}"
+                                                 data-manual-sgd="{{ $product->price_sgd ?? '' }}"
+                                                 data-manual-usd="{{ $product->price_usd ?? '' }}"
+                                            >
+                                                <span class="price-prefix-from">@t('shop.from_price', 'From')</span>
+                                                <span class="price-amount price-val">{{ $priceFormatted }}</span>
+                                                <span class="price-base-rm price-sub-myr" style="display:{{ ($currentCurrency !== 'MYR' && !empty($displayPrice['base_rm'])) ? 'block' : 'none' }}">
+                                                    RM {{ number_format($product->retail_price, 2) }}
+                                                </span>
+                                            </div>
                                         @endif
-                                    @else
-                                        <div class="price-on-request">
-                                            @t('shop.price_on_request', 'Price on Request (RFQ)')
-                                        </div>
-                                    @endif
+                                    </div>
+
+                                    <!-- Wholesale Pricing Mode Container -->
+                                    <div class="pricing-mode-wholesale">
+                                        @if($isApprovedWholesale)
+                                            @if($basePriceAmount !== null && !$product->is_rfq_only)
+                                                <div class="product-card-price js-currency-price"
+                                                     data-base-rm="{{ $basePriceAmount }}"
+                                                     data-manual-sgd="{{ $product->price_sgd ?? '' }}"
+                                                     data-manual-usd="{{ $product->price_usd ?? '' }}"
+                                                     data-manual-wholesale-sgd="{{ $product->wholesale_price_sgd ?? '' }}"
+                                                     data-manual-wholesale-usd="{{ $product->wholesale_price_usd ?? '' }}"
+                                                     data-group="{{ $group }}"
+                                                >
+                                                    <span class="price-tier-tag">🏢 {{ ucfirst($group) }}</span>
+                                                    <span class="price-amount price-val">{{ $priceFormatted }}</span>
+                                                    <span class="price-base-rm price-sub-myr" style="display:{{ ($currentCurrency !== 'MYR' && !empty($displayPrice['base_rm'])) ? 'block' : 'none' }}">
+                                                        RM {{ number_format($basePriceAmount, 2) }}
+                                                    </span>
+                                                </div>
+                                                @if($product->getMoqForGroup($group) > 1)
+                                                    <div class="moq-badge">MOQ: {{ $product->getMoqForGroup($group) }} {{ $product->unit }}</div>
+                                                @endif
+                                            @else
+                                                <div class="price-on-request-box">
+                                                    <span class="price-req-title">@t('shop.negotiated_pricing', 'Negotiated Pricing')</span>
+                                                    <span class="price-req-sub">@t('shop.availability_subject_confirmation', 'Availability subject to stock and supply confirmation.')</span>
+                                                </div>
+                                            @endif
+                                        @else
+                                            <div class="wholesale-locked-box">
+                                                <div class="wholesale-locked-title">🏢 @t('shop.wholesale_pricing_locked', 'Wholesale Pricing')</div>
+                                                <div class="wholesale-locked-sub">@t('shop.business_account_required', 'Business account required')</div>
+                                                <a href="{{ route('register', ['type' => 'wholesale']) }}" class="btn-request-wholesale-link">
+                                                    @t('shop.request_wholesale_access', 'Request Wholesale Access →')
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
 
                                 <!-- Card Action Buttons -->
                                 <div class="card-action-btns">
-                                    @if($price !== null)
-                                        <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form" style="flex:1">
-                                            @csrf
-                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                            <input type="hidden" name="quantity" value="{{ $product->getMoqForGroup($group) }}">
-                                            <button type="submit" class="btn-card-add">
-                                                🛒 @t('shop.add_to_cart', 'Add to Cart')
-                                            </button>
-                                        </form>
-                                    @else
-                                        <a href="{{ route('quotations.create', ['product' => $product->id]) }}" class="btn-card-rfq" style="flex:1">
-                                            📋 @t('shop.request_quote', 'Request a Quote')
+                                    <!-- Retail Actions -->
+                                    <div class="card-action-row actions-mode-retail">
+                                        @if(!$isSensitiveOrRfq && $product->retail_price !== null)
+                                            <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form" style="flex:1;margin:0;">
+                                                @csrf
+                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="btn-card-add">
+                                                    🛒 @t('shop.add_to_cart', 'Add to Cart')
+                                                </button>
+                                            </form>
+                                        @else
+                                            <a href="{{ route('quotations.create', ['product' => $product->id]) }}" class="btn-card-rfq" style="flex:1">
+                                                📋 @t('shop.request_a_quote', 'Request a Quote →')
+                                            </a>
+                                        @endif
+
+                                        <button type="button" class="btn-card-quickview-mobile js-quickview-btn"
+                                            data-id="{{ $product->id }}"
+                                            data-name="{{ $product->name }}"
+                                            data-category="{{ $product->category?->name ?? 'Products' }}"
+                                            data-sku="{{ $product->sku ?? 'N/A' }}"
+                                            data-origin="{{ $product->origin ?? '' }}"
+                                            data-weight="{{ $product->weight ?? '' }}"
+                                            data-unit="{{ $product->unit ?? 'pack' }}"
+                                            data-storage="{{ $storageLabel }}"
+                                            data-availability="{{ $availabilityLabel }}"
+                                            data-is-rfq="{{ $isSensitiveOrRfq ? '1' : '0' }}"
+                                            data-customer-type="retail"
+                                            data-price-formatted="{{ $priceFormatted }}"
+                                            data-base-rm="{{ !$isSensitiveOrRfq ? ($product->retail_price ?? 0) : 0 }}"
+                                            data-manual-sgd="{{ !$isSensitiveOrRfq ? ($product->price_sgd ?? '') : '' }}"
+                                            data-manual-usd="{{ !$isSensitiveOrRfq ? ($product->price_usd ?? '') : '' }}"
+                                            data-group="{{ $group }}"
+                                            data-moq=""
+                                            data-desc="{{ $product->short_description ?? $product->description ?? '' }}"
+                                            data-image="{{ $product->thumbnail ? cdn_storage($product->thumbnail) : '' }}"
+                                            data-url="{{ route('shop.show', $product) }}"
+                                            data-rfq-url="{{ route('quotations.create', ['product' => $product->id]) }}"
+                                            title="Quick View"
+                                        >
+                                            👁️
+                                        </button>
+                                    </div>
+
+                                    @if(!$isSensitiveOrRfq && $product->retail_price !== null)
+                                        <a href="javascript:void(0)" onclick="setCustomerType('wholesale')" class="card-wholesale-inquiry-link actions-mode-retail" title="Wholesale / Business Pricing">
+                                            @t('shop.wholesale_business_pricing_link', 'Wholesale / Business Pricing →')
                                         </a>
                                     @endif
 
-                                    <button type="button" class="btn-card-quickview-mobile js-quickview-btn"
-                                        data-id="{{ $product->id }}"
-                                        data-name="{{ $product->name }}"
-                                        data-category="{{ $product->category?->name ?? 'Seafood' }}"
-                                        data-sku="{{ $product->sku ?? 'N/A' }}"
-                                        data-origin="{{ $product->origin ?? '' }}"
-                                        data-weight="{{ $product->weight ?? '' }}"
-                                        data-unit="{{ $product->unit ?? '' }}"
-                                        data-storage="{{ $storageLabel }}"
-                                        data-price-formatted="{{ $priceFormatted }}"
-                                        data-base-rm="{{ $product->getPriceForGroup($group) ?? 0 }}"
-                                        data-manual-sgd="{{ $product->price_sgd ?? '' }}"
-                                        data-manual-usd="{{ $product->price_usd ?? '' }}"
-                                        data-manual-wholesale-sgd="{{ $product->wholesale_price_sgd ?? '' }}"
-                                        data-manual-wholesale-usd="{{ $product->wholesale_price_usd ?? '' }}"
-                                        data-group="{{ $group }}"
-                                        data-moq="{{ $product->getMoqForGroup($group) > 1 ? ($product->getMoqForGroup($group) . ' ' . $product->unit) : '' }}"
-                                        data-desc="{{ $product->short_description ?? $product->description ?? '' }}"
-                                        data-image="{{ $product->thumbnail ? cdn_storage($product->thumbnail) : '' }}"
-                                        data-url="{{ route('shop.show', $product) }}"
-                                        data-rfq-url="{{ route('quotations.create', ['product' => $product->id]) }}"
-                                        title="Quick View"
-                                    >
-                                        👁️
-                                    </button>
+                                    <!-- Wholesale Actions -->
+                                    <div class="card-action-row actions-mode-wholesale">
+                                        @if($isApprovedWholesale && $basePriceAmount !== null && !$product->is_rfq_only)
+                                            <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form" style="flex:1;margin:0;">
+                                                @csrf
+                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                <input type="hidden" name="quantity" value="{{ $product->getMoqForGroup($group) }}">
+                                                <button type="submit" class="btn-card-add">
+                                                    🛒 @t('shop.add_to_cart', 'Add to Cart')
+                                                </button>
+                                            </form>
+                                        @else
+                                            <a href="{{ route('quotations.create', ['product' => $product->id]) }}" class="btn-card-rfq" style="flex:1">
+                                                📋 @t('shop.request_a_quote', 'Request a Quote →')
+                                            </a>
+                                        @endif
+
+                                        <button type="button" class="btn-card-quickview-mobile js-quickview-btn"
+                                            data-id="{{ $product->id }}"
+                                            data-name="{{ $product->name }}"
+                                            data-category="{{ $product->category?->name ?? 'Products' }}"
+                                            data-sku="{{ $product->sku ?? 'N/A' }}"
+                                            data-origin="{{ $product->origin ?? '' }}"
+                                            data-weight="{{ $product->weight ?? '' }}"
+                                            data-unit="{{ $product->unit ?? 'pack' }}"
+                                            data-storage="{{ $storageLabel }}"
+                                            data-availability="{{ $availabilityLabel }}"
+                                            data-is-rfq="{{ $isSensitiveOrRfq ? '1' : '0' }}"
+                                            data-customer-type="wholesale"
+                                            data-price-formatted="{{ $priceFormatted }}"
+                                            data-base-rm="{{ $isApprovedWholesale && !$isSensitiveOrRfq ? ($basePriceAmount ?? 0) : 0 }}"
+                                            data-manual-sgd="{{ $isApprovedWholesale && !$isSensitiveOrRfq ? ($product->price_sgd ?? '') : '' }}"
+                                            data-manual-usd="{{ $isApprovedWholesale && !$isSensitiveOrRfq ? ($product->price_usd ?? '') : '' }}"
+                                            @if($isApprovedWholesale)
+                                            data-manual-wholesale-sgd="{{ $product->wholesale_price_sgd ?? '' }}"
+                                            data-manual-wholesale-usd="{{ $product->wholesale_price_usd ?? '' }}"
+                                            @endif
+                                            data-group="{{ $group }}"
+                                            data-moq="{{ $isApprovedWholesale && $product->getMoqForGroup($group) > 1 ? ($product->getMoqForGroup($group) . ' ' . $product->unit) : '' }}"
+                                            data-desc="{{ $product->short_description ?? $product->description ?? '' }}"
+                                            data-image="{{ $product->thumbnail ? cdn_storage($product->thumbnail) : '' }}"
+                                            data-url="{{ route('shop.show', $product) }}"
+                                            data-rfq-url="{{ route('quotations.create', ['product' => $product->id]) }}"
+                                            title="Quick View"
+                                        >
+                                            👁️
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     @endforeach
+                </div>
+
+                <!-- ─── Pricing & Quotation Disclaimers ─── -->
+                <div class="shop-disclaimer-strip">
+                    <span class="disclaimer-icon">ℹ️</span>
+                    <div class="disclaimer-texts">
+                        <p class="disclaimer-line">
+                            <strong>@t('shop.pricing_disclaimer_head', 'Pricing & Availability Notice:')</strong>
+                            @t('shop.pricing_disclaimer', 'Prices and availability are subject to change without prior notice and may vary according to order volume, product specification, market conditions and supply availability.')
+                        </p>
+                        <p class="disclaimer-line disclaimer-wholesale-note">
+                            @t('shop.wholesale_trading_disclaimer', 'Wholesale and trading prices are quotation-based and may vary according to product specification, quantity, origin and market conditions.')
+                        </p>
+                        @if($currentCurrency !== 'MYR')
+                            <p class="disclaimer-line disclaimer-currency-note">
+                                @t('shop.currency_indicative_disclaimer', 'Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.')
+                            </p>
+                        @endif
+                    </div>
                 </div>
 
                 <!-- Pagination -->
@@ -849,7 +1007,7 @@
                         @t('shop.we_can_source', 'We Can Source It For You.')
                     </h3>
                     <p class="empty-desc">
-                        @t('shop.sourcing_empty_desc', "Can't find the product, size, origin or specification you're looking for? Tell us what you need and our sourcing team can help coordinate availability and quotation.")
+                        @t('shop.sourcing_brief_desc', "Tell us your preferred product, specification, origin, pack size or brand. Our sourcing team can help coordinate availability and quotation.")
                     </p>
                     <div class="empty-actions">
                         <a href="{{ route('contact') }}#quote" class="btn-sourcing-primary">
@@ -864,7 +1022,7 @@
         </div>
     </div>
 
-    <!-- ─── 6. Custom Sourcing Section (Always visible) ─── -->
+    <!-- ─── 6. Custom Sourcing Section (Prominent) ─── -->
     <div class="custom-sourcing-banner">
         <div class="sourcing-banner-content">
             <div class="sourcing-pill-tag">
@@ -877,7 +1035,7 @@
                 @t('shop.we_can_source', 'We Can Source It For You.')
             </h3>
             <p class="sourcing-banner-p">
-                @t('shop.sourcing_empty_desc', "Can't find the product, size, origin or specification you're looking for? Tell us what you need and our sourcing team can help coordinate availability and quotation.")
+                @t('shop.sourcing_brief_desc', "Tell us your preferred product, specification, origin, pack size or brand. Our sourcing team can help coordinate availability and quotation.")
             </p>
         </div>
         <div class="sourcing-banner-btn-wrap">
@@ -894,15 +1052,15 @@
                 @t('shop.need_regular_supply', 'Need Regular Supply?')
             </h2>
             <p class="wholesale-cta-desc">
-                @t('shop.regular_supply_desc', 'For restaurants, hotels, caterers, retailers, traders and other commercial buyers, MST provides wholesale supply, bulk ordering and customised sourcing support.')
+                @t('shop.regular_supply_brief_desc', 'For restaurants, hotels, caterers, retailers, traders and other commercial buyers, MST provides wholesale supply, bulk ordering and customised sourcing support.')
             </p>
         </div>
         <div class="wholesale-cta-btns">
-            <a href="{{ route('register') }}" class="btn-wholesale-access">
-                @t('shop.request_wholesale_access_btn', 'Request Wholesale Access')
+            <a href="{{ route('register', ['type' => 'wholesale']) }}" class="btn-wholesale-access">
+                @t('shop.request_wholesale_access_btn', 'Request Wholesale Access →')
             </a>
             <a href="{{ route('quotations.create') }}" class="btn-wholesale-quote">
-                @t('shop.request_a_quote', 'Request a Quote')
+                @t('shop.request_a_quote', 'Request a Quote →')
             </a>
         </div>
     </div>
@@ -916,7 +1074,7 @@
         <div class="quickview-grid">
             <div class="quickview-media">
                 <img src="" id="qvImg" alt="Product Image" style="display:none;width:100%;height:100%;object-fit:cover;">
-                <div id="qvImgPlaceholder" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:3rem;background:#f1f5f9;color:#94a3b8">🐟</div>
+                <div id="qvImgPlaceholder" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:3rem;background:#f1f5f9;color:#94a3b8">📦</div>
                 <span class="quickview-origin-tag" id="qvOriginTag" style="display:none"></span>
             </div>
             <div class="quickview-details">
@@ -925,14 +1083,26 @@
                 <div class="quickview-sku-bar">
                     <span>@t('shop.sku_label', 'SKU:') <strong id="qvSku"></strong></span>
                     <span>@t('shop.storage_label', 'Storage:') <strong id="qvStorage"></strong></span>
+                    <span>@t('shop.status_label', 'Status:') <strong id="qvAvail"></strong></span>
                 </div>
-                <div class="quickview-price-box">
+                
+                <div class="quickview-price-box" id="qvPriceBox">
                     <div style="display:flex;flex-direction:column">
+                        <span class="quickview-price-prefix" id="qvPricePrefix" style="display:none;font-size:0.85rem;color:#64748b;font-weight:600">From</span>
                         <span class="quickview-price" id="qvPrice"></span>
                         <span class="quickview-base-rm" id="qvBaseRm" style="font-size:0.8rem;color:#64748b;font-weight:500"></span>
                     </div>
                     <div id="qvMoqBadge" style="display:none;background:#eff6ff;color:#1d4ed8;font-size:0.75rem;font-weight:700;padding:3px 8px;border-radius:6px"></div>
                 </div>
+
+                <div id="qvWholesaleLockedBox" class="wholesale-locked-box" style="display:none;margin-bottom:16px;">
+                    <div class="wholesale-locked-title">🏢 @t('shop.wholesale_pricing_locked', 'Wholesale Pricing')</div>
+                    <div class="wholesale-locked-sub">@t('shop.business_account_required', 'Business account required')</div>
+                    <a href="{{ route('register', ['type' => 'wholesale']) }}" class="btn-request-wholesale-link">
+                        @t('shop.request_wholesale_access', 'Request Wholesale Access →')
+                    </a>
+                </div>
+
                 <p class="quickview-desc" id="qvDesc"></p>
                 <div class="quickview-actions">
                     <form action="{{ route('cart.add') }}" method="POST" id="qvCartForm" style="flex:1">
@@ -946,7 +1116,7 @@
                         </div>
                     </form>
                     <a href="#" id="qvRfqLink" class="btn btn-primary" onclick="closeQuickViewModal()" style="display:none;flex:1;height:44px;background:#2563eb;color:#ffffff !important;font-weight:700;border-radius:10px;text-decoration:none;align-items:center;justify-content:center;gap:6px">
-                        📋 <span style="color:#ffffff !important">@t('shop.request_quote', 'Request a Quote')</span>
+                        📋 <span style="color:#ffffff !important">@t('shop.request_a_quote', 'Request a Quote →')</span>
                     </a>
                     <a href="#" id="qvDetailsLink" class="btn btn-secondary" onclick="closeQuickViewModal()" style="height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;font-weight:700;border-radius:10px;text-decoration:none">
                         @t('shop.details', 'Details')
@@ -958,7 +1128,1232 @@
 </div>
 
 <style>
-/* ─── Quick View Modal Overlay & Card ───────────────────────────── */
+/* ─── Hero Section (MST Deep Navy Gradient) ─── */
+.products-hero-section {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #07152b 0%, #0c234b 45%, #1d4ed8 100%);
+    color: #ffffff;
+    border-bottom: 1px solid rgba(37, 99, 235, 0.35);
+    padding-top: calc(78px + 28px);
+    padding-bottom: 32px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.products-hero-grid-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.08;
+    background-image: radial-gradient(#38bdf8 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    pointer-events: none;
+}
+.products-hero-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.hero-content-left {
+    max-width: 820px;
+}
+.hero-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    margin-bottom: 8px;
+}
+.hero-crumb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #bae6fd;
+    text-decoration: none;
+    font-weight: 500;
+}
+.hero-crumb-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+.hero-crumb-sep {
+    color: #60a5fa;
+    margin: 0 2px;
+}
+.hero-crumb-current {
+    color: #ffffff;
+    font-weight: 600;
+}
+.products-hero-title {
+    font-family: var(--font-heading, 'Outfit', sans-serif);
+    font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+.products-hero-subtitle {
+    font-size: 0.96rem;
+    color: #e0f2fe;
+    line-height: 1.55;
+    margin: 0;
+    font-weight: 400;
+    max-width: 760px;
+}
+.brand-slogan-pill {
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    background: #091a36;
+    color: #7dd3fc;
+    border: 1px solid #2563eb;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.user-tier-pill {
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #091a36;
+    color: #7dd3fc;
+    border: 1px solid #2563eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+/* ─── Shopping Mode Switcher ─── */
+.customer-type-inline-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+.cust-mode-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #475569;
+    white-space: nowrap;
+}
+.customer-type-toggle {
+    display: inline-flex;
+    background: #f1f5f9;
+    padding: 3px;
+    border-radius: 10px;
+    gap: 3px;
+    border: 1px solid #e2e8f0;
+}
+.cust-type-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: none;
+    background: transparent;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+.cust-type-btn:hover {
+    color: #0c234b;
+}
+.cust-type-btn.active {
+    background: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+.customer-mode-caption {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.mode-caption-tag {
+    font-weight: 700;
+    color: #1e40af;
+}
+.mode-caption-text {
+    color: #475569;
+}
+
+/* On mobile, make the search and customer toggle stack nicely */
+@media(max-width: 640px) {
+    .shop-search-filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    .shop-search-main-row {
+        min-width: 0;
+    }
+    .customer-type-inline-wrap {
+        justify-content: flex-start;
+        width: 100%;
+    }
+    .customer-type-toggle {
+        flex: 1;
+    }
+    .cust-type-btn {
+        flex: 1;
+        justify-content: center;
+        font-size: 0.74rem;
+        padding: 5px 6px;
+    }
+    .customer-mode-caption {
+        font-size: 0.74rem;
+        margin-bottom: 6px;
+    }
+}
+
+/* ─── Business Banner ─── */
+.business-pricing-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    background: linear-gradient(135deg, #091a36 0%, #173873 100%);
+    color: #ffffff;
+    padding: 18px 24px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 16px rgba(9, 26, 54, 0.12);
+}
+.business-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 750px;
+}
+.business-banner-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(56, 189, 248, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+.business-banner-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 4px;
+}
+.business-banner-sub {
+    font-size: 0.84rem;
+    color: #cbd5e1;
+    margin: 0;
+    line-height: 1.45;
+}
+.business-banner-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.btn-biz-signin {
+    background: #ffffff;
+    color: #0f172a;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.84rem;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+.btn-biz-signin:hover {
+    background: #f1f5f9;
+}
+.btn-biz-access {
+    background: #2563eb;
+    color: #ffffff;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.84rem;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+/* ─── Search & Filter Bar ─── */
+.shop-filter-bar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+.shop-search-filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.shop-search-main-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 260px;
+}
+.shop-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 0;
+}
+.search-svg {
+    position: absolute;
+    left: 12px;
+    color: #64748b;
+    pointer-events: none;
+}
+.shop-main-search-input {
+    width: 100%;
+    height: 38px;
+    padding: 0 36px 0 38px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    color: #0f172a;
+    background: #ffffff;
+    outline: none;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+}
+.shop-main-search-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+.search-clear-btn {
+    position: absolute;
+    right: 12px;
+    color: #94a3b8;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+.shop-filters-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    position: relative;
+}
+@media(max-width:1024px) {
+    .shop-filters-row { grid-template-columns: repeat(3, 1fr); }
+}
+@media(max-width:640px) {
+    .shop-filters-row { display: none; }
+    .shop-filters-row.show-mobile { display: grid; grid-template-columns: 1fr; }
+}
+.searchable-dropdown {
+    position: relative;
+    min-width: 0;
+}
+.searchable-dropdown-trigger {
+    width: 100%;
+    height: 36px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #334155;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+    text-align: left;
+}
+.searchable-dropdown-trigger:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+}
+.searchable-dropdown-trigger.has-value {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    color: #1e40af;
+    font-weight: 600;
+}
+.dropdown-trigger-content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.dropdown-trigger-icon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.dropdown-trigger-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.dropdown-trigger-arrows {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    color: #94a3b8;
+}
+.dropdown-clear-btn {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    padding: 0 2px;
+}
+.dropdown-clear-btn:hover {
+    color: #ef4444;
+}
+.searchable-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    min-width: 220px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    z-index: 50;
+    display: none;
+    max-height: 280px;
+    flex-direction: column;
+    overflow: hidden;
+}
+.searchable-dropdown-menu.active {
+    display: flex;
+}
+.dropdown-search-header {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    gap: 6px;
+    background: #f8fafc;
+}
+.dropdown-search-icon {
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+.dropdown-search-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 0.78rem;
+    outline: none;
+    color: #0f172a;
+}
+.dropdown-options-list {
+    overflow-y: auto;
+    padding: 4px;
+}
+.dropdown-option-item {
+    width: 100%;
+    padding: 7px 10px;
+    font-size: 0.78rem;
+    color: #334155;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.1s ease;
+}
+.dropdown-option-item:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+.dropdown-option-item.selected {
+    background: #eff6ff;
+    color: #1e40af;
+    font-weight: 600;
+}
+.option-check {
+    color: #2563eb;
+    font-weight: 700;
+}
+.dropdown-no-results {
+    padding: 12px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.78rem;
+}
+
+/* ─── Results Header & Chips ─── */
+.shop-results-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.results-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.results-count-text {
+    font-size: 0.92rem;
+    color: #334155;
+}
+.sourcing-catalog-note {
+    font-size: 0.8rem;
+    color: #0369a1;
+    font-weight: 500;
+}
+.active-chips-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+.active-filter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    color: #1e40af;
+    text-decoration: none;
+    font-weight: 500;
+}
+.badge-x {
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+.clear-all-link {
+    font-size: 0.74rem;
+    color: #ef4444;
+    text-decoration: underline;
+    align-self: center;
+    margin-left: 4px;
+}
+
+/* ─── Product Card Grid ─── */
+.products-catalogue-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+@media(max-width:1200px) {
+    .products-catalogue-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media(max-width:768px) {
+    .products-catalogue-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+}
+@media(max-width:480px) {
+    /* Keep 2 columns on mobile — never collapse to 1 */
+    .products-catalogue-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+}
+
+.product-item-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+.product-item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    border-color: #cbd5e1;
+}
+
+/* Product Card Media Box */
+.product-img-box {
+    position: relative;
+    width: 100%;
+    padding-top: 75%;
+    background: #f8fafc;
+    overflow: hidden;
+}
+.product-img-link {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card-product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+.product-item-card:hover .card-product-img {
+    transform: scale(1.04);
+}
+.product-placeholder-icon {
+    font-size: 3rem;
+    color: #94a3b8;
+}
+
+/* Badges */
+.card-badge-cluster {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 2;
+}
+.badge-featured {
+    background: rgba(254, 240, 138, 0.95);
+    color: #854d0e;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+    backdrop-filter: blur(4px);
+    border: 1px solid #fef08a;
+}
+.badge-origin {
+    background: rgba(255, 255, 255, 0.92);
+    color: #0f172a;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 6px;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+.card-storage-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: rgba(10, 25, 47, 0.85);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    z-index: 2;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.card-storage-badge.storage-live {
+    background: rgba(180, 83, 9, 0.9);
+}
+
+/* Quick View Hover Button */
+.btn-card-quickview {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: all 0.18s ease;
+    backdrop-filter: blur(4px);
+}
+.product-item-card:hover .btn-card-quickview {
+    opacity: 1;
+    transform: translateY(0);
+}
+.btn-card-quickview:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+}
+
+/* Card Body */
+.product-item-body {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.card-meta-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+.card-cat-name {
+    color: #2563eb;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+.card-sku {
+    color: #94a3b8;
+    font-family: monospace;
+}
+.product-item-title {
+    font-size: 0.94rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.35;
+    margin: 0 0 8px;
+}
+.product-item-title a {
+    color: inherit;
+    text-decoration: none;
+}
+.product-item-title a:hover {
+    color: #2563eb;
+}
+
+/* Card Spec Row */
+.card-spec-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+.spec-chip {
+    font-size: 0.68rem;
+    padding: 2px 6px;
+    border-radius: 5px;
+    background: #f1f5f9;
+    color: #475569;
+    font-weight: 500;
+}
+.spec-chip.avail-in-stock {
+    background: #ecfdf5;
+    color: #065f46;
+}
+.spec-chip.avail-limited {
+    background: #fffbeb;
+    color: #92400e;
+}
+.spec-chip.avail-pre-order {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+/* Pricing States */
+.card-pricing-block {
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid #f1f5f9;
+    min-height: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.product-card-price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.price-prefix-from {
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 600;
+}
+.price-tier-tag {
+    font-size: 0.68rem;
+    background: #eff6ff;
+    color: #1e40af;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-weight: 700;
+}
+.price-amount {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #1d4ed8;
+    font-family: var(--font-heading, sans-serif);
+}
+.price-base-rm {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+}
+.moq-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #0284c7;
+    margin-top: 2px;
+}
+.wholesale-locked-box {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 6px 8px;
+    text-align: center;
+}
+.wholesale-locked-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1e40af;
+}
+.wholesale-locked-sub {
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+.btn-request-wholesale-link {
+    font-size: 0.72rem;
+    color: #2563eb;
+    font-weight: 700;
+    text-decoration: underline;
+    display: inline-block;
+}
+.price-on-request-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.price-req-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0369a1;
+}
+.price-req-sub {
+    font-size: 0.68rem;
+    color: #64748b;
+    line-height: 1.3;
+}
+
+/* Action Buttons */
+.card-action-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 10px;
+    width: 100%;
+}
+.card-action-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+.product-cart-form {
+    display: flex;
+    flex: 1;
+    margin: 0;
+    min-width: 0;
+}
+.btn-card-add {
+    width: 100%;
+    height: 38px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 9px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.2);
+    white-space: nowrap;
+    padding: 0 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.btn-card-add:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+.card-wholesale-inquiry-link {
+    font-size: 0.72rem;
+    color: #0369a1;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    padding: 2px 0 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    width: 100%;
+    line-height: 1.3;
+}
+.card-wholesale-inquiry-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+.btn-card-rfq {
+    height: 38px;
+    background: linear-gradient(135deg, #0f766e 0%, #0d6360 100%);
+    color: #ffffff;
+    border-radius: 9px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    padding: 0 10px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(15,118,110,0.2);
+}
+.btn-card-rfq:hover {
+    background: linear-gradient(135deg, #115e59 0%, #0d4f4c 100%);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(15,118,110,0.3);
+}
+.btn-card-quickview-mobile {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    background: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    cursor: pointer;
+    color: #475569;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+    padding: 0;
+    box-sizing: border-box;
+}
+.btn-card-quickview-mobile:hover {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+/* Mobile card adjustments */
+@media(max-width: 640px) {
+    .product-item-body {
+        padding: 8px 10px 10px;
+    }
+    .product-item-title {
+        font-size: 0.82rem;
+        margin-bottom: 5px;
+    }
+    .card-meta-bar {
+        font-size: 0.65rem;
+    }
+    .card-sku {
+        display: none; /* hide SKU on very small cards */
+    }
+    .card-spec-row {
+        margin-bottom: 6px;
+    }
+    .spec-chip {
+        font-size: 0.62rem;
+        padding: 1px 5px;
+    }
+    .price-amount {
+        font-size: 1.05rem;
+    }
+    .card-pricing-block {
+        min-height: 36px;
+    }
+    .btn-card-add {
+        height: 34px;
+        font-size: 0.75rem;
+        gap: 4px;
+    }
+    .btn-card-rfq {
+        height: 34px;
+        font-size: 0.75rem;
+        padding: 0 7px;
+    }
+    .btn-card-quickview-mobile {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+    }
+    .card-wholesale-inquiry-link {
+        font-size: 0.65rem;
+    }
+    .card-action-btns {
+        gap: 4px;
+        margin-top: auto;
+        padding-top: 6px;
+    }
+    .card-action-row {
+        gap: 5px;
+    }
+    .badge-featured, .badge-origin {
+        font-size: 0.6rem;
+        padding: 1px 5px;
+    }
+    .card-storage-badge {
+        font-size: 0.6rem;
+        padding: 1px 6px;
+    }
+}
+
+/* ─── Disclaimers Strip ─── */
+.shop-disclaimer-strip {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 32px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+.disclaimer-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+.disclaimer-texts {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.disclaimer-line {
+    font-size: 0.78rem;
+    color: #64748b;
+    line-height: 1.45;
+    margin: 0;
+}
+.disclaimer-wholesale-note {
+    color: #475569;
+}
+.disclaimer-currency-note {
+    color: #0369a1;
+    font-weight: 500;
+}
+
+/* ─── Custom Sourcing Banner (Section 28) ─── */
+.custom-sourcing-banner {
+    background: linear-gradient(135deg, #091a36 0%, #0f2b5c 50%, #1e40af 100%);
+    color: #ffffff;
+    border-radius: 18px;
+    padding: 28px 32px;
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    box-shadow: 0 10px 30px rgba(9, 26, 54, 0.15);
+}
+.sourcing-pill-tag {
+    display: inline-block;
+    background: rgba(56, 189, 248, 0.2);
+    border: 1px solid rgba(186, 230, 253, 0.4);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #7dd3fc;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+}
+.sourcing-banner-head {
+    font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+    font-weight: 800;
+    margin: 0 0 2px;
+    color: #ffffff;
+}
+.sourcing-banner-subhead {
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    font-weight: 700;
+    color: #38bdf8;
+    margin: 0 0 8px;
+}
+.sourcing-banner-p {
+    font-size: 0.9rem;
+    color: #cbd5e1;
+    margin: 0;
+    max-width: 680px;
+    line-height: 1.5;
+}
+.btn-sourcing-action {
+    background: #38bdf8;
+    color: #0f172a;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.15s ease;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+    white-space: nowrap;
+}
+.btn-sourcing-action:hover {
+    background: #7dd3fc;
+    transform: translateY(-2px);
+}
+
+/* ─── Wholesale Supply CTA (Section 29) ─── */
+.wholesale-supply-cta {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 28px 32px;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+.wholesale-cta-title {
+    font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 6px;
+}
+.wholesale-cta-desc {
+    font-size: 0.88rem;
+    color: #475569;
+    margin: 0;
+    max-width: 680px;
+    line-height: 1.5;
+}
+.wholesale-cta-btns {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.btn-wholesale-access {
+    background: #2563eb;
+    color: #ffffff;
+    padding: 11px 22px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    white-space: nowrap;
+}
+.btn-wholesale-quote {
+    background: #f1f5f9;
+    color: #1e293b;
+    padding: 11px 22px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    border: 1px solid #cbd5e1;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+/* ─── Empty State ─── */
+.empty-sourcing-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 48px 24px;
+    text-align: center;
+    margin: 20px 0;
+}
+.empty-icon-wrap {
+    font-size: 3rem;
+    margin-bottom: 12px;
+}
+.empty-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px;
+}
+.empty-subtitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2563eb;
+    margin: 0 0 10px;
+}
+.empty-desc {
+    font-size: 0.9rem;
+    color: #64748b;
+    max-width: 540px;
+    margin: 0 auto 20px;
+    line-height: 1.5;
+}
+.empty-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.btn-sourcing-primary {
+    background: #2563eb;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+}
+.btn-sourcing-secondary {
+    background: #f1f5f9;
+    color: #334155;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-decoration: none;
+}
+
+/* ─── Quick View Modal ─── */
 .quickview-modal-backdrop {
     position: fixed !important;
     top: 0 !important;
@@ -1086,7 +2481,8 @@
 }
 .quickview-sku-bar {
     display: flex;
-    gap: 14px;
+    flex-wrap: wrap;
+    gap: 12px;
     font-size: 0.78rem;
     color: #64748b;
     margin-bottom: 16px;
@@ -1151,1548 +2547,317 @@
     background: #e2e8f0;
     color: #0f172a;
 }
-/* ─── Hero Section (MST Deep Navy Gradient — Matching About Us & Contact Us) ─── */
-.products-hero-section {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, #07152b 0%, #0c234b 45%, #1d4ed8 100%);
-    color: #ffffff;
-    border-bottom: 1px solid rgba(37, 99, 235, 0.35);
-    padding-top: calc(78px + 28px);
-    padding-bottom: 32px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-.products-hero-grid-pattern {
-    position: absolute;
-    inset: 0;
-    opacity: 0.08;
-    background-image: radial-gradient(#38bdf8 1.5px, transparent 1.5px);
-    background-size: 24px 24px;
-    pointer-events: none;
-}
-.products-hero-inner {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-.hero-content-left {
-    max-width: 820px;
-}
-.hero-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.82rem;
-    margin-bottom: 8px;
-}
-.hero-crumb-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    color: #bae6fd;
-    text-decoration: none;
-    font-weight: 500;
-}
-.hero-crumb-link:hover {
-    color: #ffffff;
-    text-decoration: underline;
-}
-.hero-crumb-sep {
-    color: #60a5fa;
-    margin: 0 2px;
-}
-.hero-crumb-current {
-    color: #ffffff;
-    font-weight: 600;
-}
-.products-hero-title {
-    font-family: var(--font-heading, 'Outfit', sans-serif);
-    font-size: clamp(1.75rem, 3.5vw, 2.4rem);
-    font-weight: 800;
-    color: #ffffff;
-    margin: 0 0 6px;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-}
-.hero-usp-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(56, 189, 248, 0.16);
-    border: 1px solid rgba(186, 230, 253, 0.35);
-    padding: 3px 10px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #7dd3fc;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-.products-hero-subtitle {
-    font-size: 0.96rem;
-    color: #e0f2fe;
-    line-height: 1.55;
-    margin: 0;
-    font-weight: 400;
-    max-width: 760px;
-}
-.user-tier-pill {
-    font-size: 0.85rem;
-    padding: 6px 14px;
-    border-radius: 999px;
-    background: #091a36;
-    color: #7dd3fc;
-    border: 1px solid #2563eb;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-}
 
-/* ─── 1. Shopping Mode Switcher (Inline with Search) ─────────────── */
-.customer-type-inline-wrap {
+/* ─── Mobile Filter Toggle Button ─── */
+.btn-mobile-filter-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-}
-.cust-mode-label {
+    gap: 6px;
+    height: 38px;
+    padding: 0 14px;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 9px;
     font-size: 0.82rem;
     font-weight: 600;
-    color: #475569;
-    white-space: nowrap;
-}
-.customer-type-toggle {
-    display: inline-flex;
-    background: #f1f5f9;
-    padding: 3px;
-    border-radius: 10px;
-    gap: 3px;
-    border: 1px solid #e2e8f0;
-}
-.cust-type-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 12px;
-    border-radius: 7px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    border: none;
-    background: transparent;
-    color: #475569;
+    color: #334155;
     cursor: pointer;
     transition: all 0.15s ease;
     white-space: nowrap;
+    flex-shrink: 0;
 }
-.cust-type-btn:hover {
-    color: #0c234b;
+.btn-mobile-filter-toggle:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
 }
-.cust-type-btn.active {
+.btn-mobile-filter-toggle.has-active-filters {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    color: #1e40af;
+}
+.btn-filter-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.btn-filter-text {
+    font-size: 0.82rem;
+}
+.mobile-filter-count-badge {
     background: #2563eb;
     color: #ffffff;
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
-}
-
-/* ─── Business Banner ───────────────────────────────────────────── */
-.business-pricing-banner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    background: linear-gradient(135deg, #091a36 0%, #173873 100%);
-    color: #ffffff;
-    padding: 18px 24px;
-    border-radius: 16px;
-    margin-bottom: 24px;
-    border: 1px solid rgba(59, 130, 246, 0.4);
-    box-shadow: 0 4px 16px rgba(9, 26, 54, 0.12);
-}
-.business-banner-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    max-width: 750px;
-}
-.business-banner-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: rgba(56, 189, 248, 0.2);
-    display: flex;
+    font-size: 0.68rem;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
-    flex-shrink: 0;
 }
-.business-banner-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin: 0 0 4px;
-}
-.business-banner-sub {
-    font-size: 0.84rem;
-    color: #cbd5e1;
-    margin: 0;
-    line-height: 1.45;
-}
-.business-banner-actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-.btn-biz-signin {
-    background: #ffffff;
-    color: #0f172a;
-    padding: 8px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.84rem;
-    text-decoration: none;
-    transition: background 0.15s ease;
-}
-.btn-biz-signin:hover {
-    background: #f1f5f9;
-}
-.btn-biz-access {
-    background: #2563eb;
-    color: #ffffff;
-    padding: 8px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.84rem;
-    text-decoration: none;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
-}
-
-/* ─── 2. Search & Filter Bar ────────────────────────────────────── */
-.shop-filter-bar {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 12px 14px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
-}
-.shop-search-filter-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
-}
-.shop-search-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 200px;
-    margin-bottom: 0;
-}
-.search-svg {
-    position: absolute;
-    left: 12px;
-    color: #64748b;
-    pointer-events: none;
-}
-.shop-main-search-input {
-    width: 100%;
-    height: 38px;
-    padding: 0 36px 0 38px;
-    border: 1px solid #cbd5e1;
-    border-radius: 9px;
-    font-size: 0.88rem;
-    color: #0f172a;
-    background: #ffffff;
-    outline: none;
-    transition: all 0.15s ease;
-    box-sizing: border-box;
-}
-.shop-main-search-input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-}
-.search-clear-btn {
-    position: absolute;
-    right: 12px;
+.mobile-filter-chevron {
     color: #94a3b8;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 0.85rem;
-}
-.shop-filters-row {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
-    position: relative;
-}
-.searchable-dropdown {
-    position: relative;
-    min-width: 0;
-}
-.searchable-dropdown-trigger {
-    width: 100%;
-    height: 36px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 0 10px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #334155;
-    background: #f8fafc;
-    outline: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    transition: all 0.15s ease;
-    text-align: left;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    appearance: none;
-}
-.searchable-dropdown-trigger:hover {
-    border-color: #3b82f6;
-    background: #ffffff;
-}
-.searchable-dropdown-trigger.open {
-    border-color: #2563eb;
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-.searchable-dropdown-trigger.has-value {
-    border-color: #2563eb;
-    background: #eff6ff;
-    color: #1d4ed8;
-}
-.dropdown-trigger-content {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    min-width: 0;
-    overflow: hidden;
-}
-.dropdown-trigger-icon {
-    font-size: 0.95rem;
-    flex-shrink: 0;
-}
-.dropdown-trigger-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.81rem;
-}
-.dropdown-trigger-arrows {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-}
-.dropdown-clear-btn {
-    font-size: 0.72rem;
-    color: #64748b;
-    padding: 2px 4px;
-    border-radius: 4px;
-    line-height: 1;
-    transition: all 0.15s ease;
-}
-.dropdown-clear-btn:hover {
-    color: #ef4444;
-    background: rgba(239, 68, 68, 0.1);
-}
-.dropdown-chevron {
-    color: #64748b;
-    transition: transform 0.2s ease;
-}
-.searchable-dropdown-trigger.open .dropdown-chevron {
-    transform: rotate(180deg);
+    transition: transform 0.15s ease;
 }
 
-/* Dropdown Menu Popup */
-.searchable-dropdown-menu {
+/* ─── Tablet (769px – 1024px) ─── */
+@media(max-width: 1024px) and (min-width: 769px) {
+    .products-catalogue-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .product-item-title { font-size: 0.9rem; }
+    .shop-filter-bar { padding: 10px 12px; }
+}
+
+/* ─── Small Tablet (641px – 768px) ─── */
+@media(max-width: 768px) and (min-width: 641px) {
+    .products-catalogue-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .shop-search-main-row { min-width: 0; }
+}
+
+/* ─── Mobile general shop improvements ─── */
+@media(max-width: 640px) {
+    .shop-filter-bar {
+        padding: 10px 12px;
+        border-radius: 12px;
+    }
+    .shop-results-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .results-header-right {
+        align-self: flex-start;
+    }
+    .custom-sourcing-banner {
+        padding: 20px 18px;
+        border-radius: 14px;
+    }
+    .wholesale-supply-cta {
+        padding: 20px 18px;
+        border-radius: 14px;
+    }
+    .wholesale-cta-btns {
+        width: 100%;
+    }
+    .btn-wholesale-access,
+    .btn-wholesale-quote {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+/* ─── Instant Customer Mode Switching & Page Loader Bar ─── */
+.shop-tab-loader {
     position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
-    min-width: 220px;
-    max-width: 300px;
-    width: 100%;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 12px;
-    box-shadow: 0 14px 35px -4px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(0, 0, 0, 0.06);
-    z-index: 1050;
-    padding: 6px;
-    display: none;
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.15s ease, transform 0.15s ease;
-}
-.searchable-dropdown-menu.show {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
-.searchable-dropdown:nth-child(n+5) .searchable-dropdown-menu {
-    left: auto;
-    right: 0;
-}
-
-.dropdown-search-header {
-    position: relative;
-    display: flex;
-    align-items: center;
-    margin-bottom: 6px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid #f1f5f9;
-}
-.dropdown-search-icon {
-    position: absolute;
-    left: 10px;
-    color: #94a3b8;
-    pointer-events: none;
-}
-.dropdown-search-input {
-    width: 100%;
-    height: 34px;
-    padding: 0 10px 0 30px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    color: #0f172a;
-    background: #f8fafc;
-    outline: none;
-    box-sizing: border-box;
-}
-.dropdown-search-input:focus {
-    border-color: #2563eb;
-    background: #ffffff;
-}
-
-.dropdown-options-list {
-    max-height: 220px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    scrollbar-width: thin;
-}
-.dropdown-options-list::-webkit-scrollbar {
-    width: 5px;
-}
-.dropdown-options-list::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
-}
-.dropdown-option-item {
-    width: 100%;
-    border: none;
-    background: transparent;
-    padding: 8px 10px;
-    border-radius: 8px;
-    font-size: 0.81rem;
-    font-weight: 400;
-    color: #334155;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    text-align: left;
-    transition: all 0.12s ease;
-}
-.dropdown-option-item:hover {
-    background: #eff6ff;
-    color: #1d4ed8;
-    font-weight: 500;
-}
-.dropdown-option-item.selected {
-    background: #dbeafe;
-    color: #1e40af;
-    font-weight: 600;
-}
-.option-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.option-check {
-    font-size: 0.8rem;
-    color: #2563eb;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-.dropdown-no-results {
-    padding: 12px;
-    text-align: center;
-    font-size: 0.78rem;
-    color: #94a3b8;
-}
-
-/* Results Header & Sort */
-.shop-results-header {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 16px !important;
-    margin-bottom: 20px !important;
-    padding-bottom: 12px !important;
-    border-bottom: 1px solid #e2e8f0 !important;
-    width: 100% !important;
-}
-.results-header-left {
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px !important;
-    flex-wrap: wrap !important;
-    flex: 1 1 auto !important;
-}
-.results-count-text {
-    font-size: 0.88rem;
-    color: #475569;
-}
-.results-count-text strong {
-    color: #0c234b;
-}
-.results-header-right {
-    display: flex !important;
-    align-items: center !important;
-    flex-shrink: 0 !important;
-    margin-left: auto !important;
-}
-.sort-searchable-dropdown {
-    min-width: 185px !important;
-    width: auto !important;
-}
-.sort-dropdown-trigger {
-    height: 38px !important;
-    padding: 0 14px !important;
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 10px !important;
-    font-size: 0.84rem !important;
-    font-weight: 500 !important;
-    color: #334155 !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    white-space: nowrap !important;
-    cursor: pointer;
-    transition: all 0.15s ease;
-}
-.sort-dropdown-trigger:hover {
-    border-color: #93c5fd !important;
-    color: #1d4ed8 !important;
-    background: #f8fafc !important;
-}
-.sort-dropdown-menu {
-    right: 0 !important;
-    left: auto !important;
-    min-width: 195px !important;
-    max-width: 240px !important;
-    top: calc(100% + 4px) !important;
-}
-
-/* AJAX Smooth Loading Animation */
-#shopMainContent {
-    position: relative;
-    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-#shopMainContent.is-loading {
-    opacity: 0.45;
-    pointer-events: none;
-}
-.filter-loading-bar {
-    position: absolute;
-    top: -8px;
+    top: -6px;
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #2563eb, #38bdf8, #2563eb);
-    background-size: 200% 100%;
-    animation: loadingShimmer 1.2s infinite linear;
+    background: rgba(226, 232, 240, 0.4);
+    overflow: hidden;
     border-radius: 999px;
+    z-index: 20;
     opacity: 0;
-    transition: opacity 0.2s ease;
     pointer-events: none;
-    z-index: 50;
+    transition: opacity 0.15s ease;
 }
-#shopMainContent.is-loading .filter-loading-bar {
+.shop-tab-loader.active {
     opacity: 1;
 }
-@keyframes loadingShimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+.tab-loader-bar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #38bdf8 0%, #2563eb 50%, #f59e0b 100%);
+    background-size: 200% 100%;
+    transform-origin: left;
+    animation: tabLoaderProgress 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* ─── 3. Main 7 Categories Tabs ──────────────────────────────────── */
-.main-categories-nav {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 6px;
-    margin-bottom: 16px;
-    scrollbar-width: thin;
-}
-.main-categories-nav::-webkit-scrollbar {
-    height: 4px;
-}
-.main-categories-nav::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
-}
-.main-cat-tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 18px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    color: #334155;
-    text-decoration: none;
-    font-size: 0.88rem;
-    font-weight: 500;
-    white-space: nowrap;
-    transition: all 0.18s ease;
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
-}
-.main-cat-tab:hover {
-    border-color: #93c5fd;
-    color: #1d4ed8;
-    transform: translateY(-1px);
-}
-.main-cat-tab.active {
-    background: #0f274a;
-    border-color: #0f274a;
-    color: #ffffff;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(15, 39, 74, 0.25);
-}
-.main-cat-icon {
-    font-size: 1.1rem;
-    line-height: 1;
+@keyframes tabLoaderProgress {
+    0% { transform: scaleX(0); }
+    50% { transform: scaleX(0.75); }
+    100% { transform: scaleX(1); }
 }
 
-/* Subcategories Pill Chips */
-.subcategories-chips-wrap {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #f1f5f9;
-    padding: 10px 16px;
-    border-radius: 14px;
-    margin-bottom: 20px;
-    border: 1px solid #e2e8f0;
-    overflow-x: auto;
-}
-.subcategories-label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #0f172a;
-    white-space: nowrap;
-}
-.subcategories-scroll {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none;
-}
-.subcategories-scroll::-webkit-scrollbar {
-    display: none;
-}
-.subcat-chip {
-    padding: 5px 14px;
-    border-radius: 999px;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    color: #475569;
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: all 0.15s ease;
-}
-.subcat-chip:hover {
-    border-color: #2563eb;
-    color: #2563eb;
-}
-.subcat-chip.active {
-    background: #2563eb;
-    border-color: #2563eb;
-    color: #ffffff;
-    font-weight: 600;
-}
-
-/* ─── Results Header ─────────────────────────────────────────────── */
-.shop-results-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #e2e8f0;
-}
-.results-count-text {
-    font-size: 0.88rem;
-    color: #334155;
-    font-weight: 400;
-}
-.active-chips-list {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-}
-.active-filter-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    color: #1d4ed8;
-    padding: 3px 10px;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-decoration: none;
-}
-.badge-x {
-    font-size: 0.7rem;
-    color: #60a5fa;
-}
-.clear-all-link {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #ef4444;
-    text-decoration: none;
-}
-
-/* ─── 4. Product Cards Grid ──────────────────────────────────────── */
 .products-catalogue-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+    transition: opacity 0.15s ease, transform 0.15s ease;
 }
-.product-item-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    position: relative;
-}
-.product-item-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.09);
-    border-color: #93c5fd;
-}
-.product-img-box {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4/3;
-    background: #f8fafc;
-    overflow: hidden;
-}
-.product-img-link {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-.card-product-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.35s ease;
-}
-.product-item-card:hover .card-product-img {
-    transform: scale(1.06);
-}
-.product-placeholder-icon {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    background: #f1f5f9;
-}
-.card-badge-cluster {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    z-index: 2;
-}
-.badge-featured {
-    background: rgba(245, 158, 11, 0.95);
-    color: #ffffff;
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
-}
-.badge-origin {
-    background: rgba(15, 23, 42, 0.85);
-    color: #f8fafc;
-    font-size: 0.7rem;
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 6px;
-    backdrop-filter: blur(4px);
-}
-.card-storage-badge {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(15, 39, 74, 0.88);
-    color: #7dd3fc;
-    border: 1px solid rgba(56, 189, 248, 0.4);
-    font-size: 0.7rem;
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 6px;
-    backdrop-filter: blur(4px);
-    z-index: 2;
-}
-.card-storage-badge.storage-live {
-    background: rgba(180, 83, 9, 0.88);
-    color: #fef08a;
-    border-color: rgba(251, 191, 36, 0.5);
+.products-catalogue-grid.mode-switching {
+    opacity: 0.6;
+    transform: translateY(2px);
 }
 
-.btn-card-quickview {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background: rgba(255, 255, 255, 0.92);
-    color: #0f172a;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 5px 10px;
-    font-size: 0.74rem;
-    font-weight: 600;
-    cursor: pointer;
-    opacity: 0;
-    transform: translateY(4px);
-    transition: all 0.2s ease;
-    z-index: 3;
+.shop-container[data-customer-mode="retail"] .pricing-mode-wholesale,
+.shop-container[data-customer-mode="retail"] .actions-mode-wholesale,
+.shop-container[data-customer-mode="retail"] #businessPricingBanner {
+    display: none !important;
 }
-.product-item-card:hover .btn-card-quickview {
-    opacity: 1;
-    transform: translateY(0);
+.shop-container[data-customer-mode="retail"] .pricing-mode-retail {
+    display: block !important;
 }
-.btn-card-quickview:hover {
-    background: #2563eb;
-    color: #ffffff;
-    border-color: #2563eb;
+.shop-container[data-customer-mode="retail"] .card-action-row.actions-mode-retail {
+    display: flex !important;
+}
+.shop-container[data-customer-mode="retail"] .card-wholesale-inquiry-link.actions-mode-retail {
+    display: block !important;
 }
 
-/* Card Body */
-.product-item-body {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+.shop-container[data-customer-mode="wholesale"] .pricing-mode-retail,
+.shop-container[data-customer-mode="wholesale"] .actions-mode-retail {
+    display: none !important;
 }
-.card-meta-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 6px;
+.shop-container[data-customer-mode="wholesale"] .pricing-mode-wholesale {
+    display: block !important;
 }
-.card-cat-name {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: #2563eb;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+.shop-container[data-customer-mode="wholesale"] .card-action-row.actions-mode-wholesale {
+    display: flex !important;
 }
-.card-sku {
-    font-size: 0.7rem;
-    font-weight: 400;
-    color: #94a3b8;
-}
-.product-item-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #0f172a;
-    margin: 0 0 8px;
-    line-height: 1.35;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    min-height: 2.7em;
-}
-.product-item-title a {
-    color: #0f172a;
-    text-decoration: none;
-    transition: color 0.15s ease;
-}
-.product-item-title a:hover {
-    color: #2563eb;
-}
-.card-spec-row {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-}
-.spec-chip {
-    font-size: 0.72rem;
-    font-weight: 400;
-    color: #475569;
-    background: #f1f5f9;
-    padding: 2px 7px;
-    border-radius: 5px;
-}
-.card-pricing-block {
-    margin-top: auto;
-    margin-bottom: 14px;
-    min-height: 38px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-.product-card-price {
-    display: flex;
-    flex-direction: column;
-}
-.product-card-price .price-amount,
-.product-card-price .price-val {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #1d4ed8;
-    line-height: 1.25;
-}
-.product-card-price .price-base-rm,
-.product-card-price .price-sub-myr {
-    font-size: 0.76rem;
-    font-weight: 500;
-    color: #64748b;
-    margin-top: 2px;
-    line-height: 1.2;
-}
-.moq-badge {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #2563eb;
-    margin-top: 2px;
-}
-.price-on-request {
-    font-size: 0.86rem;
-    font-weight: 600;
-    color: #0284c7;
-}
-.wholesale-prompt-price {
-    display: flex;
-    flex-direction: column;
-}
-.prompt-text {
-    font-size: 0.76rem;
-    font-weight: 500;
-    color: #64748b;
-}
-.prompt-link {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #2563eb;
-    text-decoration: none;
-}
-
-.card-action-btns {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-.btn-card-add {
-    width: 100%;
-    background: #f59e0b;
-    color: #091a36;
-    border: none;
-    border-radius: 10px;
-    padding: 9px 12px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.18s ease;
-    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-.btn-card-add:hover {
-    background: #d97706;
-    color: #091a36;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
-}
-.btn-card-rfq {
-    background: #0f172a;
-    color: #ffffff;
-    border-radius: 10px;
-    padding: 9px 12px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    text-decoration: none;
-    text-align: center;
-    display: block;
-}
-.btn-card-quickview-mobile {
-    display: none;
-    width: 38px;
-    height: 38px;
-    background: #f1f5f9;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.95rem;
-    flex-shrink: 0;
-}
-
-/* ─── 5. Empty Sourcing Box ─────────────────────────────────────── */
-.empty-sourcing-box {
-    background: #ffffff;
-    border: 1.5px dashed #cbd5e1;
-    border-radius: 20px;
-    padding: 48px 24px;
-    text-align: center;
-    margin: 20px 0 40px;
-}
-.empty-icon-wrap {
-    font-size: 2.8rem;
-    margin-bottom: 12px;
-}
-.empty-title {
-    font-size: 1.45rem;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px;
-}
-.empty-subtitle {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #2563eb;
-    margin: 0 0 12px;
-}
-.empty-desc {
-    font-size: 0.92rem;
-    color: #64748b;
-    max-width: 580px;
-    margin: 0 auto 24px;
-    line-height: 1.6;
-}
-.empty-actions {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-.btn-sourcing-primary {
-    background: #2563eb;
-    color: #ffffff;
-    padding: 11px 24px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    text-decoration: none;
-    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
-}
-.btn-sourcing-secondary {
-    background: #f1f5f9;
-    color: #334155;
-    border: 1px solid #cbd5e1;
-    padding: 11px 20px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    text-decoration: none;
-}
-
-/* ─── 6. Custom Sourcing Banner ─────────────────────────────────── */
-.custom-sourcing-banner {
-    margin-top: 48px;
-    background: linear-gradient(135deg, #f0f7ff 0%, #e8f0fe 100%);
-    border-radius: 20px;
-    padding: 36px 32px;
-    color: #0f172a;
-    border: 1px solid #bfdbfe;
-    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 24px;
-}
-.sourcing-pill-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(37, 99, 235, 0.12);
-    border: 1px solid #bfdbfe;
-    padding: 4px 12px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #1d4ed8;
-    letter-spacing: 0.06em;
-    margin-bottom: 10px;
-}
-.sourcing-banner-head {
-    font-size: 1.45rem;
-    font-weight: 800;
-    color: #091a36;
-    margin: 0 0 4px;
-}
-.sourcing-banner-subhead {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #1d4ed8;
-    margin: 0 0 10px;
-}
-.sourcing-banner-p {
-    font-size: 0.92rem;
-    color: #475569;
-    line-height: 1.6;
-    max-width: 680px;
-    margin: 0;
-}
-.btn-sourcing-action {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    color: #091a36;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-weight: 800;
-    font-size: 0.92rem;
-    text-decoration: none;
-    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
-    display: inline-block;
-    white-space: nowrap;
-    border: 1px solid #f59e0b;
-}
-
-/* ─── 7. Wholesale Supply CTA ────────────────────────────────────── */
-.wholesale-supply-cta {
-    margin-top: 24px;
-    background: #ffffff;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 20px;
-    padding: 32px;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-.wholesale-cta-title {
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 8px;
-}
-.wholesale-cta-desc {
-    font-size: 0.9rem;
-    color: #475569;
-    max-width: 650px;
-    line-height: 1.6;
-    margin: 0;
-}
-.wholesale-cta-btns {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-.btn-wholesale-access {
-    background: #1d4ed8;
-    color: #ffffff;
-    padding: 11px 22px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.88rem;
-    text-decoration: none;
-    transition: background 0.15s ease;
-}
-.btn-wholesale-access:hover {
-    background: #1e40af;
-}
-.btn-wholesale-quote {
-    background: #2563eb;
-    color: #ffffff;
-    padding: 11px 22px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.88rem;
-    text-decoration: none;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
-}
-
-/* ─── Search & Mobile Filter Controls ─────────────────────────────── */
-.shop-search-filter-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 10px;
-    width: 100%;
-}
-.shop-search-main-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-    min-width: 0;
-}
-.btn-mobile-filter-toggle {
-    display: none;
-}
-
-/* ─── Responsive Adjustments ────────────────────────────────────── */
-@media (max-width: 1200px) {
-    .products-catalogue-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-    }
-    .shop-filters-row {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    .searchable-dropdown:nth-child(n+4) .searchable-dropdown-menu {
-        left: auto;
-        right: 0;
-    }
-}
-
-@media (max-width: 900px) {
-    .shop-search-filter-controls {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        margin-bottom: 0;
-    }
-    .shop-search-main-row {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .shop-search-wrapper {
-        flex: 1;
-        min-width: 0;
-        margin-bottom: 0 !important;
-    }
-    .customer-type-inline-wrap {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .customer-type-toggle {
-        flex: 1;
-        display: flex;
-        width: 100%;
-    }
-    .cust-type-btn {
-        flex: 1;
-        justify-content: center;
-        text-align: center;
-        padding: 7px 8px;
-        font-size: 0.8rem;
-    }
-    .btn-mobile-filter-toggle {
-        display: inline-flex !important;
-        align-items: center;
-        justify-content: space-between;
-        gap: 6px;
-        height: 38px;
-        padding: 0 12px;
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 9px;
-        font-size: 0.82rem;
-        font-weight: 600;
-        color: #1e293b;
-        cursor: pointer;
-        white-space: nowrap;
-        flex-shrink: 0;
-        transition: all 0.18s ease;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
-    }
-    .btn-mobile-filter-toggle:hover {
-        border-color: #3b82f6;
-        background: #f8fafc;
-    }
-    .btn-mobile-filter-toggle.is-open {
-        background: #eff6ff;
-        border-color: #2563eb;
-        color: #1d4ed8;
-    }
-    .btn-mobile-filter-toggle.has-active-filters {
-        background: #eff6ff;
-        border-color: #2563eb;
-        color: #1d4ed8;
-    }
-    .btn-filter-content {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .mobile-filter-count-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 20px;
-        height: 20px;
-        padding: 0 6px;
-        border-radius: 999px;
-        background: #2563eb;
-        color: #ffffff;
-        font-size: 0.72rem;
-        font-weight: 700;
-        line-height: 1;
-    }
-    .mobile-filter-chevron {
-        transition: transform 0.2s ease;
-    }
-    .btn-mobile-filter-toggle.is-open .mobile-filter-chevron {
-        transform: rotate(180deg);
-    }
-    .shop-filters-row {
-        display: none;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        padding-top: 14px;
-        margin-top: 12px;
-        border-top: 1px dashed #e2e8f0;
-        animation: filterSlideDown 0.2s ease-out;
-    }
-    .shop-filters-row.show-mobile {
-        display: grid !important;
-    }
-    @keyframes filterSlideDown {
-        from { opacity: 0; transform: translateY(-6px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-}
-
-@media (max-width: 768px) {
-    .products-catalogue-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 12px !important;
-    }
-    .product-item-card {
-        border-radius: 14px !important;
-    }
-    .product-item-body {
-        padding: 12px 10px !important;
-    }
-    .product-item-title {
-        font-size: 0.88rem !important;
-        line-height: 1.3 !important;
-        min-height: 2.6em !important;
-        margin-bottom: 6px !important;
-    }
-    .card-spec-row {
-        margin-bottom: 8px !important;
-        gap: 4px !important;
-    }
-    .spec-chip {
-        font-size: 0.68rem !important;
-        padding: 2px 6px !important;
-    }
-    .product-card-price .price-amount,
-    .product-card-price .price-val {
-        font-size: 1.05rem !important;
-    }
-    .card-pricing-block {
-        min-height: 32px !important;
-        margin-bottom: 10px !important;
-    }
-    .btn-card-add {
-        padding: 8px 10px !important;
-        font-size: 0.78rem !important;
-    }
-    .btn-card-rfq {
-        padding: 8px 10px !important;
-        font-size: 0.78rem !important;
-    }
-    .btn-card-quickview {
-        display: none !important;
-    }
-    .btn-card-quickview-mobile {
-        display: flex !important;
-        width: 36px !important;
-        height: 36px !important;
-    }
-    .card-storage-badge {
-        font-size: 0.65rem !important;
-        padding: 2px 6px !important;
-    }
-    .badge-featured, .badge-origin {
-        font-size: 0.65rem !important;
-        padding: 2px 6px !important;
-    }
-    .searchable-dropdown:nth-child(even) .searchable-dropdown-menu {
-        left: auto;
-        right: 0;
-    }
-    .searchable-dropdown:nth-child(odd) .searchable-dropdown-menu {
-        left: 0;
-        right: auto;
-    }
-    .custom-sourcing-banner,
-    .wholesale-supply-cta {
-        padding: 24px 20px;
-    }
-}
-
-@media (max-width: 540px) {
-    .products-catalogue-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-    }
-    .shop-filter-bar {
-        padding: 12px !important;
-        border-radius: 14px !important;
-    }
-    .btn-mobile-filter-toggle {
-        padding: 0 12px !important;
-        font-size: 0.82rem !important;
-    }
-    .shop-filters-row {
-        grid-template-columns: 1fr 1fr !important;
-        gap: 8px !important;
-    }
-    .searchable-dropdown .searchable-dropdown-menu {
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        min-width: 100% !important;
-        max-width: 100% !important;
-    }
-    .customer-type-inline-wrap {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .cust-mode-label {
-        font-size: 0.75rem;
-        color: #64748b;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-    .customer-type-toggle {
-        flex: 1;
-        width: 100%;
-        display: flex;
-    }
-    .cust-type-btn {
-        flex: 1;
-        justify-content: center;
-        font-size: 0.76rem;
-        padding: 6px 6px;
-        min-width: 0;
-        white-space: nowrap;
-    }
-}
-
-@media (max-width: 640px) {
-    .shop-results-header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 12px !important;
-    }
-    .results-header-right {
-        width: 100% !important;
-        margin-left: 0 !important;
-    }
-    .sort-searchable-dropdown,
-    .sort-dropdown-trigger {
-        width: 100% !important;
-    }
-    .sort-dropdown-menu {
-        width: 100% !important;
-        max-width: 100% !important;
-        left: 0 !important;
-        right: 0 !important;
-    }
-    .product-item-card {
-        border-radius: 12px !important;
-    }
-    .product-item-body {
-        padding: 10px 8px !important;
-    }
-    .product-item-title {
-        font-size: 0.82rem !important;
-        line-height: 1.25 !important;
-        min-height: 2.5em !important;
-    }
-    .product-card-price .price-amount,
-    .product-card-price .price-val {
-        font-size: 0.95rem !important;
-    }
-    .btn-card-add {
-        padding: 7px 6px !important;
-        font-size: 0.74rem !important;
-        border-radius: 8px !important;
-    }
-    .btn-card-quickview-mobile {
-        width: 32px !important;
-        height: 32px !important;
-        border-radius: 8px !important;
-        font-size: 0.85rem !important;
-    }
-}
-
-@media (max-width: 420px) {
-    .cust-mode-label {
-        display: none;
-    }
-    .cust-type-btn {
-        font-size: 0.74rem;
-        padding: 6px 4px;
-    }
+.shop-container[data-customer-mode="wholesale"] #businessPricingBanner {
+    display: flex !important;
 }
 </style>
 
 <script>
+// ─── Search & Dropdown Filters Engine ───
+window.IS_APPROVED_WHOLESALE = {{ (auth()->check() && in_array($group, ['wholesale', 'trading'])) ? 'true' : 'false' }};
 let searchDebounceTimer = null;
-let filterAbortController = null;
 
-function toggleMobileFilters() {
-    const filtersRow = document.getElementById('shopFiltersRow');
-    const toggleBtn = document.getElementById('mobileFilterToggleBtn');
-    if (!filtersRow) return;
-    const isShown = filtersRow.classList.toggle('show-mobile');
-    if (toggleBtn) {
-        toggleBtn.classList.toggle('is-open', isShown);
+function applyShopFilters() {
+    const form = document.getElementById('shopFilterForm');
+    if (!form) return;
+
+    const contentArea = document.getElementById('shopMainContent');
+    const loader = document.getElementById('shopTabLoader');
+    if (contentArea) {
+        contentArea.classList.add('loading');
+    }
+    if (loader) {
+        loader.classList.add('active');
+    }
+
+    const formData = new FormData(form);
+    const params = new URLSearchParams();
+
+    for (let [k, v] of formData.entries()) {
+        if (v && v.trim() !== '') {
+            params.append(k, v.trim());
+        }
+    }
+
+    const url = form.getAttribute('action') + '?' + params.toString();
+
+    fetch(url, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'text/html'
+        }
+    })
+    .then(r => r.text())
+    .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newContent = doc.getElementById('shopMainContent');
+        if (newContent && contentArea) {
+            contentArea.innerHTML = newContent.innerHTML;
+            contentArea.classList.remove('loading');
+            
+            // Maintain current customer mode on newly injected cards
+            const currentMode = document.getElementById('hidden_customer_type')?.value || 'retail';
+            const shopContainer = document.getElementById('shopMasterContainer');
+            if (shopContainer) {
+                shopContainer.setAttribute('data-customer-mode', currentMode);
+            }
+
+            // Re-bind currency price updates
+            if (typeof updateAllDynamicPrices === 'function') {
+                updateAllDynamicPrices();
+            }
+        } else {
+            window.location.href = url;
+        }
+
+        if (loader) loader.classList.remove('active');
+
+        // Update browser URL without reload
+        window.history.replaceState({}, '', url);
+    })
+    .catch(() => {
+        window.location.href = url;
+    });
+}
+
+function setCustomerType(type) {
+    const hidden = document.getElementById('hidden_customer_type');
+    if (hidden) hidden.value = type;
+
+    // 1. Instant Active Toggle Buttons
+    const btns = document.querySelectorAll('.cust-type-btn');
+    btns.forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-type') === type);
+    });
+
+    // 2. Trigger Page Loader & Grid Transition Effect
+    const loader = document.getElementById('shopTabLoader');
+    const grid = document.querySelector('.products-catalogue-grid');
+    if (loader) {
+        loader.classList.remove('active');
+        void loader.offsetWidth; // force reflow for re-animation
+        loader.classList.add('active');
+    }
+    if (grid) {
+        grid.classList.add('mode-switching');
+    }
+
+    // 3. Instant Master Container Customer Mode attribute update (CSS toggles all cards immediately)
+    const shopContainer = document.getElementById('shopMasterContainer');
+    if (shopContainer) {
+        shopContainer.setAttribute('data-customer-mode', type);
+    }
+
+    // 4. Instant Caption Update
+    const caption = document.getElementById('custModeCaption');
+    if (caption) {
+        if (type === 'retail') {
+            caption.innerHTML = '<span class="mode-caption-tag">🛍️ Retail / Walk-in:</span> <span class="mode-caption-text">Public browsing · Retail pricing · No login required</span>';
+        } else {
+            caption.innerHTML = '<span class="mode-caption-tag">🏢 Wholesale / Business:</span> <span class="mode-caption-text">Business verification required · Wholesale pricing</span>';
+        }
+    }
+
+    // 5. Instant Business Pricing Banner Display Toggle
+    const banner = document.getElementById('businessPricingBanner');
+    if (banner) {
+        banner.style.display = (type === 'wholesale' && !window.IS_APPROVED_WHOLESALE) ? 'flex' : 'none';
+    }
+
+    // 6. Update URL parameter in browser without reload
+    try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('customer_type', type);
+        window.history.replaceState({}, '', url.toString());
+    } catch(e) {}
+
+    // 7. Update dynamic currency prices for visible price elements
+    if (typeof updateAllDynamicPrices === 'function') {
+        updateAllDynamicPrices();
+    }
+
+    // 8. Smoothly complete transition animation
+    setTimeout(() => {
+        if (loader) loader.classList.remove('active');
+        if (grid) grid.classList.remove('mode-switching');
+    }, 200);
+}
+
+function clearSearchInput(e) {
+    if (e) e.preventDefault();
+    const input = document.getElementById('shopMainSearchInput');
+    const clearBtn = document.getElementById('searchClearBtn');
+    if (input) {
+        input.value = '';
+        if (clearBtn) clearBtn.style.display = 'none';
+        applyShopFilters();
     }
 }
 
-// Search bar input live filter
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('shopMainSearchInput');
     const clearBtn = document.getElementById('searchClearBtn');
@@ -2705,69 +2870,35 @@ document.addEventListener('DOMContentLoaded', function() {
             clearTimeout(searchDebounceTimer);
             searchDebounceTimer = setTimeout(() => {
                 applyShopFilters();
-            }, 300);
-        });
-
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                clearTimeout(searchDebounceTimer);
-                applyShopFilters();
-            }
+            }, 350);
         });
     }
-});
 
-function clearSearchInput(e) {
-    if (e) e.preventDefault();
-    const searchInput = document.getElementById('shopMainSearchInput');
-    const clearBtn = document.getElementById('searchClearBtn');
-    if (searchInput) searchInput.value = '';
-    if (clearBtn) clearBtn.style.display = 'none';
-    applyShopFilters();
-}
-
-function setCustomerType(type) {
-    const hiddenInput = document.getElementById('hidden_customer_type');
-    if (hiddenInput) {
-        hiddenInput.value = type;
-    }
-    document.querySelectorAll('.cust-type-btn').forEach(btn => {
-        if (btn.getAttribute('data-type') === type) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
+    // Close dropdown menus when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.searchable-dropdown')) {
+            document.querySelectorAll('.searchable-dropdown-menu.active').forEach(m => {
+                m.classList.remove('active');
+            });
         }
     });
-    const bizBanner = document.getElementById('businessPricingBanner');
-    if (bizBanner) {
-        bizBanner.style.display = (type === 'wholesale') ? 'flex' : 'none';
-    }
-    applyShopFilters();
-}
+});
 
 function toggleSearchableDropdown(name) {
-    const currentMenu = document.getElementById('menu-' + name);
-    const currentTrigger = document.querySelector('#dropdown-' + name + ' .searchable-dropdown-trigger');
-    if (!currentMenu) return;
-    const isOpen = currentMenu.classList.contains('show');
+    const menu = document.getElementById('menu-' + name);
+    const wasActive = menu && menu.classList.contains('active');
 
-    // Close all other dropdowns
-    document.querySelectorAll('.searchable-dropdown-menu').forEach(menu => {
-        menu.classList.remove('show');
-    });
-    document.querySelectorAll('.searchable-dropdown-trigger').forEach(trigger => {
-        trigger.classList.remove('open');
+    document.querySelectorAll('.searchable-dropdown-menu.active').forEach(m => {
+        m.classList.remove('active');
     });
 
-    if (!isOpen) {
-        currentMenu.classList.add('show');
-        if (currentTrigger) currentTrigger.classList.add('open');
-        const searchInput = currentMenu.querySelector('.dropdown-search-input');
-        if (searchInput) {
-            searchInput.value = '';
+    if (menu && !wasActive) {
+        menu.classList.add('active');
+        const input = menu.querySelector('.dropdown-search-input');
+        if (input) {
+            input.value = '';
+            input.focus();
             filterDropdownOptions(name, '');
-            setTimeout(() => searchInput.focus(), 50);
         }
     }
 }
@@ -2776,329 +2907,78 @@ function filterDropdownOptions(name, query) {
     const list = document.getElementById('list-' + name);
     if (!list) return;
     const items = list.querySelectorAll('.dropdown-option-item');
-    const noResults = list.querySelector('.dropdown-no-results');
-    const q = (query || '').trim().toLowerCase();
-    let matches = 0;
+    const noRes = list.querySelector('.dropdown-no-results');
+    let visibleCount = 0;
+    const q = query.toLowerCase().trim();
 
     items.forEach(item => {
-        const text = (item.getAttribute('data-label') || item.textContent).toLowerCase();
-        if (!q || text.includes(q)) {
+        const label = (item.getAttribute('data-label') || '').toLowerCase();
+        if (!q || label.includes(q)) {
             item.style.display = 'flex';
-            matches++;
+            visibleCount++;
         } else {
             item.style.display = 'none';
         }
     });
 
-    if (noResults) {
-        noResults.style.display = matches === 0 ? 'block' : 'none';
+    if (noRes) {
+        noRes.style.display = visibleCount === 0 ? 'block' : 'none';
     }
 }
 
 function selectDropdownOption(name, value, label, icon) {
-    if (name === 'sort') {
-        const sortInput = document.getElementById('hiddenSortInput');
-        if (sortInput) sortInput.value = value;
-        const sortLabel = document.getElementById('label-sort');
-        if (sortLabel) sortLabel.textContent = label;
-        const sortIcon = document.getElementById('icon-sort');
-        if (sortIcon && icon) sortIcon.textContent = icon;
-    } else {
-        const hiddenInput = document.getElementById('hidden_' + name);
-        if (hiddenInput) {
-            hiddenInput.value = value;
-        }
-        const triggerLabel = document.getElementById('label-' + name);
-        if (triggerLabel) triggerLabel.textContent = label;
+    const hidden = document.getElementById('hidden_' + name);
+    if (hidden) hidden.value = value;
 
-        const triggerIcon = document.getElementById('icon-' + name);
-        if (triggerIcon && icon) triggerIcon.textContent = icon;
+    const trigger = document.querySelector('#dropdown-' + name + ' .searchable-dropdown-trigger');
+    const labelEl = document.getElementById('label-' + name);
+    const iconEl = document.getElementById('icon-' + name);
 
-        const triggerBtn = document.querySelector('#dropdown-' + name + ' .searchable-dropdown-trigger');
-        if (triggerBtn) {
-            if (value) {
-                triggerBtn.classList.add('has-value');
-            } else {
-                triggerBtn.classList.remove('has-value');
-            }
-        }
-        
-        // If parent category changes, reset child category
-        if (name === 'category') {
-            const subInput = document.getElementById('hidden_subcategory');
-            if (subInput) subInput.value = '';
-            const subLabel = document.getElementById('label-subcategory');
-            if (subLabel) subLabel.textContent = "{{ addslashes(__t('shop.filter_child_cat', 'Child category')) }}";
-            const subIcon = document.getElementById('icon-subcategory');
-            if (subIcon) subIcon.textContent = '📂';
-            const subTrigger = document.querySelector('#dropdown-subcategory .searchable-dropdown-trigger');
-            if (subTrigger) subTrigger.classList.remove('has-value');
-        }
+    if (labelEl) labelEl.textContent = value ? label : (name === 'category' ? 'Parent Category' : (name === 'subcategory' ? 'Child Category' : (name === 'origin' ? 'Origin' : (name === 'brand' ? 'Brand' : (name === 'pack_size' ? 'Pack Size' : (name === 'availability' ? 'Availability' : label))))));
+    if (iconEl) iconEl.textContent = icon;
+
+    if (trigger) {
+        trigger.classList.toggle('has-value', !!value);
     }
 
-    // Close open dropdowns
-    document.querySelectorAll('.searchable-dropdown-menu').forEach(menu => {
-        menu.classList.remove('show');
-    });
-    document.querySelectorAll('.searchable-dropdown-trigger').forEach(trigger => {
-        trigger.classList.remove('open');
-    });
+    const menu = document.getElementById('menu-' + name);
+    if (menu) menu.classList.remove('active');
+
+    // If changing parent category, reset subcategory
+    if (name === 'category') {
+        const subHidden = document.getElementById('hidden_subcategory');
+        if (subHidden) subHidden.value = '';
+        const subLabel = document.getElementById('label-subcategory');
+        if (subLabel) subLabel.textContent = 'Child Category';
+        const subTrigger = document.querySelector('#dropdown-subcategory .searchable-dropdown-trigger');
+        if (subTrigger) subTrigger.classList.remove('has-value');
+    }
 
     applyShopFilters();
 }
 
 function clearDropdownValue(name) {
-    const hiddenInput = document.getElementById('hidden_' + name);
-    if (hiddenInput) {
-        hiddenInput.value = '';
-    }
+    const hidden = document.getElementById('hidden_' + name);
+    if (hidden) hidden.value = '';
 
-    const defaultIcons = {
-        category: '📁',
-        subcategory: '📂',
-        origin: '🌍',
-        brand: '🏷️',
-        pack_size: '⚖️',
-        availability: '⚡'
-    };
-    const defaultLabels = {
-        category: "{{ addslashes(__t('shop.filter_parent_cat', 'Parent Category')) }}",
-        subcategory: "{{ addslashes(__t('shop.filter_child_cat', 'Child category')) }}",
-        origin: "{{ addslashes(__t('shop.filter_origin', 'Origin')) }}",
-        brand: "{{ addslashes(__t('shop.filter_brand', 'Brand')) }}",
-        pack_size: "{{ addslashes(__t('shop.filter_pack_size', 'Pack Size')) }}",
-        availability: "{{ addslashes(__t('shop.filter_availability', 'Availability')) }}"
-    };
+    const trigger = document.querySelector('#dropdown-' + name + ' .searchable-dropdown-trigger');
+    if (trigger) trigger.classList.remove('has-value');
 
-    const triggerLabel = document.getElementById('label-' + name);
-    if (triggerLabel && defaultLabels[name]) triggerLabel.textContent = defaultLabels[name];
+    const labelEl = document.getElementById('label-' + name);
+    const iconEl = document.getElementById('icon-' + name);
 
-    const triggerIcon = document.getElementById('icon-' + name);
-    if (triggerIcon && defaultIcons[name]) triggerIcon.textContent = defaultIcons[name];
+    if (labelEl) labelEl.textContent = name === 'category' ? 'Parent Category' : (name === 'subcategory' ? 'Child Category' : (name === 'origin' ? 'Origin' : (name === 'brand' ? 'Brand' : (name === 'pack_size' ? 'Pack Size' : 'Availability'))));
+    if (iconEl) iconEl.textContent = name === 'category' ? '📁' : (name === 'subcategory' ? '📂' : (name === 'origin' ? '🌍' : (name === 'brand' ? '🏷️' : (name === 'pack_size' ? '⚖️' : '⚡'))));
 
-    const triggerBtn = document.querySelector('#dropdown-' + name + ' .searchable-dropdown-trigger');
-    if (triggerBtn) triggerBtn.classList.remove('has-value');
-
-    if (name === 'category') {
-        const subInput = document.getElementById('hidden_subcategory');
-        if (subInput) subInput.value = '';
-        const subLabel = document.getElementById('label-subcategory');
-        if (subLabel) subLabel.textContent = defaultLabels.subcategory;
-        const subIcon = document.getElementById('icon-subcategory');
-        if (subIcon) subIcon.textContent = '📂';
-        const subTrigger = document.querySelector('#dropdown-subcategory .searchable-dropdown-trigger');
-        if (subTrigger) subTrigger.classList.remove('has-value');
-    }
     applyShopFilters();
 }
 
-async function applyShopFilters(targetUrl = null, pushState = true) {
-    const form = document.getElementById('shopFilterForm');
-    if (!form) return;
-
-    let fetchUrl = targetUrl;
-    if (!fetchUrl) {
-        const formData = new FormData(form);
-        const params = new URLSearchParams();
-        for (const [key, value] of formData.entries()) {
-            if (value && value.trim() !== '') {
-                params.set(key, value.trim());
-            }
-        }
-        fetchUrl = form.action + (params.toString() ? '?' + params.toString() : '');
-    }
-
-    if (filterAbortController) {
-        filterAbortController.abort();
-    }
-    filterAbortController = new AbortController();
-
-    const mainContent = document.getElementById('shopMainContent');
-    if (mainContent) {
-        mainContent.classList.add('is-loading');
-    }
-
-    try {
-        const response = await fetch(fetchUrl, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'text/html'
-            },
-            signal: filterAbortController.signal
-        });
-
-        if (!response.ok) throw new Error('Failed to load filtered results');
-
-        const htmlText = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, 'text/html');
-
-        // 1. Update Results Header
-        const newResultsHeader = doc.getElementById('shopResultsHeader');
-        const currentResultsHeader = document.getElementById('shopResultsHeader');
-        if (newResultsHeader && currentResultsHeader) {
-            currentResultsHeader.innerHTML = newResultsHeader.innerHTML;
-        }
-
-        // 2. Update Products Area
-        const newProductsArea = doc.getElementById('shopProductsArea');
-        const currentProductsArea = document.getElementById('shopProductsArea');
-        if (newProductsArea && currentProductsArea) {
-            currentProductsArea.innerHTML = newProductsArea.innerHTML;
-        }
-
-        // 3. Update Subcategory Options List (if parent category changed)
-        const newSubcatList = doc.getElementById('list-subcategory');
-        const currentSubcatList = document.getElementById('list-subcategory');
-        if (newSubcatList && currentSubcatList) {
-            currentSubcatList.innerHTML = newSubcatList.innerHTML;
-        }
-
-        // 4. Update all dropdown triggers, icons & hidden inputs
-        ['category', 'subcategory', 'origin', 'brand', 'pack_size', 'availability', 'sort'].forEach(name => {
-            const newTrigger = doc.querySelector('#dropdown-' + name + ' .searchable-dropdown-trigger');
-            const currentTrigger = document.querySelector('#dropdown-' + name + ' .searchable-dropdown-trigger');
-            if (newTrigger && currentTrigger) {
-                currentTrigger.className = newTrigger.className;
-                const newLabel = doc.getElementById('label-' + name);
-                const currentLabel = document.getElementById('label-' + name);
-                if (newLabel && currentLabel) {
-                    currentLabel.textContent = newLabel.textContent;
-                }
-                const newIcon = doc.getElementById('icon-' + name);
-                const currentIcon = document.getElementById('icon-' + name);
-                if (newIcon && currentIcon) {
-                    currentIcon.textContent = newIcon.textContent;
-                }
-                const newArrows = newTrigger.querySelector('.dropdown-trigger-arrows');
-                const currentArrows = currentTrigger.querySelector('.dropdown-trigger-arrows');
-                if (newArrows && currentArrows) {
-                    currentArrows.innerHTML = newArrows.innerHTML;
-                }
-            }
-
-            const newHidden = doc.getElementById('hidden_' + name);
-            const currentHidden = document.getElementById('hidden_' + name);
-            if (newHidden && currentHidden) {
-                currentHidden.value = newHidden.value;
-            }
-        });
-
-        // Update mobile filter active count & button state
-        let activeCount = 0;
-        ['category', 'subcategory', 'origin', 'brand', 'pack_size', 'availability'].forEach(name => {
-            const hidden = document.getElementById('hidden_' + name);
-            if (hidden && hidden.value) activeCount++;
-        });
-        const countBadge = document.getElementById('mobileFilterCountBadge');
-        const toggleBtn = document.getElementById('mobileFilterToggleBtn');
-        if (countBadge) {
-            countBadge.textContent = activeCount;
-            countBadge.style.display = activeCount > 0 ? 'inline-flex' : 'none';
-        }
-        if (toggleBtn) {
-            toggleBtn.classList.toggle('has-active-filters', activeCount > 0);
-        }
-
-        // 5. Update Business Pricing Banner if wholesale toggle changed
-        const newBizBanner = doc.getElementById('businessPricingBanner');
-        const currentBizBanner = document.getElementById('businessPricingBanner');
-        const customerBar = document.querySelector('.customer-type-bar');
-        if (newBizBanner && !currentBizBanner && customerBar) {
-            customerBar.insertAdjacentElement('afterend', newBizBanner);
-        } else if (!newBizBanner && currentBizBanner) {
-            currentBizBanner.remove();
-        }
-
-        // 6. Update search clear button state
-        const searchInput = document.getElementById('shopMainSearchInput');
-        const clearBtn = document.getElementById('searchClearBtn');
-        if (searchInput && clearBtn) {
-            clearBtn.style.display = searchInput.value.trim() ? 'block' : 'none';
-        }
-
-        // 7. Update browser history URL
-        if (pushState && window.location.href !== fetchUrl) {
-            window.history.pushState({ url: fetchUrl }, '', fetchUrl);
-        }
-
-        // 8. Re-format currencies on updated products
-        if (window.AppCurrency && typeof updatePageCurrencies === 'function') {
-            updatePageCurrencies(window.AppCurrency.current || 'MYR');
-        }
-
-    } catch (err) {
-        if (err.name !== 'AbortError') {
-            console.error('Filter AJAX error:', err);
-        }
-    } finally {
-        if (mainContent) {
-            mainContent.classList.remove('is-loading');
-        }
-    }
+function toggleMobileFilters() {
+    const row = document.getElementById('shopFiltersRow');
+    if (row) row.classList.toggle('show-mobile');
 }
 
-// Global outside click listener
-document.addEventListener('click', function(e) {
-    if (!e.target.closest('.searchable-dropdown')) {
-        document.querySelectorAll('.searchable-dropdown-menu').forEach(menu => {
-            menu.classList.remove('show');
-        });
-        document.querySelectorAll('.searchable-dropdown-trigger').forEach(trigger => {
-            trigger.classList.remove('open');
-        });
-    }
-
-    // Intercept active filter badge clicks
-    const filterBadge = e.target.closest('.active-filter-badge');
-    if (filterBadge && filterBadge.href) {
-        e.preventDefault();
-        applyShopFilters(filterBadge.href);
-        return;
-    }
-
-    // Intercept clear-all link
-    const clearAllLink = e.target.closest('.clear-all-link');
-    if (clearAllLink && clearAllLink.href) {
-        e.preventDefault();
-        const searchInput = document.getElementById('shopMainSearchInput');
-        if (searchInput) searchInput.value = '';
-        ['category', 'subcategory', 'origin', 'brand', 'pack_size', 'availability'].forEach(name => {
-            const input = document.getElementById('hidden_' + name);
-            if (input) input.value = '';
-        });
-        applyShopFilters(clearAllLink.href);
-        return;
-    }
-
-    // Intercept pagination clicks
-    const paginationLink = e.target.closest('.shop-pagination-wrap a');
-    if (paginationLink && paginationLink.href) {
-        e.preventDefault();
-        applyShopFilters(paginationLink.href);
-        window.scrollTo({ top: document.querySelector('.shop-filter-bar')?.offsetTop - 80 || 200, behavior: 'smooth' });
-        return;
-    }
-});
-
-// Escape key listener
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        document.querySelectorAll('.searchable-dropdown-menu').forEach(menu => {
-            menu.classList.remove('show');
-        });
-        document.querySelectorAll('.searchable-dropdown-trigger').forEach(trigger => {
-            trigger.classList.remove('open');
-        });
-    }
-});
-
-// Browser back/forward navigation listener
-window.addEventListener('popstate', function(e) {
-    applyShopFilters(window.location.href, false);
-});
-
-// Delegated click handler for Quick View buttons (handles both desktop & mobile, on initial load & after AJAX filter/sort updates)
+// ─── Quick View Modal Engine ───
 document.addEventListener('click', function(e) {
     const qvBtn = e.target.closest('.js-quickview-btn');
     if (qvBtn) {
@@ -3107,12 +2987,15 @@ document.addEventListener('click', function(e) {
         const data = {
             id: qvBtn.getAttribute('data-id') || '',
             name: qvBtn.getAttribute('data-name') || '',
-            category: qvBtn.getAttribute('data-category') || 'Seafood',
+            category: qvBtn.getAttribute('data-category') || 'Products',
             sku: qvBtn.getAttribute('data-sku') || 'N/A',
             origin: qvBtn.getAttribute('data-origin') || '',
             weight: qvBtn.getAttribute('data-weight') || '',
-            unit: qvBtn.getAttribute('data-unit') || '',
+            unit: qvBtn.getAttribute('data-unit') || 'pack',
             storage_temp: qvBtn.getAttribute('data-storage') || 'Cold-Chain',
+            availability: qvBtn.getAttribute('data-availability') || 'Available',
+            is_rfq: qvBtn.getAttribute('data-is-rfq') === '1',
+            customer_type: qvBtn.getAttribute('data-customer-type') || 'retail',
             price_formatted: qvBtn.getAttribute('data-price-formatted') || '',
             base_rm: parseFloat(qvBtn.getAttribute('data-base-rm') || '0'),
             manual_sgd: qvBtn.getAttribute('data-manual-sgd') || '',
@@ -3140,36 +3023,79 @@ function openQuickViewModal(product) {
     if (skuEl) skuEl.textContent = product.sku || 'N/A';
     const stEl = document.getElementById('qvStorage');
     if (stEl) stEl.textContent = product.storage_temp || 'Cold-Chain';
+    const avEl = document.getElementById('qvAvail');
+    if (avEl) avEl.textContent = product.availability || 'Available';
 
-    // Dynamically calculate price based on active currency
     const currentCurrency = (window.AppCurrency && window.AppCurrency.current) || 'MYR';
     let formattedPrice = product.price_formatted;
     let baseRmText = '';
 
-    if (product.base_rm && parseFloat(product.base_rm) > 0) {
-        const dummyEl = document.createElement('div');
-        dummyEl.setAttribute('data-base-rm', product.base_rm);
-        if (product.manual_sgd) dummyEl.setAttribute('data-manual-sgd', product.manual_sgd);
-        if (product.manual_usd) dummyEl.setAttribute('data-manual-usd', product.manual_usd);
-        if (product.manual_wholesale_sgd) dummyEl.setAttribute('data-manual-wholesale-sgd', product.manual_wholesale_sgd);
-        if (product.manual_wholesale_usd) dummyEl.setAttribute('data-manual-wholesale-usd', product.manual_wholesale_usd);
-        if (product.group) dummyEl.setAttribute('data-group', product.group);
+    const isWholesaleUnlocked = (product.group === 'wholesale' || product.group === 'trading');
+    const isWholesalePreview = (product.customer_type === 'wholesale' && !isWholesaleUnlocked);
 
-        if (typeof calculatePriceForElement === 'function') {
-            const res = calculatePriceForElement(dummyEl, currentCurrency);
-            formattedPrice = res.formatted;
-            if (currentCurrency !== 'MYR') {
-                baseRmText = 'RM ' + parseFloat(product.base_rm).toFixed(2);
+    const qvWholesaleLocked = document.getElementById('qvWholesaleLockedBox');
+    const qvPriceBox = document.getElementById('qvPriceBox');
+    const qvPrefix = document.getElementById('qvPricePrefix');
+    const cartForm = document.getElementById('qvCartForm');
+    const rfqLink = document.getElementById('qvRfqLink');
+
+    if (isWholesalePreview) {
+        // Public user in wholesale mode: Lock pricing
+        if (qvPriceBox) qvPriceBox.style.display = 'none';
+        if (qvWholesaleLocked) qvWholesaleLocked.style.display = 'block';
+        if (cartForm) cartForm.style.display = 'none';
+        if (rfqLink) {
+            rfqLink.href = product.rfq_url || product.url;
+            rfqLink.style.display = 'inline-flex';
+        }
+    } else if (product.is_rfq || product.base_rm <= 0) {
+        // Sensitive / RFQ only
+        if (qvWholesaleLocked) qvWholesaleLocked.style.display = 'none';
+        if (qvPriceBox) qvPriceBox.style.display = 'flex';
+        if (qvPrefix) qvPrefix.style.display = 'none';
+        const priceEl = document.getElementById('qvPrice');
+        if (priceEl) priceEl.textContent = isWholesaleUnlocked ? 'Negotiated Pricing' : 'Price available upon request';
+        const qvBaseRm = document.getElementById('qvBaseRm');
+        if (qvBaseRm) qvBaseRm.style.display = 'none';
+        if (cartForm) cartForm.style.display = 'none';
+        if (rfqLink) {
+            rfqLink.href = product.rfq_url || product.url;
+            rfqLink.style.display = 'inline-flex';
+        }
+    } else {
+        // Active pricing visible
+        if (qvWholesaleLocked) qvWholesaleLocked.style.display = 'none';
+        if (qvPriceBox) qvPriceBox.style.display = 'flex';
+        if (qvPrefix) qvPrefix.style.display = product.group === 'retail' ? 'inline-block' : 'none';
+
+        if (product.base_rm && parseFloat(product.base_rm) > 0) {
+            const dummyEl = document.createElement('div');
+            dummyEl.setAttribute('data-base-rm', product.base_rm);
+            if (product.manual_sgd) dummyEl.setAttribute('data-manual-sgd', product.manual_sgd);
+            if (product.manual_usd) dummyEl.setAttribute('data-manual-usd', product.manual_usd);
+            if (product.manual_wholesale_sgd) dummyEl.setAttribute('data-manual-wholesale-sgd', product.manual_wholesale_sgd);
+            if (product.manual_wholesale_usd) dummyEl.setAttribute('data-manual-wholesale-usd', product.manual_wholesale_usd);
+            if (product.group) dummyEl.setAttribute('data-group', product.group);
+
+            if (typeof calculatePriceForElement === 'function') {
+                const res = calculatePriceForElement(dummyEl, currentCurrency);
+                formattedPrice = res.formatted;
+                if (currentCurrency !== 'MYR') {
+                    baseRmText = 'RM ' + parseFloat(product.base_rm).toFixed(2);
+                }
             }
         }
-    }
 
-    const priceEl = document.getElementById('qvPrice');
-    if (priceEl) priceEl.textContent = formattedPrice;
-    const qvBaseRm = document.getElementById('qvBaseRm');
-    if (qvBaseRm) {
-        qvBaseRm.textContent = baseRmText;
-        qvBaseRm.style.display = baseRmText ? 'block' : 'none';
+        const priceEl = document.getElementById('qvPrice');
+        if (priceEl) priceEl.textContent = formattedPrice;
+        const qvBaseRm = document.getElementById('qvBaseRm');
+        if (qvBaseRm) {
+            qvBaseRm.textContent = baseRmText;
+            qvBaseRm.style.display = baseRmText ? 'block' : 'none';
+        }
+
+        if (cartForm) cartForm.style.display = 'block';
+        if (rfqLink) rfqLink.style.display = 'none';
     }
 
     const descEl = document.getElementById('qvDesc');
@@ -3178,20 +3104,6 @@ function openQuickViewModal(product) {
     if (prodIdEl) prodIdEl.value = product.id;
     const detailsLink = document.getElementById('qvDetailsLink');
     if (detailsLink) detailsLink.href = product.url;
-
-    // Toggle Cart form vs RFQ button
-    const cartForm = document.getElementById('qvCartForm');
-    const rfqLink = document.getElementById('qvRfqLink');
-    if (product.base_rm && parseFloat(product.base_rm) > 0) {
-        if (cartForm) cartForm.style.display = 'block';
-        if (rfqLink) rfqLink.style.display = 'none';
-    } else {
-        if (cartForm) cartForm.style.display = 'none';
-        if (rfqLink) {
-            rfqLink.href = product.rfq_url || product.url;
-            rfqLink.style.display = 'inline-flex';
-        }
-    }
 
     const imgEl = document.getElementById('qvImg');
     const imgPlaceholder = document.getElementById('qvImgPlaceholder');
@@ -3262,5 +3174,12 @@ document.addEventListener('DOMContentLoaded', function() {
 window.openQuickViewModal = openQuickViewModal;
 window.closeQuickViewModal = closeQuickViewModal;
 window.handleQuickViewBackdropClick = handleQuickViewBackdropClick;
+window.setCustomerType = setCustomerType;
+window.applyShopFilters = applyShopFilters;
+window.toggleSearchableDropdown = toggleSearchableDropdown;
+window.selectDropdownOption = selectDropdownOption;
+window.clearDropdownValue = clearDropdownValue;
+window.clearSearchInput = clearSearchInput;
+window.toggleMobileFilters = toggleMobileFilters;
 </script>
 @endsection

@@ -88,11 +88,11 @@
                     </span>
                     <span id="mobileSummaryChevron" class="mobile-summary-chevron">▼</span>
                 </div>
-                <div class="mobile-summary-right">
+                <div class="mobile-summary-right" id="mobileSummaryTopTotal">
                     @if($currentCurrency !== 'MYR')
-                        {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['total'], $currentCurrency), 2) }}
+                        {{ $currencySymbol }} {{ number_format($currencyService->convert($initialGrandTotal, $currentCurrency), 2) }}
                     @else
-                        RM {{ number_format($totals['total'], 2) }}
+                        RM {{ number_format($initialGrandTotal, 2) }}
                     @endif
                 </div>
             </div>
@@ -130,7 +130,7 @@
                 <div class="mobile-summary-totals">
                     <div class="summary-line">
                         <span>@t('checkout.subtotal', 'Subtotal')</span>
-                        <span>
+                        <span id="mobileSubtotalDisplay">
                             @if($currentCurrency !== 'MYR')
                                 {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['subtotal'], $currentCurrency), 2) }}
                                 <span style="font-size:0.75rem;color:#64748b;display:block">RM {{ number_format($totals['subtotal'], 2) }}</span>
@@ -141,16 +141,22 @@
                     </div>
                     <div class="summary-line">
                         <span>@t('checkout.shipping_logistics', 'Shipping & Cold-Chain')</span>
-                        <span class="val-green" id="mobileShippingDisplay">@t('checkout.free_self_collection', 'Free (Self-collection)')</span>
+                        <span class="{{ $initialShippingFee <= 0 ? 'val-green' : 'val-fee' }}" id="mobileShippingDisplay">
+                            @if($initialShippingFee <= 0)
+                                @t('checkout.free_standard_delivery', 'Free (Standard Local Delivery)')
+                            @else
+                                + RM {{ number_format($initialShippingFee, 2) }} ({{ $deliveryInfo['zone_name'] ?? 'Area Fee' }})
+                            @endif
+                        </span>
                     </div>
                     <div class="summary-line summary-grand-total">
                         <span class="total-label">@t('checkout.grand_total', 'Grand Total')</span>
-                        <span class="total-val">
+                        <span class="total-val" id="mobileGrandTotalDisplay">
                             @if($currentCurrency !== 'MYR')
-                                {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['total'], $currentCurrency), 2) }}
-                                <span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal">Base: RM {{ number_format($totals['total'], 2) }}</span>
+                                {{ $currencySymbol }} {{ number_format($currencyService->convert($initialGrandTotal, $currentCurrency), 2) }}
+                                <span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal" id="mobileGrandTotalBase">Base: RM {{ number_format($initialGrandTotal, 2) }}</span>
                             @else
-                                RM {{ number_format($totals['total'], 2) }}
+                                RM {{ number_format($initialGrandTotal, 2) }}
                             @endif
                         </span>
                     </div>
@@ -240,26 +246,38 @@
                             </div>
                         </div>
 
+                        {{-- Dynamic Delivery & Transportation Fee Notice Banner --}}
+                        <div id="deliveryNoticeBanner" style="margin-bottom:16px;padding:12px 14px;border-radius:10px;font-size:0.83rem;line-height:1.45;display:flex;align-items:flex-start;gap:10px;{{ $initialShippingFee <= 0 ? 'background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;' : 'background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;' }}">
+                            <span style="font-size:1.1rem;line-height:1;flex-shrink:0" id="deliveryNoticeIcon">{{ $initialShippingFee <= 0 ? '✅' : 'ℹ️' }}</span>
+                            <div id="deliveryNoticeText" style="flex:1">
+                                @if($initialShippingFee <= 0)
+                                    <strong>@t('checkout.standard_delivery_eligible', 'Standard Local Delivery Eligible:')</strong> @t('checkout.standard_delivery_desc', 'Your order qualifies for the standard local delivery arrangement (RM 0.00 delivery fee).')
+                                @else
+                                    <strong>@t('checkout.transportation_fee_applies', 'Area Transportation Charge:')</strong> @t('checkout.transportation_fee_desc', 'Orders under RM 100 are subject to an area delivery charge of :fee (:zone). Add more items to qualify for standard delivery, or select Store Self-Collection for free pickup.', ['fee' => 'RM ' . number_format($initialShippingFee, 2), 'zone' => $deliveryInfo['zone_name'] ?? 'Local Zone'])
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label class="form-label">@t('checkout.address', 'Street Address') <span class="required">*</span></label>
-                            <input type="text" name="address" class="form-control" value="{{ old('address', auth()->user()?->address) }}" placeholder="Unit / House No, Street, Taman...">
+                            <input type="text" name="address" id="addressInput" class="form-control" value="{{ old('address', auth()->user()?->address) }}" placeholder="Unit / House No, Street, Taman...">
                             @error('address')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="address-grid-responsive">
                             <div class="form-group">
                                 <label class="form-label">@t('checkout.city', 'City') <span class="required">*</span></label>
-                                <input type="text" name="city" class="form-control" value="{{ old('city', auth()->user()?->city) }}" placeholder="e.g. Kuala Lumpur / JB">
+                                <input type="text" name="city" id="cityInput" class="form-control" value="{{ old('city', auth()->user()?->city ?? 'Johor Bahru') }}" placeholder="e.g. Kuala Lumpur / JB" oninput="debounceDeliveryRecalculation()">
                                 @error('city')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-group">
                                 <label class="form-label">@t('checkout.state', 'State') <span class="required">*</span></label>
-                                <input type="text" name="state" class="form-control" value="{{ old('state', auth()->user()?->state ?? 'Selangor') }}" placeholder="e.g. Selangor">
+                                <input type="text" name="state" id="stateInput" class="form-control" value="{{ old('state', auth()->user()?->state ?? 'Johor') }}" placeholder="e.g. Johor" oninput="debounceDeliveryRecalculation()">
                                 @error('state')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-group">
                                 <label class="form-label">@t('checkout.postcode', 'Postcode') <span class="required">*</span></label>
-                                <input type="text" name="postcode" class="form-control" value="{{ old('postcode', auth()->user()?->postcode) }}" placeholder="68100" maxlength="5">
+                                <input type="text" name="postcode" id="postcodeInput" class="form-control" value="{{ old('postcode', auth()->user()?->postcode) }}" placeholder="68100" maxlength="5">
                                 @error('postcode')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -361,7 +379,7 @@
                         <div class="summary-totals-box">
                             <div class="summary-line">
                                 <span class="line-label">@t('checkout.subtotal', 'Subtotal')</span>
-                                <span class="line-val">
+                                <span class="line-val" id="desktopSubtotalDisplay">
                                     @if($currentCurrency !== 'MYR')
                                         {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['subtotal'], $currentCurrency), 2) }}
                                         <span style="font-size:0.75rem;color:#64748b;display:block">RM {{ number_format($totals['subtotal'], 2) }}</span>
@@ -372,16 +390,22 @@
                             </div>
                             <div class="summary-line">
                                 <span class="line-label">@t('checkout.shipping_logistics', 'Shipping & Logistics')</span>
-                                <span class="line-val val-green" id="shippingDisplay">@t('checkout.free_self_collection', 'Free (Self-collection)')</span>
+                                <span class="line-val {{ $initialShippingFee <= 0 ? 'val-green' : 'val-fee' }}" id="shippingDisplay">
+                                    @if($initialShippingFee <= 0)
+                                        @t('checkout.free_standard_delivery', 'Free (Standard Local Delivery)')
+                                    @else
+                                        + RM {{ number_format($initialShippingFee, 2) }} ({{ $deliveryInfo['zone_name'] ?? 'Area Fee' }})
+                                    @endif
+                                </span>
                             </div>
                             <div class="summary-line summary-grand-total">
                                 <span class="total-label">@t('checkout.grand_total', 'Grand Total')</span>
-                                <span class="total-val">
+                                <span class="total-val" id="grandTotalDisplay">
                                     @if($currentCurrency !== 'MYR')
-                                        {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['total'], $currentCurrency), 2) }}
-                                        <span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal">Base: RM {{ number_format($totals['total'], 2) }}</span>
+                                        {{ $currencySymbol }} {{ number_format($currencyService->convert($initialGrandTotal, $currentCurrency), 2) }}
+                                        <span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal" id="grandTotalBaseDisplay">Base: RM {{ number_format($initialGrandTotal, 2) }}</span>
                                     @else
-                                        RM {{ number_format($totals['total'], 2) }}
+                                        RM {{ number_format($initialGrandTotal, 2) }}
                                     @endif
                                 </span>
                             </div>
@@ -389,11 +413,11 @@
 
                         <button type="submit" class="checkout-submit-btn" id="submitBtn">
                             <span class="btn-main-text">🔒 @t('checkout.place_order', 'Proceed to checkout')</span>
-                            <span class="btn-amount-badge">
+                            <span class="btn-amount-badge" id="submitBtnAmount">
                                 @if($currentCurrency !== 'MYR')
-                                    {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['total'], $currentCurrency), 2) }}
+                                    {{ $currencySymbol }} {{ number_format($currencyService->convert($initialGrandTotal, $currentCurrency), 2) }}
                                 @else
-                                    RM {{ number_format($totals['total'], 2) }}
+                                    RM {{ number_format($initialGrandTotal, 2) }}
                                 @endif
                             </span>
                         </button>
@@ -414,8 +438,8 @@
                         </div>
 
                         @if($currentCurrency !== 'MYR')
-                            <div style="font-size:0.75rem;color:#64748b;margin:10px 0 12px;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid #e2e8f0;line-height:1.4">
-                                ℹ️ @t('checkout.currency_note', 'Prices displayed in :currency for reference. Final payment will be processed in MYR :amount at checkout.', ['currency' => '<strong>' . $currentCurrency . '</strong>', 'amount' => number_format($totals['total'], 2)])
+                            <div style="font-size:0.75rem;color:#64748b;margin:10px 0 12px;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid #e2e8f0;line-height:1.4" id="currencyNoteBox">
+                                ℹ️ @t('checkout.currency_note', 'Prices displayed in :currency for reference. Final payment will be processed in MYR :amount at checkout.', ['currency' => '<strong>' . $currentCurrency . '</strong>', 'amount' => number_format($initialGrandTotal, 2)])
                             </div>
                         @endif
 
@@ -435,11 +459,11 @@
         <div class="mobile-footer-inner">
             <div class="mobile-footer-price-col">
                 <span class="mobile-footer-label">@t('checkout.grand_total', 'Grand Total')</span>
-                <span class="mobile-footer-amount">
+                <span class="mobile-footer-amount" id="mobileStickyGrandTotal">
                     @if($currentCurrency !== 'MYR')
-                        {{ $currencySymbol }} {{ number_format($currencyService->convert($totals['total'], $currentCurrency), 2) }}
+                        {{ $currencySymbol }} {{ number_format($currencyService->convert($initialGrandTotal, $currentCurrency), 2) }}
                     @else
-                        RM {{ number_format($totals['total'], 2) }}
+                        RM {{ number_format($initialGrandTotal, 2) }}
                     @endif
                 </span>
             </div>
@@ -1031,6 +1055,7 @@ textarea.form-control {
 }
 
 .val-green { color: #059669; font-weight: 700; }
+.val-fee { color: #d97706; font-weight: 700; }
 
 .summary-grand-total {
     margin-bottom: 0;
@@ -1354,10 +1379,157 @@ textarea.form-control {
 const checkoutI18n = {
     calculatedByAdmin: @json(__t('checkout.shipping_calculated_admin', 'Calculated by admin')),
     freeSelfCollection: @json(__t('checkout.free_self_collection', 'Free (Self-collection)')),
+    freeStandardDelivery: @json(__t('checkout.free_standard_delivery', 'Free (Standard Local Delivery)')),
     showOrderSummary: @json(__t('checkout.show_summary', 'Show Order Summary')),
     hideOrderSummary: @json(__t('checkout.hide_summary', 'Hide Order Summary')),
     proceeding: @json(__t('checkout.proceeding', 'Proceeding to checkout...')),
+    currency: @json($currentCurrency),
+    currencySymbol: @json($currencySymbol),
+    subtotal: {{ (float) ($totals['subtotal'] ?? 0) }},
 };
+
+let deliveryRecalcTimer = null;
+
+function debounceDeliveryRecalculation() {
+    clearTimeout(deliveryRecalcTimer);
+    deliveryRecalcTimer = setTimeout(() => {
+        fetchDeliveryFee();
+    }, 350);
+}
+
+function fetchDeliveryFee() {
+    const fulfillmentInput = document.querySelector('input[name="fulfillment_type"]:checked');
+    const fulfillment = fulfillmentInput ? fulfillmentInput.value : 'delivery';
+    const stateInput = document.getElementById('stateInput');
+    const cityInput = document.getElementById('cityInput');
+
+    const state = stateInput ? stateInput.value : '';
+    const city = cityInput ? cityInput.value : '';
+
+    const payload = {
+        fulfillment_type: fulfillment,
+        state: state,
+        city: city,
+        subtotal: checkoutI18n.subtotal,
+        _token: '{{ csrf_token() }}'
+    };
+
+    fetch('{{ route("api.delivery.calculate") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        applyDeliveryFeeUpdate(data);
+    })
+    .catch(err => {
+        console.warn('Delivery fee calculation error:', err);
+    });
+}
+
+function applyDeliveryFeeUpdate(data) {
+    if (!data) return;
+
+    const isFree = data.fee <= 0;
+    const feeText = isFree
+        ? (data.is_self_collection ? checkoutI18n.freeSelfCollection : checkoutI18n.freeStandardDelivery)
+        : '+ RM ' + data.fee_formatted + ' (' + data.zone_name + ')';
+
+    // Update Shipping display elements
+    const desktopShip = document.getElementById('shippingDisplay');
+    if (desktopShip) {
+        desktopShip.textContent = feeText;
+        desktopShip.className = isFree ? 'line-val val-green' : 'line-val val-fee';
+    }
+
+    const mobileShip = document.getElementById('mobileShippingDisplay');
+    if (mobileShip) {
+        mobileShip.textContent = feeText;
+        mobileShip.className = isFree ? 'val-green' : 'val-fee';
+    }
+
+    // Format Grand Total strings
+    const isForeign = checkoutI18n.currency !== 'MYR';
+    const totalDisplayFormatted = isForeign
+        ? checkoutI18n.currencySymbol + ' ' + data.converted_total
+        : 'RM ' + data.total_formatted;
+
+    // Update Desktop Grand Total
+    const grandTotalEl = document.getElementById('grandTotalDisplay');
+    if (grandTotalEl) {
+        if (isForeign) {
+            grandTotalEl.innerHTML = totalDisplayFormatted + '<span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal" id="grandTotalBaseDisplay">Base: RM ' + data.total_formatted + '</span>';
+        } else {
+            grandTotalEl.textContent = totalDisplayFormatted;
+        }
+    }
+
+    // Update Mobile Collapsible Grand Total
+    const mobileGrandTotalEl = document.getElementById('mobileGrandTotalDisplay');
+    if (mobileGrandTotalEl) {
+        if (isForeign) {
+            mobileGrandTotalEl.innerHTML = totalDisplayFormatted + '<span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal" id="mobileGrandTotalBase">Base: RM ' + data.total_formatted + '</span>';
+        } else {
+            mobileGrandTotalEl.textContent = totalDisplayFormatted;
+        }
+    }
+
+    // Update Top Mobile Banner Total
+    const topMobileTotal = document.getElementById('mobileSummaryTopTotal');
+    if (topMobileTotal) {
+        topMobileTotal.textContent = totalDisplayFormatted;
+    }
+
+    // Update Submit Button Amount Badge
+    const btnBadge = document.getElementById('submitBtnAmount');
+    if (btnBadge) {
+        btnBadge.textContent = totalDisplayFormatted;
+    }
+
+    // Update Mobile Sticky Footer Amount
+    const mobileStickyTotal = document.getElementById('mobileStickyGrandTotal');
+    if (mobileStickyTotal) {
+        mobileStickyTotal.textContent = totalDisplayFormatted;
+    }
+
+    // Update Delivery Address Notice Banner
+    const noticeBanner = document.getElementById('deliveryNoticeBanner');
+    const noticeIcon = document.getElementById('deliveryNoticeIcon');
+    const noticeText = document.getElementById('deliveryNoticeText');
+
+    if (noticeBanner && noticeIcon && noticeText) {
+        if (data.is_self_collection) {
+            noticeBanner.style.background = '#f0fdf4';
+            noticeBanner.style.border = '1px solid #bbf7d0';
+            noticeBanner.style.color = '#166534';
+            noticeIcon.textContent = '🏪';
+            noticeText.innerHTML = '<strong>Store Self-Collection:</strong> Free counter pickup at SILC Cold-Chain facility with no minimum order threshold.';
+        } else if (isFree) {
+            noticeBanner.style.background = '#f0fdf4';
+            noticeBanner.style.border = '1px solid #bbf7d0';
+            noticeBanner.style.color = '#166534';
+            noticeIcon.textContent = '✅';
+            noticeText.innerHTML = '<strong>Standard Local Delivery Eligible:</strong> Your order qualifies for standard local delivery arrangement (RM 0.00 delivery fee).';
+        } else {
+            noticeBanner.style.background = '#eff6ff';
+            noticeBanner.style.border = '1px solid #bfdbfe';
+            noticeBanner.style.color = '#1e40af';
+            noticeIcon.textContent = 'ℹ️';
+            noticeText.innerHTML = '<strong>Area Transportation Charge:</strong> Orders under RM ' + Number(data.threshold).toFixed(2) + ' are subject to an area delivery fee of RM ' + data.fee_formatted + ' (' + data.zone_name + '). Add RM ' + data.shortfall_for_free_delivery.toFixed(2) + ' more to qualify for standard delivery, or select Store Self-Collection for free pickup.';
+        }
+    }
+
+    // Update Currency Note Box if present
+    const currencyBox = document.getElementById('currencyNoteBox');
+    if (currencyBox && isForeign) {
+        currencyBox.innerHTML = 'ℹ️ Prices displayed in <strong>' + checkoutI18n.currency + '</strong> for reference. Final payment will be processed in MYR ' + data.total_formatted + ' at checkout.';
+    }
+}
 
 function onFulfillment(type) {
     document.querySelectorAll('.fulfillment-tile').forEach(l => l.classList.remove('selected'));
@@ -1369,12 +1541,7 @@ function onFulfillment(type) {
         addressCard.style.display = type === 'delivery' ? 'block' : 'none';
     }
 
-    const shipText = type === 'delivery' ? checkoutI18n.calculatedByAdmin : checkoutI18n.freeSelfCollection;
-    const desktopShip = document.getElementById('shippingDisplay');
-    if (desktopShip) desktopShip.textContent = shipText;
-
-    const mobileShip = document.getElementById('mobileShippingDisplay');
-    if (mobileShip) mobileShip.textContent = shipText;
+    fetchDeliveryFee();
 }
 
 function toggleMobileSummary() {
@@ -1400,7 +1567,6 @@ function submitCheckoutForm() {
 
     // Check HTML5 validity
     if (!form.reportValidity()) {
-        // Scroll to first invalid input
         const firstInvalid = form.querySelector(':invalid');
         if (firstInvalid) {
             firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });

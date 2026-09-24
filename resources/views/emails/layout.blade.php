@@ -116,11 +116,11 @@
                                 <tr>
                                     <td style="font-size: 12px; color: #64748b; line-height: 1.5;">
                                         @if($mailLoc === 'zh')
-                                            <strong>需要协助？</strong>请直接通过 WhatsApp 联系客服团队 <a href="https://wa.me/601112710260" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1271 0260</a> 或致电办公室 <a href="tel:01114360109" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1436 0109</a>。
+                                            <strong>需要协助？</strong>请直接通过 WhatsApp 联系客服团队 <a href="https://wa.me/601112710260" style="color: #2563eb; font-weight: 700; text-decoration: none;">+60 11-1271 0260</a> 或致电 <a href="tel:+60132800168" style="color: #2563eb; font-weight: 700; text-decoration: none;">+60 13-280 0168</a>。
                                         @elseif($mailLoc === 'bm')
-                                            <strong>Perlukan bantuan?</strong> Hubungi meja sokongan kami terus melalui WhatsApp di <a href="https://wa.me/601112710260" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1271 0260</a> atau hubungi Pejabat di <a href="tel:01114360109" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1436 0109</a>.
+                                            <strong>Perlukan bantuan?</strong> Hubungi meja sokongan kami terus melalui WhatsApp di <a href="https://wa.me/601112710260" style="color: #2563eb; font-weight: 700; text-decoration: none;">+60 11-1271 0260</a> atau hubungi kami di <a href="tel:+60132800168" style="color: #2563eb; font-weight: 700; text-decoration: none;">+60 13-280 0168</a>.
                                         @else
-                                            <strong>Need assistance?</strong> Reach our support desk directly via WhatsApp at <a href="https://wa.me/601112710260" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1271 0260</a> or call Office at <a href="tel:01114360109" style="color: #2563eb; font-weight: 700; text-decoration: none;">011-1436 0109</a>.
+                                            <strong>Need assistance?</strong> Reach our support desk directly via WhatsApp at <a href="https://wa.me/601112710260" style="color: #2563eb; font-weight: 700; text-decoration: none;">+60 11-1271 0260</a> or call us at <a href="tel:+60132800168" style="color: #2563eb; font-weight: 700; text-decoration: none;">+60 13-280 0168</a>.
                                         @endif
                                     </td>
                                 </tr>

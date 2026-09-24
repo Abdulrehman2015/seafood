@@ -21,6 +21,22 @@ class CustomerController extends Controller
             $query->where('approval_status', $request->status);
         }
 
+        if ($request->filled('commercial_access')) {
+            $query->where('commercial_access', $request->commercial_access);
+        }
+
+        if ($request->filled('country_market')) {
+            $query->where('country_market', 'like', '%' . $request->country_market . '%');
+        }
+
+        if ($request->filled('destination_country')) {
+            $query->where('destination_country', 'like', '%' . $request->destination_country . '%');
+        }
+
+        if ($request->filled('is_existing_customer')) {
+            $query->where('is_existing_customer', $request->is_existing_customer);
+        }
+
         if ($request->boolean('duplicates')) {
             $query->where(function ($q) {
                 $q->whereIn('phone', function ($sub) {
@@ -100,19 +116,29 @@ class CustomerController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'name'            => 'required|string|max:255',
-            'email'           => 'required|email|unique:users,email,' . $user->id,
-            'phone'           => 'nullable|string|max:30',
-            'customer_group'  => 'required|in:retail,walkin,wholesale,trading',
-            'company_name'    => 'nullable|string|max:255',
-            'company_reg_no'  => 'nullable|string|max:100',
-            'business_type'   => 'nullable|string|max:100',
-            'address'         => 'nullable|string|max:500',
-            'city'            => 'nullable|string|max:100',
-            'state'            => 'nullable|string|max:100',
-            'postcode'         => 'nullable|string|max:20',
-            'approval_status'  => 'required|in:pending,approved,rejected',
-            'marketing_opt_in' => 'nullable|boolean',
+            'name'                  => 'required|string|max:255',
+            'email'                 => 'required|email|unique:users,email,' . $user->id,
+            'phone'                 => 'nullable|string|max:30',
+            'customer_group'        => 'required|in:retail,walkin,wholesale,trading',
+            'company_name'          => 'nullable|string|max:255',
+            'company_reg_no'        => 'nullable|string|max:100',
+            'business_type'         => 'nullable|string|max:100',
+            'position_role'         => 'nullable|string|max:150',
+            'country_market'        => 'nullable|string|max:100',
+            'destination_country'   => 'nullable|string|max:100',
+            'supply_arrangement'    => 'nullable|string|max:100',
+            'commercial_access'     => 'nullable|string|max:50',
+            'is_existing_customer'  => 'nullable|in:yes,no,not_sure',
+            'existing_customer_ref' => 'nullable|string|max:255',
+            'product_interest'      => 'nullable|string|max:500',
+            'order_volume'          => 'nullable|string|max:100',
+            'sourcing_requirements' => 'nullable|string|max:2000',
+            'address'               => 'nullable|string|max:500',
+            'city'                  => 'nullable|string|max:100',
+            'state'                 => 'nullable|string|max:100',
+            'postcode'              => 'nullable|string|max:20',
+            'approval_status'       => 'required|in:pending,approved,rejected',
+            'marketing_opt_in'      => 'nullable|boolean',
         ]);
 
         $validated['marketing_opt_in'] = $request->boolean('marketing_opt_in');

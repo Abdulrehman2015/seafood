@@ -52,9 +52,9 @@
             <p style="color:#475569;font-size:0.95rem;line-height:1.65;margin:0 0 24px">
                 Thank you, <strong>{{ auth()->user()->name }}</strong>. Unfortunately, your application for a 
                 <span style="display:inline-block;padding:2px 8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:6px;font-weight:700;font-size:0.85rem;text-transform:uppercase">
-                    {{ ucfirst(auth()->user()->customer_group) }} Tier
+                    {{ ucfirst(auth()->user()->customer_group) }}
                 </span> 
-                account with <strong>MST Import and Export Sdn Bhd</strong> could not be approved at this time.
+                account with <strong>MST Import & Export Sdn. Bhd.</strong> could not be approved at this time.
             </p>
 
             @if(auth()->user()->rejection_reason)

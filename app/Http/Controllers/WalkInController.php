@@ -41,9 +41,13 @@ class WalkInController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            $search = trim($request->search);
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%")
+                  ->orWhere('brand', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhereHas('category', fn($cat) => $cat->where('name', 'like', "%{$search}%"));
             });
         }
 
@@ -58,7 +62,7 @@ class WalkInController extends Controller
             $query->orderBy('sort_order', 'asc');
         }
 
-        $products = $query->paginate(16)->withQueryString();
+        $products = $query->paginate(32)->withQueryString();
 
         return view('walkin.shop', compact('products', 'categories'));
     }
@@ -72,7 +76,7 @@ class WalkInController extends Controller
             abort(404);
         }
 
-        $price = $product->walkin_price;
+        $price = $product->walkin_price ?? $product->retail_price ?? 0;
         $moq   = 1;
 
         return view('walkin.show', compact('product', 'price', 'moq'));

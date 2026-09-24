@@ -14,21 +14,21 @@
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
             <div>
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-                    <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:2px 9px;border-radius:999px;font-size:0.7rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
-                        🛒 @t('cart.secure_cold_chain_cart', 'Secure Cold-Chain Cart')
+                    <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:2px 9px;border-radius:999px;font-size:0.75rem;font-weight:700;color:#7dd3fc;letter-spacing:0.03em">
+                        🛒 @t('cart.your_shopping_cart', 'Your Shopping Cart')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.78rem">@t('cart.cold_chain_protected', 'Continuous -18°C Cold Chain Protected')</span>
+                    <span style="color:#bae6fd;font-size:0.82rem">@t('cart.header_pill_sub', 'Review your selected products before checkout.')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.5rem,3vw,1.95rem);margin-bottom:4px;letter-spacing:-0.02em">
                     @t('cart.your_shopping_cart', 'Your Shopping Cart')
                 </h1>
-                <p class="page-subtitle" style="color:#e0f2fe;font-size:0.88rem;max-width:680px;line-height:1.4;margin:0">
-                    @t('cart.header_subtitle', 'Review your selected frozen catches, adjust carton quantities, and proceed to encrypted checkout.')
+                <p class="page-subtitle" style="color:#e0f2fe;font-size:0.88rem;max-width:680px;line-height:1.45;margin:0">
+                    @t('cart.header_subtitle', 'Review your selected products, adjust quantities and proceed to checkout.')
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-                <div style="font-size:0.8rem;padding:5px 12px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb">
-                    🔒 @t('cart.encrypted_256', '256-Bit Encrypted')
+                <div style="font-size:0.8rem;padding:6px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb">
+                    🔒 @t('cart.secure_checkout', 'Secure Checkout')
                 </div>
             </div>
         </div>
@@ -94,7 +94,7 @@
                                         <img src="{{ asset('storage/'.$item->product->thumbnail) }}" alt="{{ $item->product->name }}" loading="lazy">
                                     </a>
                                 @else
-                                    <div class="cart-thumb-placeholder">🐟</div>
+                                    <div class="cart-thumb-placeholder">📦</div>
                                 @endif
                             </div>
 
@@ -229,6 +229,90 @@
                             ℹ️ @t('cart.currency_note', 'Prices displayed in :currency for reference. Final payment will be processed in MYR at checkout.', ['currency' => '<strong class="js-cart-currency-code">' . $currentCurrency . '</strong>'])
                         </div>
 
+                        @php
+                            $deliveryService = app(\App\Services\DeliveryService::class);
+                            $b2cThreshold    = $deliveryService->getThreshold();
+                            $cartSubtotal    = (float) ($totals['subtotal'] ?? 0);
+                            $isWalkinMode    = (bool) session('walkin_session');
+                            $isB2BGroup      = in_array($group, ['wholesale', 'trading']);
+                            $orderMinEnabled = (\App\Models\Setting::get('order_minimum_enabled', '0') === '1');
+
+                            // B2B wholesale tier minimum
+                            if ($isB2BGroup && $orderMinEnabled) {
+                                $orderMinKey = ($group === 'wholesale') ? 'order_minimum_wholesale' : 'order_minimum_trading';
+                                $orderMinAmount = (float) \App\Models\Setting::get($orderMinKey, '0');
+                                $belowB2BMin    = $orderMinAmount > 0 && $cartSubtotal < $orderMinAmount;
+                                $b2bShortfall   = max(0, $orderMinAmount - $cartSubtotal);
+                            } else {
+                                $belowB2BMin    = false;
+                                $orderMinAmount = 0;
+                                $b2bShortfall   = 0;
+                            }
+
+                            // B2C delivery threshold status
+                            $eligibleStandardDelivery = ($cartSubtotal >= $b2cThreshold);
+                            $b2cDeliveryShortfall     = max(0, $b2cThreshold - $cartSubtotal);
+                            $b2cProgressPct           = min(100, round(($cartSubtotal / $b2cThreshold) * 100));
+                        @endphp
+
+                        {{-- B2B Minimum Order Warning (Wholesale/Trading only) --}}
+                        @if($belowB2BMin)
+                        <div id="orderMinWarning" style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:12px 14px;margin-bottom:12px">
+                            <div style="display:flex;align-items:flex-start;gap:8px">
+                                <span style="font-size:1.2rem;line-height:1;flex-shrink:0">⚠️</span>
+                                <div>
+                                    <div style="font-weight:700;font-size:0.82rem;color:#92400e;margin-bottom:3px">@t('cart.b2b_min_order_title', 'Wholesale Tier Minimum Order')</div>
+                                    <div style="font-size:0.78rem;color:#78350f;line-height:1.5">
+                                        @t('cart.b2b_min_order_desc', 'Minimum order for :group partners is RM :min. Add RM :shortfall more to proceed.', ['group' => ucfirst($group), 'min' => number_format($orderMinAmount, 2), 'shortfall' => number_format($b2bShortfall, 2)])
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top:10px;background:#fed7aa;border-radius:6px;height:6px;overflow:hidden">
+                                <div style="height:100%;background:#f97316;border-radius:6px;width:{{ min(100, round(($cartSubtotal / $orderMinAmount) * 100)) }}%;transition:width 0.3s"></div>
+                            </div>
+                        </div>
+                        @endif
+
+                        {{-- B2C Delivery Arrangement Status Banner (Retail Customers) --}}
+                        @if(!$isB2BGroup && !$isWalkinMode)
+                            @if($eligibleStandardDelivery)
+                            <div class="delivery-threshold-banner eligible" style="background:#ecfdf5;border:1.5px solid #a7f3d0;border-radius:10px;padding:12px 14px;margin-bottom:12px">
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <span style="font-size:1.2rem;line-height:1;flex-shrink:0">🎉</span>
+                                    <div>
+                                        <div style="font-weight:700;font-size:0.82rem;color:#065f46">
+                                            @t('cart.standard_delivery_eligible_title', 'Standard Delivery Arrangement Unlocked!')
+                                        </div>
+                                        <div style="font-size:0.78rem;color:#047857;line-height:1.4">
+                                            @t('cart.standard_delivery_eligible_desc', 'Your order total exceeds RM :threshold and qualifies for standard local delivery arrangement.', ['threshold' => number_format($b2cThreshold, 2)])
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @else
+                            <div class="delivery-threshold-banner below-threshold" style="background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;padding:12px 14px;margin-bottom:12px">
+                                <div style="display:flex;align-items:flex-start;gap:8px">
+                                    <span style="font-size:1.2rem;line-height:1;flex-shrink:0">🚚</span>
+                                    <div style="flex:1">
+                                        <div style="font-weight:700;font-size:0.82rem;color:#0369a1;margin-bottom:2px">
+                                            @t('cart.delivery_threshold_info_title', 'Delivery & Transportation Arrangement')
+                                        </div>
+                                        <div style="font-size:0.77rem;color:#0c4a6e;line-height:1.45">
+                                            @t('cart.delivery_threshold_info_desc', 'Orders below RM :threshold are subject to area transportation charges (calculated at checkout based on delivery zone). Add RM :shortfall more to qualify for standard delivery arrangement!', ['threshold' => number_format($b2cThreshold, 2), 'shortfall' => number_format($b2cDeliveryShortfall, 2)])
+                                        </div>
+                                        <div style="margin-top:8px;background:#e0f2fe;border-radius:6px;height:6px;overflow:hidden">
+                                            <div style="height:100%;background:#0284c7;border-radius:6px;width:{{ $b2cProgressPct }}%;transition:width 0.3s"></div>
+                                        </div>
+                                        <div style="font-size:0.7rem;color:#0284c7;margin-top:4px;display:flex;justify-content:space-between">
+                                            <span>RM {{ number_format($cartSubtotal, 2) }}</span>
+                                            <span><strong>{{ $b2cProgressPct }}%</strong> (RM {{ number_format($b2cThreshold, 2) }} Goal)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                        @endif
+
                         <!-- Checkout Buttons -->
                         @if(session('walkin_session'))
                             <a href="{{ route('walkin.checkout') }}" class="btn-checkout">
@@ -259,8 +343,8 @@
                         @endif
 
                         <div class="summary-trust-badges">
-                            <div>🔒 @t('cart.trust_encrypted', '256-bit Encrypted Secure Payment')</div>
-                            <div>❄️ @t('cart.trust_cold_chain', '100% Cold Chain Guaranteed Freshness')</div>
+                            <div>🔒 @t('cart.trust_secure', 'Secure Checkout & Payment Processing')</div>
+                            <div>🏬 @t('cart.trust_fulfillment', 'Cold-Chain Fulfilment & Counter 2 Collection Available')</div>
                         </div>
                     </div>
                 </div>
@@ -271,19 +355,17 @@
         <!-- Empty Cart State -->
         <div id="emptyCartContainer" class="empty-cart-card" style="{{ $items->count() ? 'display:none' : '' }}">
             <div class="empty-cart-icon">🛒</div>
-            <h2 class="empty-cart-title">@t('cart.empty_title', 'Your Cart is Currently Empty')</h2>
+            <h2 class="empty-cart-title">@t('cart.empty_title', 'Your cart is empty')</h2>
             <p class="empty-cart-desc">
-                @t('cart.empty_desc', 'Looks like you haven\'t added any fresh seafood items to your cart yet.')
+                @t('cart.empty_desc', 'Your cart is currently empty. Browse our products and add items to get started.')
             </p>
             <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
                 <a href="{{ route('shop.index') }}" class="btn-browse-seafood">
-                    @t('cart.continue_shopping', 'Browse Fresh Seafood') →
+                    @t('cart.continue_shopping', 'Continue Shopping →')
                 </a>
-                @if(session('walkin_session'))
-                    <a href="{{ route('walkin.shop') }}" class="btn-browse-walkin">
-                        @t('cart.walkin_catalogue', 'Walk-in Catalogue')
-                    </a>
-                @endif
+                <a href="{{ route('walkin.shop') }}" class="btn-browse-walkin" style="background:#ffffff;border:1.5px solid #cbd5e1;color:#0f172a;padding:12px 22px;border-radius:12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px">
+                    @t('cart.browse_walkin_menu', 'Browse Walk-in Menu →')
+                </a>
             </div>
         </div>
 
@@ -305,12 +387,12 @@
         </div>
 
         <h3 class="cart-confirm-modal-title" id="removeModalTitle">@t('cart.remove_modal_title', 'Remove Item from Cart?')</h3>
-        <p class="cart-confirm-modal-desc">@t('cart.remove_modal_desc', 'Are you sure you want to remove this catch from your shopping cart?')</p>
+        <p class="cart-confirm-modal-desc">@t('cart.remove_modal_desc', 'Are you sure you want to remove this product from your shopping cart?')</p>
 
         <div class="cart-confirm-item-preview">
             <div class="cart-confirm-item-thumb" id="removeModalThumb"></div>
             <div class="cart-confirm-item-info">
-                <div class="cart-confirm-item-name" id="removeModalName">@t('cart.default_product_name', 'Seafood Product')</div>
+                <div class="cart-confirm-item-name" id="removeModalName">@t('cart.default_product_name', 'Product')</div>
                 <div class="cart-confirm-item-meta" id="removeModalMeta">@t('cart.quantity_label', 'Quantity:') 1</div>
             </div>
         </div>

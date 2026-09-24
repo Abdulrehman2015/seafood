@@ -35,15 +35,20 @@ class StaticController extends Controller
     public function contactSubmit(Request $request)
     {
         $rules = [
-            'name'        => 'required|string|max:200',
-            'email'       => 'required|email|max:255',
-            'phone'       => 'required|string|max:30',
-            'interests'   => 'nullable|array',
-            'interests.*' => 'string|max:100',
-            'subject'     => 'nullable|string|max:200',
-            'product'     => 'nullable|string|max:200',
-            'budget'      => 'nullable|string|max:200',
-            'message'     => 'required|string|max:5000',
+            'name'               => 'required|string|max:200',
+            'email'              => 'required|email|max:255',
+            'phone'              => 'required|string|max:30',
+            'contact_preference' => 'nullable|string|in:phone,whatsapp,email',
+            'interests'          => 'nullable|array',
+            'interests.*'        => 'string|max:100',
+            'subject'            => 'nullable|string|max:200',
+            'product'            => 'nullable|string|max:200',
+            'budget'             => 'nullable|string|max:200',
+            'company_name'       => 'nullable|string|max:200',
+            'business_reg_no'    => 'nullable|string|max:100',
+            'order_volume'       => 'nullable|string|max:100',
+            'delivery_location'  => 'nullable|string|max:200',
+            'message'            => 'required|string|max:5000',
         ];
 
         if (\App\Models\Setting::isRecaptchaEnabled('contact')) {
@@ -68,14 +73,29 @@ class StaticController extends Controller
         $product = $request->product ?: $request->budget;
 
         $headerDetails = [];
+        if (!empty($request->contact_preference)) {
+            $headerDetails[] = "Preferred Contact: " . ucfirst($request->contact_preference);
+        }
+        if (!empty($request->company_name)) {
+            $headerDetails[] = "Company: " . $request->company_name;
+        }
+        if (!empty($request->business_reg_no)) {
+            $headerDetails[] = "Reg No: " . $request->business_reg_no;
+        }
         if ($interestsList) {
-            $headerDetails[] = "Interests / Scope: " . $interestsList;
+            $headerDetails[] = "Interests: " . $interestsList;
         }
         if (!empty($request->subject) && $request->subject !== 'General Inquiry') {
             $headerDetails[] = "Category: " . $request->subject;
         }
         if (!empty($product)) {
-            $headerDetails[] = "Product / Requirement: " . $product;
+            $headerDetails[] = "Product / Item: " . $product;
+        }
+        if (!empty($request->order_volume)) {
+            $headerDetails[] = "Volume: " . $request->order_volume;
+        }
+        if (!empty($request->delivery_location)) {
+            $headerDetails[] = "Location: " . $request->delivery_location;
         }
 
         $formattedHeader = !empty($headerDetails) ? "[" . implode(" | ", $headerDetails) . "]\n\n" : "";
@@ -102,6 +122,7 @@ class StaticController extends Controller
                 if (!empty($adminEmails)) {
                     \Illuminate\Support\Facades\Mail::raw(
                         "New Website Sourcing Inquiry from {$request->name}\n\n" .
+                        "Company: " . ($request->company_name ?? 'N/A') . "\n" .
                         "Email: {$request->email}\n" .
                         "Phone / WhatsApp: " . ($request->phone ?? 'N/A') . "\n" .
                         "Interests: " . ($interestsList ?? 'General') . "\n" .
@@ -119,6 +140,6 @@ class StaticController extends Controller
             }
         }
 
-        return back()->with('success', 'Thank you! Your sourcing inquiry has been received. Our team will review your requirements and contact you within 24 hours.');
+        return back()->with('success', __t('contact.form_success', 'Our commercial team will review your requirements and contact you regarding availability, pricing and next steps.'));
     }
 }

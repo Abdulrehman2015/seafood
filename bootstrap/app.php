@@ -14,6 +14,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         $middleware->append(\App\Http\Middleware\SecurityHeadersMiddleware::class);
 
+        $middleware->validateCsrfTokens(except: [
+            'stripe/*',
+            'api/*',
+            'verify-otp',
+            '*/verify-otp',
+            'resend-otp',
+            '*/resend-otp',
+        ]);
+
         $middleware->redirectGuestsTo(function (\Illuminate\Http\Request $request) {
             $locale = session('locale', $request->cookie('app_lang', $request->cookie('locale', config('app.locale', 'en'))));
             if (!in_array($locale, ['en', 'zh', 'bm'])) {
@@ -32,7 +41,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if (!in_array($locale, ['en', 'zh', 'bm'])) {
                 $locale = 'en';
             }
-            return route('home', ['locale' => $locale]);
+            return route('account.dashboard', ['locale' => $locale]);
         });
 
         $middleware->web(append: [
@@ -55,7 +64,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 419);
             }
 
-            return redirect()->route('home')->with('info', 'Your session has expired. You have been redirected to the homepage.');
+            // If user was on OTP verification, return back to OTP verification page
+            if (str_contains($request->path(), 'verify-otp')) {
+                return redirect()->back()->withInput()->with('error', 'Session refreshed. Please enter your verification code.');
+            }
+
+            return redirect()->back()->withInput()->with('info', 'Your session was refreshed. Please try again.');
         });
 
         $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, \Illuminate\Http\Request $request) {
@@ -66,7 +80,11 @@ return Application::configure(basePath: dirname(__DIR__))
                     ], 419);
                 }
 
-                return redirect()->route('home')->with('info', 'Your session has expired. You have been redirected to the homepage.');
+                if (str_contains($request->path(), 'verify-otp')) {
+                    return redirect()->back()->withInput()->with('error', 'Session refreshed. Please enter your verification code.');
+                }
+
+                return redirect()->back()->withInput()->with('info', 'Your session was refreshed. Please try again.');
             }
         });
     })->create();

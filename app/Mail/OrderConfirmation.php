@@ -19,7 +19,7 @@ class OrderConfirmation extends Mailable
         public Order $order,
         ?string $mailLocale = null
     ) {
-        $this->mailLocale = $mailLocale ?: ($order->user?->preferred_locale ?? current_locale());
+        $this->mailLocale = $mailLocale ?: current_locale() ?: ($order->user?->preferred_locale ?? 'en');
         $this->locale($this->mailLocale);
     }
 

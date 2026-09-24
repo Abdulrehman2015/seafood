@@ -32,6 +32,29 @@ class OtpVerificationController extends Controller
             }
         }
 
+        $email = $request->session()->get('otp_verify_email');
+        if ($email) {
+            $user = User::where('email', $email)->first();
+            if ($user) {
+                return $user;
+            }
+        }
+
+        // Fallback to request parameters if session was lost
+        if ($request->filled('user_id')) {
+            $user = User::find($request->input('user_id'));
+            if ($user) {
+                return $user;
+            }
+        }
+
+        if ($request->filled('email')) {
+            $user = User::where('email', $request->input('email'))->first();
+            if ($user) {
+                return $user;
+            }
+        }
+
         if (Auth::check()) {
             return Auth::user();
         }
@@ -93,10 +116,13 @@ class OtpVerificationController extends Controller
 
         // If no OTP exists yet, or if it expired, and user is not locked, generate fresh one
         if ((empty($user->email_otp_code) || $user->isOtpExpired()) && !$isLocked) {
+            $activeLocale = current_locale();
+            $user->update(['preferred_locale' => $activeLocale]);
             $otp = $user->generateEmailOtp(false);
             Setting::configureMailer();
             try {
-                Mail::to($user->email)->send(new SendEmailOtp($user, $otp, $user->preferred_locale ?? current_locale()));
+                Mail::to($user->email)->send(new SendEmailOtp($user, $otp, $activeLocale));
+                Log::info("Dispatched initial OTP to {$user->email} in locale: {$activeLocale}");
             } catch (\Throwable $e) {
                 Log::error("Failed to dispatch initial OTP to {$user->email}: " . $e->getMessage());
             }
@@ -221,8 +247,8 @@ class OtpVerificationController extends Controller
         $user->clearEmailOtp();
         $user->save();
 
-        // Clear verification session key
-        $request->session()->forget('otp_verify_user_id');
+        // Clear verification session keys
+        $request->session()->forget(['otp_verify_user_id', 'otp_verify_email']);
 
         // Log the verified user in
         Auth::login($user);
@@ -236,10 +262,12 @@ class OtpVerificationController extends Controller
         }
 
         // Dispatch Welcome Email & Admin Notification
+        $activeLocale = current_locale();
+        $user->update(['preferred_locale' => $activeLocale]);
         Setting::configureMailer();
         try {
-            Mail::to($user->email)->send(new UserRegistered($user, $user->preferred_locale ?? current_locale()));
-            Log::info("Registration welcome email dispatched to verified user: {$user->email} in locale: " . ($user->preferred_locale ?? current_locale()));
+            Mail::to($user->email)->send(new UserRegistered($user, $activeLocale));
+            Log::info("Registration welcome email dispatched to verified user: {$user->email} in locale: {$activeLocale}");
         } catch (\Throwable $e) {
             Log::error("Failed to send welcome email to {$user->email}: " . $e->getMessage());
         }
@@ -258,8 +286,12 @@ class OtpVerificationController extends Controller
             return redirect()->route('approval.pending', ['locale' => current_locale()])->with('new_registration', true);
         }
 
-        // Retail customer: direct to shop with confirmation
-        return redirect()->route('shop.index', ['locale' => current_locale()])->with('success', __t('auth.email_verified_welcome', 'Email verified successfully! Welcome to MST Seafood.'));
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard')->with('success', __t('auth.email_verified_welcome', 'Email verified successfully! Welcome to MST Seafood.'));
+        }
+
+        // Direct verified customer to customer dashboard
+        return redirect()->route('account.dashboard', ['locale' => current_locale()])->with('success', __t('auth.email_verified_welcome', 'Email verified successfully! Welcome to MST Seafood.'));
     }
 
     /**
@@ -307,12 +339,14 @@ class OtpVerificationController extends Controller
         }
 
         // Generate brand new OTP & increment resend count (isResend = true)
+        $activeLocale = current_locale();
+        $user->update(['preferred_locale' => $activeLocale]);
         $otp = $user->generateEmailOtp(true);
 
         Setting::configureMailer();
         try {
-            Mail::to($user->email)->send(new SendEmailOtp($user, $otp, $user->preferred_locale ?? current_locale()));
-            Log::info("Fresh OTP code (resend 1/1) dispatched to user {$user->email} in locale: " . ($user->preferred_locale ?? current_locale()));
+            Mail::to($user->email)->send(new SendEmailOtp($user, $otp, $activeLocale));
+            Log::info("Fresh OTP code (resend 1/1) dispatched to user {$user->email} in locale: {$activeLocale}");
         } catch (\Throwable $e) {
             Log::error("Failed to resend OTP to {$user->email}: " . $e->getMessage());
             return back()->with('error', __t('auth.otp_email_send_failed', 'Unable to send email right now. Please check your SMTP settings or try again shortly.'));

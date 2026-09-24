@@ -201,7 +201,7 @@ class CompanyVerificationService
         if ($query->exists()) {
             return [
                 'is_taken' => true,
-                'message'  => __t('auth.email_already_registered', 'This email address is already registered. One email can only register one account.'),
+                'message'  => __t('auth.email_already_registered', 'An account with this email already exists. Please Sign In or reset your password.'),
             ];
         }
 

@@ -376,6 +376,36 @@ Route::match(['get', 'post'], '/api/verify-registration-field', function (\Illum
     return response()->json(['valid' => true]);
 })->middleware('throttle:30,1')->name('register.verify_field');
 
+// Live Delivery / Transportation Fee Calculation API
+Route::match(['get', 'post'], '/api/calculate-delivery-fee', function (\Illuminate\Http\Request $request, \App\Services\DeliveryService $deliveryService, \App\Services\PricingService $pricingService, \App\Services\CartService $cartService) {
+    $fulfillment = $request->input('fulfillment_type', 'delivery');
+    $state       = $request->input('state', '');
+    $city        = $request->input('city', '');
+    $group       = $pricingService->resolveGroup();
+    
+    $cartTotals  = $cartService->totals();
+    $subtotal    = (float) ($request->input('subtotal') ?: ($cartTotals['subtotal'] ?? 0));
+
+    $result = $deliveryService->calculateFee($subtotal, $fulfillment, $state, $city, $group);
+    $total  = round($subtotal + $result['fee'], 2);
+
+    $currencyService = app(\App\Services\CurrencyService::class);
+    $activeCurrency  = session('currency', 'MYR');
+
+    $result['subtotal']            = $subtotal;
+    $result['total']               = $total;
+    $result['subtotal_formatted']  = number_format($subtotal, 2);
+    $result['fee_formatted']       = number_format($result['fee'], 2);
+    $result['total_formatted']     = number_format($total, 2);
+    $result['currency']            = $activeCurrency;
+    $result['currency_symbol']     = $currencyService->getSymbol($activeCurrency);
+    $result['converted_subtotal']  = number_format($currencyService->convert($subtotal, $activeCurrency), 2);
+    $result['converted_fee']       = number_format($currencyService->convert($result['fee'], $activeCurrency), 2);
+    $result['converted_total']     = number_format($currencyService->convert($total, $activeCurrency), 2);
+
+    return response()->json($result);
+})->middleware('throttle:60,1')->name('api.delivery.calculate');
+
 // Approval status live API check
 Route::get('/api/check-approval-status', function () {
     if (!auth()->check()) {
@@ -414,16 +444,19 @@ Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function
 
     // Product Catalogue (public / retail)
     Route::get('/products', [ShopController::class, 'index'])->name('shop.index');
-    Route::get('/shop', function ($locale) {
-        $loc = is_string($locale) ? $locale : 'en';
+    Route::get('/shop', function ($locale = 'en') {
+        $loc = is_string($locale) ? $locale : (request()->route('locale') ?: 'en');
         return redirect()->route('shop.index', array_merge(['locale' => $loc], request()->query()), 301);
     });
     Route::get('/categories', [ShopController::class, 'categories'])->name('categories.index');
-    Route::get('/category', fn($locale) => redirect()->route('categories.index', ['locale' => is_string($locale) ? $locale : 'en'], 301));
+    Route::get('/category', function ($locale = 'en') {
+        $loc = is_string($locale) ? $locale : (request()->route('locale') ?: 'en');
+        return redirect()->route('categories.index', ['locale' => $loc], 301);
+    });
     Route::get('/products/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
-    Route::get('/shop/{product}', function ($locale, $product) {
-        $loc = is_string($locale) ? $locale : 'en';
-        $slug = is_object($product) ? ($product->slug ?? $product->id) : $product;
+    Route::get('/shop/{product}', function ($locale = 'en', $product = null) {
+        $loc = is_string($locale) ? $locale : (request()->route('locale') ?: 'en');
+        $slug = is_object($product) ? ($product->slug ?? $product->id) : ($product ?: request()->route('product'));
         return redirect()->route('shop.show', ['locale' => $loc, 'product' => $slug], 301);
     });
 
@@ -508,7 +541,7 @@ $unprefixedRedirects = [
     'about', 'contact', 'shop', 'categories', 'category', 'cart',
     'walkin', 'checkout', 'dashboard', 'account', 'quotations',
     'pending-approval', 'account-rejected', 'login', 'register',
-    'forgot-password', 'reset-password', 'policy'
+    'forgot-password', 'reset-password', 'policy', 'verify-otp', 'resend-otp', 'otp-status'
 ];
 foreach ($unprefixedRedirects as $uPath) {
     Route::any($uPath, function (\Illuminate\Http\Request $request) use ($uPath) {

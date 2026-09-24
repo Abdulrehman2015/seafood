@@ -11,9 +11,9 @@
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" style="margin-top:var(--space-4);margin-bottom:var(--space-6)">
             <ol class="breadcrumb" style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--gray-500);list-style:none;padding:0;margin:0;flex-wrap:wrap">
-                <li><a href="{{ route('home') }}" style="color:var(--seagreen-700);text-decoration:none">Home</a></li>
+                <li><a href="{{ route('home') }}" style="color:var(--seagreen-700);text-decoration:none">@t('nav.home', 'Home')</a></li>
                 <li>›</li>
-                <li><a href="{{ route('shop.index') }}" style="color:var(--seagreen-700);text-decoration:none">Shop</a></li>
+                <li><a href="{{ route('shop.index') }}" style="color:var(--seagreen-700);text-decoration:none">@t('shop.breadcrumb_products_sourcing', 'Products & Sourcing')</a></li>
                 @if($product->category)
                     <li>›</li>
                     <li><a href="{{ route('shop.index', ['category'=>$product->category->slug]) }}" style="color:var(--seagreen-700);text-decoration:none">{{ $product->category->name }}</a></li>
@@ -36,6 +36,8 @@
                         $allImages[] = cdn_storage($extraImg);
                     }
                 }
+                $isApprovedWholesale = auth()->check() && in_array($group, ['wholesale', 'trading']);
+                $currentCurrency = app(\App\Services\CurrencyService::class)->getCurrentCurrency();
             @endphp
 
             <!-- Left: Interactive Auto-scrolling Gallery -->
@@ -53,7 +55,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <div style="font-size:5rem;color:var(--seagreen-300);display:flex;align-items:center;justify-content:center;height:100%">🐟</div>
+                            <div style="font-size:5rem;color:var(--seagreen-300);display:flex;align-items:center;justify-content:center;height:100%">📦</div>
                         @endif
 
                         <!-- Floating Badges -->
@@ -106,7 +108,7 @@
             <!-- Right: Product Information & Purchase -->
             <div class="product-info-box">
                 <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;color:var(--seagreen-700);font-weight:700;margin-bottom:4px">
-                    {{ $product->category?->name ?? 'Fresh Seafood' }}
+                    {{ $product->category?->name ?? 'Products & Sourcing' }}
                 </div>
                 
                 <h1 style="font-size:1.85rem;font-family:var(--font-heading);color:var(--gray-900);line-height:1.25;margin-bottom:var(--space-3)">
@@ -122,7 +124,7 @@
                         </span>
                     @else
                         <span style="display:inline-flex;align-items:center;gap:6px;background:#fee2e2;color:#991b1b;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700">
-                            Out of Stock
+                            Pre-Order / Sourcing Available
                         </span>
                     @endif
 
@@ -138,20 +140,24 @@
                 <!-- Price Card -->
                 @php
                     $displayPrice = $product->getDisplayPrice($group);
+                    $basePriceAmount = $product->getPriceForGroup($group);
                 @endphp
                 <div class="card mb-5 js-currency-price"
-                     data-base-rm="{{ $product->getPriceForGroup($group) ?? 0 }}"
-                     data-manual-sgd="{{ $product->price_sgd ?? '' }}"
-                     data-manual-usd="{{ $product->price_usd ?? '' }}"
-                     @if(in_array($group, ['wholesale','trading']))
+                     data-base-rm="{{ ($isApprovedWholesale || $group === 'retail') && !$product->is_rfq_only ? ($basePriceAmount ?? 0) : 0 }}"
+                     data-manual-sgd="{{ (!$product->is_rfq_only && ($group === 'retail' || $isApprovedWholesale)) ? ($product->price_sgd ?? '') : '' }}"
+                     data-manual-usd="{{ (!$product->is_rfq_only && ($group === 'retail' || $isApprovedWholesale)) ? ($product->price_usd ?? '') : '' }}"
+                     @if($isApprovedWholesale)
                      data-manual-wholesale-sgd="{{ $product->wholesale_price_sgd ?? '' }}"
                      data-manual-wholesale-usd="{{ $product->wholesale_price_usd ?? '' }}"
                      data-group="{{ $group }}"
                      @endif
                      style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:var(--space-4) var(--space-5)"
                 >
-                    @if($price !== null)
+                    @if($price !== null && !$product->is_rfq_only)
                         <div style="display:flex;align-items:baseline;gap:8px">
+                            @if(!$isApprovedWholesale)
+                                <span style="font-size:1.1rem;font-weight:700;color:#64748b">From</span>
+                            @endif
                             <span class="price-amount" style="font-size:2rem;font-weight:900;color:#1e40af;font-family:var(--font-heading);line-height:1">
                                 {{ $displayPrice['formatted'] }}
                             </span>
@@ -160,26 +166,38 @@
                             </span>
                         </div>
 
-                        <div class="js-product-approx-note" data-base-rm="{{ $product->getPriceForGroup($group) ?? 0 }}" style="display:{{ ($currentCurrency !== 'MYR' && !empty($displayPrice['base_rm'])) ? 'block' : 'none' }};margin-top:4px;font-size:0.85rem;color:#64748b;font-weight:500">
-                            Approx. <strong>RM {{ number_format($displayPrice['base_rm'] ?? $product->getPriceForGroup($group), 2) }}</strong> (billed in MYR at checkout)
+                        <div class="js-product-approx-note" data-base-rm="{{ $basePriceAmount ?? 0 }}" style="display:{{ ($currentCurrency !== 'MYR' && !empty($displayPrice['base_rm'])) ? 'block' : 'none' }};margin-top:4px;font-size:0.85rem;color:#64748b;font-weight:500">
+                            Approx. <strong>RM {{ number_format($displayPrice['base_rm'] ?? $basePriceAmount, 2) }}</strong> (billed in MYR at checkout)
                         </div>
 
-                        <div style="margin-top:6px;font-size:0.8rem;color:#1d4ed8;display:flex;align-items:center;gap:6px">
-                            @auth
-                                <span class="badge" style="background:#dbeafe;color:#1e40af;font-weight:700">✓ {{ ucfirst($group) }} Price</span>
+                        <div style="margin-top:8px;font-size:0.8rem;color:#1d4ed8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                            @if($isApprovedWholesale)
+                                <span class="badge" style="background:#dbeafe;color:#1e40af;font-weight:700">✓ {{ ucfirst($group) }} Verified Tier</span>
                             @else
-                                <span>Retail Price · <a href="{{ route('login') }}" style="color:#1d4ed8;font-weight:700;text-decoration:underline">Sign in</a> for Wholesale / B2B rates</span>
-                            @endauth
+                                <span>Public Retail Pricing · <a href="{{ route('register', ['type' => 'wholesale']) }}" style="color:#1d4ed8;font-weight:700;text-decoration:underline">Request Wholesale Access →</a></span>
+                            @endif
                         </div>
                     @else
-                        <div style="font-size:1.6rem;font-weight:800;color:var(--coral)">Price on Request</div>
-                        <p class="text-xs text-muted" style="margin-top:4px">Custom quote required based on volume.</p>
+                        <div style="font-size:1.5rem;font-weight:800;color:#0369a1">
+                            {{ $isApprovedWholesale ? 'Negotiated Pricing' : 'Price available upon request' }}
+                        </div>
+                        <p class="text-xs text-muted" style="margin-top:4px;color:#64748b">
+                            Availability subject to stock and supply confirmation.
+                        </p>
                     @endif
 
-                    @if(in_array($group, ['wholesale', 'trading']) && $moq > 1)
+                    @if($isApprovedWholesale && $moq > 1)
                         <div style="margin-top:10px;background:#fef3c7;color:#92400e;padding:6px 12px;border-radius:8px;font-size:0.8rem;font-weight:600;border:1px solid #fde68a">
                             📦 Minimum Order Quantity (MOQ): <strong>{{ $moq }} {{ $product->unit }}</strong>
                         </div>
+                    @endif
+                </div>
+
+                <!-- Disclaimers Notice -->
+                <div style="font-size:0.75rem;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:var(--space-4);line-height:1.4">
+                    <div>ℹ️ Prices and availability are subject to change without prior notice and may vary according to order volume, product specification, market conditions and supply availability.</div>
+                    @if($currentCurrency !== 'MYR')
+                        <div style="margin-top:3px;color:#0369a1">Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.</div>
                     @endif
                 </div>
 

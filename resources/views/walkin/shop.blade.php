@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __t('walkin.catalogue_title', 'Walk-in Express Catalogue') . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd'))
+@section('title', __t('walkin.page_title', 'Walk-in Express — In-Store Express Menu') . ' — ' . ($settings['store_name'] ?? 'MST Import & Export Sdn. Bhd.'))
 
 @section('content')
 <!-- Walk-in Ocean Hero Header -->
@@ -13,18 +13,18 @@
             <div class="breadcrumb" style="margin:0">
                 <a href="{{ route('home') }}" class="breadcrumb-home">🏠 @t('nav.home', 'Home')</a>
                 <span class="breadcrumb-sep">›</span>
-                <span class="breadcrumb-current">@t('walkin.express_mode', 'Walk-in Express')</span>
+                <span class="breadcrumb-current">@t('walkin.title', 'Walk-in Express')</span>
             </div>
             
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
                 <span class="walkin-live-badge">
                     <span class="pulse-dot"></span>
-                    @t('walkin.live_counter_active', 'In-Store Express Menu')
+                    @t('walkin.menu_subtitle', 'In-Store Express Menu')
                 </span>
-                <button type="button" id="walkinPriceStatusBadge" onclick="openGetPriceModal()" style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);color:#7dd3fc;padding:4px 12px;border-radius:999px;font-size:0.75rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all 0.15s ease">
-                    <span>🔒</span>
-                    <span>@t('walkin.prices_hidden_hint', 'Prices Available via "View Price"')</span>
-                </button>
+                <span class="walkin-public-price-badge">
+                    <span>🏷️</span>
+                    <span>@t('walkin.public_pricing', 'Public / Walk-in Pricing')</span>
+                </span>
             </div>
         </div>
 
@@ -33,29 +33,29 @@
             <div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
                     <span class="walkin-store-tag">
-                        🏬 @t('walkin.store_loc', 'SILC Industrial Park, Iskandar Puteri')
+                        🏬 @t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')
                     </span>
-                    <span class="walkin-tag-sub">⚡ @t('walkin.instant_pickup', 'Instant Store Counter 2 Pickup')</span>
+                    <span class="walkin-tag-sub">⚡ @t('walkin.express_pickup_tag', 'Express Counter 2 Collection')</span>
                 </div>
                 <h1 class="walkin-hero-title">
-                    @t('walkin.catalogue_title', 'Walk-in Express Catalogue')
+                    @t('walkin.title', 'Walk-in Express')
                 </h1>
                 <p class="walkin-hero-subtitle">
-                    @t('walkin.subtitle', 'Exclusive in-store counter pricing. Select your seafood, pay instantly on your phone, and collect your packed order at Counter 2.')
+                    @t('walkin.service_desc', 'Browse available products, select your items, complete payment on your phone, and collect your packed order at MST Counter 2.')
                 </p>
             </div>
 
             <!-- Top Hero Cart Pill & Quick Checkout -->
             <div class="walkin-hero-actions">
-                <a href="{{ route('cart.index') }}" class="walkin-hero-cart-pill">
+                <a href="{{ route('cart.index') }}" class="walkin-hero-cart-pill" title="@t('walkin.cart_title', 'Walk-in Express Cart')">
                     <div class="cart-pill-icon">🛒</div>
                     <div class="cart-pill-text">
-                        <span class="cart-pill-label">@t('walkin.my_cart', 'In-Store Cart')</span>
+                        <span class="cart-pill-label">@t('walkin.cart_title', 'Walk-in Express Cart')</span>
                         <span class="cart-pill-value"><span id="walkinCartCount">0</span> @t('walkin.items', 'items')</span>
                     </div>
                 </a>
                 <a href="{{ route('walkin.checkout') }}" class="btn-walkin-hero-checkout">
-                    <span>@t('walkin.fast_checkout', 'Fast Checkout')</span>
+                    <span>@t('walkin.pay_and_collect', 'Pay & Collect')</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
                 </a>
             </div>
@@ -63,42 +63,70 @@
 
         <!-- 4-Step Interactive Process Flow -->
         <div class="walkin-stepper-wrap">
+            <div class="walkin-stepper-title">
+                <span>⚡ @t('walkin.how_it_works', 'How Walk-in Express Works')</span>
+                <span class="stepper-current-pill">@t('walkin.step_indicator', 'Step 2: Select Items')</span>
+            </div>
             <div class="walkin-stepper">
                 <div class="step-item step-completed">
-                    <div class="step-icon">✓</div>
+                    <div class="step-circle">
+                        <span class="step-num-icon">✓</span>
+                    </div>
                     <div class="step-info">
-                        <span class="step-num">Step 1</span>
-                        <span class="step-label">@t('walkin.step_qr', 'Scan QR Code')</span>
+                        <span class="step-name">@t('walkin.step_1_name', 'Browse')</span>
+                        <span class="step-sub">@t('walkin.step_1_desc', 'Explore menu')</span>
                     </div>
                 </div>
                 <div class="step-divider active"></div>
 
                 <div class="step-item step-active">
-                    <div class="step-icon">2</div>
+                    <div class="step-circle">
+                        <span class="step-num-icon">2</span>
+                    </div>
                     <div class="step-info">
-                        <span class="step-num">Step 2</span>
-                        <span class="step-label">@t('walkin.step_pick', 'Pick Seafood')</span>
+                        <span class="step-name">@t('walkin.step_2_name', 'Select')</span>
+                        <span class="step-sub">@t('walkin.step_2_desc', 'Choose items')</span>
                     </div>
                 </div>
                 <div class="step-divider"></div>
 
                 <div class="step-item">
-                    <div class="step-icon">3</div>
+                    <div class="step-circle">
+                        <span class="step-num-icon">3</span>
+                    </div>
                     <div class="step-info">
-                        <span class="step-num">Step 3</span>
-                        <span class="step-label">@t('walkin.step_pay', 'Fast Phone Pay')</span>
+                        <span class="step-name">@t('walkin.step_3_name', 'Pay')</span>
+                        <span class="step-sub">@t('walkin.step_3_desc', 'Online payment')</span>
                     </div>
                 </div>
                 <div class="step-divider"></div>
 
                 <div class="step-item">
-                    <div class="step-icon">4</div>
+                    <div class="step-circle">
+                        <span class="step-num-icon">4</span>
+                    </div>
                     <div class="step-info">
-                        <span class="step-num">Step 4</span>
-                        <span class="step-label">@t('walkin.step_collect', 'Counter Collection')</span>
+                        <span class="step-name">@t('walkin.step_4_name', 'Collect')</span>
+                        <span class="step-sub">@t('walkin.step_4_desc', 'Counter 2')</span>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Wholesale Separation Notice Banner -->
+<div class="walkin-b2b-notice-bar">
+    <div class="container">
+        <div class="b2b-notice-content">
+            <div class="b2b-notice-left">
+                <span class="b2b-notice-icon">ℹ️</span>
+                <span>@t('walkin.wholesale_note', 'Walk-in Express is intended for retail / individual purchases and Counter 2 collection.')</span>
+            </div>
+            <a href="{{ route('register') }}" class="b2b-notice-link">
+                <span>@t('walkin.wholesale_link', 'Looking for wholesale or regular supply? Request a Business Account')</span>
+                <span class="b2b-arrow">→</span>
+            </a>
         </div>
     </div>
 </div>
@@ -128,6 +156,10 @@
         'ready-to-eat' => '🥗',
         'snack-food' => '🍤',
         'dessert' => '🍡',
+        'food-ingredients' => '🧂',
+        'cuisine-ingredients' => '🥢',
+        'frozen-foods' => '🧊',
+        'specialty-other' => '⭐',
     ];
 @endphp
 
@@ -161,7 +193,7 @@
                 <input type="hidden" name="sort" value="{{ request('sort') }}">
             @endif
             <span class="shop-search-icon">🔍</span>
-            <input type="text" name="search" class="shop-search-input" placeholder="@t('shop.search_placeholder_short', 'Search seafood...')" value="{{ request('search') }}">
+            <input type="text" name="search" class="shop-search-input" placeholder="@t('walkin.search_placeholder_short', 'Search products...')" value="{{ request('search') }}">
             @if(request('search'))
                 <a href="{{ route('walkin.shop', request()->except('search', 'page')) }}" class="shop-search-clear">✕</a>
             @endif
@@ -185,7 +217,7 @@
             <div class="shop-sidebar-header">
                 <div class="shop-sidebar-title">
                     <span>🏷️ @t('shop.categories', 'Categories')</span>
-                    <span class="sidebar-cat-badge">{{ $categories->count() }}</span>
+                    <span class="sidebar-cat-badge">{{ $categories->where('products_count', '>', 0)->count() }}</span>
                 </div>
                 @if($hasFilters)
                     <a href="{{ route('walkin.shop') }}" class="shop-sidebar-clear">@t('shop.clear_all', 'Clear all')</a>
@@ -202,7 +234,7 @@
                     <div class="filter-title">@t('shop.search_products', 'Search Products')</div>
                     <div class="shop-search-box">
                         <span class="shop-search-icon">🔍</span>
-                        <input type="text" name="search" class="shop-search-input" placeholder="@t('shop.search_placeholder', 'Keyword, e.g. Salmon, Meltique...')" value="{{ request('search') }}" autocomplete="off">
+                        <input type="text" name="search" class="shop-search-input" placeholder="@t('walkin.search_placeholder', 'Search products by name, category, brand or product code...')" value="{{ request('search') }}" autocomplete="off">
                         @if(request('search'))
                             <a href="{{ route('walkin.shop', request()->except('search', 'page')) }}" class="shop-search-clear" title="@t('shop.clear_all', 'Clear')">✕</a>
                         @endif
@@ -240,11 +272,11 @@
                 </div>
             </form>
 
-            <!-- In-Store Counter Info Card -->
+            <!-- Counter 2 Collection Info Card -->
             <div class="sidebar-instore-box">
-                <div class="instore-box-title">🏬 @t('walkin.store_pickup_title', 'Counter 2 Collection')</div>
-                <p class="instore-box-desc">@t('walkin.store_pickup_desc', 'Orders placed in-store are packed immediately with ice gel packs for direct collection.')</p>
-                <div class="instore-box-badge">⚡ @t('walkin.fast_track', 'Fast-Track Queue')</div>
+                <div class="instore-box-title">🏬 @t('walkin.counter_title', 'Counter 2 Collection')</div>
+                <p class="instore-box-desc">@t('walkin.counter_desc', 'Orders are prepared for Counter 2 collection after payment confirmation. Orders are packed appropriately for collection and transport.')</p>
+                <div class="instore-box-note">📋 @t('walkin.counter_note', 'Please present your order reference / payment confirmation when collecting your order.')</div>
             </div>
         </aside>
 
@@ -253,7 +285,7 @@
             <!-- Desktop Toolbar -->
             <div class="shop-toolbar">
                 <div class="shop-toolbar-info">
-                    <span>@t('shop.showing', 'Showing') <strong>{{ $products->total() }}</strong> @t('shop.products_count', 'products')</span>
+                    <span><strong>{{ $products->total() }}</strong> @t('walkin.products_count_label', 'selected products available for Walk-in / Counter Collection')</span>
                     @if(request('search'))
                         <span class="text-muted">@t('shop.for_keyword', 'for') "<strong>{{ request('search') }}</strong>"</span>
                     @endif
@@ -321,8 +353,9 @@
                                     $tempLower = strtolower($product->storage_temp);
                                     $isLive = str_contains($tempLower, 'live');
                                     $isChilled = str_contains($tempLower, 'chilled');
+                                    $isIqf = str_contains($tempLower, 'iqf');
                                     $badgeIcon = $product->getStorageIcon();
-                                    $badgeSuffix = ($isLive || $isChilled) ? '' : ' IQF';
+                                    $badgeSuffix = ($isIqf) ? ' · IQF' : '';
                                 @endphp
                                 <span class="product-badge-temp">{{ $badgeIcon }} {{ $product->storage_temp }}{{ $badgeSuffix }}</span>
                             @endif
@@ -344,59 +377,50 @@
 
                             <div class="product-meta">
                                 @if($product->weight)
-                                    <span class="product-meta-item">⚖️ {{ $product->weight }}</span>
+                                    <span class="product-meta-item product-meta-weight">⚖️ {{ $product->weight }}</span>
                                 @endif
-                                @if($product->storage_temp)
-                                    <span class="product-meta-item">{{ $product->getStorageIcon() }} {{ $product->storage_temp }}</span>
+                                @if($product->brand)
+                                    <span class="product-meta-item product-meta-brand" title="{{ $product->brand }}">🏷️ {{ $product->brand }}</span>
                                 @endif
                             </div>
 
+                            @php
+                                $price = $product->walkin_price ?? $product->retail_price ?? 0;
+                            @endphp
+
                             <div class="product-price-row">
-                                <div class="product-price js-currency-price walkin-price-unlocked-block"
-                                     data-base-rm="{{ $product->walkin_price ?? 0 }}"
-                                     data-manual-sgd="{{ $product->price_sgd ?? '' }}"
-                                     data-manual-usd="{{ $product->price_usd ?? '' }}"
-                                     style="display:none">
-                                    @php
-                                        $displayWalkin = isset($currencyService) 
-                                            ? $currencyService->getProductPrice($product, 'walkin', $currentCurrency) 
-                                            : ['formatted' => 'RM ' . number_format($product->walkin_price, 2), 'base_rm' => null];
-                                    @endphp
-                                    <div class="price-stack">
-                                        <div class="price-main-line">
-                                            <span class="price-amount price-val">{{ $displayWalkin['formatted'] }}</span>
-                                            <span class="price-unit-sub">/ {{ $product->unit ?? 'pack' }}</span>
+                                @if($price > 0)
+                                    <div class="product-price">
+                                        <div class="price-stack">
+                                            <div class="price-main-line">
+                                                <span class="price-amount price-val">RM {{ number_format($price, 2) }}</span>
+                                                <span class="price-unit-sub">/ {{ $product->unit ?? 'pack' }}</span>
+                                            </div>
                                         </div>
-                                        <span class="price-base-rm price-sub-myr" style="display:{{ ($currentCurrency !== 'MYR' && !empty($displayWalkin['base_rm'])) ? 'block' : 'none' }}">
-                                            RM {{ number_format($product->walkin_price, 2) }}
-                                        </span>
                                     </div>
-                                </div>
-                                <div class="walkin-price-locked-block" style="display:flex;align-items:center;gap:6px">
-                                    <span class="walkin-locked-badge" style="background:#f1f5f9;border:1px solid #cbd5e1;color:#334155;font-size:0.75rem;font-weight:700;padding:4px 10px;border-radius:6px;display:inline-flex;align-items:center;gap:5px">
-                                        <span>🔒</span>
-                                        <span>@t('walkin.in_store_rate', 'In-Store Special Rate')</span>
-                                    </span>
-                                </div>
-                                <span class="badge-walkin-pill walkin-price-unlocked-block" style="display:none">@t('walkin.counter_rate', 'Walk-in Price')</span>
+                                    <span class="badge-walkin-pill">@t('walkin.walkin_rate_tag', 'Walk-in')</span>
+                                @else
+                                    <div class="product-price-quote-only">
+                                        <span class="quote-only-text">@t('walkin.price_upon_request', 'Price Available Upon Request')</span>
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="product-card-actions">
                                 <a href="{{ route('walkin.show', $product) }}" class="btn-card-details" title="@t('walkin.view_details', 'View Details')">
                                     @t('walkin.info', 'Info')
                                 </a>
-                                <button type="button" class="btn-card-add-cart btn-add-ajax walkin-price-unlocked-block" 
-                                        data-product-id="{{ $product->id }}" 
-                                        aria-label="Add {{ $product->name }} to in-store cart"
-                                        style="display:none">
-                                    <span>+ @t('walkin.add_to_cart', 'Add')</span>
-                                </button>
-                                <button type="button" class="btn-card-view-price walkin-price-locked-block" 
-                                        onclick="openGetPriceModal({{ json_encode($product->name) }}, {{ json_encode($product->sku ?? '') }}, '{{ $displayWalkin['formatted'] }}', '{{ $product->unit ?? 'pack' }}', '{{ $product->id }}')"
-                                        style="flex:1;background:linear-gradient(135deg, #2563eb, #1d4ed8);color:#ffffff;border:none;padding:8px 12px;border-radius:8px;font-weight:700;font-size:0.82rem;display:inline-flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;box-shadow:0 2px 6px rgba(37,99,235,0.25);transition:transform 0.15s ease"
-                                        onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
-                                    <span>🏷️ @t('walkin.view_price', 'View Price')</span>
-                                </button>
+                                @if($price > 0)
+                                    <button type="button" class="btn-card-add-cart btn-add-ajax" 
+                                            data-product-id="{{ $product->id }}" 
+                                            aria-label="Add {{ $product->name }} to walk-in cart">
+                                        <span>+ @t('walkin.add_to_cart', 'Add')</span>
+                                    </button>
+                                @else
+                                    <a href="{{ route('quotations.create', ['product' => $product->id]) }}" class="btn-card-rfq" title="@t('walkin.request_quote', 'Request Quote')">
+                                        <span>@t('walkin.request_quote', 'Request Quote')</span>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -419,6 +443,24 @@
                     </a>
                 </div>
             @endif
+
+            <!-- Custom Sourcing CTA Block at Bottom of Product Listing -->
+            <div class="walkin-custom-sourcing-section">
+                <div class="sourcing-content">
+                    <div class="sourcing-icon-badge">📦</div>
+                    <div class="sourcing-text">
+                        <h2 class="sourcing-title">@t('walkin.custom_sourcing_title', "Can't Find What You Need?")</h2>
+                        <p class="sourcing-desc">@t('walkin.custom_sourcing_desc', 'MST also provides customised sourcing for products, specifications and pack sizes not currently listed online.')</p>
+                    </div>
+                    <div class="sourcing-action">
+                        <a href="{{ route('quotations.create') }}" class="btn-sourcing-cta">
+                            <span>@t('walkin.request_custom_sourcing', 'Request Custom Sourcing')</span>
+                            <span class="cta-arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>
@@ -454,18 +496,20 @@
             </a>
             @foreach($categories as $cat)
                 @php $count = $cat->products_count ?? $cat->products()->walkinAvailable()->count(); @endphp
-                <a href="{{ route('walkin.shop', array_merge(request()->except('page'), ['category' => $cat->slug])) }}" class="cat-modal-item {{ request('category') == $cat->slug ? 'active' : '' }}" data-cat-name="{{ strtolower($cat->name) }}">
-                    <div class="cat-modal-item-left">
-                        <span style="font-size:1.15rem">{{ $catIconMap[$cat->slug] ?? '📦' }}</span>
-                        <span>{{ $cat->name }}</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:6px">
-                        <span class="cat-modal-item-count">{{ $count }}</span>
-                        @if(request('category') == $cat->slug)
-                            <span class="cat-modal-check">✓</span>
-                        @endif
-                    </div>
-                </a>
+                @if($count > 0)
+                    <a href="{{ route('walkin.shop', array_merge(request()->except('page'), ['category' => $cat->slug])) }}" class="cat-modal-item {{ request('category') == $cat->slug ? 'active' : '' }}" data-cat-name="{{ strtolower($cat->name) }}">
+                        <div class="cat-modal-item-left">
+                            <span style="font-size:1.15rem">{{ $catIconMap[$cat->slug] ?? '📦' }}</span>
+                            <span>{{ $cat->name }}</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <span class="cat-modal-item-count">{{ $count }}</span>
+                            @if(request('category') == $cat->slug)
+                                <span class="cat-modal-check">✓</span>
+                            @endif
+                        </div>
+                    </a>
+                @endif
             @endforeach
         </div>
     </div>
@@ -478,7 +522,7 @@
             <div class="dock-left">
                 <div class="dock-cart-icon">🛒</div>
                 <div class="dock-cart-info">
-                    <div class="dock-cart-label">@t('walkin.in_your_cart', 'In-Store Express Cart')</div>
+                    <div class="dock-cart-label">@t('walkin.cart_title', 'Walk-in Express Cart')</div>
                     <div class="dock-cart-numbers">
                         <span id="bottomBarCount" class="dock-count">0</span> @t('walkin.items', 'items')
                         <span class="dock-sep">·</span>
@@ -498,7 +542,6 @@
             </div>
         </div>
     </div>
-</div>
 
 @endsection
 
@@ -574,6 +617,20 @@
     letter-spacing: 0.03em;
     backdrop-filter: blur(8px);
 }
+.walkin-public-price-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(16, 185, 129, 0.18);
+    border: 1px solid rgba(52, 211, 153, 0.4);
+    color: #a7f3d0;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(8px);
+}
 .pulse-dot {
     width: 8px;
     height: 8px;
@@ -587,25 +644,6 @@
     0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
     70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(56, 189, 248, 0); }
     100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
-}
-
-.walkin-exit-btn {
-    display: inline-flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #bae6fd;
-    padding: 4px 12px;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-.walkin-exit-btn:hover {
-    background: rgba(239, 68, 68, 0.2);
-    border-color: rgba(239, 68, 68, 0.4);
-    color: #fca5a5;
 }
 
 .walkin-header-grid {
@@ -700,79 +738,174 @@
 
 /* ─── 4-Step Stepper ─── */
 .walkin-stepper-wrap {
-    background: rgba(6, 21, 43, 0.6);
+    background: rgba(6, 21, 43, 0.65);
     border: 1px solid rgba(56, 189, 248, 0.25);
     border-radius: 16px;
-    padding: 12px 18px;
+    padding: 14px 20px;
     backdrop-filter: blur(12px);
-    margin-top: 10px;
+    margin-top: 12px;
+}
+.walkin-stepper-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #7dd3fc;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+}
+.stepper-current-pill {
+    background: rgba(56, 189, 248, 0.18);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: normal;
 }
 .walkin-stepper {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
     gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none;
+    width: 100%;
 }
-.walkin-stepper::-webkit-scrollbar { display: none; }
 .step-item {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
-    opacity: 0.65;
+    opacity: 0.75;
     transition: all 0.2s ease;
+    z-index: 2;
 }
-.step-icon {
-    width: 28px;
-    height: 28px;
+.step-circle {
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 800;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
     color: #93c5fd;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+    transition: all 0.2s ease;
 }
-.step-info { display: flex; flex-direction: column; }
-.step-num { font-size: 0.68rem; color: #7dd3fc; text-transform: uppercase; font-weight: 700; line-height: 1; }
-.step-label { font-size: 0.85rem; color: #e2e8f0; font-weight: 600; white-space: nowrap; }
+.step-num-icon {
+    line-height: 1;
+}
+.step-info {
+    display: flex;
+    flex-direction: column;
+}
+.step-name {
+    font-size: 0.85rem;
+    color: #ffffff;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.step-sub {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    line-height: 1.1;
+    margin-top: 2px;
+}
 
-.step-item.step-completed { opacity: 0.9; }
-.step-item.step-completed .step-icon {
+/* Step States */
+.step-item.step-completed {
+    opacity: 0.95;
+}
+.step-item.step-completed .step-circle {
     background: #059669;
     color: #ffffff;
     border-color: #34d399;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
 }
+.step-item.step-completed .step-name {
+    color: #a7f3d0;
+}
+
 .step-item.step-active {
     opacity: 1;
-    background: rgba(56, 189, 248, 0.15);
-    padding: 6px 14px;
+    background: rgba(56, 189, 248, 0.12);
+    padding: 6px 12px;
     border-radius: 12px;
-    border: 1px solid rgba(56, 189, 248, 0.4);
+    border: 1px solid rgba(56, 189, 248, 0.35);
 }
-.step-item.step-active .step-icon {
+.step-item.step-active .step-circle {
     background: #2563eb;
     color: #ffffff;
     border-color: #60a5fa;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
 }
-.step-item.step-active .step-label {
-    color: #ffffff;
+.step-item.step-active .step-name {
+    color: #38bdf8;
     font-weight: 800;
 }
+.step-item.step-active .step-sub {
+    color: #e2e8f0;
+}
+
 .step-divider {
-    flex: 1;
+    flex: 1 1 0%;
     height: 2px;
     background: rgba(255, 255, 255, 0.15);
-    min-width: 16px;
+    min-width: 12px;
+    border-radius: 2px;
 }
 .step-divider.active {
     background: linear-gradient(90deg, #059669 0%, #2563eb 100%);
 }
+
+/* ─── Wholesale Separation Notice Banner ─── */
+.walkin-b2b-notice-bar {
+    background: #eff6ff;
+    border-bottom: 1px solid #bfdbfe;
+    padding: 10px 0;
+}
+.b2b-notice-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.85rem;
+}
+.b2b-notice-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1e3a8a;
+    font-weight: 600;
+}
+.b2b-notice-icon { font-size: 1rem; }
+.b2b-notice-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #2563eb;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #93c5fd;
+    transition: all 0.15s ease;
+}
+.b2b-notice-link:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+}
+.b2b-arrow { font-size: 0.95rem; }
 
 /* ─── Layout & Sidebar Grid ─── */
 .walkin-layout {
@@ -940,32 +1073,29 @@
 
 .sidebar-instore-box {
     margin-top: 14px;
-    padding: 14px;
+    padding: 16px;
     background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
     border-radius: 14px;
-    border: 1px solid #bfdbfe;
+    border: 1.5px solid #bfdbfe;
 }
 .instore-box-title {
-    font-weight: 700;
-    font-size: 0.85rem;
+    font-weight: 800;
+    font-size: 0.9rem;
     color: #1e3a8a;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 .instore-box-desc {
-    font-size: 0.78rem;
-    color: #1d4ed8;
-    line-height: 1.4;
+    font-size: 0.8rem;
+    color: #1e40af;
+    line-height: 1.45;
     margin: 0 0 8px 0;
 }
-.instore-box-badge {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #1e40af;
-    background: #ffffff;
-    padding: 3px 8px;
-    border-radius: 6px;
-    display: inline-block;
-    border: 1px solid #bfdbfe;
+.instore-box-note {
+    font-size: 0.74rem;
+    color: #475569;
+    line-height: 1.4;
+    border-top: 1px dashed #93c5fd;
+    padding-top: 6px;
 }
 
 /* ─── Mobile Category Button & Filter Bar ─── */
@@ -1165,7 +1295,7 @@
     background: #eff6ff;
 }
 
-/* Dainty Card Badges */
+/* Card Badges */
 .card-badges-top {
     position: absolute;
     top: 8px;
@@ -1177,24 +1307,6 @@
     gap: 6px;
     z-index: 3;
     pointer-events: none;
-}
-.card-badges-top .product-badge {
-    position: static !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-}
-.badge-walkin-in-store {
-    background: linear-gradient(135deg, rgba(6, 21, 43, 0.92) 0%, rgba(30, 58, 138, 0.92) 100%);
-    backdrop-filter: blur(4px);
-    color: #7dd3fc;
-    border: 1px solid rgba(56, 189, 248, 0.4);
-    font-size: 0.68rem;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 999px;
-    white-space: nowrap;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
 .card-badges-top .badge-origin {
     margin-left: auto;
@@ -1296,6 +1408,12 @@
     border-radius: 6px;
     white-space: nowrap;
 }
+.product-meta-brand {
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 .product-price-row {
     display: flex;
@@ -1323,17 +1441,9 @@
 .product-price .price-amount,
 .product-price .price-val {
     font-family: var(--font-heading);
-    font-size: 1.22rem;
+    font-size: 1.25rem;
     font-weight: 800;
     color: #1e40af;
-    line-height: 1.2;
-}
-.product-price .price-base-rm,
-.product-price .price-sub-myr {
-    font-size: 0.76rem;
-    font-weight: 600;
-    color: #64748b;
-    margin-top: 2px;
     line-height: 1.2;
 }
 .price-unit-sub {
@@ -1351,6 +1461,14 @@
     align-self: flex-start;
     margin-top: 2px;
     white-space: nowrap;
+}
+.product-price-quote-only {
+    padding: 4px 0;
+}
+.quote-only-text {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0284c7;
 }
 
 /* Card Actions */
@@ -1401,6 +1519,25 @@
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.45);
     color: #091a36;
 }
+.btn-card-rfq {
+    flex: 1;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+.btn-card-rfq:hover {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
 
 /* ─── Empty Card ─── */
 .walkin-empty-card {
@@ -1423,6 +1560,73 @@
     margin: 0 auto 20px;
     font-size: 0.92rem;
     line-height: 1.5;
+}
+
+/* ─── Custom Sourcing CTA Section ─── */
+.walkin-custom-sourcing-section {
+    margin-top: 40px;
+    background: linear-gradient(135deg, #091a36 0%, #1e3a8a 100%);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 18px;
+    padding: 24px 28px;
+    color: #ffffff;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+}
+.sourcing-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.sourcing-icon-badge {
+    font-size: 2.2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.sourcing-text {
+    flex: 1;
+    min-width: 260px;
+}
+.sourcing-title {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 4px 0;
+}
+.sourcing-desc {
+    color: #bae6fd;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    margin: 0;
+}
+.btn-sourcing-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #091a36;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+.btn-sourcing-cta:hover {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    transform: translateY(-2px);
+    color: #091a36;
 }
 
 /* ─── Category Selection Modal (Bottom Sheet / Dialog) ─── */
@@ -1671,7 +1875,8 @@
 
 @media (max-width: 860px) {
     .walkin-hero-section {
-        padding-top: calc(78px + 30px);
+        padding-top: calc(78px + 24px);
+        padding-bottom: var(--space-5);
     }
     .walkin-header-grid {
         grid-template-columns: 1fr;
@@ -1696,43 +1901,149 @@
     .shop-toolbar {
         display: none !important;
     }
+    
+    /* ─── Responsive Stepper for <= 860px ─── */
+    .walkin-stepper-wrap {
+        padding: 12px 14px !important;
+        margin-top: 10px !important;
+        border-radius: 14px !important;
+    }
+    .walkin-stepper-title {
+        font-size: 0.72rem !important;
+        margin-bottom: 10px !important;
+    }
+    .stepper-current-pill {
+        font-size: 0.65rem !important;
+        padding: 2px 7px !important;
+    }
+    .walkin-stepper {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 4px !important;
+        position: relative !important;
+        align-items: start !important;
+    }
+    .step-divider {
+        display: none !important;
+    }
+    .step-item {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 4px !important;
+        padding: 4px 2px !important;
+        border-radius: 8px !important;
+        background: transparent !important;
+        border: none !important;
+        width: 100% !important;
+        opacity: 0.7 !important;
+        box-sizing: border-box !important;
+    }
+    .step-circle {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 0.72rem !important;
+    }
+    .step-info {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+    }
+    .step-name {
+        font-size: 0.72rem !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+        line-height: 1.15 !important;
+        color: #e2e8f0 !important;
+    }
+    .step-sub {
+        display: none !important;
+    }
+    .step-item.step-active {
+        opacity: 1 !important;
+        background: rgba(56, 189, 248, 0.15) !important;
+        border: 1px solid rgba(56, 189, 248, 0.35) !important;
+        border-radius: 8px !important;
+        padding: 4px 2px !important;
+    }
+    .step-item.step-active .step-circle {
+        width: 26px !important;
+        height: 26px !important;
+        box-shadow: 0 0 8px rgba(56, 189, 248, 0.5) !important;
+    }
+    .step-item.step-active .step-name {
+        color: #38bdf8 !important;
+        font-weight: 800 !important;
+    }
+    .step-item.step-completed {
+        opacity: 0.9 !important;
+    }
+    .step-item.step-completed .step-name {
+        color: #a7f3d0 !important;
+    }
+
+    /* ─── Responsive Products Grid for <= 860px ─── */
     .walkin-layout .products-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 12px !important;
     }
     .product-card {
         border-radius: 14px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
     }
     .product-card-body {
         padding: 10px 10px 12px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        flex: 1 !important;
     }
     .product-card-top-meta {
         margin-bottom: 2px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
     }
     .product-category {
-        font-size: 0.68rem !important;
+        font-size: 0.65rem !important;
     }
     .product-sku {
-        font-size: 0.64rem !important;
+        font-size: 0.62rem !important;
     }
     .product-name {
-        font-size: 0.85rem !important;
+        font-size: 0.84rem !important;
         line-height: 1.3 !important;
         height: 2.6em !important;
         margin: 2px 0 4px !important;
+        font-weight: 700 !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
     }
     .product-meta {
         display: flex !important;
         align-items: center !important;
         gap: 4px !important;
         margin-bottom: 6px !important;
-        min-height: auto !important;
-        flex-wrap: wrap !important;
+        min-height: 20px !important;
+        flex-wrap: nowrap !important;
+        overflow: hidden !important;
     }
     .product-meta-item {
-        font-size: 0.65rem !important;
+        font-size: 0.62rem !important;
         padding: 2px 5px !important;
         border-radius: 4px !important;
+        white-space: nowrap !important;
+    }
+    .product-meta-brand {
+        max-width: 85px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
     }
     .product-price-row {
         display: flex !important;
@@ -1743,16 +2054,21 @@
         margin-bottom: 8px !important;
         padding-top: 6px !important;
         border-top: 1px solid #f1f5f9 !important;
+        gap: 4px !important;
     }
     .product-price {
-        font-size: 1.1rem !important;
+        font-size: 1.08rem !important;
         display: flex !important;
         align-items: baseline !important;
         gap: 3px !important;
         white-space: nowrap !important;
     }
+    .product-price .price-amount,
+    .product-price .price-val {
+        font-size: 1.08rem !important;
+    }
     .price-unit-sub {
-        font-size: 0.7rem !important;
+        font-size: 0.68rem !important;
         color: #64748b !important;
     }
     .badge-walkin-pill {
@@ -1769,7 +2085,7 @@
     .btn-card-details {
         flex: 0 0 auto !important;
         width: auto !important;
-        min-width: 44px !important;
+        min-width: 40px !important;
         padding: 0 8px !important;
         height: 34px !important;
         font-size: 0.78rem !important;
@@ -1794,8 +2110,8 @@
         z-index: 3 !important;
     }
     .card-badges-top .badge-origin {
-        font-size: 0.65rem !important;
-        padding: 2px 7px !important;
+        font-size: 0.64rem !important;
+        padding: 2px 6px !important;
         background: rgba(255, 255, 255, 0.95) !important;
         color: #0f172a !important;
         border-radius: 6px !important;
@@ -1803,91 +2119,47 @@
         box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
     }
     .product-badge-temp {
-        font-size: 0.65rem !important;
+        font-size: 0.64rem !important;
         padding: 2px 6px !important;
-    .walkin-stepper-wrap {
-        padding: 8px 12px !important;
-        margin-top: 8px !important;
     }
-    .walkin-stepper {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        gap: 6px !important;
-        overflow: visible !important;
+    .walkin-custom-sourcing-section {
+        padding: 18px !important;
     }
-    .step-item:not(.step-active) .step-info {
-        display: none !important;
-    }
-    .step-item:not(.step-active) {
-        padding: 0 !important;
-        gap: 0 !important;
-        background: transparent !important;
-        border: none !important;
-        opacity: 0.65 !important;
-    }
-    .step-item.step-completed:not(.step-active) {
-        opacity: 0.9 !important;
-    }
-    .step-item:not(.step-active) .step-icon {
-        width: 24px !important;
-        height: 24px !important;
-        font-size: 0.72rem !important;
-    }
-    .step-item.step-active {
-        display: inline-flex !important;
-        align-items: center !important;
-        padding: 5px 12px !important;
-        gap: 8px !important;
-        border-radius: 999px !important;
-        background: rgba(56, 189, 248, 0.22) !important;
-        border: 1.5px solid #38bdf8 !important;
-        box-shadow: 0 0 12px rgba(56, 189, 248, 0.35) !important;
-        flex-shrink: 0 !important;
-    }
-    .step-item.step-active .step-icon {
-        width: 26px !important;
-        height: 26px !important;
-        font-size: 0.78rem !important;
-    }
-    .step-item.step-active .step-info {
-        display: flex !important;
+    .sourcing-content {
         flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 14px !important;
     }
-    .step-item.step-active .step-num {
-        font-size: 0.6rem !important;
-        color: #7dd3fc !important;
-        text-transform: uppercase !important;
-        font-weight: 700 !important;
-        line-height: 1 !important;
+    .sourcing-action {
+        width: 100% !important;
     }
-    .step-item.step-active .step-label {
-        font-size: 0.78rem !important;
-        color: #ffffff !important;
-        font-weight: 800 !important;
-        white-space: nowrap !important;
-        line-height: 1.15 !important;
-    }
-    .step-divider {
-        flex: 1 1 auto !important;
-        min-width: 8px !important;
-        height: 2px !important;
+    .btn-sourcing-cta {
+        width: 100% !important;
+        justify-content: center !important;
     }
 }
 
 @media (max-width: 500px) {
     .walkin-hero-section {
-        padding-top: calc(78px + 32px);
-        padding-bottom: var(--space-5);
+        padding-top: calc(78px + 20px);
+        padding-bottom: var(--space-4);
     }
     .walkin-hero-title {
-        font-size: 1.4rem;
+        font-size: 1.35rem;
     }
     .walkin-hero-subtitle {
-        font-size: 0.82rem;
+        font-size: 0.8rem;
     }
     .walkin-stepper-wrap {
-        padding: 6px 10px !important;
+        padding: 8px 10px !important;
+    }
+    .step-name {
+        font-size: 0.68rem !important;
+    }
+    .step-circle {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.68rem !important;
     }
     .walkin-layout .products-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -1897,11 +2169,19 @@
         padding: 8px 8px 10px !important;
     }
     .product-name {
-        font-size: 0.8rem !important;
+        font-size: 0.78rem !important;
         line-height: 1.25 !important;
+        height: 2.5em !important;
+    }
+    .product-meta-brand {
+        max-width: 65px !important;
     }
     .product-price {
-        font-size: 1.02rem !important;
+        font-size: 1rem !important;
+    }
+    .product-price .price-amount,
+    .product-price .price-val {
+        font-size: 1rem !important;
     }
     .btn-card-add-cart,
     .btn-card-details {
@@ -1927,187 +2207,6 @@
         padding: 8px 16px;
         font-size: 0.85rem;
     }
-}
-
-/* ─── Get Price Modal Styling ─── */
-.get-price-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1050;
-    padding: 16px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease;
-}
-.get-price-modal-backdrop.show {
-    opacity: 1;
-    pointer-events: auto;
-}
-.get-price-modal-dialog {
-    background: #ffffff;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 460px;
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
-    border: 1px solid #e2e8f0;
-    overflow: hidden;
-    transform: scale(0.95);
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.get-price-modal-backdrop.show .get-price-modal-dialog {
-    transform: scale(1);
-}
-.get-price-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px;
-    background: linear-gradient(135deg, #091a36 0%, #1e3a8a 100%);
-    color: #ffffff;
-}
-.get-price-modal-title {
-    font-size: 1rem;
-    font-weight: 800;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.get-price-modal-close-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: none;
-    color: #ffffff;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 700;
-    transition: background 0.15s;
-}
-.get-price-modal-close-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-.get-price-modal-body {
-    padding: 22px;
-}
-.get-price-product-info {
-    margin-bottom: 16px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid #f1f5f9;
-}
-.get-price-product-name {
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: #0f172a;
-    line-height: 1.3;
-}
-.get-price-product-sku {
-    font-size: 0.78rem;
-    color: #64748b;
-    margin-top: 4px;
-    font-weight: 600;
-}
-.get-price-revealed-card {
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    border: 1.5px solid #bfdbfe;
-    border-radius: 14px;
-    padding: 16px 18px;
-    margin-bottom: 18px;
-}
-.get-price-card-label {
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #1d4ed8;
-    margin-bottom: 4px;
-}
-.get-price-card-amount {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-bottom: 6px;
-}
-.modal-price-num {
-    font-family: var(--font-heading);
-    font-size: 1.85rem;
-    font-weight: 900;
-    color: #1e3a8a;
-    line-height: 1.1;
-}
-.modal-price-unit {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #475569;
-}
-.get-price-card-hint {
-    font-size: 0.8rem;
-    color: #1e40af;
-    line-height: 1.4;
-}
-.get-price-actions-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 14px;
-}
-.btn-unlock-all-prices {
-    width: 100%;
-    padding: 12px 18px;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.92rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    transition: transform 0.15s, box-shadow 0.15s;
-}
-.btn-unlock-all-prices:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
-}
-.btn-whatsapp-inquire {
-    width: 100%;
-    padding: 12px 18px;
-    background: #25d366;
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.92rem;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
-    transition: transform 0.15s, filter 0.15s;
-}
-.btn-whatsapp-inquire:hover {
-    filter: brightness(1.05);
-    transform: translateY(-1px);
-    color: #ffffff;
-}
-.get-price-guarantee-note {
-    font-size: 0.75rem;
-    color: #64748b;
-    text-align: center;
-    line-height: 1.4;
 }
 </style>
 @endpush
@@ -2281,3 +2380,4 @@ window.addEventListener('app:locale-changed', function() {
 });
 </script>
 @endpush
+

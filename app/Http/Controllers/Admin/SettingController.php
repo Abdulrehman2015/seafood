@@ -85,6 +85,12 @@ class SettingController extends Controller
             'store_phone_2', 'store_phone_3', 'store_map_url',
             'store_whatsapp', 'store_email', 'store_wholesale_email', 'store_hours',
             'social_facebook', 'social_instagram', 'social_whatsapp',
+
+            // Order Minimum Settings
+            'order_minimum_enabled', 'order_minimum_retail', 'order_minimum_wholesale', 'order_minimum_trading',
+
+            // B2C Delivery & Transportation Fee Settings
+            'delivery_b2c_free_threshold', 'delivery_fee_zone_local', 'delivery_fee_zone_outstation', 'delivery_fee_default',
         ];
 
         // Process module checkboxes (if unchecked, they won't be in request, so default to 0 if updating modules tab)
@@ -110,6 +116,11 @@ class SettingController extends Controller
 
         if ($tab === 'currency') {
             Setting::set('currency_auto_convert', $request->has('currency_auto_convert') ? '1' : '0');
+        }
+
+        if ($tab === 'order') {
+            // Radio button sends value '0' or '1' — safe to read directly
+            Setting::set('order_minimum_enabled', $request->input('order_minimum_enabled', '0') === '1' ? '1' : '0');
         }
 
         foreach ($request->only($allowedKeys) as $key => $value) {

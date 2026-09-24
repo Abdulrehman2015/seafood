@@ -16,8 +16,9 @@ use Stripe\PaymentIntent;
 class CheckoutController extends Controller
 {
     public function __construct(
-        protected CartService    $cart,
-        protected PricingService $pricing
+        protected CartService     $cart,
+        protected PricingService  $pricing,
+        protected \App\Services\DeliveryService $delivery
     ) {}
 
     public function index()
@@ -35,7 +36,14 @@ class CheckoutController extends Controller
             return redirect()->route('approval.pending');
         }
 
-        return view('checkout.index', compact('items', 'totals', 'group'));
+        $defaultState = Auth::user()?->state ?? 'Johor';
+        $defaultCity  = Auth::user()?->city ?? 'Johor Bahru';
+        $deliveryInfo = $this->delivery->calculateFee($totals['subtotal'], 'delivery', $defaultState, $defaultCity, $group);
+
+        $initialShippingFee = ($group === 'walkin') ? 0.00 : (float) ($deliveryInfo['fee'] ?? 0);
+        $initialGrandTotal  = round($totals['subtotal'] + $initialShippingFee, 2);
+
+        return view('checkout.index', compact('items', 'totals', 'group', 'deliveryInfo', 'initialShippingFee', 'initialGrandTotal'));
     }
 
     /**
@@ -159,6 +167,31 @@ class CheckoutController extends Controller
             }
         }
 
+        // ─── Minimum Order Amount Enforcement (B2B Wholesale / Trading Only) ────
+        // Note: Retail (B2C) & Walk-in orders are NEVER blocked below RM100.
+        // Orders below RM100 simply incur the area transportation charge.
+        if (\App\Models\Setting::get('order_minimum_enabled', '0') === '1' && in_array($group, ['wholesale', 'trading'])) {
+            $minimumKey = ($group === 'wholesale') ? 'order_minimum_wholesale' : 'order_minimum_trading';
+            $minimumAmount = (float) \App\Models\Setting::get($minimumKey, '0');
+
+            if ($minimumAmount > 0) {
+                $quickSubtotal = 0;
+                foreach ($cartItems as $item) {
+                    $quickSubtotal += round(($item->product->getPriceForGroup($group) ?? 0) * $item->quantity, 2);
+                }
+
+                if ($quickSubtotal < $minimumAmount) {
+                    $shortfall    = number_format($minimumAmount - $quickSubtotal, 2);
+                    $minFormatted = number_format($minimumAmount, 2);
+                    $groupLabel   = ($group === 'wholesale') ? 'Wholesale' : 'Trading / Commercial';
+                    return redirect()
+                        ->route($isWalkin ? 'walkin.shop' : 'cart.index')
+                        ->with('error', "⚠️ Minimum order for {$groupLabel} partners is RM {$minFormatted}. You need RM {$shortfall} more to proceed to checkout.");
+                }
+            }
+        }
+        // ─────────────────────────────────────────────────────────────────────────
+
         $payload = [
             'fulfillment_type' => $request->fulfillment_type,
             'customer_name'    => $request->customer_name ?? Auth::user()?->name ?? 'Customer',
@@ -193,12 +226,25 @@ class CheckoutController extends Controller
             ];
         }
 
-        $expectedTotalCents = (int) round($calculatedSubtotal * 100);
+        // Calculate transportation / delivery fee based on fulfillment and location zone
+        $deliveryResult = $this->delivery->calculateFee(
+            $calculatedSubtotal,
+            $request->fulfillment_type,
+            $request->state,
+            $request->city,
+            $group
+        );
+
+        $shippingFee        = (float) $deliveryResult['fee'];
+        $grandTotal         = round($calculatedSubtotal + $shippingFee, 2);
+        $expectedTotalCents = (int) round($grandTotal * 100);
 
         $payload['cart_snapshot']        = $snapshotItems;
+        $payload['shipping_fee']         = $shippingFee;
         $payload['expected_subtotal']    = $calculatedSubtotal;
-        $payload['expected_total']       = $calculatedSubtotal;
+        $payload['expected_total']       = $grandTotal;
         $payload['expected_total_cents'] = $expectedTotalCents;
+        $payload['delivery_zone']        = $deliveryResult['zone_name'] ?? null;
 
         // ─── Case 1: Immediate Cash Order (e.g. Walk-in Counter Cash) ─────
         if ($paymentMethod === 'cash') {
@@ -234,6 +280,21 @@ class CheckoutController extends Controller
             ];
         }
 
+        // Add Delivery / Transportation fee line item if applicable
+        if ($shippingFee > 0) {
+            $lineItems[] = [
+                'price_data' => [
+                    'currency'     => $currency,
+                    'product_data' => [
+                        'name'        => 'Cold-Chain Delivery & Transportation (' . ($deliveryResult['zone_name'] ?? 'Area Fee') . ')',
+                        'description' => 'Transportation charge for delivery orders below RM 100 threshold',
+                    ],
+                    'unit_amount'  => (int) round($shippingFee * 100),
+                ],
+                'quantity'   => 1,
+            ];
+        }
+
         session(['stripe_checkout_payload' => $payload]);
 
         try {
@@ -248,6 +309,7 @@ class CheckoutController extends Controller
                     'user_id'              => Auth::id() ?? 'guest',
                     'fulfillment_type'     => $request->fulfillment_type,
                     'customer_group'       => $group,
+                    'shipping_fee'         => (string) $shippingFee,
                     'expected_total_cents' => $expectedTotalCents,
                 ],
             ]);
@@ -316,8 +378,14 @@ class CheckoutController extends Controller
                         'track_stock'  => (bool) $cItem->product->track_stock,
                     ];
                 }
+
+                $dResult = $this->delivery->calculateFee($subtotal, $payload['fulfillment_type'] ?? 'delivery', $payload['state'] ?? null, $payload['city'] ?? null, $group);
+                $shippingFee = (float) ($payload['shipping_fee'] ?? $dResult['fee']);
+                $grandTotal  = round($subtotal + $shippingFee, 2);
+
+                $payload['shipping_fee']      = $shippingFee;
                 $payload['expected_subtotal'] = $subtotal;
-                $payload['expected_total']    = $subtotal;
+                $payload['expected_total']    = $grandTotal;
             }
 
             // Security Validation: Verify amount paid on Stripe matches the order snapshot
@@ -352,14 +420,15 @@ class CheckoutController extends Controller
      */
     protected function processOrderDirectly(array $payload, array $snapshotItems, string $paymentMethod, string $paymentRef)
     {
-        $group    = $payload['group'] ?? $this->pricing->resolveGroup();
-        $subtotal = $payload['expected_subtotal'] ?? 0;
-        $total    = $payload['expected_total'] ?? $subtotal;
-        $order    = null;
+        $group       = $payload['group'] ?? $this->pricing->resolveGroup();
+        $subtotal    = (float) ($payload['expected_subtotal'] ?? 0);
+        $shippingFee = (float) ($payload['shipping_fee'] ?? 0);
+        $total       = (float) ($payload['expected_total'] ?? ($subtotal + $shippingFee));
+        $order       = null;
 
         $isPaid = ($paymentMethod === 'stripe');
 
-        DB::transaction(function () use ($payload, $snapshotItems, $group, $subtotal, $total, $paymentMethod, $paymentRef, $isPaid, &$order) {
+        DB::transaction(function () use ($payload, $snapshotItems, $group, $subtotal, $shippingFee, $total, $paymentMethod, $paymentRef, $isPaid, &$order) {
             $user = Auth::user();
 
             $shippingAddress = null;
@@ -386,6 +455,7 @@ class CheckoutController extends Controller
                 'fulfillment_type'      => $payload['fulfillment_type'] ?? 'self_collection',
                 'shipping_address'      => $shippingAddress,
                 'subtotal'              => $subtotal,
+                'shipping_fee'          => $shippingFee,
                 'total'                 => $total,
                 'stripe_payment_intent' => $isPaid ? $paymentRef : null,
                 'customer_notes'        => $payload['customer_notes'] ?? null,

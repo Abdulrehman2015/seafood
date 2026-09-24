@@ -39,10 +39,10 @@ class PageSeo extends Model
                 'keywords'    => 'about mst import and export sdn bhd, sustainable seafood, cold chain logistics, seafood wholesale',
             ],
             'shop' => [
-                'name'        => 'Shop / Products',
-                'title'       => 'Seafood Catalogue & Shop | MST IMPORT AND EXPORT SDN BHD',
-                'description' => 'Explore our extensive catalogue of fresh and frozen seafood including Atlantic Salmon, King Prawns, Mud Crabs, Lobsters, and Whole Fish.',
-                'keywords'    => 'buy seafood online, salmon fillets, fresh tiger prawns, frozen seafood wholesale',
+                'name'        => 'Shop / Products & Sourcing',
+                'title'       => 'Products & Sourcing | MST IMPORT AND EXPORT SDN BHD',
+                'description' => 'Explore selected frozen seafood, meat, food ingredients and specialty products from MST. Customised sourcing available across regional and international markets.',
+                'keywords'    => 'products and sourcing, frozen food supplier, frozen seafood, meat wholesale, food ingredients, custom sourcing',
             ],
             'contact' => [
                 'name'        => 'Contact Us',

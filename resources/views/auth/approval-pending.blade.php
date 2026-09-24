@@ -17,13 +17,13 @@
                     <span style="background:rgba(245,158,11,0.2);border:1px solid rgba(251,191,36,0.4);padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:700;color:#fde68a;text-transform:uppercase;letter-spacing:0.05em">
                         ⏳ Application In Review
                     </span>
-                    <span style="color:#bae6fd;font-size:0.8rem">B2B Wholesale &amp; Trading Verification</span>
+                    <span style="color:#bae6fd;font-size:0.8rem">Business &amp; Trading Verification</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.75rem,3.5vw,2.4rem);margin-bottom:6px;letter-spacing:-0.02em">
                     @if(session('new_registration')) Application Submitted! @else Account Pending Verification @endif
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.95rem;max-width:680px;line-height:1.5;margin:0">
-                    Your wholesale account application is currently under review by our verification desk.
+                    Your account application is currently under review by our commercial team.
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -45,66 +45,104 @@
                 ⏳
             </div>
 
-            <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;color:#0f274a;margin:0 0 8px">
-                Verification in Progress
-            </h2>
+            @if(auth()->user()->customer_group === 'trading')
+                <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;color:#0f274a;margin:0 0 12px">
+                    @t('auth.trading_pending_title', 'Trading Account Request Received')
+                </h2>
 
-            <p style="color:#475569;font-size:0.95rem;line-height:1.65;margin:0 0 24px">
-                Thank you, <strong>{{ auth()->user()->name }}</strong>. Your application for a 
-                <span style="display:inline-block;padding:2px 8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:6px;font-weight:700;font-size:0.85rem;text-transform:uppercase">
-                    {{ ucfirst(auth()->user()->customer_group) }} Tier
-                </span> 
-                account with <strong>MST Import and Export Sdn Bhd</strong> has been safely recorded.
-            </p>
+                <p style="color:#475569;font-size:0.95rem;line-height:1.65;margin:0 0 18px;text-align:left">
+                    @t('auth.trading_pending_p1', 'Thank you for your interest in MST Import & Export Sdn. Bhd.')
+                </p>
+                <p style="color:#475569;font-size:0.95rem;line-height:1.65;margin:0 0 18px;text-align:left">
+                    @t('auth.trading_pending_p2', 'Your Trading / Import & Distribution request has been received and will be reviewed by our team.')
+                </p>
+                <p style="color:#475569;font-size:0.95rem;line-height:1.65;margin:0 0 24px;text-align:left">
+                    @t('auth.trading_pending_p3', 'We may contact you for additional business, product, destination or logistics information before providing a quotation or commercial proposal.')
+                </p>
 
-            @if(auth()->user()->company_name)
-                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 18px;margin-bottom:24px;text-align:left;display:flex;align-items:center;gap:12px">
-                    <span style="font-size:1.4rem">🏢</span>
-                    <div>
-                        <div style="font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;font-weight:700">Registered Business Entity</div>
-                        <div style="font-weight:700;color:#0f172a;font-size:0.95rem">{{ auth()->user()->company_name }}</div>
+                @if(auth()->user()->company_name)
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 18px;margin-bottom:24px;text-align:left;display:flex;align-items:center;gap:12px">
+                        <span style="font-size:1.4rem">🏢</span>
+                        <div>
+                            <div style="font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;font-weight:700">Registered Business Entity</div>
+                            <div style="font-weight:700;color:#0f172a;font-size:0.95rem">{{ auth()->user()->company_name }}</div>
+                        </div>
                     </div>
+                @endif
+
+                <!-- Trading Actions -->
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:18px">
+                    <a href="{{ route('home') }}" class="btn btn-primary"
+                       style="background:linear-gradient(135deg, #1d4ed8, #0f274a);border:none;font-weight:700;padding:11px 24px;border-radius:10px;text-decoration:none;color:#ffffff;display:inline-flex;align-items:center;gap:8px">
+                        <span>@t('common.back_to_home', 'Back to Home')</span>
+                    </a>
+                    <a href="{{ route('contact') }}" class="btn btn-secondary"
+                       style="background:#ffffff;border:1.5px solid #cbd5e1;color:#334155;font-weight:700;padding:11px 22px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:8px">
+                        <span>@t('nav.contact', 'Contact MST')</span>
+                    </a>
+                </div>
+            @else
+                <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;color:#0f274a;margin:0 0 8px">
+                    Verification in Progress
+                </h2>
+
+                <p style="color:#475569;font-size:0.95rem;line-height:1.65;margin:0 0 24px">
+                    Thank you, <strong>{{ auth()->user()->name }}</strong>. Your application for a 
+                    <span style="display:inline-block;padding:2px 8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:6px;font-weight:700;font-size:0.85rem;text-transform:uppercase">
+                        {{ ucfirst(auth()->user()->customer_group) }} Account
+                    </span> 
+                    with <strong>MST Import & Export Sdn. Bhd.</strong> has been received.
+                </p>
+
+                @if(auth()->user()->company_name)
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 18px;margin-bottom:24px;text-align:left;display:flex;align-items:center;gap:12px">
+                        <span style="font-size:1.4rem">🏢</span>
+                        <div>
+                            <div style="font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;font-weight:700">Registered Business Entity</div>
+                            <div style="font-weight:700;color:#0f172a;font-size:0.95rem">{{ auth()->user()->company_name }}</div>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Next Steps -->
+                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:20px;margin-bottom:28px;text-align:left">
+                    <h3 style="font-size:0.9rem;color:#166534;font-weight:700;margin:0 0 14px;text-transform:uppercase;letter-spacing:0.04em">
+                        What happens next?
+                    </h3>
+                    <div style="display:flex;flex-direction:column;gap:12px">
+                        <div style="display:flex;gap:12px;align-items:flex-start">
+                            <span style="background:#22c55e;color:#ffffff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0">1</span>
+                            <div style="font-size:0.88rem;color:#15803d;line-height:1.45">Our team reviews your business information within <strong>1–2 business days</strong>.</div>
+                        </div>
+                        <div style="display:flex;gap:12px;align-items:flex-start">
+                            <span style="background:#22c55e;color:#ffffff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0">2</span>
+                            <div style="font-size:0.88rem;color:#15803d;line-height:1.45">Once approved, you will be able to access applicable business features and manage orders.</div>
+                        </div>
+                        <div style="display:flex;gap:12px;align-items:flex-start">
+                            <span style="background:#22c55e;color:#ffffff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0">3</span>
+                            <div style="font-size:0.88rem;color:#15803d;line-height:1.45">You will also receive an email notification confirming your business account status.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:18px">
+                    <button type="button" onclick="handleManualRefresh()" class="btn btn-primary" id="btnRefreshStatus"
+                            style="background:linear-gradient(135deg, #1d4ed8, #0f274a);border:none;font-weight:700;padding:11px 22px;border-radius:10px;display:inline-flex;align-items:center;gap:8px">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                        </svg>
+                        <span>Refresh Status</span>
+                    </button>
+
+                    <form method="POST" action="{{ route('logout') }}" style="display:inline">
+                        @csrf
+                        <button type="submit" class="btn btn-secondary" style="background:#ffffff;border:1.5px solid #cbd5e1;color:#475569;font-weight:600;padding:11px 20px;border-radius:10px">
+                            Sign Out
+                        </button>
+                    </form>
                 </div>
             @endif
-
-            <!-- Next Steps -->
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:20px;margin-bottom:28px;text-align:left">
-                <h3 style="font-size:0.9rem;color:#166534;font-weight:700;margin:0 0 14px;text-transform:uppercase;letter-spacing:0.04em">
-                    What happens next?
-                </h3>
-                <div style="display:flex;flex-direction:column;gap:12px">
-                    <div style="display:flex;gap:12px;align-items:flex-start">
-                        <span style="background:#22c55e;color:#ffffff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0">1</span>
-                        <div style="font-size:0.88rem;color:#15803d;line-height:1.45">Our admin team reviews your business information within <strong>1–2 business days</strong>.</div>
-                    </div>
-                    <div style="display:flex;gap:12px;align-items:flex-start">
-                        <span style="background:#22c55e;color:#ffffff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0">2</span>
-                        <div style="font-size:0.88rem;color:#15803d;line-height:1.45">Once approved, <strong>refreshing this page</strong> will immediately take you into your <strong>Dashboard</strong>.</div>
-                    </div>
-                    <div style="display:flex;gap:12px;align-items:flex-start">
-                        <span style="background:#22c55e;color:#ffffff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0">3</span>
-                        <div style="font-size:0.88rem;color:#15803d;line-height:1.45">You will also receive an email notification confirming your wholesale pricing access.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Actions -->
-            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:18px">
-                <button type="button" onclick="handleManualRefresh()" class="btn btn-primary" id="btnRefreshStatus"
-                        style="background:linear-gradient(135deg, #1d4ed8, #0f274a);border:none;font-weight:700;padding:11px 22px;border-radius:10px;display:inline-flex;align-items:center;gap:8px">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-                    </svg>
-                    <span>Refresh Status</span>
-                </button>
-
-                <form method="POST" action="{{ route('logout') }}" style="display:inline">
-                    @csrf
-                    <button type="submit" class="btn btn-secondary" style="background:#ffffff;border:1.5px solid #cbd5e1;color:#475569;font-weight:600;padding:11px 20px;border-radius:10px">
-                        Sign Out
-                    </button>
-                </form>
-            </div>
 
             <div style="font-size:0.8rem;color:#64748b">
                 Need urgent assistance? <a href="https://wa.me/601112710260?text=Hi%20MST%20Import%20%26%20Export,%20I%20have%20submitted%20a%20wholesale%20account%20application." target="_blank" style="color:#2563eb;font-weight:700;text-decoration:underline">WhatsApp Our Desk</a>

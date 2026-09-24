@@ -12,7 +12,7 @@
             <div class="breadcrumb" style="margin:0">
                 <a href="{{ route('home') }}" class="breadcrumb-home">🏠 @t('nav.home', 'Home')</a>
                 <span class="breadcrumb-sep">›</span>
-                <a href="{{ route('walkin.shop') }}" class="breadcrumb-link">@t('walkin.catalogue_title', 'Walk-in Express')</a>
+                <a href="{{ route('walkin.shop') }}" class="breadcrumb-link">@t('walkin.title', 'Walk-in Express')</a>
                 <span class="breadcrumb-sep">›</span>
                 <span class="breadcrumb-current">@t('walkin.checkout_step', 'Express Checkout')</span>
             </div>
@@ -20,46 +20,46 @@
             <div style="display:flex;align-items:center;gap:10px">
                 <span class="walkin-live-badge">
                     <span class="pulse-dot"></span>
-                    @t('walkin.tier_badge', 'In-Store Walk-in Express')
+                    @t('walkin.menu_subtitle', 'In-Store Express Menu')
                 </span>
                 <a href="{{ route('walkin.shop') }}" class="btn-walkin-back">
-                    ← @t('walkin.back_to_catalogue', 'Back to Catalogue')
+                    ← @t('walkin.back_to_menu', 'Back to Walk-in Menu')
                 </a>
             </div>
         </div>
 
         <div class="walkin-hero-heading-box">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap">
-                <span class="walkin-security-tag">
-                    🔒 @t('walkin.secure_256', '256-Bit Encrypted Instant Checkout')
+                <span class="walkin-store-tag" style="background:rgba(30,58,138,0.6);border:1px solid rgba(56,189,248,0.35);padding:3px 10px;border-radius:8px;font-size:0.75rem;font-weight:700;color:#e0f2fe">
+                    🏬 @t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')
                 </span>
-                <span class="walkin-tag-sub">⚡ @t('walkin.counter_pickup_ready', 'Counter 2 Express Pickup')</span>
+                <span class="walkin-tag-sub">⚡ @t('walkin.express_pickup_tag', 'Express Counter 2 Collection')</span>
             </div>
             <h1 class="walkin-hero-title">
                 @t('walkin.checkout_title', 'Walk-in Express Checkout')
             </h1>
             <p class="walkin-hero-subtitle">
-                @t('walkin.checkout_subtitle', 'Fast mobile checkout for immediate self-collection at SILC Iskandar Puteri Retail Counter 2.')
+                @t('walkin.checkout_subtitle', 'Please confirm your order and collection location before payment. Collect your packed order at MST Counter 2.')
             </p>
         </div>
 
         <!-- 4-Step Interactive Process Flow (Step 3 Active) -->
         <div class="walkin-stepper-wrap">
             <div class="walkin-stepper">
-                <a href="{{ route('walkin.entry') }}" class="step-item step-completed" style="text-decoration:none">
-                    <div class="step-icon">✓</div>
+                <a href="{{ route('walkin.shop') }}" class="step-item step-completed" style="text-decoration:none">
+                    <div class="step-icon">1</div>
                     <div class="step-info">
-                        <span class="step-num">Step 1</span>
-                        <span class="step-label">@t('walkin.step_qr', 'Scan QR Code')</span>
+                        <span class="step-num">Step 1 — @t('walkin.step_1_name', 'Browse')</span>
+                        <span class="step-label">@t('walkin.step_1_desc', 'View available products on your phone.')</span>
                     </div>
                 </a>
                 <div class="step-divider active"></div>
 
                 <a href="{{ route('walkin.shop') }}" class="step-item step-completed" style="text-decoration:none">
-                    <div class="step-icon">✓</div>
+                    <div class="step-icon">2</div>
                     <div class="step-info">
-                        <span class="step-num">Step 2</span>
-                        <span class="step-label">@t('walkin.step_pick', 'Pick Seafood')</span>
+                        <span class="step-num">Step 2 — @t('walkin.step_2_name', 'Select')</span>
+                        <span class="step-label">@t('walkin.step_2_desc', 'Choose your products and quantities.')</span>
                     </div>
                 </a>
                 <div class="step-divider active"></div>
@@ -67,8 +67,8 @@
                 <div class="step-item step-active">
                     <div class="step-icon">3</div>
                     <div class="step-info">
-                        <span class="step-num">Step 3</span>
-                        <span class="step-label">@t('walkin.step_pay', 'Fast Phone Pay')</span>
+                        <span class="step-num">Step 3 — @t('walkin.step_3_name', 'Pay')</span>
+                        <span class="step-label">@t('walkin.step_3_desc', 'Complete payment securely on your phone.')</span>
                     </div>
                 </div>
                 <div class="step-divider"></div>
@@ -76,8 +76,8 @@
                 <div class="step-item">
                     <div class="step-icon">4</div>
                     <div class="step-info">
-                        <span class="step-num">Step 4</span>
-                        <span class="step-label">@t('walkin.step_collect', 'Collection Token')</span>
+                        <span class="step-num">Step 4 — @t('walkin.step_4_name', 'Collect')</span>
+                        <span class="step-label">@t('walkin.step_4_desc', 'Collect your packed order at Counter 2.')</span>
                     </div>
                 </div>
             </div>
@@ -130,7 +130,7 @@
                             </div>
                             <div class="mobile-item-details">
                                 <div class="mobile-item-name">{{ $item->product?->name }}</div>
-                                <div class="mobile-item-meta">{{ $item->product?->sku ?? 'IN-STORE' }} · {{ $item->quantity }} × RM {{ number_format($price, 2) }}</div>
+                                <div class="mobile-item-meta">{{ $item->product?->sku ?? 'ITEM' }} · {{ $item->quantity }} × RM {{ number_format($price, 2) }}</div>
                             </div>
                             <div class="mobile-item-price">
                                 RM {{ number_format($price * $item->quantity, 2) }}
@@ -146,7 +146,7 @@
                     </div>
                     <div class="summary-line">
                         <span>@t('walkin.fulfillment', 'Fulfillment')</span>
-                        <span class="summary-val-free">✓ @t('walkin.free_counter_pickup', 'Counter Self-Collection (FREE)')</span>
+                        <span class="summary-val-free">✓ @t('walkin.counter_2_pickup', 'MST Counter 2 Collection (FREE)')</span>
                     </div>
                     
                     <div class="mobile-summary-grand-box">
@@ -162,12 +162,19 @@
             <!-- Left: Customer Info & Payment -->
             <div class="walkin-checkout-main">
                 <!-- Store Counter Pickup Notice -->
-                <div class="walkin-pickup-notice-card">
-                    <div class="notice-icon">🏬</div>
+                <div class="walkin-pickup-notice-card" style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:14px;padding:16px 20px;display:flex;gap:14px;align-items:flex-start;margin-bottom:20px">
+                    <div class="notice-icon" style="font-size:1.8rem">🏬</div>
                     <div>
-                        <div class="notice-title">@t('walkin.pickup_station_title', 'Johor Bahru (SILC) Retail Counter Self-Collection')</div>
-                        <div class="notice-desc">@t('walkin.pickup_station_desc', 'Your seafood order will be immediately packed with ice gel packs and waiting at Counter 2 once your payment is confirmed.')</div>
-                        <div class="notice-badge">⚡ @t('walkin.instant_token_badge', 'Instant Collection Token Generated on Completion')</div>
+                        <div class="notice-title" style="font-weight:800;font-size:0.95rem;color:#1e3a8a;margin-bottom:4px">
+                            @t('walkin.confirm_pickup_title', 'Please confirm your order and collection location before payment.')
+                        </div>
+                        <div class="notice-desc" style="font-size:0.85rem;color:#1d4ed8;line-height:1.45;margin-bottom:8px">
+                            📍 <strong>@t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')</strong><br>
+                            @t('walkin.counter_desc', 'Orders are prepared for Counter 2 collection after payment confirmation. Orders are packed appropriately for collection and transport.')
+                        </div>
+                        <div class="notice-badge" style="font-size:0.75rem;font-weight:700;color:#1e40af;background:#ffffff;padding:3px 10px;border-radius:6px;display:inline-block;border:1px solid #bfdbfe">
+                            📋 @t('walkin.counter_note', 'Please present your order reference / payment confirmation when collecting your order.')
+                        </div>
                     </div>
                 </div>
 
@@ -196,7 +203,7 @@
                     <div class="form-group" style="margin-bottom:0">
                         <label class="form-label" style="color:#64748b">@t('walkin.email_optional', 'Email for PDF e-receipt (Optional)')</label>
                         <input type="email" name="customer_email" class="form-control walkin-input" 
-                               placeholder="e.g. john@example.com" value="{{ old('customer_email', auth()->user()?->email) }}">
+                                placeholder="e.g. john@example.com" value="{{ old('customer_email', auth()->user()?->email) }}">
                     </div>
                 </div>
 
@@ -234,8 +241,8 @@
                             <div class="pay-tile-check">✓</div>
                             <div class="pay-tile-icon">💵</div>
                             <div class="pay-tile-content">
-                                <div class="pay-tile-title">@t('walkin.pay_cash_title', 'Cash at Counter')</div>
-                                <div class="pay-tile-desc">@t('walkin.pay_cash_desc', 'Pay cash directly at SILC Counter 2 upon collecting your packed seafood.')</div>
+                                <div class="pay-tile-title">@t('walkin.pay_cash_title', 'Cash at Counter 2')</div>
+                                <div class="pay-tile-desc">@t('walkin.pay_cash_desc', 'Pay cash directly at SILC Counter 2 upon collecting your packed order.')</div>
                                 <div class="pay-tile-badge badge-cash">@t('walkin.badge_pay_on_pickup', 'Pay on Collection')</div>
                             </div>
                         </label>
@@ -248,7 +255,7 @@
                             <div class="pay-tile-check">✓</div>
                             <div class="pay-tile-icon">💳</div>
                             <div class="pay-tile-content">
-                                <div class="pay-tile-title">@t('walkin.pay_online_title', 'Online Payment (Stripe)')</div>
+                                <div class="pay-tile-title">@t('walkin.pay_online_title', 'Online Payment (Phone Pay)')</div>
                                 <div class="pay-tile-desc">@t('walkin.pay_online_desc', 'Credit / Debit Card, Apple Pay, Google Pay, or FPX Online Banking.')</div>
                                 <div class="pay-tile-badge badge-stripe">@t('walkin.badge_official_stripe', 'Official Stripe Hosted')</div>
                             </div>
@@ -262,21 +269,18 @@
                             <strong>@t('walkin.cash_info_title', 'Pay Cash at Counter 2:')</strong>
                         </div>
                         <p class="info-desc">
-                            @t('walkin.cash_info_desc', 'Your order is confirmed immediately and queued for packaging. Simply show your digital Collection Token to the cashier at Counter 2 to pay cash and collect your seafood.')
+                            @t('walkin.cash_info_desc', 'Your order will be registered and queued. Present your Order Reference at Counter 2 to complete payment and collect your packed order.')
                         </p>
-                        <div class="info-highlight-badge">
-                            ⚡ @t('walkin.instant_token_badge', 'Instant Collection Token Generated on Submission')
-                        </div>
                     </div>
 
                     <!-- Detail Info Box: Online (Stripe) -->
                     <div id="stripeInfoBox" class="walkin-pay-info-box stripe-box" style="{{ old('payment_method') === 'stripe' ? '' : 'display:none' }}">
                         <div class="info-box-header">
                             <span class="info-icon">🛡️</span>
-                            <strong>@t('walkin.stripe_info_title', 'Stripe Official Hosted Checkout:')</strong>
+                            <strong>@t('walkin.stripe_info_title', 'Secure Phone Payment:')</strong>
                         </div>
                         <p class="info-desc">
-                            @t('walkin.stripe_info_desc', 'You will be securely redirected to Stripe\'s official checkout page (checkout.stripe.com). Once your card or FPX payment is confirmed, you will automatically return here with your Collection Token.')
+                            @t('walkin.stripe_info_desc', 'You will be securely redirected to Stripe checkout. Upon payment confirmation, your order will be prepared for Counter 2 collection and you will receive your collection reference.')
                         </p>
                         <div class="payment-methods-badges-row">
                             <span class="pay-chip">💳 Visa</span>
@@ -292,7 +296,7 @@
                     <div class="mobile-submit-total-row">
                         <div class="total-breakdown">
                             <span class="sub-label">@t('walkin.total_to_pay', 'Total to Pay')</span>
-                            <span class="sub-free-badge">✓ @t('walkin.free_counter_pickup', 'Counter Self-Collection (FREE)')</span>
+                            <span class="sub-free-badge">✓ @t('walkin.counter_2_pickup', 'MST Counter 2 Collection (FREE)')</span>
                         </div>
                         <div class="total-price-val">
                             RM {{ number_format($totals['total'], 2) }}
@@ -303,19 +307,17 @@
                         <span id="mobileSubmitBtnIcon">{{ old('payment_method', 'cash') === 'cash' ? '💵' : '🔒' }}</span>
                         <span id="mobileSubmitBtnText">
                             @if(old('payment_method', 'cash') === 'cash')
-                                @t('walkin.confirm_cash_order', 'Confirm Order & Get Collection Token')
+                                @t('walkin.confirm_cash_order', 'Confirm Order & Proceed to Counter 2')
                             @else
-                                @t('walkin.proceed_to_stripe', 'Proceed to Stripe Official Checkout →')
+                                @t('walkin.proceed_to_payment', 'Proceed to Secure Payment →')
                             @endif
                         </span>
                     </button>
 
                     <div class="mobile-submit-trust-row">
-                        <span>⚡ @t('walkin.instant_token', 'Instant Token')</span>
+                        <span>🏬 @t('walkin.store_short_loc', 'MST Counter 2 · SILC')</span>
                         <span>•</span>
-                        <span>🏬 @t('walkin.counter_silc', 'SILC Counter 2')</span>
-                        <span>•</span>
-                        <span>❄️ -18°C IQF Packed</span>
+                        <span>📦 @t('walkin.packed_appropriate', 'Appropriately Packed')</span>
                     </div>
                 </div>
             </div>
@@ -357,7 +359,7 @@
                     </div>
                     <div class="summary-calc-row">
                         <span>@t('walkin.fulfillment', 'Fulfillment')</span>
-                        <span style="color:#059669;font-weight:700">@t('walkin.free_counter_pickup', 'Counter Self-Collection (FREE)')</span>
+                        <span style="color:#059669;font-weight:700">@t('walkin.counter_2_pickup', 'MST Counter 2 Collection (FREE)')</span>
                     </div>
 
                     <div class="summary-total-row">
@@ -369,17 +371,17 @@
                         <span id="submitBtnIcon">{{ old('payment_method', 'cash') === 'cash' ? '💵' : '🔒' }}</span>
                         <span id="submitBtnText">
                             @if(old('payment_method', 'cash') === 'cash')
-                                @t('walkin.confirm_cash_order', 'Confirm Order & Get Collection Token')
+                                @t('walkin.confirm_cash_order', 'Confirm Order & Proceed to Counter 2')
                             @else
-                                @t('walkin.proceed_to_stripe', 'Proceed to Stripe Official Checkout →')
+                                @t('walkin.proceed_to_payment', 'Proceed to Secure Payment →')
                             @endif
                         </span>
                     </button>
 
                     <div class="summary-footer-trust">
-                        <div class="trust-line">⚡ <strong>@t('walkin.instant_token', 'Instant Token Generation')</strong></div>
-                        <div class="trust-line">🏬 <strong>@t('walkin.counter_silc', 'SILC Iskandar Puteri Counter 2')</strong></div>
-                        <div class="trust-line">❄️ <strong>@t('walkin.cold_chain_packed', '-18°C IQF Ice Gel Packed')</strong></div>
+                        <div class="trust-line">🏬 <strong>@t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')</strong></div>
+                        <div class="trust-line">⚡ <strong>@t('walkin.prepared_promptly', 'Orders prepared for Counter 2 collection after payment confirmation')</strong></div>
+                        <div class="trust-line">📦 <strong>@t('walkin.packed_appropriately', 'Orders are packed appropriately for collection and transport')</strong></div>
                     </div>
                 </div>
             </div>

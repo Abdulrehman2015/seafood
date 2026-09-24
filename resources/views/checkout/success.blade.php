@@ -53,7 +53,7 @@
 
         @if($order->fulfillment_type === 'self_collection' || $order->customer_group === 'walkin')
             <!-- ═══════════════════════════════════════════════════════════════════════ -->
-            <!-- STORE COLLECTION PASS (WALK-IN / SELF-COLLECTION)                     -->
+            <!-- STORE COLLECTION PASS (WALK-IN / COUNTER 2 SELF-COLLECTION)           -->
             <!-- ═══════════════════════════════════════════════════════════════════════ -->
             
             <div style="text-align:center;margin-bottom:var(--space-4)">
@@ -62,16 +62,16 @@
                 </div>
                 <h1 style="font-size:1.6rem;font-family:var(--font-heading);color:var(--seagreen-900);margin-bottom:4px">
                     @if($order->payment_method === 'cash')
-                        @t('checkout.order_confirmed_cash', 'Order Confirmed (Pay at Counter)')
+                        @t('checkout.order_confirmed_cash', 'Order Confirmed · Counter 2 Collection')
                     @else
-                        @t('checkout.payment_successful', 'Payment Successful!')
+                        @t('checkout.payment_confirmed_title', 'Payment Confirmed · Counter 2 Collection')
                     @endif
                 </h1>
                 <p class="text-sm text-muted" style="margin:0">
                     @if($order->payment_method === 'cash')
-                        @t('checkout.cash_instruction_subtitle', 'Your order is being prepared. Please show this collection token at Counter 2 to pay cash and collect your seafood.')
+                        @t('checkout.cash_instruction_subtitle', 'Your order is confirmed. Please show this collection reference at Counter 2 to complete payment and collect your packed order.')
                     @else
-                        @t('checkout.success_subtitle', 'Your seafood order is placed and being prepared at our counter.')
+                        @t('checkout.payment_confirmed_desc', 'Payment confirmed. Your order is being prepared for Counter 2 collection.')
                     @endif
                 </p>
             </div>
@@ -80,46 +80,46 @@
             <div class="card" style="background:white;border:2px solid #bfdbfe;border-radius:16px;box-shadow:0 10px 30px rgba(29,78,216,0.08);overflow:hidden;margin-bottom:var(--space-5)">
                 
                 <!-- Pass Header -->
-                <div style="background:linear-gradient(135deg,var(--seagreen-700),var(--seagreen-800));color:white;padding:var(--space-4) var(--space-5);display:flex;justify-content:space-between;align-items:center">
+                <div style="background:linear-gradient(135deg,#091a36,#1e3a8a);color:white;padding:var(--space-4) var(--space-5);display:flex;justify-content:space-between;align-items:center">
                     <div>
-                        <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;opacity:0.9">@t('checkout.in_store_pass', 'MST In-Store Pass')</div>
-                        <div style="font-weight:700;font-size:1rem">@t('checkout.silc_store', 'Johor Bahru (SILC) Store')</div>
+                        <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;opacity:0.9">@t('walkin.title', 'Walk-in Express')</div>
+                        <div style="font-weight:700;font-size:0.95rem">🏬 @t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')</div>
                     </div>
-                    <div style="background:rgba(255,255,255,0.2);padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600">
-                        @t('checkout.store_pickup', 'Self-Collection')
+                    <div style="background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700">
+                        @t('walkin.counter_title', 'Counter 2 Collection')
                     </div>
                 </div>
 
                 <!-- Big Token Section -->
                 <div style="text-align:center;padding:var(--space-6) var(--space-4);background:linear-gradient(180deg,#eff6ff,#ffffff);border-bottom:2px dashed #bfdbfe">
-                    <div style="font-size:0.85rem;color:var(--seagreen-700);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">
-                        @t('checkout.collection_token', 'Your Collection Token')
+                    <div style="font-size:0.85rem;color:#1e40af;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">
+                        @t('checkout.collection_token', 'Your Collection Reference')
                     </div>
                     <div style="display:inline-block;background:#dbeafe;color:#1e3a8a;padding:8px 24px;border-radius:12px;border:2px solid #93c5fd;margin-bottom:var(--space-3);box-shadow:0 4px 12px rgba(29,78,216,0.12)">
-                        <span style="font-size:2.8rem;font-weight:900;font-family:var(--font-heading);letter-spacing:2px;line-height:1">
-                            {{ $order->collection_token ?? 'W-' . str_pad($order->id, 3, '0', STR_PAD_LEFT) }}
+                        <span style="font-size:2.6rem;font-weight:900;font-family:var(--font-heading);letter-spacing:2px;line-height:1">
+                            {{ $order->collection_token ?? ('WE-' . str_pad($order->id, 4, '0', STR_PAD_LEFT)) }}
                         </span>
                     </div>
                     
                     <div style="margin-bottom:var(--space-3)">
                         @if($order->payment_method === 'cash')
                             <span style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;padding:6px 14px;border-radius:20px;font-weight:700;font-size:0.8rem;border:1px solid #fde68a">
-                                <span style="width:8px;height:8px;background:#f59e0b;border-radius:50%;animation:pulseDot 1.5s infinite"></span>
+                                <span style="width:8px;height:8px;background:#f59e0b;border-radius:50%"></span>
                                 💵 @t('checkout.cash_due_amount', 'Due at Counter:') RM {{ number_format($order->total, 2) }}
                             </span>
                         @else
                             <span style="display:inline-flex;align-items:center;gap:6px;background:#dcfce7;color:#166534;padding:6px 14px;border-radius:20px;font-weight:700;font-size:0.8rem;border:1px solid #86efac">
-                                <span style="width:8px;height:8px;background:#22c55e;border-radius:50%;animation:pulseDot 1.5s infinite"></span>
-                                ✓ @t('checkout.paid_via_stripe', 'Paid via Stripe') · @t('checkout.preparing_at_counter', 'Preparing at Store Counter')
+                                <span style="width:8px;height:8px;background:#22c55e;border-radius:50%"></span>
+                                ✓ @t('checkout.paid_online', 'Payment Confirmed') · @t('walkin.prepared_promptly', 'Preparing for Counter 2 collection')
                             </span>
                         @endif
                     </div>
 
-                    <p style="font-size:0.85rem;color:var(--gray-600);max-width:400px;margin:0 auto;line-height:1.4">
+                    <p style="font-size:0.85rem;color:var(--gray-600);max-width:440px;margin:0 auto;line-height:1.45">
                         @if($order->payment_method === 'cash')
-                            @t('checkout.cash_counter_instruction', 'Please proceed to Counter 2 (Express Collection), show this token, pay cash and collect your packed seafood.')
+                            @t('checkout.cash_counter_instruction', 'Please present this reference at Counter 2 to complete payment and collect your packed order.')
                         @else
-                            @t('checkout.counter_instruction', 'Please proceed to Counter 2 (Express Collection) and show this token to collect your packed seafood.')
+                            @t('checkout.counter_instruction', 'Please present your order reference / payment confirmation when collecting your order at Counter 2.')
                         @endif
                     </p>
                 </div>

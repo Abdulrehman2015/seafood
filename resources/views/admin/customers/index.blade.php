@@ -162,6 +162,13 @@
                 <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>❌ Rejected</option>
             </select>
 
+            <select name="commercial_access" class="cat-filter-select" onchange="document.getElementById('customerFilterForm').submit()">
+                <option value="">All Commercial Access</option>
+                <option value="Not Assigned" {{ request('commercial_access') === 'Not Assigned' ? 'selected' : '' }}>Not Assigned</option>
+                <option value="Trading / Quotation" {{ request('commercial_access') === 'Trading / Quotation' ? 'selected' : '' }}>Trading / Quotation</option>
+                <option value="Approved Trading Customer" {{ request('commercial_access') === 'Approved Trading Customer' ? 'selected' : '' }}>Approved Trading Customer</option>
+            </select>
+
             <select name="sort" class="cat-filter-select" onchange="document.getElementById('customerFilterForm').submit()">
                 <option value="latest"  {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>Sort: Newest First</option>
                 <option value="name"    {{ request('sort') === 'name' ? 'selected' : '' }}>Sort: Name (A-Z)</option>
