@@ -94,10 +94,19 @@ class CurrencyService
     }
 
     /**
+     * In-memory cache of exchange rates for the current request.
+     */
+    protected static ?array $memoryRates = null;
+
+    /**
      * Get live/cached exchange rates against 1 MYR.
      */
     public function getRates(): array
     {
+        if (self::$memoryRates !== null) {
+            return self::$memoryRates;
+        }
+
         $manualSgd = (float) Setting::get('currency_manual_rate_sgd', 0.3117);
         $manualUsd = (float) Setting::get('currency_manual_rate_usd', 0.2453);
 
@@ -109,11 +118,11 @@ class CurrencyService
 
         // If Auto Conversion is OFF, use the manual exchange rates from Settings
         if (!$this->isAutoConvert()) {
-            return $fallback;
+            return self::$memoryRates = $fallback;
         }
 
         // Cache live rates for 6 hours (21600 seconds)
-        return Cache::remember('currency_live_rates_myr', 21600, function () use ($fallback) {
+        return self::$memoryRates = Cache::remember('currency_live_rates_myr', 21600, function () use ($fallback) {
             try {
                 $response = Http::withoutVerifying()->timeout(6)->get('https://open.er-api.com/v6/latest/MYR');
                 if ($response->successful()) {
@@ -215,7 +224,7 @@ class CurrencyService
         $currency = strtoupper($currency ?: $this->getCurrentCurrency());
         $symbol   = $this->getSymbol($currency);
 
-        return $symbol . ' ' . number_format($amount, 2);
+        return $symbol . number_format($amount, 2);
     }
 
     /**

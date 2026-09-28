@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', app(\App\Services\TranslationService::class)->translate('auth.otp_page_title', 'Verify Email Code — MST Import and Export Sdn Bhd'))
+@section('title', app(\App\Services\TranslationService::class)->translate('auth.otp_page_title', 'Verify Email Code — MST Import and Export Sdn. Bhd.'))
 
 @section('content')
 <!-- Page Header -->

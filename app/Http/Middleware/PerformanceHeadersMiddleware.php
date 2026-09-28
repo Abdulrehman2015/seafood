@@ -31,6 +31,10 @@ class PerformanceHeadersMiddleware
     {
         $response = $next($request);
 
+        if (app()->runningUnitTests()) {
+            return $response;
+        }
+
         $contentType = $response->headers->get('Content-Type', '');
         $uri         = $request->getRequestUri();
         $ext         = strtolower(pathinfo(parse_url($uri, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION));

@@ -13,6 +13,11 @@ class TranslationService
     const CACHE_TTL = 86400; // 24 hours (cleared on update)
 
     /**
+     * In-memory cache for the current request lifecycle.
+     */
+    protected static ?array $memoryCache = null;
+
+    /**
      * Supported application locales.
      */
     public static array $locales = [
@@ -115,7 +120,11 @@ class TranslationService
      */
     public function getAllTranslations(): array
     {
-        return Cache::remember(self::CACHE_KEY, self::CACHE_TTL, function () {
+        if (self::$memoryCache !== null) {
+            return self::$memoryCache;
+        }
+
+        return self::$memoryCache = Cache::remember(self::CACHE_KEY, self::CACHE_TTL, function () {
             $all = [];
             try {
                 $rows = Translation::all();
@@ -140,6 +149,38 @@ class TranslationService
             } catch (\Throwable $e) {
                 // Database or table not ready yet
             }
+
+            // Fallback to lang JSON files if DB is empty or unavailable
+            if (empty($all)) {
+                $zhFile = base_path('lang/zh.json');
+                $enFile = base_path('lang/en.json');
+                $bmFile = base_path('lang/bm.json');
+                $zh = file_exists($zhFile) ? (json_decode(file_get_contents($zhFile), true) ?: []) : [];
+                $en = file_exists($enFile) ? (json_decode(file_get_contents($enFile), true) ?: []) : [];
+                $bm = file_exists($bmFile) ? (json_decode(file_get_contents($bmFile), true) ?: []) : [];
+
+                $allKeys = array_unique(array_merge(array_keys($zh), array_keys($en), array_keys($bm)));
+                foreach ($allKeys as $k) {
+                    $group = str_contains($k, '.') ? explode('.', $k, 2)[0] : 'common';
+                    $itemKey = str_contains($k, '.') ? explode('.', $k, 2)[1] : $k;
+                    $entry = [
+                        'id'      => 0,
+                        'group'   => $group,
+                        'key'     => $itemKey,
+                        'text_en' => $en[$k] ?? '',
+                        'text_zh' => $zh[$k] ?? '',
+                        'text_bm' => $bm[$k] ?? '',
+                    ];
+                    $all[$k] = $entry;
+                    if ($itemKey !== $k && !isset($all[$itemKey])) {
+                        $all[$itemKey] = $entry;
+                    }
+                    if (!empty($entry['text_en'])) {
+                        $all['by_en:' . trim($entry['text_en'])] = $entry;
+                    }
+                }
+            }
+
             return $all;
         });
     }
@@ -210,6 +251,7 @@ class TranslationService
      */
     public function clearCache(): void
     {
+        self::$memoryCache = null;
         Cache::forget(self::CACHE_KEY);
     }
 

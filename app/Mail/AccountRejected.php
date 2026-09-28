@@ -25,7 +25,7 @@ class AccountRejected extends Mailable
 
     public function envelope(): Envelope
     {
-        $appName = config('app.name', 'MST Import & Export');
+        $appName = config('app.name', 'MST Import and Export Sdn. Bhd.');
         $subject = __t('email.account_rejected_subject', 'Update on Your Account Application — :app', [
             'app' => $appName,
         ], $this->mailLocale);

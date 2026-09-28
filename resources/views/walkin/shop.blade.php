@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __t('walkin.page_title', 'Walk-in Express — In-Store Express Menu') . ' — ' . ($settings['store_name'] ?? 'MST Import & Export Sdn. Bhd.'))
+@section('title', __t('walkin.page_title', 'Walk-in Express — In-Store Express Menu') . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.'))
 
 @section('content')
 <!-- Walk-in Ocean Hero Header -->
@@ -23,7 +23,7 @@
                 </span>
                 <span class="walkin-public-price-badge">
                     <span>🏷️</span>
-                    <span>@t('walkin.public_pricing', 'Public / Walk-in Pricing')</span>
+                    <span>@t('walkin.public_pricing', 'Walk-in Pricing · No Registration Required')</span>
                 </span>
             </div>
         </div>
@@ -33,15 +33,15 @@
             <div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
                     <span class="walkin-store-tag">
-                        🏬 @t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')
+                        🏬 @t('walkin.store_location', 'MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.')
                     </span>
-                    <span class="walkin-tag-sub">⚡ @t('walkin.express_pickup_tag', 'Express Counter 2 Collection')</span>
+                    <span class="walkin-tag-sub">⚡ @t('walkin.express_pickup_tag', 'Counter 2 Self-Collection')</span>
                 </div>
                 <h1 class="walkin-hero-title">
                     @t('walkin.title', 'Walk-in Express')
                 </h1>
                 <p class="walkin-hero-subtitle">
-                    @t('walkin.service_desc', 'Browse available products, select your items, complete payment on your phone, and collect your packed order at MST Counter 2.')
+                    @t('walkin.service_desc', 'Walk-in Express is intended for retail / individual purchases and Counter 2 self-collection. Browse available products, select your items, complete payment on your phone, and collect your packed order at MST Counter 2.')
                 </p>
             </div>
 
@@ -64,28 +64,28 @@
         <!-- 4-Step Interactive Process Flow -->
         <div class="walkin-stepper-wrap">
             <div class="walkin-stepper-title">
-                <span>⚡ @t('walkin.how_it_works', 'How Walk-in Express Works')</span>
-                <span class="stepper-current-pill">@t('walkin.step_indicator', 'Step 2: Select Items')</span>
+                <span>⚡ @t('walkin.how_it_works', 'Cara Walk-in Express Berfungsi')</span>
+                <span class="stepper-current-pill">@t('walkin.step_indicator', '1. Lihat')</span>
             </div>
             <div class="walkin-stepper">
-                <div class="step-item step-completed">
+                <div class="step-item step-active">
                     <div class="step-circle">
-                        <span class="step-num-icon">✓</span>
+                        <span class="step-num-icon">1</span>
                     </div>
                     <div class="step-info">
-                        <span class="step-name">@t('walkin.step_1_name', 'Browse')</span>
-                        <span class="step-sub">@t('walkin.step_1_desc', 'Explore menu')</span>
+                        <span class="step-name">@t('walkin.step_1_name', '1. Lihat')</span>
+                        <span class="step-sub">@t('walkin.step_1_desc', 'Lihat produk yang tersedia di telefon anda.')</span>
                     </div>
                 </div>
-                <div class="step-divider active"></div>
+                <div class="step-divider"></div>
 
-                <div class="step-item step-active">
+                <div class="step-item">
                     <div class="step-circle">
                         <span class="step-num-icon">2</span>
                     </div>
                     <div class="step-info">
-                        <span class="step-name">@t('walkin.step_2_name', 'Select')</span>
-                        <span class="step-sub">@t('walkin.step_2_desc', 'Choose items')</span>
+                        <span class="step-name">@t('walkin.step_2_name', '2. Pilih')</span>
+                        <span class="step-sub">@t('walkin.step_2_desc', 'Pilih produk dan kuantiti yang diperlukan.')</span>
                     </div>
                 </div>
                 <div class="step-divider"></div>
@@ -95,8 +95,8 @@
                         <span class="step-num-icon">3</span>
                     </div>
                     <div class="step-info">
-                        <span class="step-name">@t('walkin.step_3_name', 'Pay')</span>
-                        <span class="step-sub">@t('walkin.step_3_desc', 'Online payment')</span>
+                        <span class="step-name">@t('walkin.step_3_name', '3. Bayar')</span>
+                        <span class="step-sub">@t('walkin.step_3_desc', 'Lengkapkan pembayaran dengan selamat melalui telefon anda.')</span>
                     </div>
                 </div>
                 <div class="step-divider"></div>
@@ -106,8 +106,8 @@
                         <span class="step-num-icon">4</span>
                     </div>
                     <div class="step-info">
-                        <span class="step-name">@t('walkin.step_4_name', 'Collect')</span>
-                        <span class="step-sub">@t('walkin.step_4_desc', 'Counter 2')</span>
+                        <span class="step-name">@t('walkin.step_4_name', '4. Ambil')</span>
+                        <span class="step-sub">@t('walkin.step_4_desc', 'Ambil pesanan yang telah disediakan di Kaunter 2.')</span>
                     </div>
                 </div>
             </div>
@@ -121,10 +121,10 @@
         <div class="b2b-notice-content">
             <div class="b2b-notice-left">
                 <span class="b2b-notice-icon">ℹ️</span>
-                <span>@t('walkin.wholesale_note', 'Walk-in Express is intended for retail / individual purchases and Counter 2 collection.')</span>
+                <span>@t('walkin.wholesale_note', 'Walk-in Express is intended for retail / individual purchases and Counter 2 self-collection.')</span>
             </div>
-            <a href="{{ route('register') }}" class="b2b-notice-link">
-                <span>@t('walkin.wholesale_link', 'Looking for wholesale or regular supply? Request a Business Account')</span>
+            <a href="{{ route('register.wholesale') }}" class="b2b-notice-link">
+                <span>@t('walkin.wholesale_link', 'Looking for wholesale or regular supply? Register for a Wholesale Account')</span>
                 <span class="b2b-arrow">→</span>
             </a>
         </div>
@@ -275,8 +275,16 @@
             <!-- Counter 2 Collection Info Card -->
             <div class="sidebar-instore-box">
                 <div class="instore-box-title">🏬 @t('walkin.counter_title', 'Counter 2 Collection')</div>
+                <div style="font-weight:700;font-size:0.82rem;color:#1e3a8a;margin-bottom:6px;line-height:1.4">
+                    MST Kaunter 2, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia
+                </div>
                 <p class="instore-box-desc">@t('walkin.counter_desc', 'Orders are prepared for Counter 2 collection after payment confirmation. Orders are packed appropriately for collection and transport.')</p>
-                <div class="instore-box-note">📋 @t('walkin.counter_note', 'Please present your order reference / payment confirmation when collecting your order.')</div>
+                <div class="instore-box-note">📋 @t('walkin.counter_note', 'Please present your order reference or payment confirmation when collecting your order.')</div>
+                <div style="margin-top:10px">
+                    <a href="https://maps.google.com/?q={{ urlencode('MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor') }}" target="_blank" rel="noopener noreferrer" class="btn-walkin-directions" style="display:inline-flex;align-items:center;gap:5px;font-size:0.78rem;font-weight:700;color:#2563eb;background:#eff6ff;padding:6px 12px;border-radius:6px;border:1px solid #bfdbfe;text-decoration:none">
+                        <span>📍 @t('walkin.get_directions', 'Get Directions')</span>
+                    </a>
+                </div>
             </div>
         </aside>
 
@@ -285,7 +293,7 @@
             <!-- Desktop Toolbar -->
             <div class="shop-toolbar">
                 <div class="shop-toolbar-info">
-                    <span><strong>{{ $products->total() }}</strong> @t('walkin.products_count_label', 'selected products available for Walk-in / Counter Collection')</span>
+                    <span><strong>{{ $products->total() }}</strong>@t('walkin.products_count_label', ' products currently available for Walk-in / Counter Collection')</span>
                     @if(request('search'))
                         <span class="text-muted">@t('shop.for_keyword', 'for') "<strong>{{ request('search') }}</strong>"</span>
                     @endif
@@ -348,17 +356,14 @@
                                 </div>
                             @endif
 
-                            @if($product->storage_temp)
-                                @php
-                                    $tempLower = strtolower($product->storage_temp);
-                                    $isLive = str_contains($tempLower, 'live');
-                                    $isChilled = str_contains($tempLower, 'chilled');
-                                    $isIqf = str_contains($tempLower, 'iqf');
-                                    $badgeIcon = $product->getStorageIcon();
-                                    $badgeSuffix = ($isIqf) ? ' · IQF' : '';
-                                @endphp
-                                <span class="product-badge-temp">{{ $badgeIcon }} {{ $product->storage_temp }}{{ $badgeSuffix }}</span>
-                            @endif
+                            @php
+                                $storageLabel = $product->getStorageDisplay();
+                                $tempLower = strtolower($product->storage_temp ?? '');
+                                $isLive = str_contains($tempLower, 'live') || str_contains(strtolower($product->name), 'live');
+                                $isChilled = str_contains($tempLower, 'chilled');
+                                $isAmbient = str_contains($tempLower, 'ambient') || str_contains($tempLower, 'room');
+                            @endphp
+                            <span class="product-badge-temp {{ $isLive ? 'storage-live' : ($isChilled ? 'storage-chilled' : ($isAmbient ? 'storage-ambient' : '')) }}">{{ $storageLabel }}</span>
                         </div>
 
                         <div class="product-card-body">
@@ -379,7 +384,7 @@
                                 @if($product->weight)
                                     <span class="product-meta-item product-meta-weight">⚖️ {{ $product->weight }}</span>
                                 @endif
-                                @if($product->brand)
+                                @if($product->brand && !str_contains(strtoupper($product->brand), 'SDN') && !str_contains(strtoupper($product->brand), 'MST'))
                                     <span class="product-meta-item product-meta-brand" title="{{ $product->brand }}">🏷️ {{ $product->brand }}</span>
                                 @endif
                             </div>
@@ -450,12 +455,12 @@
                     <div class="sourcing-icon-badge">📦</div>
                     <div class="sourcing-text">
                         <h2 class="sourcing-title">@t('walkin.custom_sourcing_title', "Can't Find What You Need?")</h2>
-                        <p class="sourcing-desc">@t('walkin.custom_sourcing_desc', 'MST also provides customised sourcing for products, specifications and pack sizes not currently listed online.')</p>
+                        <h3 style="font-size:1.02rem;font-weight:700;color:#0f274a;margin-top:2px;margin-bottom:4px">@t('walkin.custom_sourcing_subtitle', 'We Can Source It For You.')</h3>
+                        <p class="sourcing-desc">@t('walkin.custom_sourcing_desc', 'MST provides customised sourcing for products, specifications and pack sizes not currently listed online. Product availability, specifications, MOQ and pricing are subject to supplier confirmation.')</p>
                     </div>
                     <div class="sourcing-action">
                         <a href="{{ route('quotations.create') }}" class="btn-sourcing-cta">
-                            <span>@t('walkin.request_custom_sourcing', 'Request Custom Sourcing')</span>
-                            <span class="cta-arrow">→</span>
+                            <span>@t('walkin.request_custom_sourcing', 'Request Custom Sourcing →')</span>
                         </a>
                     </div>
                 </div>

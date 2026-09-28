@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Services\PricingService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ShopController extends Controller
 {
@@ -16,14 +17,18 @@ class ShopController extends Controller
         $group = $this->pricing->resolveGroup();
         $customerType = $request->get('customer_type', auth()->check() && in_array($group, ['wholesale', 'trading']) ? 'wholesale' : 'retail');
 
-        // Fetch primary parent categories with active children
-        $parentCategories = Category::active()
-            ->whereNull('parent_id')
-            ->with(['children' => fn($q) => $q->active()->orderBy('sort_order')])
-            ->orderBy('sort_order')
-            ->get();
+        // Fetch primary parent categories with active children (cached for performance)
+        $parentCategories = Cache::remember('shop_parent_categories', 1800, function () {
+            return Category::active()
+                ->whereNull('parent_id')
+                ->with(['children' => fn($q) => $q->active()->orderBy('sort_order')])
+                ->orderBy('sort_order')
+                ->get();
+        });
 
-        $allCategories = Category::active()->orderBy('sort_order')->get();
+        $allCategories = Cache::remember('shop_all_categories', 1800, function () {
+            return Category::active()->orderBy('sort_order')->get();
+        });
 
         $query = Product::active()->with('category');
 

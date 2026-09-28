@@ -2,80 +2,47 @@
 
 namespace App\Services;
 
+use App\Models\DeliveryZone;
 use App\Models\Setting;
 
 class DeliveryService
 {
     /**
-     * Standard B2C threshold for local delivery arrangement (MYR).
+     * Standard B2C threshold for local delivery fee exemption (MYR).
      */
-    public const DEFAULT_THRESHOLD = 100.00;
+    public const DEFAULT_B2C_THRESHOLD = 100.00;
 
     /**
-     * Get the active B2C delivery threshold amount from settings.
+     * Standard B2B Wholesale threshold for local delivery fee exemption (MYR).
      */
-    public function getThreshold(): float
-    {
-        return (float) Setting::get('delivery_b2c_free_threshold', self::DEFAULT_THRESHOLD);
-    }
+    public const DEFAULT_B2B_THRESHOLD = 350.00;
 
     /**
-     * Get configured transportation rates.
+     * Get the active delivery threshold amount for given customer group.
      */
-    public function getRates(): array
+    public function getThreshold(string $group = 'retail'): float
     {
-        return [
-            'local_johor' => (float) Setting::get('delivery_fee_zone_local', 10.00),
-            'outstation'  => (float) Setting::get('delivery_fee_zone_outstation', 20.00),
-            'default'     => (float) Setting::get('delivery_fee_default', 15.00),
-        ];
-    }
-
-    /**
-     * Determine delivery zone based on state and city.
-     */
-    public function resolveZone(?string $state, ?string $city): array
-    {
-        $stateClean = strtolower(trim((string) $state));
-        $cityClean  = strtolower(trim((string) $city));
-
-        $rates = $this->getRates();
-
-        // 1. Local Johor Zone (Local hub vicinity: Iskandar Puteri, Johor Bahru, Skudai, Kulai, Pasir Gudang, etc.)
-        if (str_contains($stateClean, 'johor') || in_array($cityClean, ['johor bahru', 'jb', 'skudai', 'iskandar puteri', 'gelang patah', 'kulai', 'pasir gudang', 'senai', 'tampoi', 'perling', 'bukit indah', 'ulu tiram', 'masai', 'nusajaya'])) {
-            return [
-                'zone_key'    => 'local_johor',
-                'zone_name'   => 'Johor Bahru & Local Surroundings',
-                'description' => 'Local Cold-Chain Direct Fleet',
-                'rate'        => $rates['local_johor'],
-            ];
+        if ($group === 'wholesale') {
+            return (float) Setting::get('delivery_b2b_free_threshold', self::DEFAULT_B2B_THRESHOLD);
         }
 
-        // 2. West / Peninsular Malaysia Outstation Zone
-        $peninsularStates = [
-            'kuala lumpur', 'kl', 'selangor', 'putrajaya', 'melaka', 'malacca',
-            'negeri sembilan', 'perak', 'penang', 'pulau pinang', 'kedah',
-            'pahang', 'terengganu', 'kelantan', 'perlis'
-        ];
+        return (float) Setting::get('delivery_b2c_free_threshold', self::DEFAULT_B2C_THRESHOLD);
+    }
 
-        foreach ($peninsularStates as $pState) {
-            if (str_contains($stateClean, $pState) || str_contains($cityClean, $pState)) {
-                return [
-                    'zone_key'    => 'outstation',
-                    'zone_name'   => 'Peninsular / Outstation West Malaysia',
-                    'description' => 'Outstation Sub-Zero Courier Logistics',
-                    'rate'        => $rates['outstation'],
-                ];
+    /**
+     * Resolve the applicable DeliveryZone for given location and customer group.
+     */
+    public function resolveZone(?string $postcode, ?string $city, ?string $state, string $group = 'retail'): ?DeliveryZone
+    {
+        $zones = DeliveryZone::active()->forCustomerGroup($group)->get();
+
+        foreach ($zones as $zone) {
+            if ($zone->matchesLocation($postcode, $city, $state)) {
+                return $zone;
             }
         }
 
-        // 3. Fallback General Zone
-        return [
-            'zone_key'    => 'default',
-            'zone_name'   => 'Standard West Malaysia Logistics',
-            'description' => 'Cold-Chain Delivery',
-            'rate'        => $rates['default'],
-        ];
+        return null;
     }
 
     /**
@@ -85,6 +52,7 @@ class DeliveryService
      * @param string $fulfillmentType 'delivery' or 'self_collection'
      * @param string|null $state
      * @param string|null $city
+     * @param string|null $postcode
      * @param string $group 'retail', 'walkin', 'wholesale', 'trading'
      * @return array
      */
@@ -93,59 +61,132 @@ class DeliveryService
         string $fulfillmentType = 'delivery',
         ?string $state = null,
         ?string $city = null,
+        ?string $postcode = null,
         string $group = 'retail'
     ): array {
-        $threshold = $this->getThreshold();
-
-        // Rule 1: Self-collection and Walk-in are NEVER subject to threshold or delivery charge
+        // ─── Rule 1: Self-collection and Walk-in are NEVER subject to threshold or delivery charge ───
         if ($fulfillmentType === 'self_collection' || $group === 'walkin') {
             return [
-                'fulfillment_type'            => $fulfillmentType,
-                'is_self_collection'          => true,
-                'is_eligible_free_delivery'   => true,
-                'threshold'                   => $threshold,
-                'shortfall_for_free_delivery' => 0.00,
-                'fee'                         => 0.00,
-                'zone_key'                    => 'self_collection',
-                'zone_name'                   => 'Store Self-Collection',
-                'zone_description'            => 'SILC Cold-Chain Facility Counter 2 (Free)',
-                'message'                     => 'Self-collection is free with no threshold.',
+                'fulfillment_type'             => 'self_collection',
+                'is_self_collection'           => true,
+                'is_matched'                   => true,
+                'requires_manual_arrangement'  => false,
+                'is_eligible_free_delivery'    => true,
+                'threshold'                    => 0.00,
+                'shortfall_for_free_delivery'  => 0.00,
+                'base_delivery_fee'            => 0.00,
+                'below_threshold_fee'          => 0.00,
+                'fee'                          => 0.00,
+                'zone_id'                      => null,
+                'zone_code'                    => 'SELF-COLLECTION',
+                'zone_name'                    => 'Store Self-Collection',
+                'zone_description'             => 'SILC Cold-Chain Facility Counter 2 (Free)',
+                'message'                      => 'Walk-in / Counter Collection: Collect your confirmed order directly from MST. No delivery fee applies.',
             ];
         }
 
-        $zone = $this->resolveZone($state, $city);
+        // ─── Rule 2: Trading / Import & Distribution uses custom quotation logistics ───
+        if ($group === 'trading') {
+            $zone = $this->resolveZone($postcode, $city, $state, 'trading');
 
-        // Rule 2: RM100 and above -> eligible for standard local delivery arrangement (Fee = 0)
-        if ($subtotal >= $threshold) {
+            if ($zone && !$zone->manual_quotation_required) {
+                $baseFee = (float) $zone->delivery_fee;
+                return [
+                    'fulfillment_type'             => 'delivery',
+                    'is_self_collection'           => false,
+                    'is_matched'                   => true,
+                    'requires_manual_arrangement'  => false,
+                    'is_eligible_free_delivery'    => ($baseFee <= 0),
+                    'threshold'                    => 0.00,
+                    'shortfall_for_free_delivery'  => 0.00,
+                    'base_delivery_fee'            => $baseFee,
+                    'below_threshold_fee'          => 0.00,
+                    'fee'                          => $baseFee,
+                    'zone_id'                      => $zone->id,
+                    'zone_code'                    => $zone->code,
+                    'zone_name'                    => $zone->name,
+                    'zone_description'             => $zone->description,
+                    'message'                      => 'Trading logistics delivery applied (' . $zone->name . ').',
+                ];
+            }
+
             return [
-                'fulfillment_type'            => 'delivery',
-                'is_self_collection'          => false,
-                'is_eligible_free_delivery'   => true,
-                'threshold'                   => $threshold,
-                'shortfall_for_free_delivery' => 0.00,
-                'fee'                         => 0.00,
-                'zone_key'                    => $zone['zone_key'],
-                'zone_name'                   => $zone['zone_name'],
-                'zone_description'            => $zone['description'],
-                'message'                     => "Eligible for standard local delivery arrangement (Order total exceeds RM " . number_format($threshold, 2) . ").",
+                'fulfillment_type'             => 'delivery',
+                'is_self_collection'           => false,
+                'is_matched'                   => false,
+                'requires_manual_arrangement'  => true,
+                'is_eligible_free_delivery'    => false,
+                'threshold'                    => 0.00,
+                'shortfall_for_free_delivery'  => 0.00,
+                'base_delivery_fee'            => 0.00,
+                'below_threshold_fee'          => 0.00,
+                'fee'                          => 0.00,
+                'zone_id'                      => $zone?->id,
+                'zone_code'                    => $zone?->code ?? 'OUTSIDE-ZONE',
+                'zone_name'                    => $zone?->name ?? 'Commercial Logistics Arrangement Required',
+                'zone_description'             => $zone?->description ?? 'Custom bulk pallet / container logistics',
+                'message'                      => 'Trading logistics arrangement required. Please contact MST for schedule confirmation and quotation.',
             ];
         }
 
-        // Rule 3: Below RM100 -> transportation fee applies according to delivery zone
-        $fee = (float) $zone['rate'];
-        $shortfall = round($threshold - $subtotal, 2);
+        // ─── Rule 3: B2C Retail (RM100 threshold) and B2B Wholesale (RM350 threshold) ───
+        $threshold = $this->getThreshold($group);
+        $zone      = $this->resolveZone($postcode, $city, $state, $group);
+
+        // Case 3A: Outside standard zones or manual quotation required
+        if (!$zone || $zone->manual_quotation_required) {
+            return [
+                'fulfillment_type'             => 'delivery',
+                'is_self_collection'           => false,
+                'is_matched'                   => false,
+                'requires_manual_arrangement'  => true,
+                'is_eligible_free_delivery'    => false,
+                'threshold'                    => $threshold,
+                'shortfall_for_free_delivery'  => max(0.00, round($threshold - $subtotal, 2)),
+                'base_delivery_fee'            => 0.00,
+                'below_threshold_fee'          => 0.00,
+                'fee'                          => 0.00,
+                'zone_id'                      => $zone?->id,
+                'zone_code'                    => $zone?->code ?? 'OUTSIDE-ZONE',
+                'zone_name'                    => $zone?->name ?? 'Outside Standard Zones',
+                'zone_description'             => $zone?->description ?? 'Manual delivery arrangement required',
+                'message'                      => 'Delivery Arrangement Required: Your delivery location is outside our standard delivery zones. Please contact MST to confirm the applicable delivery arrangement and charges.',
+            ];
+        }
+
+        // Case 3B: Standard Zone Matched
+        $baseFee           = (float) $zone->delivery_fee;
+        $belowThresholdFee = (float) $zone->below_threshold_fee;
+        $isAboveThreshold  = ($subtotal >= $threshold);
+        $shortfall         = max(0.00, round($threshold - $subtotal, 2));
+
+        if ($isAboveThreshold) {
+            $appliedBelowFee  = 0.00;
+            $totalDeliveryFee = $baseFee;
+            $message          = "Standard Delivery Arrangement applied ({$zone->name}). Order qualifies for standard delivery threshold (≥ RM " . number_format($threshold, 2) . ").";
+        } else {
+            $appliedBelowFee  = $belowThresholdFee;
+            $totalDeliveryFee = round($baseFee + $appliedBelowFee, 2);
+            $tierLabel        = ($group === 'wholesale') ? 'B2B Wholesale' : 'B2C Retail';
+            $message          = "Orders below the standard delivery threshold (RM " . number_format($threshold, 2) . ") are subject to an additional delivery fee of RM " . number_format($appliedBelowFee, 2) . " ({$zone->name}).";
+        }
 
         return [
-            'fulfillment_type'            => 'delivery',
-            'is_self_collection'          => false,
-            'is_eligible_free_delivery'   => false,
-            'threshold'                   => $threshold,
-            'shortfall_for_free_delivery' => $shortfall,
-            'fee'                         => $fee,
-            'zone_key'                    => $zone['zone_key'],
-            'zone_name'                   => $zone['zone_name'],
-            'zone_description'            => $zone['description'],
-            'message'                     => "Orders below RM " . number_format($threshold, 2) . " are subject to an area transportation charge of RM " . number_format($fee, 2) . " ({$zone['zone_name']}). Add RM " . number_format($shortfall, 2) . " more to qualify for standard delivery.",
+            'fulfillment_type'             => 'delivery',
+            'is_self_collection'           => false,
+            'is_matched'                   => true,
+            'requires_manual_arrangement'  => false,
+            'is_eligible_free_delivery'    => $isAboveThreshold,
+            'threshold'                    => $threshold,
+            'shortfall_for_free_delivery'  => $shortfall,
+            'base_delivery_fee'            => $baseFee,
+            'below_threshold_fee'          => $appliedBelowFee,
+            'fee'                          => $totalDeliveryFee,
+            'zone_id'                      => $zone->id,
+            'zone_code'                    => $zone->code,
+            'zone_name'                    => $zone->name,
+            'zone_description'             => $zone->description,
+            'message'                      => $message,
         ];
     }
 }

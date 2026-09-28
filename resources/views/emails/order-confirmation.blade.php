@@ -3,7 +3,7 @@
 @php
     $mailLoc = $mailLocale ?? current_locale();
     $orderNo = $order->order_number ?? $order->id;
-    $appName = config('app.name', 'MST Import & Export');
+    $appName = config('app.name', 'MST Import and Export Sdn. Bhd.');
 @endphp
 
 @section('title', __t('email.order_confirmed_subject', 'Order Confirmed: :order — :app', ['order' => $orderNo, 'app' => $appName], $mailLoc))

@@ -2,7 +2,7 @@
 
 @php
     $mailLoc = $mailLocale ?? current_locale();
-    $appName = config('app.name', 'MST Import & Export');
+    $appName = config('app.name', 'MST Import and Export Sdn. Bhd.');
 @endphp
 
 @section('title', $user->isPending() ? __t('email.user_registered_subject_pending', 'Account Application Received — :app', ['app' => $appName], $mailLoc) : __t('email.user_registered_subject_active', 'Welcome to :app!', ['app' => $appName], $mailLoc))

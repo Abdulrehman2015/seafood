@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __t('checkout.meta_title', 'Checkout — MST Import and Export Sdn Bhd'))
+@section('title', __t('checkout.meta_title', 'Checkout — MST Import and Export Sdn. Bhd.'))
 
 @section('content')
 <!-- Page Header -->
@@ -139,13 +139,21 @@
                             @endif
                         </span>
                     </div>
+                    <div class="summary-line" id="mobileZoneRow" style="{{ ($group === 'walkin' || empty($deliveryInfo['zone_name'])) ? 'display:none;' : '' }}">
+                        <span style="font-size:0.8rem;color:#64748b">@t('checkout.delivery_zone', 'Delivery Zone')</span>
+                        <span style="font-size:0.8rem;font-weight:600;color:#0f172a" id="mobileZoneDisplay">{{ $deliveryInfo['zone_name'] ?? 'Local Zone' }}</span>
+                    </div>
+                    <div class="summary-line" id="mobileBelowFeeRow" style="{{ (empty($deliveryInfo['below_threshold_fee']) || $deliveryInfo['below_threshold_fee'] <= 0) ? 'display:none;' : '' }}">
+                        <span style="font-size:0.8rem;color:#d97706">@t('checkout.below_threshold_additional_fee', 'Below-RM100 Additional Fee')</span>
+                        <span style="font-size:0.8rem;font-weight:700;color:#d97706" id="mobileBelowFeeDisplay">+ RM {{ number_format($deliveryInfo['below_threshold_fee'] ?? 0, 2) }}</span>
+                    </div>
                     <div class="summary-line">
-                        <span>@t('checkout.shipping_logistics', 'Shipping & Cold-Chain')</span>
+                        <span>@t('checkout.shipping_logistics', 'Delivery Charge')</span>
                         <span class="{{ $initialShippingFee <= 0 ? 'val-green' : 'val-fee' }}" id="mobileShippingDisplay">
                             @if($initialShippingFee <= 0)
                                 @t('checkout.free_standard_delivery', 'Free (Standard Local Delivery)')
                             @else
-                                + RM {{ number_format($initialShippingFee, 2) }} ({{ $deliveryInfo['zone_name'] ?? 'Area Fee' }})
+                                + RM {{ number_format($initialShippingFee, 2) }}
                             @endif
                         </span>
                     </div>
@@ -247,13 +255,20 @@
                         </div>
 
                         {{-- Dynamic Delivery & Transportation Fee Notice Banner --}}
-                        <div id="deliveryNoticeBanner" style="margin-bottom:16px;padding:12px 14px;border-radius:10px;font-size:0.83rem;line-height:1.45;display:flex;align-items:flex-start;gap:10px;{{ $initialShippingFee <= 0 ? 'background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;' : 'background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;' }}">
-                            <span style="font-size:1.1rem;line-height:1;flex-shrink:0" id="deliveryNoticeIcon">{{ $initialShippingFee <= 0 ? '✅' : 'ℹ️' }}</span>
+                        <div id="deliveryNoticeBanner" style="margin-bottom:16px;padding:12px 14px;border-radius:10px;font-size:0.83rem;line-height:1.45;display:flex;align-items:flex-start;gap:10px;{{ !empty($deliveryInfo['requires_manual_arrangement']) ? 'background:#fff7ed;border:1px solid #fdba74;color:#9a3412;' : ($initialShippingFee <= 0 ? 'background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;' : 'background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;') }}">
+                            <span style="font-size:1.1rem;line-height:1;flex-shrink:0" id="deliveryNoticeIcon">{{ !empty($deliveryInfo['requires_manual_arrangement']) ? '⚠️' : ($initialShippingFee <= 0 ? '✅' : 'ℹ️') }}</span>
                             <div id="deliveryNoticeText" style="flex:1">
-                                @if($initialShippingFee <= 0)
+                                @if(!empty($deliveryInfo['requires_manual_arrangement']))
+                                    <strong>@t('checkout.delivery_arrangement_title', 'Delivery Arrangement Required:')</strong> @t('checkout.outside_zone_desc', 'Your delivery location is outside our standard delivery zones. Please contact MST to confirm the applicable delivery arrangement and charges.')
+                                    <div style="margin-top:6px">
+                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '60132800168')) }}" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
+                                            💬 Contact via WhatsApp
+                                        </a>
+                                    </div>
+                                @elseif($initialShippingFee <= 0)
                                     <strong>@t('checkout.standard_delivery_eligible', 'Standard Local Delivery Eligible:')</strong> @t('checkout.standard_delivery_desc', 'Your order qualifies for the standard local delivery arrangement (RM 0.00 delivery fee).')
                                 @else
-                                    <strong>@t('checkout.transportation_fee_applies', 'Area Transportation Charge:')</strong> @t('checkout.transportation_fee_desc', 'Orders under RM 100 are subject to an area delivery charge of :fee (:zone). Add more items to qualify for standard delivery, or select Store Self-Collection for free pickup.', ['fee' => 'RM ' . number_format($initialShippingFee, 2), 'zone' => $deliveryInfo['zone_name'] ?? 'Local Zone'])
+                                    <strong>@t('checkout.delivery_fee_notice_title', 'Delivery Fee Notice:')</strong> @t('checkout.below_threshold_notice', 'Orders below RM 100 may be subject to an additional delivery fee based on your delivery location.') ({{ $deliveryInfo['zone_name'] ?? 'Zone Fee' }}: +RM {{ number_format($initialShippingFee, 2) }})
                                 @endif
                             </div>
                         </div>
@@ -266,19 +281,19 @@
 
                         <div class="address-grid-responsive">
                             <div class="form-group">
+                                <label class="form-label">@t('checkout.postcode', 'Postcode') <span class="required">*</span></label>
+                                <input type="text" name="postcode" id="postcodeInput" class="form-control" value="{{ old('postcode', auth()->user()?->postcode ?? '79100') }}" placeholder="79100" maxlength="8" oninput="debounceDeliveryRecalculation()">
+                                @error('postcode')<div class="form-error">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="form-group">
                                 <label class="form-label">@t('checkout.city', 'City') <span class="required">*</span></label>
-                                <input type="text" name="city" id="cityInput" class="form-control" value="{{ old('city', auth()->user()?->city ?? 'Johor Bahru') }}" placeholder="e.g. Kuala Lumpur / JB" oninput="debounceDeliveryRecalculation()">
+                                <input type="text" name="city" id="cityInput" class="form-control" value="{{ old('city', auth()->user()?->city ?? 'Johor Bahru') }}" placeholder="e.g. Johor Bahru / Iskandar Puteri" oninput="debounceDeliveryRecalculation()">
                                 @error('city')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-group">
                                 <label class="form-label">@t('checkout.state', 'State') <span class="required">*</span></label>
                                 <input type="text" name="state" id="stateInput" class="form-control" value="{{ old('state', auth()->user()?->state ?? 'Johor') }}" placeholder="e.g. Johor" oninput="debounceDeliveryRecalculation()">
                                 @error('state')<div class="form-error">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">@t('checkout.postcode', 'Postcode') <span class="required">*</span></label>
-                                <input type="text" name="postcode" id="postcodeInput" class="form-control" value="{{ old('postcode', auth()->user()?->postcode) }}" placeholder="68100" maxlength="5">
-                                @error('postcode')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                         </div>
                     </div>
@@ -388,13 +403,21 @@
                                     @endif
                                 </span>
                             </div>
+                            <div class="summary-line" id="desktopZoneRow" style="{{ ($group === 'walkin' || empty($deliveryInfo['zone_name'])) ? 'display:none;' : '' }}">
+                                <span class="line-label" style="font-size:0.8rem;color:#64748b">@t('checkout.delivery_zone', 'Delivery Zone')</span>
+                                <span class="line-val" style="font-size:0.8rem;font-weight:600;color:#0f172a" id="desktopZoneDisplay">{{ $deliveryInfo['zone_name'] ?? 'Local Zone' }}</span>
+                            </div>
+                            <div class="summary-line" id="desktopBelowFeeRow" style="{{ (empty($deliveryInfo['below_threshold_fee']) || $deliveryInfo['below_threshold_fee'] <= 0) ? 'display:none;' : '' }}">
+                                <span class="line-label" style="font-size:0.8rem;color:#d97706">@t('checkout.below_threshold_additional_fee', 'Below-RM100 Additional Fee')</span>
+                                <span class="line-val" style="font-size:0.8rem;font-weight:700;color:#d97706" id="desktopBelowFeeDisplay">+ RM {{ number_format($deliveryInfo['below_threshold_fee'] ?? 0, 2) }}</span>
+                            </div>
                             <div class="summary-line">
-                                <span class="line-label">@t('checkout.shipping_logistics', 'Shipping & Logistics')</span>
+                                <span class="line-label">@t('checkout.shipping_logistics', 'Delivery Charge')</span>
                                 <span class="line-val {{ $initialShippingFee <= 0 ? 'val-green' : 'val-fee' }}" id="shippingDisplay">
                                     @if($initialShippingFee <= 0)
                                         @t('checkout.free_standard_delivery', 'Free (Standard Local Delivery)')
                                     @else
-                                        + RM {{ number_format($initialShippingFee, 2) }} ({{ $deliveryInfo['zone_name'] ?? 'Area Fee' }})
+                                        + RM {{ number_format($initialShippingFee, 2) }}
                                     @endif
                                 </span>
                             </div>
@@ -1400,16 +1423,19 @@ function debounceDeliveryRecalculation() {
 function fetchDeliveryFee() {
     const fulfillmentInput = document.querySelector('input[name="fulfillment_type"]:checked');
     const fulfillment = fulfillmentInput ? fulfillmentInput.value : 'delivery';
-    const stateInput = document.getElementById('stateInput');
-    const cityInput = document.getElementById('cityInput');
+    const stateInput    = document.getElementById('stateInput');
+    const cityInput     = document.getElementById('cityInput');
+    const postcodeInput = document.getElementById('postcodeInput');
 
-    const state = stateInput ? stateInput.value : '';
-    const city = cityInput ? cityInput.value : '';
+    const state    = stateInput ? stateInput.value : '';
+    const city     = cityInput ? cityInput.value : '';
+    const postcode = postcodeInput ? postcodeInput.value : '';
 
     const payload = {
         fulfillment_type: fulfillment,
         state: state,
         city: city,
+        postcode: postcode,
         subtotal: checkoutI18n.subtotal,
         _token: '{{ csrf_token() }}'
     };
@@ -1436,21 +1462,81 @@ function applyDeliveryFeeUpdate(data) {
     if (!data) return;
 
     const isFree = data.fee <= 0;
-    const feeText = isFree
-        ? (data.is_self_collection ? checkoutI18n.freeSelfCollection : checkoutI18n.freeStandardDelivery)
-        : '+ RM ' + data.fee_formatted + ' (' + data.zone_name + ')';
+    const isSelfCollection = Boolean(data.is_self_collection);
+    const requiresManual = Boolean(data.requires_manual_arrangement);
+
+    let feeText = '';
+    if (isSelfCollection) {
+        feeText = checkoutI18n.freeSelfCollection;
+    } else if (requiresManual) {
+        feeText = 'Custom Arrangement';
+    } else if (isFree) {
+        feeText = checkoutI18n.freeStandardDelivery;
+    } else {
+        feeText = '+ RM ' + data.fee_formatted;
+    }
 
     // Update Shipping display elements
     const desktopShip = document.getElementById('shippingDisplay');
     if (desktopShip) {
         desktopShip.textContent = feeText;
-        desktopShip.className = isFree ? 'line-val val-green' : 'line-val val-fee';
+        desktopShip.className = (isFree || isSelfCollection) ? 'line-val val-green' : (requiresManual ? 'line-val' : 'line-val val-fee');
     }
 
     const mobileShip = document.getElementById('mobileShippingDisplay');
     if (mobileShip) {
         mobileShip.textContent = feeText;
-        mobileShip.className = isFree ? 'val-green' : 'val-fee';
+        mobileShip.className = (isFree || isSelfCollection) ? 'val-green' : (requiresManual ? '' : 'val-fee');
+    }
+
+    // Update Zone rows
+    const desktopZoneRow = document.getElementById('desktopZoneRow');
+    const desktopZoneDisplay = document.getElementById('desktopZoneDisplay');
+    const mobileZoneRow = document.getElementById('mobileZoneRow');
+    const mobileZoneDisplay = document.getElementById('mobileZoneDisplay');
+
+    if (desktopZoneRow && desktopZoneDisplay) {
+        if (!isSelfCollection && data.zone_name) {
+            desktopZoneRow.style.display = 'flex';
+            desktopZoneDisplay.textContent = data.zone_name;
+        } else {
+            desktopZoneRow.style.display = 'none';
+        }
+    }
+
+    if (mobileZoneRow && mobileZoneDisplay) {
+        if (!isSelfCollection && data.zone_name) {
+            mobileZoneRow.style.display = 'flex';
+            mobileZoneDisplay.textContent = data.zone_name;
+        } else {
+            mobileZoneRow.style.display = 'none';
+        }
+    }
+
+    // Update Below-RM100 Fee Rows
+    const desktopBelowRow = document.getElementById('desktopBelowFeeRow');
+    const desktopBelowDisplay = document.getElementById('desktopBelowFeeDisplay');
+    const mobileBelowRow = document.getElementById('mobileBelowFeeRow');
+    const mobileBelowDisplay = document.getElementById('mobileBelowFeeDisplay');
+
+    const hasBelowFee = !isSelfCollection && (parseFloat(data.below_threshold_fee) > 0);
+
+    if (desktopBelowRow && desktopBelowDisplay) {
+        if (hasBelowFee) {
+            desktopBelowRow.style.display = 'flex';
+            desktopBelowDisplay.textContent = '+ RM ' + data.below_threshold_fee_formatted;
+        } else {
+            desktopBelowRow.style.display = 'none';
+        }
+    }
+
+    if (mobileBelowRow && mobileBelowDisplay) {
+        if (hasBelowFee) {
+            mobileBelowRow.style.display = 'flex';
+            mobileBelowDisplay.textContent = '+ RM ' + data.below_threshold_fee_formatted;
+        } else {
+            mobileBelowRow.style.display = 'none';
+        }
     }
 
     // Format Grand Total strings
@@ -1503,12 +1589,18 @@ function applyDeliveryFeeUpdate(data) {
     const noticeText = document.getElementById('deliveryNoticeText');
 
     if (noticeBanner && noticeIcon && noticeText) {
-        if (data.is_self_collection) {
+        if (isSelfCollection) {
             noticeBanner.style.background = '#f0fdf4';
             noticeBanner.style.border = '1px solid #bbf7d0';
             noticeBanner.style.color = '#166534';
             noticeIcon.textContent = '🏪';
-            noticeText.innerHTML = '<strong>Store Self-Collection:</strong> Free counter pickup at SILC Cold-Chain facility with no minimum order threshold.';
+            noticeText.innerHTML = '<strong>Store Self-Collection:</strong> Collect your confirmed order directly from MST. No delivery fee applies.';
+        } else if (requiresManual) {
+            noticeBanner.style.background = '#fff7ed';
+            noticeBanner.style.border = '1px solid #fdba74';
+            noticeBanner.style.color = '#9a3412';
+            noticeIcon.textContent = '⚠️';
+            noticeText.innerHTML = '<strong>Delivery Arrangement Required:</strong> Your delivery location is outside our standard delivery zones. Please contact MST to confirm the applicable delivery arrangement and charges.<div style="margin-top:6px"><a href="' + (data.whatsapp_url || '#') + '" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">💬 Contact via WhatsApp</a></div>';
         } else if (isFree) {
             noticeBanner.style.background = '#f0fdf4';
             noticeBanner.style.border = '1px solid #bbf7d0';
@@ -1520,7 +1612,7 @@ function applyDeliveryFeeUpdate(data) {
             noticeBanner.style.border = '1px solid #bfdbfe';
             noticeBanner.style.color = '#1e40af';
             noticeIcon.textContent = 'ℹ️';
-            noticeText.innerHTML = '<strong>Area Transportation Charge:</strong> Orders under RM ' + Number(data.threshold).toFixed(2) + ' are subject to an area delivery fee of RM ' + data.fee_formatted + ' (' + data.zone_name + '). Add RM ' + data.shortfall_for_free_delivery.toFixed(2) + ' more to qualify for standard delivery, or select Store Self-Collection for free pickup.';
+            noticeText.innerHTML = '<strong>Delivery Fee Notice:</strong> Orders below RM ' + Number(data.threshold).toFixed(2) + ' may be subject to an additional delivery fee based on your delivery location. (<strong>' + data.zone_name + '</strong>: Delivery Fee RM ' + data.fee_formatted + (hasBelowFee ? ' including RM ' + data.below_threshold_fee_formatted + ' below-RM100 fee' : '') + ').';
         }
     }
 

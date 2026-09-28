@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', ($order->fulfillment_type === 'self_collection' || $order->customer_group === 'walkin') ? __t('checkout.collection_token', 'Collection Token') . ' #' . ($order->collection_token ?? $order->order_number) : __t('checkout.order_confirmed_title', 'Order Confirmed — MST Import and Export Sdn Bhd'))
+@section('title', ($order->fulfillment_type === 'self_collection' || $order->customer_group === 'walkin') ? __t('checkout.collection_token', 'Collection Token') . ' #' . ($order->collection_token ?? $order->order_number) : __t('checkout.order_confirmed_title', 'Order Confirmed — MST Import and Export Sdn. Bhd.'))
 
 @section('content')
 <!-- Page Header -->
@@ -200,7 +200,7 @@
                 <div style="font-size:3.5rem;margin-bottom:var(--space-3);animation:bounceIn 0.6s ease">🎉</div>
                 <h1 style="font-family:var(--font-heading);margin-bottom:var(--space-2);color:var(--gray-900)">@t('checkout.order_confirmed_title', 'Order Confirmed!')</h1>
                 <p class="text-muted" style="font-size:0.95rem">
-                    @t('checkout.success_subtitle', 'Thank you for ordering with MST Import and Export Sdn Bhd! We are preparing your shipment.')
+                    @t('checkout.success_subtitle', 'Thank you for ordering with MST Import and Export Sdn. Bhd.! We are preparing your shipment.')
                 </p>
             </div>
 

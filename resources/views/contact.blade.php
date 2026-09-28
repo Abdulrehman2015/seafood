@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title', __t('contact.header_title', 'Contact MST') . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd'))
-@section('meta_description', __t('contact.subtitle', 'Have questions about products, wholesale supply, customised sourcing or cold-chain distribution? Tell us what you need and our team will assist you.'))
+@section('title', __t('contact.header_title', 'Contact Us') . ' — ' . 'MST Import and Export Sdn. Bhd.')
+@section('meta_description', __t('contact.subtitle', 'Have questions about our products, wholesale supply, customised sourcing or delivery arrangements? Tell us what you need and our team will assist you.'))
 
 @section('content')
 <!-- Local Leaflet CSS (Same-Origin for strict CSP & ad-blocker compliance) -->
@@ -959,23 +959,23 @@
         <div class="breadcrumb" style="margin-bottom:var(--space-2)">
             <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:4px;color:#bae6fd;text-decoration:none">🏠 @t('nav.home', 'Home')</a>
             <span class="breadcrumb-sep" style="color:#60a5fa">›</span>
-            <span style="font-weight:600;color:#ffffff">@t('contact.header_title', 'Contact MST')</span>
+            <span style="font-weight:600;color:#ffffff">@t('contact.breadcrumb_contact', 'Contact Us')</span>
         </div>
         <div>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap">
                 <span class="contact-hero-pill">
                     📍 @t('contact.hero_pill', 'Sourcing & Customer Support')
                 </span>
-                <span style="color:#bae6fd;font-size:0.82rem">@t('contact.hero_location', 'Iskandar Puteri, Johor · Malaysia, Singapore & Selected Regional Markets')</span>
+                <span style="color:#bae6fd;font-size:0.82rem">@t('contact.hero_location', 'Iskandar Puteri, Johor · Serving Malaysia, Singapore & Selected Regional Markets')</span>
             </div>
             <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.8rem,3.5vw,2.5rem);margin-bottom:6px;letter-spacing:-0.02em">
-                @t('contact.header_title', 'Contact MST')
+                @t('contact.header_title', 'Contact Us')
             </h1>
             <div style="color:#93c5fd;font-size:0.9rem;font-weight:700;margin-bottom:8px">
-                镁嘉国际贸易有限公司 · MST IMPORT &amp; EXPORT SDN. BHD.
+                @t('contact.company_subheading', '镁嘉国际贸易有限公司 · MST Import and Export Sdn. Bhd.')
             </div>
             <p class="page-subtitle" style="color:#e0f2fe;font-size:0.95rem;max-width:740px;line-height:1.55;margin:0">
-                @t('contact.subtitle', 'Have questions about products, wholesale supply, customised sourcing or cold-chain distribution? Tell us what you need and our team will assist you.')
+                @t('contact.subtitle', 'Have questions about our products, wholesale supply, customised sourcing or delivery arrangements? Tell us what you need and our team will assist you in finding suitable products and supply solutions.')
             </p>
         </div>
     </div>
@@ -994,16 +994,14 @@
                     <circle cx="12" cy="10" r="3"></circle>
                 </svg>
             </div>
-            <h2 class="contact-card-title">@t('contact.card1_title', 'Facility & Collection Centre')</h2>
-            <div class="contact-card-main-title">MST IMPORT &amp; EXPORT SDN. BHD.</div>
-            <div style="color:#2563eb;font-weight:700;font-size:0.84rem;margin-bottom:6px">
-                镁嘉国际贸易有限公司
-            </div>
+            <h2 class="contact-card-title">@t('contact.card1_title', 'SILC Facility & Collection Centre')</h2>
+            <div class="contact-card-main-title" style="font-size:1.05rem;font-weight:800;color:#0f172a;line-height:1.25">镁嘉国际贸易有限公司</div>
+            <div style="color:#2563eb;font-weight:700;font-size:0.84rem;margin-bottom:6px">MST Import and Export Sdn. Bhd.</div>
             <div class="contact-card-sub" style="margin-bottom:6px;font-size:0.82rem;line-height:1.4">
-                7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia
+                No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia
             </div>
             <p class="contact-card-sub" style="margin-bottom:12px;font-size:0.78rem;color:#64748b;line-height:1.4">
-                @t('contact.card1_desc', 'Our SILC facility supports product handling, order preparation, cold-chain storage and customer collection.')
+                @t('contact.card1_desc', 'Our SILC facility supports product handling, order preparation, packing, frozen temperature-controlled storage and customer collection.')
             </p>
             <div style="margin-top:auto;padding-top:8px;width:100%">
                 <a href="https://maps.app.goo.gl/jLMaDYCNJ6vfk376A" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:8px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
@@ -1021,12 +1019,13 @@
             </div>
             <h2 class="contact-card-title">@t('contact.card2_title', 'Direct Hotlines')</h2>
             <a href="tel:+60132800168" class="contact-card-main-link" style="font-size:1.05rem">
-                +6013-2800168
+                +60 13-280 0168
             </a>
             <div class="contact-card-sub" style="display:flex;flex-direction:column;gap:3px">
-                <div><a href="tel:+601114360109" style="color:#1d4ed8;font-weight:600;font-size:0.84rem;text-decoration:none">Alt: +6011-14360109</a></div>
-                <div style="margin-top:6px;color:#0f172a;font-weight:600;font-size:0.8rem">Monday – Saturday: 8:00 AM – 6:00 PM</div>
-                <div style="color:#64748b;font-size:0.76rem">Sunday &amp; Public Holidays: Closed</div>
+                <div><a href="tel:+601112710260" style="color:#1d4ed8;font-weight:600;font-size:0.84rem;text-decoration:none">+60 11-1271 0260</a></div>
+                <div style="margin-top:6px;color:#0f172a;font-weight:700;font-size:0.8rem">@t('contact.customer_service_hours', 'Customer Service Hours')</div>
+                <div style="color:#0f172a;font-weight:600;font-size:0.8rem">@t('contact.hours_mon_sat', 'Monday – Saturday: 8:00 AM – 6:00 PM')</div>
+                <div style="color:#64748b;font-size:0.76rem">@t('contact.hours_sun_holidays', 'Sunday & Public Holidays: Closed')</div>
             </div>
             <div style="margin-top:auto;padding-top:12px;width:100%">
                 <a href="tel:+60132800168" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:0.8rem;font-weight:700;padding:8px 12px;border-radius:8px;text-decoration:none;width:100%;box-sizing:border-box;">
@@ -1072,7 +1071,7 @@
             </div>
             <h2 class="contact-card-title">@t('contact.card4_title', 'WhatsApp Support')</h2>
             <a href="https://wa.me/601112710260" target="_blank" rel="noopener" class="contact-card-main-link">
-                +60 11-12710260
+                +60 11-1271 0260
             </a>
             <div class="contact-card-sub">
                 <div style="color:#64748b;font-size:0.82rem;line-height:1.45">
@@ -1106,8 +1105,8 @@
 
                 <!-- Title -->
                 <h2 class="sourcing-panel-title">
-                    @t('contact.process_title_1', 'Streamlined Sourcing,')<br>
-                    <span class="sourcing-gradient-text">@t('contact.process_title_2', 'From Inquiry to Supply')</span>
+                    @t('contact.process_title_1', 'From Sourcing Inquiry,')<br>
+                    <span class="sourcing-gradient-text">@t('contact.process_title_2', 'To Supply Arrangement')</span>
                 </h2>
 
                 <!-- 4 Steps Flow -->
@@ -1128,9 +1127,9 @@
                     <div class="consultation-step-item">
                         <div class="step-number-box">02</div>
                         <div>
-                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step2_title', '02 — TELL US YOUR REQUIREMENTS')</div>
+                            <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step2_title', '02 — SPECIFY QUANTITY & SPECS')</div>
                             <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
-                                @t('contact.step2_desc', 'Specify your target volume (kg, cartons or pallets), pack size, origin preference, delivery frequency and any product specifications or sourcing requirements.')
+                                @t('contact.step2_desc', 'Provide your target volume (kg, cartons or pallets), pack size, origin preference, delivery frequency and product specifications.')
                             </div>
                         </div>
                     </div>
@@ -1141,7 +1140,7 @@
                         <div>
                             <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step3_title', '03 — RECEIVE A QUOTATION')</div>
                             <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
-                                @t('contact.step3_desc', 'Our commercial team reviews your requirements, checks availability or coordinates with our sourcing network, and provides a quotation based on product specification, quantity and supply conditions.')
+                                @t('contact.step3_desc', 'Our team will verify available stock or assist in finding suitable sources based on your product specifications, volume and supply conditions, and provide a quotation.')
                             </div>
                         </div>
                     </div>
@@ -1152,7 +1151,7 @@
                         <div>
                             <div style="font-weight:800;font-size:0.96rem;color:#ffffff;margin-bottom:3px">@t('contact.step4_title', '04 — ARRANGE SUPPLY & LOGISTICS')</div>
                             <div style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.45">
-                                @t('contact.step4_desc', 'Arrange delivery, collection or other suitable logistics according to your order requirements and destination.')
+                                @t('contact.step4_desc', 'Arrange delivery, SILC facility collection or suitable logistics according to order volume, delivery location and order requirements.')
                             </div>
                         </div>
                     </div>
@@ -1168,7 +1167,7 @@
                     </svg>
                 </div>
                 <div style="font-size:0.82rem;color:rgba(255,255,255,0.88);line-height:1.45">
-                    <strong style="color:#ffffff;">@t('contact.trust_label', 'Cold-Chain Handling:')</strong> @t('contact.trust_desc', 'Temperature-controlled storage and product handling are maintained according to product requirements.')
+                    <strong style="color:#ffffff;">@t('contact.trust_label', 'Temperature-Controlled Storage Management:')</strong> @t('contact.trust_desc', 'Appropriate frozen temperature-controlled storage, product handling and dispatch arrangements are made according to product storage requirements.')
                 </div>
             </div>
 
@@ -1178,15 +1177,15 @@
         <div class="consultation-white-panel">
             
             <div style="font-size:0.75rem;font-weight:800;letter-spacing:1.2px;color:#2563eb;text-transform:uppercase;margin-bottom:6px">
-                @t('contact.form_eyebrow', 'REQUEST FOR QUOTATION & INQUIRY')
+                @t('contact.form_eyebrow', 'COMMERCIAL INQUIRY & SOURCING SUPPORT')
             </div>
             
             <h2 style="font-size:2rem;font-weight:800;color:#0f172a;margin:0 0 6px;letter-spacing:-0.5px">
-                @t('contact.form_title', 'Submit Your Sourcing RFQ')
+                @t('contact.form_title', 'Submit Your Sourcing Requirements')
             </h2>
 
             <p style="font-size:0.92rem;color:#64748b;margin:0 0 24px;line-height:1.5">
-                @t('contact.form_desc', 'Tell us about your requirements. Whether you need standard catalogue items, wholesale quantities or customised sourcing, provide your requirements and our team will review them with you.')
+                @t('contact.form_desc', 'Tell us about your requirements. Whether you need standard catalogue items, wholesale quantities or customised sourcing, please provide the details and we will contact you based on your needs.')
             </p>
 
             @if(session('success'))
@@ -1238,7 +1237,7 @@
                 <!-- Row 2: Multi-select Interests Dropdown (Section 18) -->
                 <div class="form-group-custom form-group-interests" id="interestsFormGroup">
                     <label class="form-label-custom" for="interestsMultiSelectTrigger">
-                        @t('contact.interested_in', 'I am interested in:') <span style="font-weight:400;color:#64748b">@t('contact.select_multiple_hint', '(Select multiple)')</span>
+                        @t('contact.interested_in_heading', 'I am interested in (Select multiple)')
                     </label>
                     <div class="searchable-select-container multi-select-container" id="interestsMultiSelectContainer">
                         <div class="searchable-trigger multi-select-trigger" id="interestsMultiSelectTrigger" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false">
@@ -1276,16 +1275,15 @@
                             <div class="searchable-options-list multi-select-options-list" id="interestsOptionsList" role="listbox" aria-multiselectable="true">
                                 @php
                                     $interestOptions = [
-                                        'Walk-in / Retail' => ['label' => __t('contact.interest_retail_label', 'Walk-in / Retail'), 'icon' => '🏪', 'desc' => __t('contact.interest_retail_desc', 'Individual purchase & counter collection')],
-                                        'Wholesale Supply' => ['label' => __t('contact.interest_wholesale_label', 'Wholesale Supply'), 'icon' => '🏭', 'desc' => __t('contact.interest_wholesale_desc', 'B2B commercial food service & volume supply')],
-                                        'Trading' => ['label' => __t('contact.interest_trading_label', 'Trading'), 'icon' => '📦', 'desc' => __t('contact.interest_trading_desc', 'Distribution & trade supply')],
-                                        'Customised Sourcing' => ['label' => __t('contact.interest_sourcing_label', 'Customised Sourcing'), 'icon' => '🔍', 'desc' => __t('contact.interest_sourcing_desc', 'Tailored specifications & origin sourcing')],
+                                        'Retail / Walk-in' => ['label' => __t('contact.interest_retail_label', 'Retail / Walk-in'), 'icon' => '🏪', 'desc' => __t('contact.interest_retail_desc', 'Individual purchase & SILC counter self-collection')],
+                                        'Wholesale / B2B' => ['label' => __t('contact.interest_wholesale_label', 'Wholesale / B2B'), 'icon' => '🏭', 'desc' => __t('contact.interest_wholesale_desc', 'B2B commercial food service & bulk supply')],
+                                        'Trading Supply' => ['label' => __t('contact.interest_trading_label', 'Trading Supply'), 'icon' => '📦', 'desc' => __t('contact.interest_trading_desc', 'Trade supply & regional distribution')],
+                                        'Customised Sourcing' => ['label' => __t('contact.interest_sourcing_label', 'Customised Sourcing'), 'icon' => '🔍', 'desc' => __t('contact.interest_sourcing_desc', 'Tailored specifications & direct origin sourcing')],
                                         'Seafood' => ['label' => __t('contact.interest_seafood_label', 'Seafood'), 'icon' => '🐟', 'desc' => __t('contact.interest_seafood_desc', 'Fresh-frozen seafood & marine catch')],
                                         'Meat' => ['label' => __t('contact.interest_meat_label', 'Meat'), 'icon' => '🥩', 'desc' => __t('contact.interest_meat_desc', 'Poultry, beef, lamb & specialty meats')],
                                         'Frozen Food' => ['label' => __t('contact.interest_frozen_label', 'Frozen Food'), 'icon' => '❄️', 'desc' => __t('contact.interest_frozen_desc', 'Processed & ready-to-cook items')],
-                                        'Food Ingredients' => ['label' => __t('contact.interest_food_ing_label', 'Food Ingredients'), 'icon' => '🧂', 'desc' => __t('contact.interest_food_ing_desc', 'Commercial seasonings, surimi & bases')],
-                                        'Cuisine Ingredients' => ['label' => __t('contact.interest_cuisine_label', 'Cuisine Ingredients'), 'icon' => '🌏', 'desc' => __t('contact.interest_cuisine_desc', 'Japanese, Korean & regional specialties')],
-                                        'Other' => ['label' => __t('contact.interest_other_label', 'Other'), 'icon' => '📋', 'desc' => __t('contact.interest_other_desc', 'Other special requirements & inquiries')],
+                                        'Food Ingredients' => ['label' => __t('contact.interest_food_ing_label', 'Food Ingredients'), 'icon' => '🧂', 'desc' => __t('contact.interest_food_ing_desc', 'Commercial seasonings, surimi & food bases')],
+                                        'Other' => ['label' => __t('contact.interest_other_label', 'Other'), 'icon' => '📋', 'desc' => __t('contact.interest_other_desc', 'Other special requirements & enquiries')],
                                     ];
                                     $oldInterests = (array) old('interests', []);
                                 @endphp
@@ -1324,7 +1322,7 @@
                 <div class="consultation-form-grid-2">
                     <div class="field-col-category">
                         <label class="form-label-custom">
-                            @t('contact.specific_category', 'Specific Category') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                            @t('contact.specific_category', 'Target Category')<span style="font-weight:400;color:#94a3b8">@t('contact.optional', ' (Optional)')</span>
                         </label>
                         <!-- Custom Searchable Category Dropdown -->
                         <div class="searchable-select-container" id="categorySelectContainer">
@@ -1395,7 +1393,7 @@
 
                     <div class="field-col-product">
                         <label class="form-label-custom">
-                            @t('contact.product_item', 'Product / Item') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                            @t('contact.product_item', 'Specific Product / Item')<span style="font-weight:400;color:#94a3b8">@t('contact.optional', ' (Optional)')</span>
                         </label>
                         <!-- Custom Searchable Product Dropdown -->
                         <div class="searchable-select-container disabled" id="productSelectContainer">
@@ -1434,7 +1432,7 @@
                 <div class="consultation-form-grid-2">
                     <div>
                         <label class="form-label-custom">
-                            @t('contact.company_name_label', 'Company Name') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                            @t('contact.company_name_label', 'Company Name')<span style="font-weight:400;color:#94a3b8">@t('contact.optional', ' (Optional)')</span>
                         </label>
                         <input type="text" name="company_name" class="form-control-custom" 
                                value="{{ old('company_name', auth()->user()?->company_name) }}"
@@ -1443,18 +1441,18 @@
 
                     <div>
                         <label class="form-label-custom">
-                            @t('contact.business_reg_no_label', 'Business Registration No.') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                            @t('contact.business_reg_no_label', 'Business Registration No. (SSM / UEN)')<span style="font-weight:400;color:#94a3b8">@t('contact.optional', ' (Optional)')</span>
                         </label>
                         <input type="text" name="business_reg_no" class="form-control-custom" 
                                value="{{ old('business_reg_no', auth()->user()?->company_registration_no) }}"
-                               placeholder="{{ __t('contact.reg_no_placeholder', 'SSM / Business Reg No. (Optional)') }}">
+                               placeholder="{{ __t('contact.reg_no_placeholder', 'SSM / UEN / Business Reg No. (Optional)') }}">
                     </div>
                 </div>
 
                 <div class="consultation-form-grid-2">
                     <div>
                         <label class="form-label-custom">
-                            @t('contact.order_volume_label', 'Estimated Order Volume') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                            @t('contact.order_volume_label', 'Estimated Order Volume')<span style="font-weight:400;color:#94a3b8">@t('contact.optional', ' (Optional)')</span>
                         </label>
                         <input type="text" name="order_volume" class="form-control-custom" 
                                value="{{ old('order_volume') }}"
@@ -1463,18 +1461,18 @@
 
                     <div>
                         <label class="form-label-custom">
-                            @t('contact.delivery_location_label', 'Delivery / Collection Location') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                            @t('contact.delivery_location_label', 'Delivery / Collection Location')<span style="font-weight:400;color:#94a3b8">@t('contact.optional', ' (Optional)')</span>
                         </label>
                         <input type="text" name="delivery_location" class="form-control-custom" 
                                value="{{ old('delivery_location') }}"
-                               placeholder="{{ __t('contact.delivery_location_placeholder', 'e.g., Johor Bahru / Singapore / SILC Counter 2') }}">
+                               placeholder="{{ __t('contact.delivery_location_placeholder', 'e.g., Johor Bahru / Singapore / SILC Collection') }}">
                     </div>
                 </div>
 
                 <!-- Preferred Contact Method -->
                 <div class="form-group-custom" style="margin-bottom:18px">
                     <label class="form-label-custom">
-                        @t('contact.preferred_contact_method', 'Preferred Contact Method') <span style="font-weight:400;color:#94a3b8">@t('contact.optional', '(Optional)')</span>
+                        @t('contact.preferred_contact_method', 'Preferred Contact Method')<span style="font-weight:400;color:#94a3b8">@t('contact.optional', ' (Optional)')</span>
                     </label>
                     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
                         <label style="display:inline-flex;align-items:center;gap:6px;font-size:0.88rem;color:#334155;cursor:pointer;background:#f8fafc;border:1px solid #cbd5e1;padding:6px 14px;border-radius:8px;font-weight:600;">
@@ -1483,11 +1481,11 @@
                         </label>
                         <label style="display:inline-flex;align-items:center;gap:6px;font-size:0.88rem;color:#334155;cursor:pointer;background:#f8fafc;border:1px solid #cbd5e1;padding:6px 14px;border-radius:8px;font-weight:600;">
                             <input type="radio" name="contact_preference" value="phone" {{ old('contact_preference') === 'phone' ? 'checked' : '' }}>
-                            <span>📞 @t('contact.phone_call', 'Phone Call')</span>
+                            <span>📞 @t('contact.phone_option', 'Phone')</span>
                         </label>
                         <label style="display:inline-flex;align-items:center;gap:6px;font-size:0.88rem;color:#334155;cursor:pointer;background:#f8fafc;border:1px solid #cbd5e1;padding:6px 14px;border-radius:8px;font-weight:600;">
                             <input type="radio" name="contact_preference" value="email" {{ old('contact_preference') === 'email' ? 'checked' : '' }}>
-                            <span>✉️ Email</span>
+                            <span>✉️ @t('contact.email_option', 'Email')</span>
                         </label>
                     </div>
                 </div>
@@ -1498,7 +1496,7 @@
                         @t('contact.requirements_desc', 'Requirements / Description') <span style="color:#ef4444">*</span>
                     </label>
                     <textarea name="message" class="form-control-custom" rows="4" required 
-                              placeholder="{{ __t('contact.message_placeholder', 'Specify your target volume (kg, cartons or pallets), pack size, origin preference, delivery frequency, or customised product specifications...') }}">{{ old('message') }}</textarea>
+                              placeholder="{{ __t('contact.message_placeholder', 'Provide your target volume (kg, cartons or pallets), packaging specifications, origin preference, delivery frequency or product requirements...') }}">{{ old('message') }}</textarea>
                     @error('message')<div style="color:#ef4444;font-size:0.78rem;margin-top:4px">{{ $message }}</div>@enderror
                 </div>
 
@@ -1507,11 +1505,11 @@
 
                 <!-- Submit Button -->
                 <button type="submit" class="contact-submit-btn">
-                    <span>@t('contact.submit_btn', 'Submit Enquiry / RFQ →')</span>
+                    <span>@t('contact.submit_btn', 'Submit Sourcing Request / RFQ →')</span>
                 </button>
 
                 <p style="text-align:center;font-size:0.8rem;color:#64748b;margin:14px 0 0">
-                    @t('contact.submit_footer', 'Our commercial team will review your requirements and contact you regarding availability, pricing and next steps.')
+                    @t('contact.submit_footer', 'We will verify stock availability and pricing based on your requirements, and contact you regarding follow-up arrangements.')
                 </p>
             </form>
 
@@ -1527,15 +1525,15 @@
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                     <circle cx="12" cy="10" r="3"></circle>
                 </svg>
-                @t('contact.facility_eyebrow', 'FACILITY & COLLECTION CENTRE')
+                @t('contact.facility_eyebrow', 'SILC FACILITY & COLLECTION CENTRE')
             </span>
 
             <h2 style="font-size:2.3rem;font-weight:800;color:#0f172a;margin:0 0 10px;letter-spacing:-0.5px">
-                @t('contact.facility_title', 'Visit Our SILC Facility')
+                @t('contact.facility_title', 'SILC Facility & Collection Centre')
             </h2>
 
             <p style="font-size:0.95rem;color:#64748b;max-width:680px;margin:0 auto;line-height:1.5">
-                @t('contact.facility_subtitle', 'Located in SILC, Iskandar Puteri, Johor, our facility supports product handling, order preparation and customer collection.')
+                @t('contact.facility_subtitle', 'Located in SILC Industrial Park, Iskandar Puteri, Johor, our facility supports product handling, order preparation, packing and customer collection services.')
             </p>
         </div>
 
@@ -1563,7 +1561,7 @@
                         </div>
                         <div>
                             <div style="font-size:1.2rem;font-weight:800;color:#0f172a;line-height:1.2;margin-bottom:2px">
-                                MST Import &amp; Export Sdn. Bhd.
+                                MST Import and Export Sdn. Bhd.
                             </div>
                             <div style="font-size:0.82rem;font-weight:700;color:#1d4ed8;margin-bottom:4px">
                                 镁嘉国际贸易有限公司
@@ -1595,7 +1593,7 @@
                             </div>
                         </div>
 
-                        <!-- 2. Operating Hours -->
+                        <!-- 2. Customer Service Hours -->
                         <div style="display:flex;align-items:flex-start;gap:14px">
                             <div style="color:#2563eb;margin-top:2px">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1604,12 +1602,15 @@
                                 </svg>
                             </div>
                             <div>
-                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">@t('contact.operating_hours_label', 'Operating Hours')</div>
+                                <div style="font-weight:700;font-size:0.9rem;color:#0f172a;margin-bottom:2px">@t('contact.customer_service_hours', 'Customer Service Hours')</div>
                                 <div style="font-size:0.85rem;color:#0f172a;font-weight:600;line-height:1.4">
-                                    Monday – Saturday: 8:00 AM – 6:00 PM
+                                    @t('contact.hours_mon_sat', 'Monday – Saturday: 8:00 AM – 6:00 PM')
                                 </div>
                                 <div style="font-size:0.8rem;color:#64748b;margin-top:2px">
-                                    Sunday &amp; Public Holidays: Closed
+                                    @t('contact.hours_sun_holidays', 'Sunday & Public Holidays: Closed')
+                                </div>
+                                <div style="font-size:0.78rem;color:#94a3b8;margin-top:4px;line-height:1.4">
+                                    @t('contact.facility_access_note', 'Customer visits and collection are subject to the applicable arrangements and order requirements.')
                                 </div>
                             </div>
                         </div>
@@ -1643,9 +1644,9 @@
         <div class="contact-cta-glow"></div>
         <div class="contact-cta-content">
             <div class="contact-cta-text">
-                <h2 class="contact-cta-title">@t('contact.cta_title', 'Not Sure What You Need?')</h2>
+                <h2 class="contact-cta-title">@t('contact.cta_title', 'Not Sure About Your Specific Requirements or Category?')</h2>
                 <p class="contact-cta-desc">
-                    @t('contact.cta_desc', 'Tell us your product, quantity, specification or sourcing requirement. We can help you identify suitable supply options.')
+                    @t('contact.cta_desc', 'Tell us your expected categories, order volume, specifications or sourcing goals, and we can assist you in finding suitable products and supply solutions based on your needs.')
                 </p>
             </div>
             <div class="contact-cta-actions">
@@ -2154,9 +2155,9 @@
             const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
             marker.bindPopup(`
                 <div style="font-family:sans-serif;padding:6px;min-width:220px">
-                    <div style="font-weight:800;font-size:0.95rem;color:#0f172a;margin-bottom:2px">MST Import &amp; Export Sdn. Bhd.</div>
-                    <div style="font-size:0.78rem;font-weight:700;color:#2563eb;margin-bottom:4px">镁嘉国际贸易有限公司</div>
-                    <div style="color:#64748b;font-size:0.82rem;line-height:1.4">No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor</div>
+                    <div style="font-weight:800;font-size:0.95rem;color:#0f172a;margin-bottom:2px">镁嘉国际贸易有限公司</div>
+                    <div style="font-size:0.80rem;font-weight:700;color:#2563eb;margin-bottom:4px">MST Import and Export Sdn. Bhd.</div>
+                    <div style="color:#64748b;font-size:0.82rem;line-height:1.4">No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia</div>
                     <div style="margin-top:8px">
                         <a href="https://maps.app.goo.gl/jLMaDYCNJ6vfk376A" target="_blank" rel="noopener" style="color:#2563eb;font-weight:700;font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
                             <span>{{ __t('contact.get_directions', 'Get Directions') }}</span>
@@ -2164,7 +2165,7 @@
                         </a>
                     </div>
                 </div>
-            `).bindTooltip("MST Import & Export (SILC Facility)", { direction: "top", offset: [0, -36] });
+            `).bindTooltip("MST Import and Export Sdn. Bhd. (SILC Facility)", { direction: "top", offset: [0, -36] });
 
             setTimeout(() => {
                 map.invalidateSize();

@@ -1,5 +1,22 @@
 @extends('layouts.app')
-@section('title', __t('auth.register_meta_title', 'Create Account — MST Import & Export Sdn. Bhd.'))
+
+@php
+    $selectedGroup = old('customer_group', $selectedType ?? request('type', 'retail'));
+    if (!in_array($selectedGroup, ['retail', 'wholesale', 'trading', 'general_retail'])) {
+        $selectedGroup = 'retail';
+    }
+    if ($selectedGroup === 'general_retail') {
+        $selectedGroup = 'retail';
+    }
+
+    $metaTitle = match($selectedGroup) {
+        'wholesale' => __t('auth.register_wholesale_meta_title', 'Wholesale Registration — MST Import and Export Sdn. Bhd.'),
+        'trading'   => __t('auth.register_trading_meta_title', 'Trading Registration — MST Import and Export Sdn. Bhd.'),
+        default     => __t('auth.register_meta_title', 'Create Account — MST Import and Export Sdn. Bhd.')
+    };
+@endphp
+
+@section('title', $metaTitle)
 
 @section('content')
 <!-- Page Header / Hero Section -->
@@ -16,7 +33,7 @@
                 @t('auth.register_header_title', 'Create Your MST Account')
             </h1>
             <p class="page-subtitle" style="color:#e0f2fe;font-size:0.95rem;max-width:720px;line-height:1.55;margin:0">
-                @t('auth.register_header_subtitle', 'Create an MST account to manage your orders and access features available to your customer category.')
+                @t('auth.register_header_subtitle', 'Select the account type that matches your purchasing requirements.')
             </p>
         </div>
     </div>
@@ -28,105 +45,103 @@
         <!-- Header -->
         <div class="register-header text-center">
             <h2 class="register-title">@t('auth.register_header_title', 'Create Your MST Account')</h2>
-            <p class="register-subtitle">@t('auth.register_header_instruction', 'Choose the account type that best matches how you purchase from MST.')</p>
+            <p class="register-subtitle">@t('auth.register_header_instruction', 'Select the account type that matches your purchasing requirements.')</p>
+        </div>
+
+        <!-- ════════════════════════════════════════════════════════════════════ -->
+        <!-- THREE CLEAR ACCOUNT TYPE CHOICES (CUSTOMER FLOW)                   -->
+        <!-- 1. General / Retail | 2. Wholesale | 3. Trading                     -->
+        <!-- ════════════════════════════════════════════════════════════════════ -->
+        <div class="account-selection-wrapper" style="margin-bottom:20px">
+            <div class="account-types-grid">
+                
+                <!-- 1. General / Retail -->
+                <div class="atype-card {{ $selectedGroup === 'retail' ? 'active' : '' }}" id="card_retail" onclick="selectAccountType('retail')">
+                    <div class="atype-badge">@t('auth.account_type_retail_badge', '🛍️ General / Retail')</div>
+                    <h3 class="atype-title">@t('auth.account_type_retail_title', 'General / Retail Account')</h3>
+                    <p class="atype-desc">@t('auth.account_type_retail_desc', 'For personal / normal retail purchasing.')</p>
+                    <button type="button" class="atype-btn {{ $selectedGroup === 'retail' ? 'btn-active' : '' }}" id="btn_select_retail">
+                        @t('auth.account_type_retail_btn', 'Register as General / Retail')
+                    </button>
+                </div>
+
+                <!-- 2. Wholesale -->
+                <div class="atype-card {{ $selectedGroup === 'wholesale' ? 'active' : '' }}" id="card_wholesale" onclick="selectAccountType('wholesale')">
+                    <div class="atype-badge">@t('auth.account_type_wholesale_badge', '📦 Wholesale')</div>
+                    <h3 class="atype-title">@t('auth.account_type_wholesale_title', 'Wholesale Account')</h3>
+                    <p class="atype-desc">@t('auth.account_type_wholesale_desc', 'For restaurants, hotels, retailers, food businesses and regular wholesale purchasing.')</p>
+                    <button type="button" class="atype-btn {{ $selectedGroup === 'wholesale' ? 'btn-active' : '' }}" id="btn_select_wholesale">
+                        @t('auth.account_type_wholesale_btn', 'Register as Wholesale')
+                    </button>
+                </div>
+
+                <!-- 3. Trading -->
+                <div class="atype-card {{ $selectedGroup === 'trading' ? 'active' : '' }}" id="card_trading" onclick="selectAccountType('trading')">
+                    <div class="atype-badge">@t('auth.account_type_trading_badge', '🌏 Trading')</div>
+                    <h3 class="atype-title">@t('auth.account_type_trading_title', 'Trading Account')</h3>
+                    <p class="atype-desc">@t('auth.account_type_trading_desc', 'For traders, importers, exporters, distributors, cross-border purchasing and customised trade requirements.')</p>
+                    <button type="button" class="atype-btn {{ $selectedGroup === 'trading' ? 'btn-active' : '' }}" id="btn_select_trading">
+                        @t('auth.account_type_trading_btn', 'Register as Trading')
+                    </button>
+                </div>
+
+            </div>
         </div>
 
         <div class="register-card">
+            
+            <!-- Walk-in Supporting Note -->
+            <div style="margin-bottom:20px;font-size:0.84rem;color:#475569;line-height:1.45;padding:12px 16px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+                <div style="display:flex;align-items:center;gap:10px">
+                    <span style="font-size:1.1rem">🛍️</span>
+                    <span>@t('auth.walkin_supporting_note', 'Just shopping through our Walk-in Menu? You do not need an account to browse or place a Walk-in / Counter Collection order.')</span>
+                </div>
+                <a href="{{ route('walkin.shop') }}" style="color:#2563eb;font-weight:700;text-decoration:none;font-size:0.84rem;white-space:nowrap;display:inline-flex;align-items:center;gap:4px">
+                    @t('auth.btn_browse_walkin_menu', 'Browse Walk-in Menu →')
+                </a>
+            </div>
+
             <form method="POST" action="{{ route('register') }}" id="registerForm" novalidate>
                 @csrf
 
-                <!-- Section: Customer Type Selector -->
-                <div class="form-section-block">
-                    <label class="form-label font-semibold" style="margin-bottom:8px">
-                        @t('auth.customer_type_label', 'Customer Type') <span class="required">*</span>
-                    </label>
-                    <div class="customer-types-grid">
-                        @php
-                            $selectedGroup = old('customer_group', request('type', 'retail'));
-                            if (!in_array($selectedGroup, ['retail', 'wholesale', 'trading'])) {
-                                $selectedGroup = 'retail';
-                            }
-                        @endphp
+                <!-- Selected Account Type (Hidden Form Input) -->
+                <input type="hidden" name="customer_group" id="customer_group_input" value="{{ $selectedGroup }}">
 
-                        <!-- 1. Retail / Personal -->
-                        <label class="ctype-radio {{ $selectedGroup == 'retail' ? 'selected' : '' }}" for="type_retail" id="label_retail">
-                            <input type="radio" name="customer_group" id="type_retail" value="retail"
-                                   {{ $selectedGroup == 'retail' ? 'checked' : '' }}
-                                   onchange="onTypeChange('retail')">
-                            <div class="ctype-content">
-                                <span class="ctype-icon">🛒</span>
-                                <span class="ctype-label">@t('auth.type_retail_label', 'Retail / Personal')</span>
-                                <span class="ctype-desc">@t('auth.type_retail_desc', 'For personal shoppers and retail customers.')</span>
-                            </div>
-                        </label>
-
-                        <!-- 2. Wholesale -->
-                        <label class="ctype-radio {{ $selectedGroup == 'wholesale' ? 'selected' : '' }}" for="type_wholesale" id="label_wholesale">
-                            <input type="radio" name="customer_group" id="type_wholesale" value="wholesale"
-                                   {{ $selectedGroup == 'wholesale' ? 'checked' : '' }}
-                                   onchange="onTypeChange('wholesale')">
-                            <div class="ctype-content">
-                                <span class="ctype-icon">🏢</span>
-                                <span class="ctype-label">@t('auth.type_wholesale_label', 'Wholesale')</span>
-                                <span class="ctype-desc">@t('auth.type_wholesale_desc', 'For restaurants, retailers, hotels, caterers, food businesses and other businesses purchasing in volume.')</span>
-                            </div>
-                        </label>
-
-                        <!-- 3. Trading / Import & Distribution -->
-                        <label class="ctype-radio {{ $selectedGroup == 'trading' ? 'selected' : '' }}" for="type_trading" id="label_trading">
-                            <input type="radio" name="customer_group" id="type_trading" value="trading"
-                                   {{ $selectedGroup == 'trading' ? 'checked' : '' }}
-                                   onchange="onTypeChange('trading')">
-                            <div class="ctype-content">
-                                <span class="ctype-icon">📦</span>
-                                <span class="ctype-label">@t('auth.type_trading_label', 'Trading / Import & Distribution')</span>
-                                <span class="ctype-desc">@t('auth.type_trading_desc', 'For traders, importers, distributors and businesses with larger or regional supply requirements.')</span>
-                            </div>
-                        </label>
-                    </div>
-                    @error('customer_group')<div class="form-error">{{ $message }}</div>@enderror
-
-                    <!-- Walk-in Supporting Note -->
-                    <div style="margin-top:12px;font-size:0.82rem;color:#475569;line-height:1.45;padding:10px 14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-                        <div style="display:flex;align-items:center;gap:8px">
-                            <span>🛍️</span>
-                            <span>@t('auth.walkin_supporting_note', 'Just shopping through our Walk-in Menu? You do not need an account to browse or place a Walk-in / Counter Collection order.')</span>
-                        </div>
-                        <a href="{{ route('walkin.shop') }}" style="color:#2563eb;font-weight:700;text-decoration:none;font-size:0.82rem;white-space:nowrap">
-                            @t('auth.btn_open_walkin', 'Walk-in Menu →')
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Section: Personal Details (Always Displayed) -->
-                <div class="section-divider">
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <!-- 1. PERSONAL DETAILS (ALL THREE ACCOUNT TYPES)                       -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <div class="section-divider" style="margin-top:8px">
                     <span>@t('auth.section_personal_details', 'Personal Details')</span>
                 </div>
 
                 <div class="form-grid-2">
                     <div class="form-group">
-                        <label class="form-label" for="name">@t('auth.field_fullname', 'Full Name') <span class="required">*</span></label>
+                        <label class="form-label" for="name">
+                            @t('auth.field_fullname', 'Full Name') <span class="required" style="color:#ef4444">*</span>
+                        </label>
                         <input type="text" name="name" id="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
-                               value="{{ old('name') }}" placeholder="{{ __t('auth.placeholder_fullname', 'e.g. Ahmad bin Ali') }}" required>
+                               value="{{ old('name') }}" placeholder="{{ __t('auth.placeholder_fullname', 'e.g. John Doe') }}" required autocomplete="name">
                         @error('name')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="phone">@t('auth.field_phone', 'Phone Number') <span class="required">*</span></label>
+                        <label class="form-label" for="phone">
+                            @t('auth.field_phone', 'Phone Number') <span class="required" style="color:#ef4444">*</span>
+                        </label>
                         <input type="tel" name="phone" id="phone" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}"
-                               value="{{ old('phone') }}" placeholder="+60 12-345 6789" required>
+                               value="{{ old('phone') }}" placeholder="+60 12-345 6789" required autocomplete="tel">
                         @error('phone')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
-                <!-- Email (Strict Uniqueness: One account per email address) -->
+                <!-- Email Address (1 account per email) -->
                 <div class="form-group">
                     <label class="form-label" for="email">
-                        <span>@t('auth.field_email', 'Email Address') <span class="required">*</span></span>
-                        <span class="field-hint-tag">@t('auth.email_unique_note', 'One account per email address.')</span>
+                        <span>@t('auth.field_email', 'Email Address') <span class="required" style="color:#ef4444">*</span></span>
+                        <span class="field-hint-tag">@t('auth.email_unique_note', '1 account per email')</span>
                     </label>
                     <div class="input-with-status">
                         <input type="email" name="email" id="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
-                               value="{{ old('email') }}" placeholder="you@example.com" required autocomplete="email">
+                               value="{{ old('email') }}" placeholder="you@company.com" required autocomplete="email">
                         <span id="emailSpinner" class="field-spinner" style="display:none"></span>
                     </div>
                     <div id="emailFeedback" class="field-live-feedback" style="display:none"></div>
@@ -142,20 +157,24 @@
                     @endif
                 </div>
 
-                <!-- Security / Password -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <!-- 2. SECURITY (ALL THREE ACCOUNT TYPES)                               -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
                 <div class="section-divider">
                     <span>@t('auth.section_security', 'Security')</span>
                 </div>
 
                 <div class="form-grid-2">
                     <div class="form-group">
-                        <label class="form-label" for="password">@t('auth.field_password', 'Password') <span class="required">*</span></label>
+                        <label class="form-label" for="password">
+                            @t('auth.field_password', 'Password') <span class="required" style="color:#ef4444">*</span>
+                        </label>
                         <div class="password-field-wrapper">
                             <input type="password" name="password" id="password" class="form-control password-input {{ $errors->has('password') ? 'is-invalid' : '' }}"
                                    placeholder="{{ __t('auth.placeholder_min_chars', 'Min. 8 characters') }}" required autocomplete="new-password">
                             <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility" tabindex="-1">
                                 <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
                             </button>
@@ -163,7 +182,9 @@
                         @error('password')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="password_confirmation">@t('auth.field_confirm_password', 'Confirm Password') <span class="required">*</span></label>
+                        <label class="form-label" for="password_confirmation">
+                            @t('auth.field_confirm_password', 'Confirm Password') <span class="required" style="color:#ef4444">*</span>
+                        </label>
                         <div class="password-field-wrapper">
                             <input type="password" name="password_confirmation" id="password_confirmation" class="form-control password-input"
                                    placeholder="{{ __t('auth.placeholder_repeat_password', 'Repeat password') }}" required autocomplete="new-password">
@@ -178,88 +199,200 @@
                 </div>
 
                 <!-- ════════════════════════════════════════════════════════════════════ -->
-                <!-- WHOLESALE SPECIFIC FIELDS -->
+                <!-- 3. COMPANY INFORMATION (WHOLESALE & TRADING ONLY)                   -->
                 <!-- ════════════════════════════════════════════════════════════════════ -->
-                <div id="businessFields" style="{{ $selectedGroup === 'wholesale' ? 'display:block' : 'display:none' }}">
+                <div id="companySection" style="display: {{ in_array($selectedGroup, ['wholesale', 'trading']) ? 'block' : 'none' }}">
                     <div class="section-divider">
                         <span>@t('auth.section_company_info', 'Company Information')</span>
                     </div>
 
                     <div class="form-grid-2">
-                        <!-- Company Name -->
                         <div class="form-group">
                             <label class="form-label" for="company_name">
-                                @t('auth.field_company_name', 'Company Name') <span class="required">*</span>
+                                @t('auth.field_company_name', 'Company Name') <span class="required" style="color:#ef4444">*</span>
                             </label>
-                            <div class="input-with-status">
-                                <input type="text" name="company_name" id="company_name" class="form-control {{ $errors->has('company_name') ? 'is-invalid' : '' }}"
-                                       value="{{ old('company_name') }}" placeholder="{{ __t('auth.placeholder_company_name', 'e.g. Ocean Blue Restaurant Sdn Bhd') }}">
-                                <span id="companySpinner" class="field-spinner" style="display:none"></span>
-                            </div>
-                            
-                            <div id="companySimilarityAlert" class="company-warning-box" style="{{ session('company_similarity_warning') ? 'display:flex' : 'display:none' }}">
-                                <span class="warning-box-icon">⚠️</span>
-                                <div class="warning-box-content">
-                                    <div class="warning-box-title" id="companyWarningText">
-                                        {{ session('company_similarity_warning') ?? 'This company may already be registered. Please check if your company already has an account or contact MST.' }}
-                                    </div>
-                                    <div class="warning-box-sub">
-                                        @t('auth.company_warning_note', 'You can still proceed with registration if you are a branch, department, or authorized representative.')
-                                    </div>
-                                </div>
-                            </div>
+                            <input type="text" name="company_name" id="company_name" class="form-control {{ $errors->has('company_name') ? 'is-invalid' : '' }}"
+                                   value="{{ old('company_name') }}" placeholder="{{ __t('auth.placeholder_company_name', 'e.g. Ocean Blue Restaurant Sdn Bhd') }}">
                             @error('company_name')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
 
-                        <!-- Company Registration No. (SSM) (Non-mandatory) -->
                         <div class="form-group">
                             <label class="form-label" for="company_reg_no">
-                                <span>@t('auth.field_company_ssm', 'Company Registration No. (SSM)')</span>
+                                <span>@t('auth.field_company_ssm', 'Company Registration No. / SSM No.')</span>
                                 <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
                             </label>
-                            <div class="input-with-status">
-                                <input type="text" name="company_reg_no" id="company_reg_no" class="form-control {{ $errors->has('company_reg_no') ? 'is-invalid' : '' }}"
-                                       value="{{ old('company_reg_no') }}" placeholder="202301012345 (1234567-X)">
-                                <span id="ssmSpinner" class="field-spinner" style="display:none"></span>
-                            </div>
-                            <div id="ssmFeedback" class="field-live-feedback" style="display:none"></div>
-                            @error('company_reg_no')<div class="form-error" id="ssmServerError">{{ $message }}</div>@enderror
+                            <input type="text" name="company_reg_no" id="company_reg_no" class="form-control {{ $errors->has('company_reg_no') ? 'is-invalid' : '' }}"
+                                   value="{{ old('company_reg_no') }}" placeholder="202301012345 (1234567-X)">
+                            @error('company_reg_no')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
+                    </div>
+
+                    <!-- Business Nature / Type (Wholesale: 8 options vs Trading: 10 options) -->
+                    <div class="form-group">
+                        <label class="form-label" for="business_type">
+                            @t('auth.field_business_nature', 'Business Nature / Type') <span class="required" style="color:#ef4444">*</span>
+                        </label>
+                        
+                        <!-- Wholesale Business Types (8 options) -->
+                        <div id="wholesaleBtypeWrapper" style="display: {{ $selectedGroup === 'wholesale' ? 'block' : 'none' }}">
+                            <div class="custom-select-wrapper">
+                                <select name="business_type_wholesale" id="business_type_wholesale" class="form-control custom-select" onchange="syncBusinessType(this.value)">
+                                    <option value="">@t('auth.select_business_type', 'Select business type...')</option>
+                                    <option value="Restaurant & Catering" {{ old('business_type') == 'Restaurant & Catering' ? 'selected' : '' }}>@t('auth.btype_restaurant', 'Restaurant & Catering')</option>
+                                    <option value="Seafood Retailer" {{ old('business_type') == 'Seafood Retailer' ? 'selected' : '' }}>@t('auth.btype_seafood_retailer', 'Seafood Retailer')</option>
+                                    <option value="Food Retailer" {{ old('business_type') == 'Food Retailer' ? 'selected' : '' }}>@t('auth.btype_food_retailer', 'Food Retailer')</option>
+                                    <option value="Food Manufacturer / Central Kitchen" {{ old('business_type') == 'Food Manufacturer / Central Kitchen' ? 'selected' : '' }}>@t('auth.btype_manufacturer', 'Food Manufacturer / Central Kitchen')</option>
+                                    <option value="Hotel / Resort" {{ old('business_type') == 'Hotel / Resort' ? 'selected' : '' }}>@t('auth.btype_hotel', 'Hotel / Resort')</option>
+                                    <option value="Food Wholesaler / Distributor" {{ old('business_type') == 'Food Wholesaler / Distributor' ? 'selected' : '' }}>@t('auth.btype_distributor', 'Food Wholesaler / Distributor')</option>
+                                    <option value="Food Trader" {{ old('business_type') == 'Food Trader' ? 'selected' : '' }}>@t('auth.btype_food_trader', 'Food Trader')</option>
+                                    <option value="Other Business" {{ old('business_type') == 'Other Business' ? 'selected' : '' }}>@t('auth.btype_other_business', 'Other Business')</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Trading Business Types (10 options) -->
+                        <div id="tradingBtypeWrapper" style="display: {{ $selectedGroup === 'trading' ? 'block' : 'none' }}">
+                            <div class="custom-select-wrapper">
+                                <select name="business_type_trading" id="business_type_trading" class="form-control custom-select" onchange="syncBusinessType(this.value)">
+                                    <option value="">@t('auth.select_business_type', 'Select business type...')</option>
+                                    <option value="Restaurant & Catering" {{ old('business_type') == 'Restaurant & Catering' ? 'selected' : '' }}>@t('auth.btype_restaurant', 'Restaurant & Catering')</option>
+                                    <option value="Seafood Retailer" {{ old('business_type') == 'Seafood Retailer' ? 'selected' : '' }}>@t('auth.btype_seafood_retailer', 'Seafood Retailer')</option>
+                                    <option value="Food Retailer" {{ old('business_type') == 'Food Retailer' ? 'selected' : '' }}>@t('auth.btype_food_retailer', 'Food Retailer')</option>
+                                    <option value="Seafood Importer" {{ old('business_type') == 'Seafood Importer' ? 'selected' : '' }}>@t('auth.btype_seafood_importer', 'Seafood Importer')</option>
+                                    <option value="Seafood Exporter" {{ old('business_type') == 'Seafood Exporter' ? 'selected' : '' }}>@t('auth.btype_seafood_exporter', 'Seafood Exporter')</option>
+                                    <option value="Food Manufacturer / Central Kitchen" {{ old('business_type') == 'Food Manufacturer / Central Kitchen' ? 'selected' : '' }}>@t('auth.btype_manufacturer', 'Food Manufacturer / Central Kitchen')</option>
+                                    <option value="Hotel / Resort" {{ old('business_type') == 'Hotel / Resort' ? 'selected' : '' }}>@t('auth.btype_hotel', 'Hotel / Resort')</option>
+                                    <option value="Food Wholesaler / Distributor" {{ old('business_type') == 'Food Wholesaler / Distributor' ? 'selected' : '' }}>@t('auth.btype_distributor', 'Food Wholesaler / Distributor')</option>
+                                    <option value="Food Trader" {{ old('business_type') == 'Food Trader' ? 'selected' : '' }}>@t('auth.btype_food_trader', 'Food Trader')</option>
+                                    <option value="Other Business" {{ old('business_type') == 'Other Business' ? 'selected' : '' }}>@t('auth.btype_other_business', 'Other Business')</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Actual Submitted Business Type -->
+                        <input type="hidden" name="business_type" id="business_type_actual" value="{{ old('business_type') }}">
+                        @error('business_type')<div class="form-error">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <!-- 4. TRADING SPECIFIC FIELDS (TRADING ONLY)                           -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <div id="tradingMarketSection" style="display: {{ $selectedGroup === 'trading' ? 'block' : 'none' }}">
+                    <div class="section-divider">
+                        <span>@t('auth.section_trading_market_dest', 'Trading Market & Destination')</span>
                     </div>
 
                     <div class="form-grid-2">
-                        <!-- Business Nature / Type -->
                         <div class="form-group">
-                            <label class="form-label" for="business_type">@t('auth.field_business_nature', 'Business Nature / Type') <span class="required">*</span></label>
-                            <div class="custom-select-wrapper">
-                                <select name="business_type" id="business_type" class="form-control custom-select {{ $errors->has('business_type') ? 'is-invalid' : '' }}">
-                                    <option value="">@t('auth.select_business_type', 'Select business type...')</option>
-                                    <option value="Restaurant & Catering" {{ old('business_type') == 'Restaurant & Catering' ? 'selected' : '' }}>@t('auth.btype_restaurant', 'Restaurant & Catering')</option>
-                                    <option value="Seafood Retailer" {{ old('business_type') == 'Seafood Retailer' ? 'selected' : '' }}>@t('auth.btype_retailer', 'Seafood Retailer')</option>
-                                    <option value="Food Retailer" {{ old('business_type') == 'Food Retailer' ? 'selected' : '' }}>@t('auth.btype_food_retailer', 'Food Retailer')</option>
-                                    <option value="Seafood Importer" {{ old('business_type') == 'Seafood Importer' ? 'selected' : '' }}>@t('auth.btype_importer', 'Seafood Importer')</option>
-                                    <option value="Seafood Exporter" {{ old('business_type') == 'Seafood Exporter' ? 'selected' : '' }}>@t('auth.btype_exporter', 'Seafood Exporter')</option>
-                                    <option value="Food Manufacturer" {{ old('business_type') == 'Food Manufacturer' ? 'selected' : '' }}>@t('auth.btype_manufacturer', 'Food Manufacturer')</option>
-                                    <option value="Hotel / Resort" {{ old('business_type') == 'Hotel / Resort' ? 'selected' : '' }}>@t('auth.btype_hotel', 'Hotel / Resort')</option>
-                                    <option value="Distributor" {{ old('business_type') == 'Distributor' ? 'selected' : '' }}>@t('auth.btype_distributor', 'Distributor')</option>
-                                    <option value="Other" {{ old('business_type') == 'Other' ? 'selected' : '' }}>@t('auth.btype_other', 'Other')</option>
-                                </select>
-                            </div>
-                            @error('business_type')<div class="form-error">{{ $message }}</div>@enderror
+                            <label class="form-label" for="country_market">
+                                @t('auth.field_country_market', 'Country / Target Market') <span class="required" style="color:#ef4444">*</span>
+                            </label>
+                            <input type="text" name="country_market" id="country_market" class="form-control {{ $errors->has('country_market') ? 'is-invalid' : '' }}"
+                                   value="{{ old('country_market') }}" placeholder="{{ __t('auth.placeholder_country_market', 'e.g. Malaysia / Singapore / China / Other Markets') }}">
+                            @error('country_market')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
 
-                        <!-- Estimated Order Volume (Optional) -->
                         <div class="form-group">
-                            <label class="form-label" for="estimated_order_volume">
-                                <span>@t('auth.field_est_volume', 'Estimated Order Volume')</span>
-                                <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
+                            <label class="form-label" for="destination_country">
+                                @t('auth.field_delivery_destination', 'Delivery / Destination Location')
                             </label>
-                            <input type="text" name="estimated_order_volume" id="estimated_order_volume" class="form-control"
-                                   value="{{ old('estimated_order_volume') }}" placeholder="e.g. 500kg / month, 20 cartons / week">
+                            <input type="text" name="destination_country" id="destination_country" class="form-control"
+                                   value="{{ old('destination_country', old('destination_market')) }}" placeholder="{{ __t('auth.placeholder_delivery_destination', 'e.g. Johor Bahru / Kuala Lumpur / Singapore / Port Klang') }}">
                         </div>
                     </div>
 
-                    <!-- Existing MST Customer Check for Wholesale -->
+                    <!-- Trading Requirements (6 options) -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>@t('auth.field_trading_requirements', 'Trading Requirements') <span class="required" style="color:#ef4444">*</span></span>
+                        </label>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:8px;margin-top:6px">
+                            @php
+                                $reqOptions = [
+                                    'Import' => ['key' => 'auth.treq_import', 'def' => 'Import', 'icon' => '🚢'],
+                                    'Export' => ['key' => 'auth.treq_export', 'def' => 'Export', 'icon' => '✈️'],
+                                    'Distribution' => ['key' => 'auth.treq_distribution', 'def' => 'Distribution', 'icon' => '🏬'],
+                                    'Bulk Purchasing' => ['key' => 'auth.treq_bulk_purchasing', 'def' => 'Bulk Purchasing', 'icon' => '📦'],
+                                    'Customised Sourcing' => ['key' => 'auth.treq_customised_sourcing', 'def' => 'Customised Sourcing', 'icon' => '🔍'],
+                                    'Other' => ['key' => 'auth.treq_other', 'def' => 'Other', 'icon' => '🌐'],
+                                ];
+                                $oldReqs = (array) old('trading_requirements', []);
+                            @endphp
+                            @foreach($reqOptions as $rVal => $rMeta)
+                                <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;cursor:pointer;font-size:0.84rem;color:#334155;transition:all 0.15s ease">
+                                    <input type="checkbox" name="trading_requirements[]" value="{{ $rVal }}" {{ in_array($rVal, $oldReqs) ? 'checked' : '' }} style="accent-color:#2563eb;width:16px;height:16px">
+                                    <span>{{ $rMeta['icon'] }} @t($rMeta['key'], $rMeta['def'])</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Product Specifications / Requirements (Optional) -->
+                    <div class="form-group">
+                        <label class="form-label" for="import_requirements">
+                            @t('auth.field_product_specifications', 'Product Specifications / Requirements (Optional)')
+                        </label>
+                        <textarea name="import_requirements" id="import_requirements" class="form-control" rows="2" style="height:auto;padding:10px 14px"
+                                  placeholder="{{ __t('auth.placeholder_product_specifications', 'Specify product type, size/grade, packaging, brand, origin, quantity or other specifications') }}">{{ old('import_requirements') }}</textarea>
+                    </div>
+
+                    <!-- Additional Message (Optional) -->
+                    <div class="form-group">
+                        <label class="form-label" for="additional_message">
+                            @t('auth.field_additional_message', 'Additional Requirements / Message (Optional)')
+                        </label>
+                        <textarea name="additional_message" id="additional_message" class="form-control" rows="2" style="height:auto;padding:10px 14px"
+                                  placeholder="{{ __t('auth.placeholder_additional_message', 'Any specific commercial terms, schedules, or special requests') }}">{{ old('additional_message') }}</textarea>
+                    </div>
+                </div>
+
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <!-- 5. PRODUCT INTEREST & VOLUME (WHOLESALE & TRADING ONLY)             -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <div id="productInterestSection" style="display: {{ in_array($selectedGroup, ['wholesale', 'trading']) ? 'block' : 'none' }}">
+                    <div class="section-divider">
+                        <span>@t('auth.field_product_interest', 'Product / Category Interest')</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>@t('auth.field_product_interest', 'Product / Category Interest')</span>
+                        </label>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:8px;margin-top:6px">
+                            @php
+                                $categoriesList = [
+                                    'Frozen Seafood'    => ['key' => 'auth.cat_seafood', 'def' => 'Seafood'],
+                                    'Frozen Meat'       => ['key' => 'auth.cat_meat', 'def' => 'Meat'],
+                                    'Frozen Food'       => ['key' => 'auth.cat_frozen_food', 'def' => 'Frozen Food'],
+                                    'Food Ingredients'  => ['key' => 'auth.cat_food_ingredients', 'def' => 'Food Ingredients'],
+                                    'Japanese Products' => ['key' => 'auth.cat_japanese', 'def' => 'Japanese Products'],
+                                    'Korean Products'   => ['key' => 'auth.cat_korean', 'def' => 'Korean Products'],
+                                    'Chinese Products'  => ['key' => 'auth.cat_chinese', 'def' => 'Chinese Products'],
+                                    'Western Products'  => ['key' => 'auth.cat_western', 'def' => 'Western Products'],
+                                    'Other'             => ['key' => 'auth.cat_other', 'def' => 'Other'],
+                                ];
+                                $oldCats = (array) old('product_interest', []);
+                            @endphp
+                            @foreach($categoriesList as $cVal => $cMeta)
+                                <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;cursor:pointer;font-size:0.84rem;color:#334155;transition:all 0.15s ease">
+                                    <input type="checkbox" name="product_interest[]" value="{{ $cVal }}" {{ in_array($cVal, $oldCats) ? 'checked' : '' }} style="accent-color:#2563eb;width:16px;height:16px">
+                                    <span>@t($cMeta['key'], $cMeta['def'])</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Estimated Order Volume -->
+                    <div class="form-group">
+                        <label class="form-label" for="estimated_order_volume">
+                            @t('auth.field_est_volume', 'Estimated Order Volume (Optional)')
+                        </label>
+                        <input type="text" name="estimated_order_volume" id="estimated_order_volume" class="form-control"
+                               value="{{ old('estimated_order_volume') }}" placeholder="{{ __t('auth.placeholder_est_volume', 'e.g. 500kg / month, 20 cartons / week') }}">
+                    </div>
+
+                    <!-- Existing Customer Check -->
                     <div class="form-group" style="padding:14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-top:6px">
                         <label class="form-label" style="margin-bottom:6px">@t('auth.field_existing_customer_question', 'Are you an existing MST customer?')</label>
                         <div style="display:flex;gap:20px;align-items:center;padding:4px 0">
@@ -273,231 +406,110 @@
                             </label>
                         </div>
 
-                        <!-- Existing Customer Reference Input -->
                         <div id="existingRefBlock" style="{{ old('existing_mst_customer') == 'yes' ? 'display:block' : 'display:none' }};margin-top:10px">
                             <label class="form-label" for="existing_customer_ref" style="font-size:0.80rem">
-                                <span>@t('auth.field_existing_ref', 'Existing Customer / Account Reference')</span>
-                                <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
+                                @t('auth.field_existing_ref', 'Existing Customer / Account Reference (Optional)')
                             </label>
                             <input type="text" name="existing_customer_ref" id="existing_customer_ref" class="form-control" style="height:38px;font-size:0.85rem"
-                                   value="{{ old('existing_customer_ref') }}" placeholder="e.g. Account No., Invoice No., or Company Name on file">
-                            <p style="font-size:0.75rem;color:#64748b;margin:4px 0 0">
-                                @t('auth.existing_ref_hint', 'This helps our team match your registration with existing MST business records.')
-                            </p>
+                                   value="{{ old('existing_customer_ref') }}" placeholder="{{ __t('auth.placeholder_existing_ref', 'e.g. Account No., Invoice No., or Company Name on file') }}">
                         </div>
-                    </div>
-
-                    <!-- Wholesale Pricing Disclaimer Notice -->
-                    <div style="margin-top:12px;font-size:0.80rem;color:#1e40af;line-height:1.45;padding:10px 12px;background:#eff6ff;border-radius:8px;border-left:3px solid #2563eb">
-                        ℹ️ @t('auth.wholesale_pricing_disclaimer', 'Wholesale pricing and commercial terms are subject to business verification, product availability, order volume and applicable MST requirements.')
                     </div>
                 </div>
 
                 <!-- ════════════════════════════════════════════════════════════════════ -->
-                <!-- TRADING / IMPORT & DISTRIBUTION SPECIFIC FIELDS -->
+                <!-- 6. DELIVERY / COLLECTION INFORMATION (ALL THREE ACCOUNT TYPES)      -->
                 <!-- ════════════════════════════════════════════════════════════════════ -->
-                <div id="tradingFields" style="{{ $selectedGroup === 'trading' ? 'display:block' : 'display:none' }}">
-                    <div class="section-divider">
-                        <span>@t('auth.section_trading_company_info', 'Company Information')</span>
-                    </div>
-
-                    <div class="form-grid-2">
-                        <!-- Company Name -->
-                        <div class="form-group">
-                            <label class="form-label" for="trading_company_name">
-                                @t('auth.field_company_name', 'Company Name') <span class="required">*</span>
-                            </label>
-                            <input type="text" name="trading_company_name" id="trading_company_name" class="form-control"
-                                   value="{{ old('trading_company_name', old('company_name')) }}" placeholder="{{ __t('auth.placeholder_company_name', 'e.g. Global Foods Trading Ltd') }}">
-                        </div>
-
-                        <!-- Business Registration No. -->
-                        <div class="form-group">
-                            <label class="form-label" for="trading_company_reg_no">
-                                <span>@t('auth.field_trading_reg_no', 'Company Registration No. / Business Registration No.')</span>
-                                <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
-                            </label>
-                            <input type="text" name="trading_company_reg_no" id="trading_company_reg_no" class="form-control"
-                                   value="{{ old('trading_company_reg_no', old('company_reg_no')) }}" placeholder="Registration Number">
-                        </div>
-                    </div>
-
-                    <div class="form-grid-2">
-                        <!-- Business Nature / Type -->
-                        <div class="form-group">
-                            <label class="form-label" for="trading_business_type">
-                                @t('auth.field_business_nature', 'Business Nature / Type') <span class="required">*</span>
-                            </label>
-                            <input type="text" name="trading_business_type" id="trading_business_type" class="form-control"
-                                   value="{{ old('trading_business_type', old('business_type', 'Importer / Distributor / Trader')) }}" placeholder="e.g. Seafood Importer, Regional Distributor">
-                        </div>
-
-                        <!-- Country / Market -->
-                        <div class="form-group">
-                            <label class="form-label" for="destination_market">
-                                @t('auth.field_country_market', 'Country / Market')
-                            </label>
-                            <input type="text" name="destination_market" id="destination_market" class="form-control"
-                                   value="{{ old('destination_market') }}" placeholder="e.g. Malaysia, Singapore, Hong Kong, Regional Export">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="trading_business_location">
-                            @t('auth.field_delivery_destination', 'Delivery / Destination Location')
-                        </label>
-                        <input type="text" name="trading_business_location" id="trading_business_location" class="form-control"
-                               value="{{ old('trading_business_location', old('business_location')) }}" placeholder="e.g. Port Klang, Pasir Gudang, Jurong Port, etc.">
-                    </div>
-
-                    <div class="section-divider">
-                        <span>@t('auth.section_trading_requirements', 'Trading Requirements')</span>
-                    </div>
-
-                    <div class="form-grid-2">
-                        <!-- Product / Category Interest -->
-                        <div class="form-group">
-                            <label class="form-label" for="trading_product_interest">
-                                @t('auth.field_product_interest', 'Product / Category Interest')
-                            </label>
-                            <input type="text" name="trading_product_interest" id="trading_product_interest" class="form-control"
-                                   value="{{ old('trading_product_interest', old('product_interest')) }}" placeholder="e.g. Frozen Fish, Squid, Shrimp, Custom Procurement">
-                        </div>
-
-                        <!-- Estimated Order Volume -->
-                        <div class="form-group">
-                            <label class="form-label" for="trading_estimated_order_volume">
-                                @t('auth.field_est_volume', 'Estimated Order Volume')
-                            </label>
-                            <input type="text" name="trading_estimated_order_volume" id="trading_estimated_order_volume" class="form-control"
-                                   value="{{ old('trading_estimated_order_volume', old('estimated_order_volume')) }}" placeholder="e.g. 20ft / 40ft Container, FCL / LCL">
-                        </div>
-                    </div>
-
-                    <!-- Import / Distribution Requirements -->
-                    <div class="form-group">
-                        <label class="form-label" for="import_requirements">
-                            @t('auth.field_import_reqs', 'Import / Distribution Requirements')
-                        </label>
-                        <textarea name="import_requirements" id="import_requirements" class="form-control" rows="2" style="height:auto;padding:10px 14px"
-                                  placeholder="Specify any port of discharge, cold-chain specifications, packaging or certification requirements">{{ old('import_requirements') }}</textarea>
-                    </div>
-
-                    <!-- Additional Requirements / Message -->
-                    <div class="form-group">
-                        <label class="form-label" for="additional_message">
-                            @t('auth.field_additional_requirements', 'Additional Requirements / Message')
-                        </label>
-                        <textarea name="additional_message" id="additional_message" class="form-control" rows="2" style="height:auto;padding:10px 14px"
-                                  placeholder="Any specific commercial terms, schedules, or special requests">{{ old('additional_message') }}</textarea>
-                    </div>
-
-                    <!-- Existing MST Customer Check for Trading -->
-                    <div class="form-group" style="padding:14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-top:6px">
-                        <label class="form-label" style="margin-bottom:6px">@t('auth.field_existing_customer_question', 'Are you an existing MST customer?')</label>
-                        <div style="display:flex;gap:20px;align-items:center;padding:4px 0">
-                            <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.88rem;color:#334155">
-                                <input type="radio" name="trading_existing_mst_customer" value="yes" {{ old('trading_existing_mst_customer', old('existing_mst_customer')) == 'yes' ? 'checked' : '' }} onchange="toggleTradingExistingRef(this.value)" style="accent-color:#2563eb">
-                                <span>@t('common.yes', 'Yes')</span>
-                            </label>
-                            <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.88rem;color:#334155">
-                                <input type="radio" name="trading_existing_mst_customer" value="no" {{ old('trading_existing_mst_customer', old('existing_mst_customer', 'no')) == 'no' ? 'checked' : '' }} onchange="toggleTradingExistingRef(this.value)" style="accent-color:#2563eb">
-                                <span>@t('common.no', 'No')</span>
-                            </label>
-                        </div>
-
-                        <div id="tradingExistingRefBlock" style="{{ old('trading_existing_mst_customer', old('existing_mst_customer')) == 'yes' ? 'display:block' : 'display:none' }};margin-top:10px">
-                            <label class="form-label" for="trading_existing_customer_ref" style="font-size:0.80rem">
-                                <span>@t('auth.field_existing_ref', 'Existing Customer / Account Reference')</span>
-                                <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
-                            </label>
-                            <input type="text" name="trading_existing_customer_ref" id="trading_existing_customer_ref" class="form-control" style="height:38px;font-size:0.85rem"
-                                   value="{{ old('trading_existing_customer_ref', old('existing_customer_ref')) }}" placeholder="e.g. Trading Reference or Company Name">
-                        </div>
-                    </div>
-
-                    <!-- Trading Pricing Disclaimer Notice -->
-                    <div style="margin-top:12px;font-size:0.80rem;color:#4338ca;line-height:1.45;padding:10px 12px;background:#eef2ff;border-radius:8px;border-left:3px solid #6366f1">
-                        📦 @t('auth.trading_pricing_disclaimer', 'Trading and import/distribution enquiries may require additional review and quotation.')
-                    </div>
+                <div class="section-divider">
+                    <span>@t('auth.section_delivery', 'Delivery / Collection Information')</span>
                 </div>
 
-                <!-- ════════════════════════════════════════════════════════════════════ -->
-                <!-- DELIVERY / ADDRESS & FULFILMENT (FOR RETAIL & WHOLESALE) -->
-                <!-- ════════════════════════════════════════════════════════════════════ -->
-                <div id="generalDeliveryFields" style="{{ $selectedGroup !== 'trading' ? 'display:block' : 'display:none' }}">
-                    <div class="section-divider">
-                        <span>@t('auth.section_delivery', 'Delivery / Collection Information')</span>
-                    </div>
+                <div class="form-group">
+                    <label class="form-label" for="address">
+                        <span>@t('auth.field_street_address', 'Street Address')</span>
+                        <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
+                    </label>
+                    <input type="text" name="address" id="address" class="form-control {{ $errors->has('address') ? 'is-invalid' : '' }}" 
+                           value="{{ old('address') }}" placeholder="{{ __t('auth.placeholder_street_address', 'Unit / Street address, Taman / Area') }}" autocomplete="street-address">
+                    @error('address')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
 
-                    <div class="form-group">
-                        <label class="form-label" for="address">
-                            <span>@t('auth.field_street_address', 'Street Address')</span>
+                <div class="register-address-grid">
+                    <div class="form-group mb-0 grid-state-col">
+                        <label class="form-label" for="state">
+                            <span>@t('auth.field_state', 'State')</span>
                             <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
                         </label>
-                        <input type="text" name="address" id="address" class="form-control {{ $errors->has('address') ? 'is-invalid' : '' }}" 
-                               value="{{ old('address') }}" placeholder="{{ __t('auth.placeholder_street_address', 'Unit / Street address, Taman / Area') }}">
-                        @error('address')<div class="form-error">{{ $message }}</div>@enderror
+                        <input type="text" name="state" id="state" class="form-control {{ $errors->has('state') ? 'is-invalid' : '' }}" 
+                               value="{{ old('state') }}" placeholder="{{ __t('auth.placeholder_state', 'e.g. Johor') }}" autocomplete="address-level1">
+                        @error('state')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
 
-                    <div class="register-address-grid">
-                        <div class="form-group mb-0 grid-state-col">
-                            <label class="form-label" for="state">
-                                <span>@t('auth.field_state', 'State')</span>
-                                <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
-                            </label>
-                            <input type="text" name="state" id="state" class="form-control {{ $errors->has('state') ? 'is-invalid' : '' }}" 
-                                   value="{{ old('state') }}" placeholder="{{ __t('auth.placeholder_state', 'e.g. Johor') }}">
-                            @error('state')<div class="form-error">{{ $message }}</div>@enderror
-                        </div>
-
-                        <div class="form-group mb-0 grid-city-col">
-                            <label class="form-label" for="city">
-                                <span>@t('auth.field_city', 'City')</span>
-                                <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
-                            </label>
-                            <input type="text" name="city" id="city" class="form-control {{ $errors->has('city') ? 'is-invalid' : '' }}" 
-                                   value="{{ old('city') }}" placeholder="{{ __t('auth.placeholder_city', 'e.g. Iskandar Puteri') }}">
-                            @error('city')<div class="form-error">{{ $message }}</div>@enderror
-                        </div>
-
-                        <div class="form-group mb-0 grid-postcode-col">
-                            <label class="form-label" for="postcode">
-                                <span>@t('auth.field_postcode', 'Postcode')</span>
-                                <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
-                            </label>
-                            <input type="text" name="postcode" id="postcode" class="form-control {{ $errors->has('postcode') ? 'is-invalid' : '' }}" 
-                                   value="{{ old('postcode') }}" placeholder="79200" maxlength="10">
-                            @error('postcode')<div class="form-error">{{ $message }}</div>@enderror
-                        </div>
+                    <div class="form-group mb-0 grid-city-col">
+                        <label class="form-label" for="city">
+                            <span>@t('auth.field_city', 'City')</span>
+                            <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
+                        </label>
+                        <input type="text" name="city" id="city" class="form-control {{ $errors->has('city') ? 'is-invalid' : '' }}" 
+                               value="{{ old('city') }}" placeholder="{{ __t('auth.placeholder_city', 'e.g. Iskandar Puteri') }}" autocomplete="address-level2">
+                        @error('city')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
 
-                    <!-- Preferred Fulfilment Method -->
-                    <div class="form-group" style="margin-top:16px">
-                        <label class="form-label">@t('auth.section_fulfilment', 'Preferred Fulfilment Method')</label>
-                        <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:4px 0">
-                            <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.86rem;color:#334155">
-                                <input type="radio" name="preferred_fulfilment" value="walkin" {{ old('preferred_fulfilment', 'walkin') == 'walkin' ? 'checked' : '' }} style="accent-color:#2563eb">
-                                <span>🏬 @t('auth.fulfilment_walkin', 'Walk-in / Counter Collection')</span>
-                            </label>
-                            <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.86rem;color:#334155">
-                                <input type="radio" name="preferred_fulfilment" value="delivery" {{ old('preferred_fulfilment') == 'delivery' ? 'checked' : '' }} style="accent-color:#2563eb">
-                                <span>🚚 @t('auth.fulfilment_delivery', 'Delivery')</span>
-                            </label>
-                            <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.86rem;color:#334155">
-                                <input type="radio" name="preferred_fulfilment" value="not_sure" {{ old('preferred_fulfilment') == 'not_sure' ? 'checked' : '' }} style="accent-color:#2563eb">
-                                <span>❓ @t('auth.fulfilment_not_sure', 'Not Sure')</span>
-                            </label>
-                        </div>
+                    <div class="form-group mb-0 grid-postcode-col">
+                        <label class="form-label" for="postcode">
+                            <span>@t('auth.field_postcode', 'Postcode')</span>
+                            <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
+                        </label>
+                        <input type="text" name="postcode" id="postcode" class="form-control {{ $errors->has('postcode') ? 'is-invalid' : '' }}" 
+                               value="{{ old('postcode') }}" placeholder="79200" maxlength="10" autocomplete="postal-code">
+                        @error('postcode')<div class="form-error">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
+                <!-- Preferred Fulfilment Method -->
+                <div class="form-group" style="margin-top:16px">
+                    <label class="form-label">@t('auth.section_fulfilment', 'Preferred Fulfilment Method')</label>
+                    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:4px 0">
+                        <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.86rem;color:#334155">
+                            <input type="radio" name="preferred_fulfilment" value="walkin" {{ old('preferred_fulfilment', 'walkin') == 'walkin' ? 'checked' : '' }} style="accent-color:#2563eb">
+                            <span>@t('auth.fulfilment_walkin', '🏬 Walk-in / Counter Collection')</span>
+                        </label>
+                        <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.86rem;color:#334155">
+                            <input type="radio" name="preferred_fulfilment" value="delivery" {{ old('preferred_fulfilment') == 'delivery' ? 'checked' : '' }} style="accent-color:#2563eb">
+                            <span>@t('auth.fulfilment_delivery', '🚚 Delivery')</span>
+                        </label>
+                        <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.86rem;color:#334155">
+                            <input type="radio" name="preferred_fulfilment" value="not_sure" {{ old('preferred_fulfilment') == 'not_sure' ? 'checked' : '' }} style="accent-color:#2563eb">
+                            <span>@t('auth.fulfilment_not_sure', '❓ Not Sure Yet')</span>
+                        </label>
                     </div>
                 </div>
 
                 <!-- ════════════════════════════════════════════════════════════════════ -->
-                <!-- CONSENT & MARKETING BLOCK -->
+                <!-- NOTICES & DISCLAIMERS                                              -->
                 <!-- ════════════════════════════════════════════════════════════════════ -->
-                <div class="consent-block" style="margin: 24px 0 16px 0; display: flex; flex-direction: column; gap: 14px; background: #f8fafc; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                
+                <!-- Wholesale Notice Box -->
+                <div id="wholesaleNoticeBox" style="display: {{ $selectedGroup === 'wholesale' ? 'block' : 'none' }}; margin-top:14px;font-size:0.80rem;color:#065f46;line-height:1.45;padding:12px 14px;background:#ecfdf5;border-radius:10px;border-left:3px solid #10b981">
+                    @t('auth.wholesale_pricing_disclaimer', 'Wholesale pricing and commercial terms are subject to business verification, product availability, order volume and applicable MST requirements.')
+                </div>
+
+                <!-- Trading Notice Box -->
+                <div id="tradingNoticeBox" style="display: {{ $selectedGroup === 'trading' ? 'block' : 'none' }}; margin-top:14px;font-size:0.80rem;color:#1e40af;line-height:1.45;padding:12px 14px;background:#eff6ff;border-radius:10px;border-left:3px solid #2563eb">
+                    @t('auth.trading_pricing_disclaimer', 'Trading pricing, commercial terms and supply arrangements are subject to business verification, product availability, order volume, destination and specific trading requirements.')
+                </div>
+
+                <!-- Currency Reference Notice (All Account Types) -->
+                <div style="margin-top:14px;margin-bottom:8px;font-size:0.80rem;color:#1e40af;line-height:1.45;padding:10px 14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;align-items:flex-start;gap:8px">
+                    <span style="font-size:0.95rem;line-height:1">ℹ️</span>
+                    <span>@t('auth.currency_reference_notice', 'Currency conversion is for reference only. The final amount may vary based on the applicable exchange rate at the time of payment.')</span>
+                </div>
+
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <!-- 7. CONSENT & MARKETING (ALL THREE ACCOUNT TYPES)                    -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <div class="consent-block" style="margin: 20px 0 16px 0; display: flex; flex-direction: column; gap: 14px; background: #f8fafc; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0;">
                     
-                    <!-- 14. Optional Marketing Consent (Separate & Unchecked by default) -->
+                    <!-- Optional Marketing Consent -->
                     <label class="consent-item" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.86rem; color: #334155; margin:0">
                         <input type="checkbox" name="marketing_opt_in" value="1" style="margin-top: 3px; width: 17px; height: 17px; accent-color: #2563eb; cursor: pointer;" {{ old('marketing_opt_in') ? 'checked' : '' }}>
                         <span>
@@ -510,7 +522,7 @@
 
                     <div style="border-top:1px solid #e2e8f0"></div>
 
-                    <!-- 15. Mandatory Terms & Privacy Policy Consent -->
+                    <!-- Mandatory Terms & Privacy Policy Consent -->
                     <label class="consent-item" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.86rem; color: #334155; margin:0">
                         <input type="checkbox" name="terms_consent" value="1" required style="margin-top: 3px; width: 17px; height: 17px; accent-color: #2563eb; cursor: pointer;" {{ old('terms_consent') ? 'checked' : '' }}>
                         <span>
@@ -526,14 +538,22 @@
 
                 <x-recaptcha context="register" />
 
-                <!-- 21. Create Account Button -->
+                <!-- Submit Button -->
                 <div class="submit-section">
                     <button type="submit" id="submitBtn" class="btn btn-primary btn-lg btn-block register-submit-btn">
-                        <span>@t('auth.btn_create_account', 'Create Account')</span>
+                        <span id="submitBtnText">
+                            @if($selectedGroup === 'wholesale')
+                                @t('auth.btn_apply_wholesale_account', 'Apply for Wholesale Account')
+                            @elseif($selectedGroup === 'trading')
+                                @t('auth.btn_apply_trading_account', 'Apply for Trading Account')
+                            @else
+                                @t('auth.btn_create_account', 'Create Account')
+                            @endif
+                        </span>
                     </button>
                 </div>
 
-                <!-- 23. Sign In Link -->
+                <!-- Sign In Link -->
                 <div class="register-footer-links text-center">
                     <p class="text-sm text-muted">
                         @t('auth.already_have_account', 'Already have an account?') <a href="{{ route('login') }}" class="signin-link">@t('auth.signin_link', 'Sign In')</a>
@@ -542,7 +562,7 @@
             </form>
         </div>
 
-        <!-- 24. Walk-in Bottom Notice Card -->
+        <!-- Walk-in Bottom Notice Card -->
         <div class="card" style="margin-top:20px;box-shadow:0 6px 18px -4px rgba(0,0,0,0.04);border:1px solid #e2e8f0;border-radius:18px;padding:20px 24px;background:#ffffff">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
                 <div style="display:flex;align-items:center;gap:12px">
@@ -560,7 +580,7 @@
                 </div>
                 <a href="{{ route('walkin.shop') }}" 
                    style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#f8fafc;color:#0f274a;border:1.5px solid #cbd5e1;font-weight:700;font-size:0.84rem;padding:8px 16px;border-radius:9px;text-decoration:none;transition:all 0.15s ease;white-space:nowrap">
-                    <span>@t('auth.btn_browse_walkin_menu', 'Walk-in Menu →')</span>
+                    <span>@t('auth.btn_browse_walkin_menu', 'Browse Walk-in Menu →')</span>
                 </a>
             </div>
         </div>
@@ -584,7 +604,7 @@
 
 .register-container {
     width: 100%;
-    max-width: 680px;
+    max-width: 720px;
     margin: 0 auto;
     box-sizing: border-box;
 }
@@ -605,9 +625,91 @@
 .register-subtitle {
     font-size: 0.90rem;
     color: #64748b;
-    max-width: 520px;
+    max-width: 560px;
     margin: 0 auto;
     line-height: 1.45;
+}
+
+/* ─── 3 Clear Account Types Grid ─────────────────────────────────────────── */
+.account-types-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.atype-card {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.atype-card:hover {
+    border-color: #93c5fd;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px -4px rgba(37, 99, 235, 0.10);
+}
+
+.atype-card.active {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.16);
+}
+
+.atype-badge {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f274a;
+    margin-bottom: 4px;
+}
+
+.atype-title {
+    font-family: var(--font-heading);
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0f274a;
+    margin: 0 0 4px;
+    line-height: 1.3;
+}
+
+.atype-card.active .atype-title {
+    color: #1d4ed8;
+}
+
+.atype-desc {
+    font-size: 0.74rem;
+    color: #64748b;
+    margin: 0 0 12px;
+    line-height: 1.35;
+    flex: 1;
+}
+
+.atype-btn {
+    width: 100%;
+    padding: 7px 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border-radius: 8px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+}
+
+.atype-card.active .atype-btn {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
 }
 
 /* Card Styling */
@@ -619,89 +721,6 @@
     box-shadow: 0 10px 25px -5px rgba(0,0,0,0.06), 0 8px 10px -6px rgba(0,0,0,0.04);
     box-sizing: border-box;
     width: 100%;
-}
-
-/* Customer Type Radio Cards (3 Grid Columns) */
-.customer-types-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 8px;
-}
-
-.ctype-radio {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 16px 10px;
-    background: #ffffff;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    user-select: none;
-    box-sizing: border-box;
-    min-height: 140px;
-}
-
-.ctype-radio input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.ctype-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-}
-
-.ctype-icon {
-    font-size: 1.6rem;
-    line-height: 1;
-    margin-bottom: 8px;
-    display: block;
-    transition: transform 0.2s ease;
-}
-
-.ctype-label {
-    font-weight: 700;
-    font-size: 0.88rem;
-    color: #0f274a;
-    line-height: 1.25;
-    display: block;
-}
-
-.ctype-desc {
-    font-size: 0.72rem;
-    color: #64748b;
-    margin-top: 5px;
-    line-height: 1.35;
-    display: block;
-}
-
-.ctype-radio:hover {
-    border-color: #93c5fd;
-    background: #f0f9ff;
-    transform: translateY(-1px);
-}
-
-.ctype-radio:hover .ctype-icon {
-    transform: scale(1.08);
-}
-
-.ctype-radio.selected {
-    border-color: #2563eb;
-    background: #eff6ff;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.12);
-}
-
-.ctype-radio.selected .ctype-label {
-    color: #1d4ed8;
 }
 
 /* Section Dividers */
@@ -853,43 +872,6 @@
     border: 1px solid #a7f3d0;
 }
 
-/* Non-blocking Company Similarity Warning Box */
-.company-warning-box {
-    margin-top: 8px;
-    padding: 10px 12px;
-    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-    border: 1.5px solid #f59e0b;
-    border-radius: 10px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    box-shadow: 0 4px 12px -2px rgba(245, 158, 11, 0.12);
-}
-
-.warning-box-icon {
-    font-size: 1.2rem;
-    line-height: 1.2;
-    flex-shrink: 0;
-}
-
-.warning-box-content {
-    flex: 1;
-}
-
-.warning-box-title {
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #92400e;
-    line-height: 1.35;
-    margin-bottom: 2px;
-}
-
-.warning-box-sub {
-    font-size: 0.74rem;
-    color: #b45309;
-    line-height: 1.3;
-}
-
 /* Password Toggle */
 .password-field-wrapper {
     position: relative;
@@ -924,7 +906,7 @@
     background: #f1f5f9;
 }
 
-/* Select */
+/* Custom Select */
 .custom-select-wrapper {
     position: relative;
     width: 100%;
@@ -1004,6 +986,11 @@
         margin-bottom: 12px;
     }
 
+    .account-types-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
     .register-card {
         padding: 20px 16px;
         border-radius: 16px;
@@ -1015,39 +1002,6 @@
 
     .register-subtitle {
         font-size: 0.84rem;
-    }
-
-    .customer-types-grid {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-
-    .ctype-radio {
-        min-height: auto;
-        padding: 12px 10px;
-        flex-direction: row;
-        gap: 12px;
-        align-items: center;
-        text-align: left;
-    }
-
-    .ctype-content {
-        align-items: flex-start;
-        text-align: left;
-    }
-
-    .ctype-icon {
-        font-size: 1.4rem;
-        margin-bottom: 0;
-    }
-
-    .ctype-label {
-        font-size: 0.84rem;
-    }
-
-    .ctype-desc {
-        font-size: 0.72rem;
-        margin-top: 2px;
     }
 
     .form-grid-2 {
@@ -1081,37 +1035,96 @@
 
 @push('scripts')
 <script>
-function onTypeChange(type) {
-    const bizEl = document.getElementById('businessFields');
-    const tradingEl = document.getElementById('tradingFields');
-    const deliveryEl = document.getElementById('generalDeliveryFields');
+const buttonTexts = {
+    retail: @json(__t('auth.btn_create_account', 'Create Account')),
+    wholesale: @json(__t('auth.btn_apply_wholesale_account', 'Apply for Wholesale Account')),
+    trading: @json(__t('auth.btn_apply_trading_account', 'Apply for Trading Account'))
+};
 
-    if (bizEl) {
-        bizEl.style.display = (type === 'wholesale') ? 'block' : 'none';
+function selectAccountType(type) {
+    // 1. Update hidden customer group input
+    const input = document.getElementById('customer_group_input');
+    if (input) input.value = type;
+
+    // 2. Update visual active state of the 3 cards
+    ['retail', 'wholesale', 'trading'].forEach(t => {
+        const card = document.getElementById('card_' + t);
+        const btn = document.getElementById('btn_select_' + t);
+        if (card) {
+            if (t === type) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
+        }
+        if (btn) {
+            if (t === type) {
+                btn.classList.add('btn-active');
+            } else {
+                btn.classList.remove('btn-active');
+            }
+        }
+    });
+
+    // 3. Dynamic Section Display
+    const compSec = document.getElementById('companySection');
+    const wsBtype = document.getElementById('wholesaleBtypeWrapper');
+    const trBtype = document.getElementById('tradingBtypeWrapper');
+    const trMarketSec = document.getElementById('tradingMarketSection');
+    const prodIntSec = document.getElementById('productInterestSection');
+    const wsNotice = document.getElementById('wholesaleNoticeBox');
+    const trNotice = document.getElementById('tradingNoticeBox');
+
+    if (compSec) {
+        compSec.style.display = (type === 'wholesale' || type === 'trading') ? 'block' : 'none';
     }
-    if (tradingEl) {
-        tradingEl.style.display = (type === 'trading') ? 'block' : 'none';
+    if (wsBtype) {
+        wsBtype.style.display = (type === 'wholesale') ? 'block' : 'none';
     }
-    if (deliveryEl) {
-        deliveryEl.style.display = (type !== 'trading') ? 'block' : 'none';
+    if (trBtype) {
+        trBtype.style.display = (type === 'trading') ? 'block' : 'none';
+    }
+    if (trMarketSec) {
+        trMarketSec.style.display = (type === 'trading') ? 'block' : 'none';
+    }
+    if (prodIntSec) {
+        prodIntSec.style.display = (type === 'wholesale' || type === 'trading') ? 'block' : 'none';
+    }
+    if (wsNotice) {
+        wsNotice.style.display = (type === 'wholesale') ? 'block' : 'none';
+    }
+    if (trNotice) {
+        trNotice.style.display = (type === 'trading') ? 'block' : 'none';
     }
 
-    // Sync trading inputs with main form inputs if needed
-    if (type === 'trading') {
-        const trComp = document.getElementById('trading_company_name');
-        const mainComp = document.getElementById('company_name');
-        if (trComp && mainComp && trComp.value) mainComp.value = trComp.value;
-
-        const trBt = document.getElementById('trading_business_type');
-        const mainBt = document.getElementById('business_type');
-        if (trBt && mainBt && trBt.value) mainBt.value = trBt.value;
+    // 4. Update Business Type actual input from relevant select
+    if (type === 'wholesale') {
+        const wsSel = document.getElementById('business_type_wholesale');
+        if (wsSel) syncBusinessType(wsSel.value);
+    } else if (type === 'trading') {
+        const trSel = document.getElementById('business_type_trading');
+        if (trSel) syncBusinessType(trSel.value);
+    } else {
+        syncBusinessType('');
     }
 
-    document.querySelectorAll('.ctype-radio').forEach(l => l.classList.remove('selected'));
-    const selectedLabel = document.getElementById('label_' + type);
-    if (selectedLabel) {
-        selectedLabel.classList.add('selected');
+    // 5. Update Submit Button Text
+    const submitBtnText = document.getElementById('submitBtnText');
+    if (submitBtnText && buttonTexts[type]) {
+        submitBtnText.textContent = buttonTexts[type];
     }
+
+    // 6. Update URL query without page reload
+    if (window.history && window.history.replaceState) {
+        const url = new URL(window.location);
+        url.searchParams.set('type', type);
+        window.history.replaceState({}, '', url);
+    }
+}
+
+function syncBusinessType(val) {
+    const act = document.getElementById('business_type_actual');
+    if (act) act.value = val;
 }
 
 function toggleExistingRef(val) {
@@ -1120,64 +1133,6 @@ function toggleExistingRef(val) {
         refEl.style.display = (val === 'yes') ? 'block' : 'none';
     }
 }
-
-function toggleTradingExistingRef(val) {
-    const refEl = document.getElementById('tradingExistingRefBlock');
-    if (refEl) {
-        refEl.style.display = (val === 'yes') ? 'block' : 'none';
-    }
-}
-
-// Before submitting, synchronize trading fields to main names if trading is selected
-document.getElementById('registerForm')?.addEventListener('submit', function () {
-    const activeType = document.querySelector('input[name="customer_group"]:checked')?.value;
-    if (activeType === 'trading') {
-        const trComp = document.getElementById('trading_company_name');
-        const mainComp = document.getElementById('company_name');
-        if (trComp && mainComp && trComp.value) mainComp.value = trComp.value;
-
-        const trReg = document.getElementById('trading_company_reg_no');
-        const mainReg = document.getElementById('company_reg_no');
-        if (trReg && mainReg && trReg.value) mainReg.value = trReg.value;
-
-        const trBt = document.getElementById('trading_business_type');
-        const mainBt = document.getElementById('business_type');
-        if (trBt && mainBt && trBt.value) {
-            // If main select doesn't have it, create option or sync
-            let exists = false;
-            for (let opt of mainBt.options) {
-                if (opt.value === trBt.value) { exists = true; break; }
-            }
-            if (!exists) {
-                const newOpt = new Option(trBt.value, trBt.value, true, true);
-                mainBt.add(newOpt);
-            }
-            mainBt.value = trBt.value;
-        }
-
-        const trLoc = document.getElementById('trading_business_location');
-        const mainLoc = document.getElementById('business_location');
-        if (trLoc && mainLoc && trLoc.value) mainLoc.value = trLoc.value;
-
-        const trVol = document.getElementById('trading_estimated_order_volume');
-        const mainVol = document.getElementById('estimated_order_volume');
-        if (trVol && mainVol && trVol.value) mainVol.value = trVol.value;
-
-        const trProd = document.getElementById('trading_product_interest');
-        const mainProd = document.getElementById('product_interest');
-        if (trProd && mainProd && trProd.value) mainProd.value = trProd.value;
-
-        const trExist = document.querySelector('input[name="trading_existing_mst_customer"]:checked');
-        if (trExist) {
-            const mainExist = document.querySelector(`input[name="existing_mst_customer"][value="${trExist.value}"]`);
-            if (mainExist) mainExist.checked = true;
-        }
-
-        const trRef = document.getElementById('trading_existing_customer_ref');
-        const mainRef = document.getElementById('existing_customer_ref');
-        if (trRef && mainRef && trRef.value) mainRef.value = trRef.value;
-    }
-});
 
 function togglePasswordVisibility(fieldId, btn) {
     const input = document.getElementById(fieldId);
@@ -1209,9 +1164,6 @@ function togglePasswordVisibility(fieldId, btn) {
 const regI18n = {
     emailTaken: @json(__t('auth.email_already_registered', 'An account with this email already exists. Please Sign In or reset your password.')),
     emailAvailable: @json(__t('auth.email_available', 'Email address is available')),
-    companyWarning: @json(__t('auth.company_similarity_warning', 'This company may already be registered. Please check if your company already has an account or contact MST.')),
-    ssmDuplicate: @json(__t('auth.ssm_duplicate_error', 'An account with this Company Registration Number (SSM) is already registered.')),
-    ssmAvailable: @json(__t('auth.ssm_available', 'SSM Number is available')),
     signInText: @json(__t('auth.signin_link', 'Sign In')),
     resetPasswordText: @json(__t('auth.reset_password_link', 'Reset Password')),
     loginUrl: @json(route('login')),
@@ -1247,19 +1199,15 @@ async function verifyField(fieldName, val, spinnerId, callback) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Initialize initial state based on hidden input
+    const initialType = document.getElementById('customer_group_input')?.value || 'retail';
+    selectAccountType(initialType);
+
     const emailInput = document.getElementById('email');
     const emailFeedback = document.getElementById('emailFeedback');
     const emailServerError = document.getElementById('emailServerError');
 
-    const companyInput = document.getElementById('company_name');
-    const companyAlert = document.getElementById('companySimilarityAlert');
-    const companyWarningText = document.getElementById('companyWarningText');
-
-    const ssmInput = document.getElementById('company_reg_no');
-    const ssmFeedback = document.getElementById('ssmFeedback');
-    const ssmServerError = document.getElementById('ssmServerError');
-
-    // 1. Live Email Check
+    // Live Email Check
     if (emailInput) {
         const checkEmail = debounce(function () {
             const val = emailInput.value.trim();
@@ -1294,72 +1242,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         emailInput.addEventListener('input', checkEmail);
         emailInput.addEventListener('blur', checkEmail);
-    }
-
-    // 2. Live Company Name Similarity Check
-    if (companyInput) {
-        const checkCompany = debounce(function () {
-            const val = companyInput.value.trim();
-            if (!val || val.length < 3) {
-                if (companyAlert) companyAlert.style.display = 'none';
-                return;
-            }
-
-            verifyField('company_name', val, 'companySpinner', function (res) {
-                if (res.has_warning) {
-                    if (companyWarningText) {
-                        companyWarningText.textContent = res.message || regI18n.companyWarning;
-                    }
-                    if (companyAlert) {
-                        companyAlert.style.display = 'flex';
-                    }
-                } else {
-                    if (companyAlert) {
-                        companyAlert.style.display = 'none';
-                    }
-                }
-            });
-        }, 450);
-
-        companyInput.addEventListener('input', checkCompany);
-        companyInput.addEventListener('blur', checkCompany);
-    }
-
-    // 3. Live SSM Number Uniqueness Check
-    if (ssmInput) {
-        const checkSsm = debounce(function () {
-            const val = ssmInput.value.trim();
-            if (!val || val.length < 3) {
-                if (ssmFeedback) ssmFeedback.style.display = 'none';
-                ssmInput.classList.remove('is-invalid', 'is-valid');
-                return;
-            }
-
-            verifyField('company_reg_no', val, 'ssmSpinner', function (res) {
-                if (ssmServerError) ssmServerError.style.display = 'none';
-
-                if (res.is_duplicate) {
-                    ssmInput.classList.add('is-invalid');
-                    ssmInput.classList.remove('is-valid');
-                    if (ssmFeedback) {
-                        ssmFeedback.className = 'field-live-feedback error';
-                        ssmFeedback.innerHTML = `⚠️ ${res.message || regI18n.ssmDuplicate}`;
-                        ssmFeedback.style.display = 'flex';
-                    }
-                } else {
-                    ssmInput.classList.remove('is-invalid');
-                    ssmInput.classList.add('is-valid');
-                    if (ssmFeedback) {
-                        ssmFeedback.className = 'field-live-feedback success';
-                        ssmFeedback.innerHTML = `✓ ${regI18n.ssmAvailable}`;
-                        ssmFeedback.style.display = 'flex';
-                    }
-                }
-            });
-        }, 400);
-
-        ssmInput.addEventListener('input', checkSsm);
-        ssmInput.addEventListener('blur', checkSsm);
     }
 });
 </script>

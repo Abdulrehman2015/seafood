@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $product->name . ' — MST Import and Export Sdn Bhd')
+@section('title', $product->name . ' — MST Import and Export Sdn. Bhd.')
 @section('og_title', $product->name)
 @section('og_description', $product->short_description ?? $product->name)
 @section('og_image', $product->thumbnail ? cdn_storage($product->thumbnail) : asset('images/og-default.jpg'))
@@ -67,7 +67,7 @@
 
                         @if($product->is_walkin_available)
                             <span style="position:absolute;top:14px;right:14px;background:rgba(15,118,110,0.9);color:white;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;z-index:5">
-                                🏪 In-Store Available
+                                🏪 @t('shop.in_store_available', 'In-Store Available')
                             </span>
                         @endif
 
@@ -120,20 +120,20 @@
                     @if($product->isInStock())
                         <span style="display:inline-flex;align-items:center;gap:6px;background:#d1fae5;color:#065f46;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700">
                             <span style="width:6px;height:6px;background:#10b981;border-radius:50%"></span>
-                            In Stock @if($product->track_stock) ({{ $product->stock_quantity }} {{ $product->unit }} left) @endif
+                            @t('shop.status_in_stock', 'In Stock') @if($product->track_stock) ({{ $product->stock_quantity }} {{ $product->unit }} left) @endif
                         </span>
                     @else
                         <span style="display:inline-flex;align-items:center;gap:6px;background:#fee2e2;color:#991b1b;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700">
-                            Pre-Order / Sourcing Available
+                            @t('shop.status_preorder', 'Pre-Order / Sourcing Available')
                         </span>
                     @endif
 
                     @if($product->sku)
-                        <span class="text-xs text-muted">SKU: <strong style="color:var(--gray-700)">{{ $product->sku }}</strong></span>
+                        <span class="text-xs text-muted">@t('shop.sku_label', 'SKU:') <strong style="color:var(--gray-700)">{{ $product->sku }}</strong></span>
                     @endif
 
                     @if($product->weight)
-                        <span class="text-xs text-muted">Weight: <strong style="color:var(--gray-700)">{{ $product->weight }}</strong></span>
+                        <span class="text-xs text-muted">@t('shop.weight_label', 'Weight:') <strong style="color:var(--gray-700)">{{ $product->weight }}</strong></span>
                     @endif
                 </div>
 
@@ -156,7 +156,7 @@
                     @if($price !== null && !$product->is_rfq_only)
                         <div style="display:flex;align-items:baseline;gap:8px">
                             @if(!$isApprovedWholesale)
-                                <span style="font-size:1.1rem;font-weight:700;color:#64748b">From</span>
+                                <span style="font-size:1.1rem;font-weight:700;color:#64748b">@t('shop.from_price', 'From')</span>
                             @endif
                             <span class="price-amount" style="font-size:2rem;font-weight:900;color:#1e40af;font-family:var(--font-heading);line-height:1">
                                 {{ $displayPrice['formatted'] }}
@@ -174,31 +174,30 @@
                             @if($isApprovedWholesale)
                                 <span class="badge" style="background:#dbeafe;color:#1e40af;font-weight:700">✓ {{ ucfirst($group) }} Verified Tier</span>
                             @else
-                                <span>Public Retail Pricing · <a href="{{ route('register', ['type' => 'wholesale']) }}" style="color:#1d4ed8;font-weight:700;text-decoration:underline">Request Wholesale Access →</a></span>
+                                <span>@t('shop.retail_ref_price_disclaimer', 'Public Retail Reference Pricing') · <a href="{{ route('register', ['type' => 'wholesale']) }}" style="color:#1d4ed8;font-weight:700;text-decoration:underline">@t('shop.request_wholesale_access', 'Request Wholesale Access →')</a></span>
                             @endif
                         </div>
                     @else
                         <div style="font-size:1.5rem;font-weight:800;color:#0369a1">
-                            {{ $isApprovedWholesale ? 'Negotiated Pricing' : 'Price available upon request' }}
+                            {{ $isApprovedWholesale ? __t('shop.negotiated_pricing', 'Negotiated Pricing') : __t('shop.price_on_request', 'Price available upon request') }}
                         </div>
                         <p class="text-xs text-muted" style="margin-top:4px;color:#64748b">
-                            Availability subject to stock and supply confirmation.
+                            @t('shop.availability_subject_confirmation', 'Availability subject to stock and supply confirmation.')
                         </p>
                     @endif
 
                     @if($isApprovedWholesale && $moq > 1)
                         <div style="margin-top:10px;background:#fef3c7;color:#92400e;padding:6px 12px;border-radius:8px;font-size:0.8rem;font-weight:600;border:1px solid #fde68a">
-                            📦 Minimum Order Quantity (MOQ): <strong>{{ $moq }} {{ $product->unit }}</strong>
+                            📦 MOQ: <strong>{{ $moq }} {{ $product->unit }}</strong>
                         </div>
                     @endif
                 </div>
 
                 <!-- Disclaimers Notice -->
                 <div style="font-size:0.75rem;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:var(--space-4);line-height:1.4">
-                    <div>ℹ️ Prices and availability are subject to change without prior notice and may vary according to order volume, product specification, market conditions and supply availability.</div>
-                    @if($currentCurrency !== 'MYR')
-                        <div style="margin-top:3px;color:#0369a1">Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.</div>
-                    @endif
+                    <div><strong>ℹ️ @t('shop.pricing_disclaimer_head', 'Notice:'):</strong> @t('shop.retail_ref_price_disclaimer', 'Retail prices are shown for reference. Wholesale and trading prices are available after account approval or by quotation.')</div>
+                    <div style="margin-top:3px">@t('shop.delivery_threshold_full_note', 'Standard local delivery arrangements apply to selected areas within Johor Bahru and Nusajaya / Iskandar Puteri. Standard Delivery Thresholds are RM100 for Retail / B2C and RM350 for Wholesale / B2B. Orders below threshold can still be placed with applicable delivery fees based on delivery location. Walk-in / Counter Collection incurs RM0 delivery fee.')</div>
+                    <div style="margin-top:3px;color:#0369a1">@t('shop.currency_indicative_disclaimer', 'Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.')</div>
                 </div>
 
                 <!-- Short Description -->
@@ -310,10 +309,10 @@
 
                 <!-- Key Assurances -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:var(--space-3) 0;border-top:1px solid var(--gray-200);border-bottom:1px solid var(--gray-200);margin-bottom:var(--space-4);font-size:0.8rem;color:var(--gray-600)">
-                    <div style="display:flex;align-items:center;gap:6px">❄️ @t('shop.assurance_coldchain', 'Cold Storage (-18°C to -25°C)')</div>
+                    <div style="display:flex;align-items:center;gap:6px">{{ $product->getStorageIcon() }} {{ $product->getStorageDisplay() }}</div>
                     <div style="display:flex;align-items:center;gap:6px">🚚 @t('shop.assurance_logistics', 'Cold-Chain Delivery Available')</div>
                     <div style="display:flex;align-items:center;gap:6px">🛡️ @t('shop.assurance_food_safety', 'Food Safety & Hygiene Standards')</div>
-                    <div style="display:flex;align-items:center;gap:6px">🏪 @t('shop.assurance_silc_pickup', 'SILC Facility Self-Collection')</div>
+                    <div style="display:flex;align-items:center;gap:6px">🏪 @t('shop.assurance_silc_pickup', 'Walk-in / SILC Self-Collection (RM0 Fee)')</div>
                 </div>
 
                 <!-- Share Buttons with Vector SVG Icons -->
@@ -444,12 +443,12 @@
                     <h3 style="font-size:1.1rem;color:var(--gray-900);font-weight:700;margin-bottom:var(--space-2)">Fulfillment & Collection Options</h3>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-top:var(--space-3)">
                         <div style="padding:var(--space-4);border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe">
-                            <div style="font-weight:700;color:#1e3a8a;margin-bottom:4px">🏪 Store Self-Collection (FREE)</div>
-                            <div class="text-xs text-muted">Collect at our Johor Bahru (SILC) facility. Walk-in customers receive their collection token immediately upon payment.</div>
+                            <div style="font-weight:700;color:#1e3a8a;margin-bottom:4px">🏪 Walk-in / Counter Collection (RM0 Delivery Fee)</div>
+                            <div class="text-xs text-muted">Collect your confirmed order directly from MST SILC facility. No delivery fee applies, and no minimum checkout threshold is required.</div>
                         </div>
                         <div style="padding:var(--space-4);border-radius:10px;background:#f8fafc;border:1px solid var(--gray-200)">
-                            <div style="font-weight:700;color:var(--gray-900);margin-bottom:4px">🚚 Cold Chain Delivery</div>
-                            <div class="text-xs text-muted">Johor &amp; nationwide cold-truck delivery within 24-48 hours. Cross-border Singapore delivery available for wholesale orders.</div>
+                            <div style="font-weight:700;color:var(--gray-900);margin-bottom:4px">🚚 Standard Local & Cold Chain Delivery</div>
+                            <div class="text-xs text-muted">Standard local delivery arrangements apply to selected areas within Johor Bahru and Nusajaya / Iskandar Puteri. Standard Delivery Thresholds: RM100 (Retail) and RM350 (Wholesale). Orders below threshold can still be placed with applicable delivery fees.</div>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'MST Import & Export | Frozen Food Sourcing & Trading')
-@section('meta_description', 'MST Import and Export provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.')
+@section('title', 'MST Import and Export Sdn. Bhd. — ' . __t('home.hero_badge', 'Food Sourcing & Cold-Chain Supply'))
+@section('meta_description', __t('home.hero_subtitle', 'Providing seafood, meat, frozen food and food ingredients to hotels, restaurants, supermarkets and wholesale traders in Malaysia and Singapore.'))
 
 @section('content')
 
@@ -78,7 +78,7 @@
                 <picture>
                     <source srcset="{{ cdn_img('hero-banner.webp') }}" type="image/webp">
                     <img src="{{ cdn_img('hero-banner.jpg') }}"
-                         alt="Quality frozen seafood & food products — MST Import and Export Sdn Bhd"
+                         alt="Quality seafood & food products — MST Import and Export Sdn. Bhd."
                          class="mika-hero-img"
                          width="1376"
                          height="768"
@@ -1721,7 +1721,7 @@
                 @t('home.delivery_title', 'Convenient Door-to-Door Delivery')
             </h2>
             <p class="section-subtitle" style="font-size:0.95rem;color:#64748b;margin:0 auto;line-height:1.6;text-align:center;">
-                @t('home.delivery_subtitle', 'Temperature-controlled local delivery service supporting both residential retail orders and commercial wholesale operations.')
+                @t('home.delivery_subtitle', 'Temperature-controlled cold-chain delivery service supporting both residential retail orders and commercial wholesale operations.')
             </p>
         </div>
 
@@ -1736,11 +1736,11 @@
                     </div>
                 </div>
                 <div style="background:#ffffff;border:1px solid #dbeafe;border-radius:10px;padding:10px 14px;margin-top:4px">
-                    <div style="font-size:0.75rem;color:#64748b;font-weight:600">@t('home.delivery_min_order', 'Minimum Order')</div>
+                    <div style="font-size:0.75rem;color:#64748b;font-weight:600">@t('home.delivery_std_threshold', 'Standard Delivery Threshold')</div>
                     <div style="font-size:1.3rem;font-weight:800;color:#1d4ed8">RM 100</div>
                 </div>
-                <p style="font-size:0.85rem;color:#64748b;line-height:1.5;margin:0">
-                    @t('home.delivery_b2c_desc', 'Convenient home and retail door-to-door delivery for personal dining and small-batch orders.')
+                <p style="font-size:0.85rem;color:#64748b;line-height:1.55;margin:0">
+                    @t('home.delivery_b2c_desc', 'Orders of RM100 and above follow standard local delivery. Orders below RM100 can still be placed; an additional delivery fee applies based on location/zone.')
                 </p>
             </div>
 
@@ -1754,42 +1754,42 @@
                     </div>
                 </div>
                 <div style="background:#ffffff;border:1px solid #fef3c7;border-radius:10px;padding:10px 14px;margin-top:4px">
-                    <div style="font-size:0.75rem;color:#64748b;font-weight:600">@t('home.delivery_min_order', 'Minimum Order')</div>
+                    <div style="font-size:0.75rem;color:#64748b;font-weight:600">@t('home.delivery_std_threshold', 'Standard Delivery Threshold')</div>
                     <div style="font-size:1.3rem;font-weight:800;color:#b45309">RM 350</div>
                 </div>
-                <p style="font-size:0.85rem;color:#64748b;line-height:1.5;margin:0">
-                    @t('home.delivery_b2b_desc', 'Scheduled cold-chain dispatch directly to restaurants, foodservice operators and commercial kitchens.')
+                <p style="font-size:0.85rem;color:#64748b;line-height:1.55;margin:0">
+                    @t('home.delivery_b2b_desc', 'Orders of RM350 and above follow standard local delivery. Orders below RM350 can still be placed; an additional delivery fee applies based on location/zone.')
                 </p>
             </div>
 
-            <!-- Coverage Area -->
+            <!-- Self-Collection / Walk-In -->
             <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:24px 22px;display:flex;flex-direction:column;gap:10px;transition:all 0.2s ease;" onmouseover="this.style.borderColor='#93c5fd';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.transform='none'">
                 <div style="display:flex;align-items:center;gap:12px">
-                    <span style="font-size:2rem">📍</span>
+                    <span style="font-size:2rem">🏪</span>
                     <div>
-                        <div style="font-size:0.78rem;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:0.05em">@t('home.delivery_area_badge', 'Coverage')</div>
-                        <h3 style="font-size:1.15rem;font-weight:800;color:#0f172a;margin:0">@t('home.delivery_coverage_title', 'Local Delivery Area')</h3>
+                        <div style="font-size:0.78rem;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:0.05em">@t('common.counter_pickup', 'Counter Collection')</div>
+                        <h3 style="font-size:1.15rem;font-weight:800;color:#0f172a;margin:0">Self-Collection / Walk-In</h3>
                     </div>
                 </div>
                 <div style="background:#ffffff;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;margin-top:4px">
-                    <div style="font-size:0.75rem;color:#64748b;font-weight:600">@t('home.delivery_available_areas', 'Available for selected areas within')</div>
-                    <div style="font-size:1.05rem;font-weight:800;color:#15803d;line-height:1.3;margin-top:2px">Johor Bahru & Nusajaya / Iskandar Puteri</div>
+                    <div style="font-size:0.75rem;color:#64748b;font-weight:600">@t('home.delivery_charge_label', 'Delivery Fee')</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:#059669">RM 0 (Free)</div>
                 </div>
-                <p style="font-size:0.85rem;color:#64748b;line-height:1.5;margin:0">
-                    @t('home.delivery_coverage_desc', 'Direct cold-chain dispatch from our SiLC Iskandar Puteri distribution hub.')
+                <p style="font-size:0.85rem;color:#64748b;line-height:1.55;margin:0">
+                    @t('home.delivery_walkin_desc', 'Collect your confirmed order directly from MST SILC Cold-Chain Facility Counter 2. No delivery threshold and no delivery fee apply.')
                 </p>
             </div>
         </div>
 
         <!-- Additional Policy Notes Banner & Action Button -->
-        <div style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:14px;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+        <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:14px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
             <div style="max-width:760px">
                 <div style="font-size:0.88rem;color:#334155;line-height:1.6;font-weight:500;">
-                    <span>ℹ️ @t('home.delivery_note_below_min', 'Orders below the applicable minimum may still be accepted with delivery charges.')</span>
-                    <span style="display:block;margin-top:2px">🌐 @t('home.delivery_note_outside', 'For locations outside our local delivery area, transportation charges apply.')</span>
+                    <span style="display:block;margin-bottom:4px">📍 <strong>@t('home.delivery_area_label', 'Delivery Area:')</strong> @t('home.delivery_area_statement', 'Standard local delivery arrangements apply to selected areas within Johor Bahru and Nusajaya / Iskandar Puteri.')</span>
+                    <span style="display:block;color:#64748b">🌐 @t('home.delivery_note_outside', 'For locations outside the local delivery area, applicable transportation charges and manual delivery arrangements will apply.')</span>
                 </div>
             </div>
-            <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => 'shipping-policy']) }}" class="btn btn-secondary" style="background:#ffffff;color:#0f172a;border-color:#cbd5e1;font-weight:700;font-size:0.85rem;padding:8px 18px;white-space:nowrap;">
+            <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => 'shipping-policy']) }}" class="btn btn-secondary" style="background:#ffffff;color:#0f172a;border-color:#cbd5e1;font-weight:700;font-size:0.85rem;padding:9px 20px;border-radius:10px;white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,0.05)">
                 @t('home.delivery_policy_btn', 'View Delivery Policy →')
             </a>
         </div>
@@ -1862,7 +1862,7 @@
                 @t('home.quality_banner_tag', 'BUILT ON INTEGRITY. DELIVERED WITH CONSISTENCY.')
             </div>
             <div style="font-size:0.85rem;color:#1d4ed8;font-weight:700;">
-                @t('home.quality_banner_sub', 'MST Import and Export Sdn Bhd · Flow with Integrity, Grow with Strength.')
+                @t('home.quality_banner_sub', 'MST Import and Export Sdn. Bhd. · Flow with Integrity, Grow with Strength.')
             </div>
         </div>
     </div>

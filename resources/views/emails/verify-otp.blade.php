@@ -2,7 +2,7 @@
 
 @php
     $mailLoc = $mailLocale ?? current_locale();
-    $appName = config('app.name', 'MST Seafood');
+    $appName = config('app.name', 'MST Import and Export Sdn. Bhd.');
 @endphp
 
 @section('title', __t('email.otp_subject', '[:otp] Your Account Verification Code — :app', ['otp' => $otp, 'app' => $appName], $mailLoc))

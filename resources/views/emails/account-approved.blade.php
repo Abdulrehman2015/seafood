@@ -2,7 +2,7 @@
 
 @php
     $mailLoc = $mailLocale ?? current_locale();
-    $appName = config('app.name', 'MST Import & Export');
+    $appName = config('app.name', 'MST Import and Export Sdn. Bhd.');
 @endphp
 
 @section('title', __t('email.account_approved_subject', 'Your Account Has Been Approved — :app', ['app' => $appName], $mailLoc))
@@ -26,7 +26,7 @@
                 {{ __t('email.congratulations_title', 'Congratulations, :name!', ['name' => $user->name], $mailLoc) }}
             </h1>
             <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0 0 20px 0;">
-                {{ __t('email.account_approved_body', 'Your application for a :group account with MST Import & Export SDN. BHD. has been approved by our management team.', ['group' => ucfirst($user->customer_group)], $mailLoc) }}
+                {{ __t('email.account_approved_body', 'Your application for a :group account with MST Import and Export Sdn. Bhd. has been approved by our management team.', ['group' => ucfirst($user->customer_group)], $mailLoc) }}
             </p>
         </td>
     </tr>

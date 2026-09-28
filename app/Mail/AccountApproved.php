@@ -25,7 +25,7 @@ class AccountApproved extends Mailable
 
     public function envelope(): Envelope
     {
-        $appName = config('app.name', 'MST Import & Export');
+        $appName = config('app.name', 'MST Import and Export Sdn. Bhd.');
         $subject = __t('email.account_approved_subject', 'Your Account Has Been Approved — :app', [
             'app' => $appName,
         ], $this->mailLocale);

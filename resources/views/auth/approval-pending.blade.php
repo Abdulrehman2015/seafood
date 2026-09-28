@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Account Pending Approval — MST Import and Export Sdn Bhd')
+@section('title', 'Account Pending Approval — MST Import and Export Sdn. Bhd.')
 
 @section('content')
 <!-- Page Header -->
@@ -51,7 +51,7 @@
                 </h2>
 
                 <p style="color:#475569;font-size:0.95rem;line-height:1.65;margin:0 0 18px;text-align:left">
-                    @t('auth.trading_pending_p1', 'Thank you for your interest in MST Import & Export Sdn. Bhd.')
+                    @t('auth.trading_pending_p1', 'Thank you for your interest in MST Import and Export Sdn. Bhd.')
                 </p>
                 <p style="color:#475569;font-size:0.95rem;line-height:1.65;margin:0 0 18px;text-align:left">
                     @t('auth.trading_pending_p2', 'Your Trading / Import & Distribution request has been received and will be reviewed by our team.')
@@ -91,7 +91,7 @@
                     <span style="display:inline-block;padding:2px 8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:6px;font-weight:700;font-size:0.85rem;text-transform:uppercase">
                         {{ ucfirst(auth()->user()->customer_group) }} Account
                     </span> 
-                    with <strong>MST Import & Export Sdn. Bhd.</strong> has been received.
+                    with <strong>MST Import and Export Sdn. Bhd.</strong> has been received.
                 </p>
 
                 @if(auth()->user()->company_name)

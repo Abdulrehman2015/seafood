@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', ($policy->meta_title ?: $policy->title_for_locale) . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd'))
+@section('title', ($policy->meta_title ?: $policy->title_for_locale) . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.'))
 @section('meta_description', $policy->meta_description ?: ($policy->summary ?: \Illuminate\Support\Str::limit(strip_tags($policy->content_for_locale), 160)))
 
 @section('content')
@@ -107,8 +107,9 @@
                         <!-- Footer Signoff -->
                         <div class="policy-signoff">
                             <div class="signoff-brand">
-                                <strong>{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</strong>
-                                <span>@t('footer.tagline', $settings['store_tagline'] ?? 'Flow with Integrity, Grow with Strength')</span>
+                                <div style="font-size:1.1rem;font-weight:800;color:#0f172a;line-height:1.2;">镁嘉国际贸易有限公司</div>
+                                <div style="font-size:0.85rem;font-weight:700;color:#2563eb;line-height:1.2;margin-top:2px;">MST Import and Export Sdn. Bhd.</div>
+                                <span style="margin-top:4px;display:block;">@t('footer.tagline', $settings['store_tagline'] ?? 'Flow with Integrity, Grow with Strength')</span>
                             </div>
                             <div class="signoff-contact">
                                 <span>📍 {{ $settings['store_address'] ?? 'Johor, Malaysia' }}</span>

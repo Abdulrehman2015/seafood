@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Account Application Status — MST Import and Export Sdn Bhd')
+@section('title', 'Account Application Status — MST Import and Export Sdn. Bhd.')
 
 @section('content')
 <!-- Page Header -->
@@ -54,7 +54,7 @@
                 <span style="display:inline-block;padding:2px 8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:6px;font-weight:700;font-size:0.85rem;text-transform:uppercase">
                     {{ ucfirst(auth()->user()->customer_group) }}
                 </span> 
-                account with <strong>MST Import & Export Sdn. Bhd.</strong> could not be approved at this time.
+                account with <strong>MST Import and Export Sdn. Bhd.</strong> could not be approved at this time.
             </p>
 
             @if(auth()->user()->rejection_reason)

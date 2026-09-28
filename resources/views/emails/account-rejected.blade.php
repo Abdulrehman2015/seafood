@@ -2,7 +2,7 @@
 
 @php
     $mailLoc = $mailLocale ?? current_locale();
-    $appName = config('app.name', 'MST Import & Export');
+    $appName = config('app.name', 'MST Import and Export Sdn. Bhd.');
 @endphp
 
 @section('title', __t('email.account_rejected_subject', 'Update on Your Account Application — :app', ['app' => $appName], $mailLoc))
@@ -26,7 +26,7 @@
                 {{ __t('email.application_status_update_title', 'Application Status Update', [], $mailLoc) }}
             </h1>
             <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0 0 20px 0;">
-                {{ __t('email.account_rejected_greeting', 'Dear :name, thank you for your interest in partnering with MST Import & Export SDN. BHD.', ['name' => $user->name], $mailLoc) }}
+                {{ __t('email.account_rejected_greeting', 'Dear :name, thank you for your interest in partnering with MST Import and Export Sdn. Bhd.', ['name' => $user->name], $mailLoc) }}
             </p>
             <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0 0 20px 0;">
                 {{ __t('email.account_rejected_body', 'After reviewing your :group application, our compliance team was unable to verify the complete business credentials provided. As a result, your commercial tier status could not be activated at this time.', ['group' => ucfirst($user->customer_group)], $mailLoc) }}

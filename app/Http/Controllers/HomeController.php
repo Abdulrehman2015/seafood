@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Services\PricingService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -16,13 +17,21 @@ class HomeController extends Controller
     {
         $group = $this->pricing->resolveGroup();
 
-        $featuredProducts = Product::featured()->inStock()->with('category')->limit(8)->get();
+        $featuredProducts = Cache::remember('home_featured_products', 1800, function () {
+            return Product::featured()->inStock()->with('category')->limit(8)->get();
+        });
         
-        // Show active root categories on homepage
-        $categories = Category::active()->whereNull('parent_id')->orderBy('sort_order')->orderBy('name')->get();
+        $categories = Cache::remember('home_categories', 1800, function () {
+            return Category::active()->whereNull('parent_id')->orderBy('sort_order')->orderBy('name')->get();
+        });
 
-        $newArrivals      = Product::active()->inStock()->latest()->limit(4)->get();
-        $reviews          = Review::approved()->featured()->orderBy('sort_order')->limit(6)->get();
+        $newArrivals = Cache::remember('home_new_arrivals', 1800, function () {
+            return Product::active()->inStock()->latest()->limit(4)->get();
+        });
+
+        $reviews = Cache::remember('home_reviews', 1800, function () {
+            return Review::approved()->featured()->orderBy('sort_order')->limit(6)->get();
+        });
 
         return view('home', compact('featuredProducts', 'categories', 'newArrivals', 'reviews', 'group'));
     }

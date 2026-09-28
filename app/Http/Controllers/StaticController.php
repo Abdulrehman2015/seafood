@@ -131,7 +131,7 @@ class StaticController extends Controller
                         "View in Admin Console: " . route('admin.messages.index'),
                         function ($m) use ($adminEmails, $request, $inquirySubject) {
                             $m->to($adminEmails)
-                              ->subject("New RFQ / Inquiry: {$inquirySubject} from {$request->name} — MST Import and Export Sdn Bhd");
+                              ->subject("New RFQ / Inquiry: {$inquirySubject} from {$request->name} — MST Import and Export Sdn. Bhd.");
                         }
                     );
                 }

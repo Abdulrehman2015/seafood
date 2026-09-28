@@ -7,7 +7,7 @@
 
 @php
     $items = $reviews ?? \App\Models\Review::approved()->featured()->orderBy('sort_order')->limit(6)->get();
-    $storeName = $settings['store_name'] ?? 'MST Import and Export Sdn Bhd';
+    $storeName = $settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.';
     $displaySubtitle = $subtitle ?? "From five-star hotel executive chefs to home cooking enthusiasts, discover why seafood lovers choose {$storeName}.";
 @endphp
 

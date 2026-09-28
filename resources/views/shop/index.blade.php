@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title', __t('shop.meta_title', 'Products & Sourcing — MST Import & Export Sdn. Bhd.'))
-@section('meta_description', __t('shop.meta_desc', 'Explore selected frozen seafood, meat, food ingredients and specialty products from MST. Customised sourcing available based on product specification, origin, pack size and supply requirements.'))
+@section('title', __t('shop.meta_title', 'Products & Sourcing — MST Import and Export Sdn. Bhd.'))
+@section('meta_description', __t('shop.meta_desc', 'Explore selected seafood, frozen food, meat, food ingredients and specialty products from MST. Customised sourcing available based on product specification, origin, pack size and supply requirements.'))
 
 @section('content')
 <!-- Page Header / Hero Section (MST Deep Navy Brand Gradient) -->
@@ -21,7 +21,7 @@
             </h1>
             
             <p class="products-hero-subtitle">
-                @t('shop.hero_desc', 'Explore selected frozen seafood, meat, food ingredients and specialty products from MST.')
+                @t('shop.hero_desc', 'Explore selected seafood, frozen food, meat, food ingredients and specialty products from MST.')
             </p>
             <p class="products-hero-subtitle" style="margin-top:6px;font-size:0.9rem;opacity:0.92">
                 @t('shop.hero_subdesc', 'We also provide customised sourcing based on product specification, origin, pack size, brand and supply requirements.')
@@ -224,7 +224,7 @@
                            onclick="setCustomerType('retail')" 
                            data-type="retail"
                            class="cust-type-btn {{ $currentCustomerType === 'retail' ? 'active' : '' }}"
-                           title="@t('shop.type_retail_desc', 'Public browsing · Retail pricing · No login required')">
+                           title="@t('shop.type_retail_desc', 'Public browsing · Retail reference pricing · No login required')">
                             <span>🛍️ @t('shop.type_retail', 'Retail / Walk-in')</span>
                         </button>
                         <button type="button" 
@@ -242,11 +242,25 @@
             <div class="customer-mode-caption" id="custModeCaption">
                 @if($currentCustomerType === 'retail')
                     <span class="mode-caption-tag">🛍️ @t('shop.type_retail', 'Retail / Walk-in'):</span>
-                    <span class="mode-caption-text">@t('shop.type_retail_desc', 'Public browsing · Retail pricing · No login required')</span>
+                    <span class="mode-caption-text">@t('shop.type_retail_desc', 'Public browsing · Retail reference pricing · No login required')</span>
                 @else
                     <span class="mode-caption-tag">🏢 @t('shop.type_wholesale', 'Wholesale / Business'):</span>
                     <span class="mode-caption-text">@t('shop.type_wholesale_desc', 'Business verification required · Wholesale pricing')</span>
                 @endif
+            </div>
+
+            <!-- Retail Reference Pricing & Walk-in Access Notice -->
+            <div class="retail-pricing-notice-bar" style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:10px 16px;margin-bottom:14px;font-size:0.83rem;color:#334155;line-height:1.5;">
+                <div style="font-weight:700;color:#0f172a;display:flex;align-items:center;gap:6px;margin-bottom:3px">
+                    <span>ℹ️</span>
+                    <span>@t('shop.retail_ref_price_disclaimer', 'Retail prices are shown for reference. Wholesale and trading prices are available after account approval or by quotation.')</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:0.79rem;color:#475569;margin-top:4px">
+                    <span>🏪 <strong>@t('shop.walkin_counter_col', 'Walk-in / Counter Collection:')</strong> @t('shop.walkin_qr_subdesc', 'Scan the in-store QR code to access Walk-in pricing. No registration is required.')</span>
+                    <a href="{{ route('walkin.shop') }}" style="color:#2563eb;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:3px">
+                        @t('shop.walkin_menu_link', 'Walk-in Menu →')
+                    </a>
+                </div>
             </div>
 
             <!-- 6 Searchable Dropdown Filters -->
@@ -680,28 +694,18 @@
                             $prodNameLower = strtolower($product->name ?? '');
                             $isLive = str_contains($tempLower, 'live') || str_contains($prodNameLower, 'live');
                             $isChilled = str_contains($tempLower, 'chilled');
-                            $isIqf = str_contains($prodNameLower, 'iqf') || str_contains($tempLower, 'iqf');
-
-                            if ($isLive) {
-                                $storageLabel = '🦀 Live / Chilled';
-                            } elseif ($isChilled) {
-                                $storageLabel = '🧊 0°C to 4°C Chilled';
-                            } elseif ($isIqf) {
-                                $storageLabel = '❄️ -18°C · IQF';
-                            } elseif ($product->storage_temp) {
-                                $storageLabel = '❄️ Frozen · ' . $product->storage_temp;
-                            } else {
-                                $storageLabel = '❄️ Frozen · -18°C';
-                            }
+                            $isAmbient = str_contains($tempLower, 'ambient') || str_contains($tempLower, 'room');
+                            
+                            $storageLabel = $product->getStorageDisplay();
 
                             // Availability status text
-                            $availabilityLabel = 'Available';
+                            $availabilityLabel = __t('shop.status_in_stock', 'In Stock');
                             $availabilityClass = 'avail-in-stock';
                             if ($product->is_rfq_only) {
-                                $availabilityLabel = 'Pre-Order / Sourcing Available';
+                                $availabilityLabel = __t('shop.status_preorder', 'Pre-Order / Sourcing Available');
                                 $availabilityClass = 'avail-pre-order';
                             } elseif ($product->track_stock && $product->stock_quantity <= 5) {
-                                $availabilityLabel = 'Limited Availability';
+                                $availabilityLabel = __t('shop.status_limited', 'Limited Availability');
                                 $availabilityClass = 'avail-limited';
                             }
 
@@ -736,7 +740,7 @@
                                 </div>
 
                                 <!-- Storage Condition Badge Bottom Left -->
-                                <div class="card-storage-badge {{ $isLive ? 'storage-live' : '' }}">
+                                <div class="card-storage-badge {{ $isLive ? 'storage-live' : ($isChilled ? 'storage-chilled' : ($isAmbient ? 'storage-ambient' : '')) }}">
                                     {{ $storageLabel }}
                                 </div>
 
@@ -854,8 +858,8 @@
                                         @else
                                             <div class="wholesale-locked-box">
                                                 <div class="wholesale-locked-title">🏢 @t('shop.wholesale_pricing_locked', 'Wholesale Pricing')</div>
-                                                <div class="wholesale-locked-sub">@t('shop.business_account_required', 'Business account required')</div>
-                                                <a href="{{ route('register', ['type' => 'wholesale']) }}" class="btn-request-wholesale-link">
+                                                <div class="wholesale-locked-sub">@t('shop.wholesale_account_required', 'Wholesale account required')</div>
+                                                <a href="{{ route('register.wholesale') }}" class="btn-request-wholesale-link">
                                                     @t('shop.request_wholesale_access', 'Request Wholesale Access →')
                                                 </a>
                                             </div>
@@ -868,7 +872,7 @@
                                     <!-- Retail Actions -->
                                     <div class="card-action-row actions-mode-retail">
                                         @if(!$isSensitiveOrRfq && $product->retail_price !== null)
-                                            <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form" style="flex:1;margin:0;">
+                                            <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form" data-no-loader="true" style="flex:1;margin:0;">
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                                 <input type="hidden" name="quantity" value="1">
@@ -919,7 +923,7 @@
                                     <!-- Wholesale Actions -->
                                     <div class="card-action-row actions-mode-wholesale">
                                         @if($isApprovedWholesale && $basePriceAmount !== null && !$product->is_rfq_only)
-                                            <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form" style="flex:1;margin:0;">
+                                            <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form" data-no-loader="true" style="flex:1;margin:0;">
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                                 <input type="hidden" name="quantity" value="{{ $product->getMoqForGroup($group) }}">
@@ -975,17 +979,16 @@
                     <span class="disclaimer-icon">ℹ️</span>
                     <div class="disclaimer-texts">
                         <p class="disclaimer-line">
-                            <strong>@t('shop.pricing_disclaimer_head', 'Pricing & Availability Notice:')</strong>
-                            @t('shop.pricing_disclaimer', 'Prices and availability are subject to change without prior notice and may vary according to order volume, product specification, market conditions and supply availability.')
+                            <strong>@t('shop.pricing_disclaimer_head', 'Pricing Notice:')</strong>
+                            @t('shop.retail_ref_price_disclaimer', 'Retail prices are shown for reference. Wholesale and trading prices are available after account approval or by quotation.')
                         </p>
                         <p class="disclaimer-line disclaimer-wholesale-note">
-                            @t('shop.wholesale_trading_disclaimer', 'Wholesale and trading prices are quotation-based and may vary according to product specification, quantity, origin and market conditions.')
+                            <strong>@t('shop.delivery_threshold_head', 'Delivery Arrangement:')</strong>
+                            @t('shop.delivery_threshold_full_note', 'Standard local delivery arrangements apply to selected areas within Johor Bahru and Nusajaya / Iskandar Puteri. Standard Delivery Thresholds are RM100 for Retail / B2C and RM350 for Wholesale / B2B. Orders below threshold can still be placed with applicable delivery fees based on delivery location. Walk-in / Counter Collection incurs RM0 delivery fee.')
                         </p>
-                        @if($currentCurrency !== 'MYR')
-                            <p class="disclaimer-line disclaimer-currency-note">
-                                @t('shop.currency_indicative_disclaimer', 'Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.')
-                            </p>
-                        @endif
+                        <p class="disclaimer-line disclaimer-currency-note">
+                            @t('shop.currency_indicative_disclaimer', 'Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.')
+                        </p>
                     </div>
                 </div>
 
@@ -1007,10 +1010,10 @@
                         @t('shop.we_can_source', 'We Can Source It For You.')
                     </h3>
                     <p class="empty-desc">
-                        @t('shop.sourcing_brief_desc', "Tell us your preferred product, specification, origin, pack size or brand. Our sourcing team can help coordinate availability and quotation.")
+                        @t('shop.sourcing_brief_desc', "Tell us your requirements based on product type, specification, pack size, origin, brand, quantity and destination. Our sourcing team can coordinate availability and commercial quotation.")
                     </p>
                     <div class="empty-actions">
-                        <a href="{{ route('contact') }}#quote" class="btn-sourcing-primary">
+                        <a href="{{ route('quotations.create') }}" class="btn-sourcing-primary">
                             @t('shop.request_custom_sourcing', 'Request Custom Sourcing →')
                         </a>
                         <a href="{{ route('shop.index') }}" class="btn-sourcing-secondary clear-all-link">
@@ -1026,7 +1029,7 @@
     <div class="custom-sourcing-banner">
         <div class="sourcing-banner-content">
             <div class="sourcing-pill-tag">
-                ✨ @t('shop.sourcing_tag', 'SOURCING & SUPPLY PARTNER')
+                ✨ @t('shop.sourcing_tag', 'CUSTOMISED SOURCING PARTNER')
             </div>
             <h2 class="sourcing-banner-head">
                 @t('shop.cant_find_head', "Can't Find What You Need?")
@@ -1035,11 +1038,11 @@
                 @t('shop.we_can_source', 'We Can Source It For You.')
             </h3>
             <p class="sourcing-banner-p">
-                @t('shop.sourcing_brief_desc', "Tell us your preferred product, specification, origin, pack size or brand. Our sourcing team can help coordinate availability and quotation.")
+                @t('shop.sourcing_detailed_desc', "MST can assist with sourcing based on requirements such as product type, specification, pack size, origin, brand, quantity, destination, and other supply requirements. Our sourcing team coordinates availability and commercial quotation.")
             </p>
         </div>
         <div class="sourcing-banner-btn-wrap">
-            <a href="{{ route('contact') }}#quote" class="btn-sourcing-action">
+            <a href="{{ route('quotations.create') }}" class="btn-sourcing-action">
                 @t('shop.request_custom_sourcing', 'Request Custom Sourcing →')
             </a>
         </div>
@@ -1052,7 +1055,7 @@
                 @t('shop.need_regular_supply', 'Need Regular Supply?')
             </h2>
             <p class="wholesale-cta-desc">
-                @t('shop.regular_supply_brief_desc', 'For restaurants, hotels, caterers, retailers, traders and other commercial buyers, MST provides wholesale supply, bulk ordering and customised sourcing support.')
+                @t('shop.regular_supply_brief_desc', 'For restaurants, hotels, caterers, retailers, food businesses, commercial buyers and wholesalers, MST provides wholesale supply, volume pricing and customised sourcing support.')
             </p>
         </div>
         <div class="wholesale-cta-btns">
@@ -1097,15 +1100,15 @@
 
                 <div id="qvWholesaleLockedBox" class="wholesale-locked-box" style="display:none;margin-bottom:16px;">
                     <div class="wholesale-locked-title">🏢 @t('shop.wholesale_pricing_locked', 'Wholesale Pricing')</div>
-                    <div class="wholesale-locked-sub">@t('shop.business_account_required', 'Business account required')</div>
-                    <a href="{{ route('register', ['type' => 'wholesale']) }}" class="btn-request-wholesale-link">
+                    <div class="wholesale-locked-sub">@t('shop.wholesale_account_required', 'Wholesale account required')</div>
+                    <a href="{{ route('register.wholesale') }}" class="btn-request-wholesale-link">
                         @t('shop.request_wholesale_access', 'Request Wholesale Access →')
                     </a>
                 </div>
 
                 <p class="quickview-desc" id="qvDesc"></p>
                 <div class="quickview-actions">
-                    <form action="{{ route('cart.add') }}" method="POST" id="qvCartForm" style="flex:1">
+                    <form action="{{ route('cart.add') }}" method="POST" id="qvCartForm" data-no-loader="true" style="flex:1">
                         @csrf
                         <input type="hidden" name="product_id" id="qvProductId">
                         <div style="display:flex;gap:10px">

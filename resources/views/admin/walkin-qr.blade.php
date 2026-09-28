@@ -21,11 +21,14 @@
     <div class="qr-poster-card" style="background:#ffffff;color:#0f172a;max-width:520px;width:100%;border-radius:24px;padding:48px 36px;box-shadow:0 12px 40px rgba(13,148,136,0.15);border:2px solid #ccfbf1;text-align:center">
         <!-- Header -->
         <div style="margin-bottom:24px">
-            <img src="{{ asset('images/logo.webp') }}" alt="Meijia" style="height:80px;width:80px;object-fit:contain;margin-bottom:8px;">
-            <div style="font-family:var(--font-heading);font-size:1.65rem;font-weight:800;color:#0f766e;letter-spacing:-0.02em">
-                MST Import and Export Sdn Bhd
+            <img src="{{ asset('images/logo.webp') }}" alt="镁嘉国际贸易有限公司" style="height:80px;width:80px;object-fit:contain;margin-bottom:8px;">
+            <div style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;color:#0f766e;letter-spacing:0.02em;margin-bottom:2px">
+                镁嘉国际贸易有限公司
             </div>
-            <div style="font-size:0.75rem;font-weight:700;color:#0d9488;letter-spacing:0.12em;text-transform:uppercase;margin-top:4px">
+            <div style="font-family:var(--font-heading);font-size:1.25rem;font-weight:700;color:#0f766e;letter-spacing:-0.01em">
+                MST Import and Export Sdn. Bhd.
+            </div>
+            <div style="font-size:0.75rem;font-weight:700;color:#0d9488;letter-spacing:0.12em;text-transform:uppercase;margin-top:6px">
                 In-Store Customer Catalogue
             </div>
         </div>

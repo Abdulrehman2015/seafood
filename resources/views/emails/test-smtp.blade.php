@@ -1,6 +1,6 @@
 @extends('emails.layout')
 
-@section('title', 'SMTP Connection Test — MST Import & Export')
+@section('title', 'SMTP Connection Test — MST Import and Export Sdn. Bhd.')
 @section('preheader', 'Your SMTP mail server configuration is verified and functioning normally.')
 
 @section('content')
@@ -21,7 +21,7 @@
                 SMTP Email Service is Working!
             </h1>
             <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0 0 20px 0;">
-                This automated test message confirms that your email delivery gateway and SMTP settings for <strong>MST Import &amp; Export SDN. BHD.</strong> are correctly configured and capable of transmitting live outbound notifications.
+                This automated test message confirms that your email delivery gateway and SMTP settings for <strong>MST Import and Export Sdn. Bhd.</strong> are correctly configured and capable of transmitting live outbound notifications.
             </p>
         </td>
     </tr>
@@ -56,7 +56,7 @@
                             </tr>
                             <tr>
                                 <td style="color: #64748b; font-weight: 600;">Sender Display Name:</td>
-                                <td style="color: #0f172a;">{{ $fromName ?? config('mail.from.name', 'MST Import & Export') }}</td>
+                                <td style="color: #0f172a;">{{ $fromName ?? config('mail.from.name', 'MST Import and Export Sdn. Bhd.') }}</td>
                             </tr>
                             <tr>
                                 <td style="color: #64748b; font-weight: 600;">Timestamp:</td>

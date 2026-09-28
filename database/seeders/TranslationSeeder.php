@@ -206,7 +206,7 @@ class TranslationSeeder extends Seeder
                 'group'   => 'about',
                 'key'     => 'about.header_title',
                 'text_en' => 'About Us — MST Import and Export',
-                'text_zh' => '关于我们 — MST 进出口有限公司',
+                'text_zh' => '关于我们 — 镁嘉国际贸易有限公司',
                 'text_bm' => 'Tentang Kami — MST Import and Export',
             ],
             [
@@ -219,16 +219,16 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'about',
                 'key'     => 'about.meta_desc',
-                'text_en' => 'Learn about MST Import and Export Sdn Bhd. Sourcing, trading and distribution of seafood, meat, frozen food and food ingredients across Malaysia, Singapore and regional markets.',
-                'text_zh' => '了解 MST 进出口有限公司。立足柔佛新山，为马来西亚、新加坡及区域市场提供海鲜、肉类、冷冻食品与食品配料的专业采购、商贸与分销服务。',
-                'text_bm' => 'Ketahui lebih lanjut tentang MST Import and Export Sdn Bhd. Perolehan, perdagangan dan pengedaran makanan laut, daging, makanan sejuk beku dan ramuan makanan di Malaysia, Singapura dan pasaran serantau.',
+                'text_en' => 'Learn about MST Import and Export Sdn. Bhd.. Sourcing, trading and distribution of seafood, meat, frozen food and food ingredients across Malaysia, Singapore and regional markets.',
+                'text_zh' => '了解 镁嘉国际贸易有限公司。立足柔佛新山，为马来西亚、新加坡及区域市场提供海鲜、肉类、冷冻食品与食品配料的专业采购、商贸与分销服务。',
+                'text_bm' => 'Ketahui lebih lanjut tentang MST Import and Export Sdn. Bhd.. Perolehan, perdagangan dan pengedaran makanan laut, daging, makanan sejuk beku dan ramuan makanan di Malaysia, Singapura dan pasaran serantau.',
             ],
             [
                 'group'   => 'about',
                 'key'     => 'about.meta_title',
-                'text_en' => 'About Us — MST Import and Export Sdn Bhd',
-                'text_zh' => '关于我们 — MST 进出口有限公司',
-                'text_bm' => 'Tentang Kami — MST Import and Export Sdn Bhd',
+                'text_en' => 'About Us — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '关于我们 — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Tentang Kami — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'about',
@@ -380,9 +380,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'about',
                 'key'     => 'about.section_4_desc',
-                'text_en' => 'At MST Import and Export Sdn Bhd, we go beyond supplying frozen food. We focus on product quality, reliable sourcing, cold-chain integrity and consistent supply, giving our customers greater confidence from sourcing to delivery.',
+                'text_en' => 'At MST Import and Export Sdn. Bhd., we go beyond supplying frozen food. We focus on product quality, reliable sourcing, cold-chain integrity and consistent supply, giving our customers greater confidence from sourcing to delivery.',
                 'text_zh' => '在 MST，我们不止于提供冷冻食品。我们专注产品品质、可靠采购、冷链完整性与持续供货，为客户从源头到交付全程赋能。',
-                'text_bm' => 'Di MST Import and Export Sdn Bhd, kami melangkaui pembekalan makanan sejuk beku. Kami memberi tumpuan kepada kualiti produk, perolehan boleh dipercayai, integriti rantaian sejuk dan bekalan konsisten.',
+                'text_bm' => 'Di MST Import and Export Sdn. Bhd., kami melangkaui pembekalan makanan sejuk beku. Kami memberi tumpuan kepada kualiti produk, perolehan boleh dipercayai, integriti rantaian sejuk dan bekalan konsisten.',
             ],
             [
                 'group'   => 'about',
@@ -443,9 +443,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'about',
                 'key'     => 'about.timeline_2024_desc',
-                'text_en' => 'Mika Seafood Trading transitioned into <strong>MST Import and Export Sdn Bhd</strong>, expanding beyond traditional seafood trading into a broader frozen food sourcing, trading and supply business.',
-                'text_zh' => 'Mika Seafood Trading 正式转型升级为 <strong>MST Import and Export Sdn Bhd</strong>，业务从传统海鲜贸易拓展至全品类冷冻食品采购、大宗贸易与供应链服务。',
-                'text_bm' => 'Mika Seafood Trading bertukar menjadi <strong>MST Import and Export Sdn Bhd</strong>, berkembang melangkaui perdagangan makanan laut kepada perniagaan perolehan, perdagangan dan bekalan makanan sejuk beku yang lebih luas.',
+                'text_en' => 'Mika Seafood Trading transitioned into <strong>MST Import and Export Sdn. Bhd.</strong>, expanding beyond traditional seafood trading into a broader frozen food sourcing, trading and supply business.',
+                'text_zh' => 'Mika Seafood Trading 正式转型升级为 <strong>MST Import and Export Sdn. Bhd.</strong>，业务从传统海鲜贸易拓展至全品类冷冻食品采购、大宗贸易与供应链服务。',
+                'text_bm' => 'Mika Seafood Trading bertukar menjadi <strong>MST Import and Export Sdn. Bhd.</strong>, berkembang melangkaui perdagangan makanan laut kepada perniagaan perolehan, perdagangan dan bekalan makanan sejuk beku yang lebih luas.',
             ],
             [
                 'group'   => 'about',
@@ -520,16 +520,16 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'about',
                 'key'     => 'about.who_we_are_p1',
-                'text_en' => '<strong>MST Import and Export Sdn Bhd</strong> is a Johor-based frozen food sourcing, trading and distribution company, supplying seafood, meat, frozen food and selected food ingredients to commercial customers.',
-                'text_zh' => '<strong>MST Import and Export Sdn Bhd</strong> 是一家立足柔佛新山的冷冻食品采购、商贸与分销企业，为商业客户提供优质冷冻海鲜、肉类、冷冻食品及精选食品配料。',
-                'text_bm' => '<strong>MST Import and Export Sdn Bhd</strong> ialah syarikat perolehan, perdagangan dan pengedaran makanan sejuk beku yang berpangkalan di Johor, membekalkan makanan laut, daging, makanan sejuk beku dan ramuan makanan terpilih kepada pelanggan komersial.',
+                'text_en' => '<strong>MST Import and Export Sdn. Bhd.</strong> is a Johor-based frozen food sourcing, trading and distribution company, supplying seafood, meat, frozen food and selected food ingredients to commercial customers.',
+                'text_zh' => '<strong>MST Import and Export Sdn. Bhd.</strong> 是一家立足柔佛新山的冷冻食品采购、商贸与分销企业，为商业客户提供优质冷冻海鲜、肉类、冷冻食品及精选食品配料。',
+                'text_bm' => '<strong>MST Import and Export Sdn. Bhd.</strong> ialah syarikat perolehan, perdagangan dan pengedaran makanan sejuk beku yang berpangkalan di Johor, membekalkan makanan laut, daging, makanan sejuk beku dan ramuan makanan terpilih kepada pelanggan komersial.',
             ],
             [
                 'group'   => 'about',
                 'key'     => 'about.who_we_are_p2',
-                'text_en' => 'Founded in <strong>2014 as Mika Seafood Trading</strong>, the business evolved into <strong>MST Import and Export Sdn Bhd in 2024</strong>, marking a new stage of growth and expansion beyond traditional seafood trading.',
-                'text_zh' => '公司于 <strong>2014 年以 Mika Seafood Trading 启航</strong>，并于 <strong>2024 年正式升级为 MST Import and Export Sdn Bhd</strong>，开启了超越传统单一海鲜贸易的全新发展篇章。',
-                'text_bm' => 'Ditubuhkan pada <strong>2014 sebagai Mika Seafood Trading</strong>, perniagaan ini berkembang menjadi <strong>MST Import and Export Sdn Bhd pada 2024</strong>, menandakan fasa pertumbuhan baharu melangkaui perdagangan makanan laut tradisional.',
+                'text_en' => 'Founded in <strong>2014 as Mika Seafood Trading</strong>, the business evolved into <strong>MST Import and Export Sdn. Bhd. in 2024</strong>, marking a new stage of growth and expansion beyond traditional seafood trading.',
+                'text_zh' => '公司于 <strong>2014 年以 Mika Seafood Trading 启航</strong>，并于 <strong>2024 年正式升级为 MST Import and Export Sdn. Bhd.</strong>，开启了超越传统单一海鲜贸易的全新发展篇章。',
+                'text_bm' => 'Ditubuhkan pada <strong>2014 sebagai Mika Seafood Trading</strong>, perniagaan ini berkembang menjadi <strong>MST Import and Export Sdn. Bhd. pada 2024</strong>, menandakan fasa pertumbuhan baharu melangkaui perdagangan makanan laut tradisional.',
             ],
             [
                 'group'   => 'about',
@@ -583,9 +583,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'about',
                 'key'     => 'company_name_full',
-                'text_en' => 'MST Import and Export Sdn Bhd',
-                'text_zh' => 'MST 进出口有限公司 (镁嘉国际贸易)',
-                'text_bm' => 'MST Import and Export Sdn Bhd',
+                'text_en' => 'MST Import and Export Sdn. Bhd.',
+                'text_zh' => '镁嘉国际贸易有限公司 (镁嘉国际贸易)',
+                'text_bm' => 'MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'about',
@@ -752,7 +752,7 @@ class TranslationSeeder extends Seeder
                 'group'   => 'about',
                 'key'     => 'header_title',
                 'text_en' => 'About Us — MST Import and Export',
-                'text_zh' => '关于我们 — MST 进出口有限公司',
+                'text_zh' => '关于我们 — 镁嘉国际贸易有限公司',
                 'text_bm' => 'Tentang Kami — MST Import and Export',
             ],
             [
@@ -765,16 +765,16 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'about',
                 'key'     => 'meta_desc',
-                'text_en' => 'Learn about MST Import and Export Sdn Bhd. From our roots in Johor Bahru to our growing regional & international cold-chain distribution network.',
-                'text_zh' => '了解 MST 进出口有限公司。从马来西亚新山起步，到不断壮大的区域与国际冷链分销网络。',
-                'text_bm' => 'Ketahui tentang MST Import and Export Sdn Bhd. Dari asas kami di Johor Bahru hingga rangkaian pengedaran rantaian sejuk serantau & antarabangsa kami.',
+                'text_en' => 'Learn about MST Import and Export Sdn. Bhd.. From our roots in Johor Bahru to our growing regional & international cold-chain distribution network.',
+                'text_zh' => '了解 镁嘉国际贸易有限公司。从马来西亚新山起步，到不断壮大的区域与国际冷链分销网络。',
+                'text_bm' => 'Ketahui tentang MST Import and Export Sdn. Bhd.. Dari asas kami di Johor Bahru hingga rangkaian pengedaran rantaian sejuk serantau & antarabangsa kami.',
             ],
             [
                 'group'   => 'about',
                 'key'     => 'meta_title',
-                'text_en' => 'About Us — MST Import and Export Sdn Bhd',
-                'text_zh' => '关于我们 — MST 进出口有限公司',
-                'text_bm' => 'Tentang Kami — MST Import and Export Sdn Bhd',
+                'text_en' => 'About Us — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '关于我们 — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Tentang Kami — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'about',
@@ -926,9 +926,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'about',
                 'key'     => 'section_4_desc',
-                'text_en' => 'At MST Import and Export Sdn Bhd, we go beyond supplying frozen food. We focus on quality, reliability, sourcing capability and cold-chain integrity — giving our customers greater confidence from sourcing to delivery.',
-                'text_zh' => '在 MST 进出口有限公司，我们不止提供冷冻食材，更专注于卓越品质、稳定可靠、定制化直采与严苛冷链保障，让客户在每个环节都省心放心。',
-                'text_bm' => 'Di MST Import and Export Sdn Bhd, kami melangkah lebih daripada sekadar membekalkan makanan beku. Kami memberi tumpuan kepada kualiti, kebolehpercayaan, keupayaan penyumberan dan integriti rantaian sejuk.',
+                'text_en' => 'At MST Import and Export Sdn. Bhd., we go beyond supplying frozen food. We focus on quality, reliability, sourcing capability and cold-chain integrity — giving our customers greater confidence from sourcing to delivery.',
+                'text_zh' => '在 镁嘉国际贸易有限公司，我们不止提供冷冻食材，更专注于卓越品质、稳定可靠、定制化直采与严苛冷链保障，让客户在每个环节都省心放心。',
+                'text_bm' => 'Di MST Import and Export Sdn. Bhd., kami melangkah lebih daripada sekadar membekalkan makanan beku. Kami memberi tumpuan kepada kualiti, kebolehpercayaan, keupayaan penyumberan dan integriti rantaian sejuk.',
             ],
             [
                 'group'   => 'about',
@@ -989,9 +989,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'about',
                 'key'     => 'timeline_2024_desc',
-                'text_en' => 'Mika Seafood Trading transitioned into <strong>MST Import and Export Sdn Bhd</strong>, expanding beyond traditional seafood trading into a broader frozen food sourcing and supply business.',
-                'text_zh' => 'Mika Seafood Trading 正式升级为 <strong>MST 进出口有限公司 (MST Import and Export Sdn Bhd)</strong>，全面拓展至全品类冷冻食品源头采购与国际贸易。',
-                'text_bm' => 'Mika Seafood Trading beralih kepada <strong>MST Import and Export Sdn Bhd</strong>, berkembang melangkaui perdagangan makanan laut tradisional ke dalam perniagaan penyumberan dan bekalan makanan beku yang lebih luas.',
+                'text_en' => 'Mika Seafood Trading transitioned into <strong>MST Import and Export Sdn. Bhd.</strong>, expanding beyond traditional seafood trading into a broader frozen food sourcing and supply business.',
+                'text_zh' => 'Mika Seafood Trading 正式升级为 <strong>镁嘉国际贸易有限公司 (MST Import and Export Sdn. Bhd.)</strong>，全面拓展至全品类冷冻食品源头采购与国际贸易。',
+                'text_bm' => 'Mika Seafood Trading beralih kepada <strong>MST Import and Export Sdn. Bhd.</strong>, berkembang melangkaui perdagangan makanan laut tradisional ke dalam perniagaan penyumberan dan bekalan makanan beku yang lebih luas.',
             ],
             [
                 'group'   => 'about',
@@ -1066,16 +1066,16 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'about',
                 'key'     => 'who_we_are_p1',
-                'text_en' => '<strong>MST Import and Export Sdn Bhd</strong> is a Johor-based frozen food sourcing, trading and distribution company, serving commercial customers with seafood, meat and selected frozen food products.',
-                'text_zh' => '<strong>MST 进出口有限公司 (MST Import and Export Sdn Bhd)</strong> 是一家立足于马来西亚柔佛州的冷冻食品采购、贸易与分销企业，为商业客户提供优质的海鲜水产、肉类及精选冷冻食材。',
-                'text_bm' => '<strong>MST Import and Export Sdn Bhd</strong> ialah sebuah syarikat penyumberan, perdagangan dan pengedaran makanan beku berasaskan Johor, melayani pelanggan komersial dengan makanan laut, daging dan produk makanan beku terpilih.',
+                'text_en' => '<strong>MST Import and Export Sdn. Bhd.</strong> is a Johor-based frozen food sourcing, trading and distribution company, serving commercial customers with seafood, meat and selected frozen food products.',
+                'text_zh' => '<strong>镁嘉国际贸易有限公司 (MST Import and Export Sdn. Bhd.)</strong> 是一家立足于马来西亚柔佛州的冷冻食品采购、贸易与分销企业，为商业客户提供优质的海鲜水产、肉类及精选冷冻食材。',
+                'text_bm' => '<strong>MST Import and Export Sdn. Bhd.</strong> ialah sebuah syarikat penyumberan, perdagangan dan pengedaran makanan beku berasaskan Johor, melayani pelanggan komersial dengan makanan laut, daging dan produk makanan beku terpilih.',
             ],
             [
                 'group'   => 'about',
                 'key'     => 'who_we_are_p2',
-                'text_en' => 'Founded in <strong>2014 as Mika Seafood Trading</strong>, the business evolved into <strong>MST Import and Export Sdn Bhd in 2024</strong>, marking a new stage of growth and expansion.',
-                'text_zh' => '公司于 <strong>2014 年以 Mika Seafood Trading</strong> 之名启航，并在 <strong>2024 年正式升级为 MST 进出口有限公司</strong>，迈入全新发展阶段与业务扩张。',
-                'text_bm' => 'Ditubuhkan pada <strong>2014 sebagai Mika Seafood Trading</strong>, perniagaan ini berkembang menjadi <strong>MST Import and Export Sdn Bhd pada tahun 2024</strong>, menandakan fasa pertumbuhan dan pengembangan baharu.',
+                'text_en' => 'Founded in <strong>2014 as Mika Seafood Trading</strong>, the business evolved into <strong>MST Import and Export Sdn. Bhd. in 2024</strong>, marking a new stage of growth and expansion.',
+                'text_zh' => '公司于 <strong>2014 年以 Mika Seafood Trading</strong> 之名启航，并在 <strong>2024 年正式升级为 镁嘉国际贸易有限公司</strong>，迈入全新发展阶段与业务扩张。',
+                'text_bm' => 'Ditubuhkan pada <strong>2014 sebagai Mika Seafood Trading</strong>, perniagaan ini berkembang menjadi <strong>MST Import and Export Sdn. Bhd. pada tahun 2024</strong>, menandakan fasa pertumbuhan dan pengembangan baharu.',
             ],
             [
                 'group'   => 'about',
@@ -1318,9 +1318,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'account',
                 'key'     => 'dashboard_meta_title',
-                'text_en' => 'My Dashboard — MST Import and Export Sdn Bhd',
-                'text_zh' => '我的控制面板 — MST 进出口有限公司',
-                'text_bm' => 'Papan Pemuka Saya — MST Import and Export Sdn Bhd',
+                'text_en' => 'My Dashboard — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '我的控制面板 — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Papan Pemuka Saya — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'account',
@@ -1605,9 +1605,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'account',
                 'key'     => 'orders_meta_title',
-                'text_en' => 'My Orders — MST Import and Export Sdn Bhd',
-                'text_zh' => '我的订单 — MST 进出口有限公司',
-                'text_bm' => 'Pesanan Saya — MST Import and Export Sdn Bhd',
+                'text_en' => 'My Orders — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '我的订单 — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Pesanan Saya — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'account',
@@ -1647,9 +1647,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'account',
                 'key'     => 'pickup_counter_title',
-                'text_en' => 'MST Import and Export Sdn Bhd Counter',
-                'text_zh' => 'MST 进出口有限公司 自提服务柜台',
-                'text_bm' => 'Kaunter MST Import and Export Sdn Bhd',
+                'text_en' => 'MST Import and Export Sdn. Bhd. Counter',
+                'text_zh' => '镁嘉国际贸易有限公司 自提服务柜台',
+                'text_bm' => 'Kaunter MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'account',
@@ -1668,9 +1668,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'account',
                 'key'     => 'profile_meta_title',
-                'text_en' => 'My Profile — MST Import and Export Sdn Bhd',
-                'text_zh' => '个人资料与设置 — MST 进出口有限公司',
-                'text_bm' => 'Profil Saya — MST Import and Export Sdn Bhd',
+                'text_en' => 'My Profile — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '个人资料与设置 — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Profil Saya — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'account',
@@ -1738,9 +1738,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'account',
                 'key'     => 'rfq_meta_title',
-                'text_en' => 'My Quotation Requests (RFQ) — MST Import and Export Sdn Bhd',
-                'text_zh' => '我的大宗采购询价单 (RFQ) — MST 进出口有限公司',
-                'text_bm' => 'Permintaan Sebut Harga Saya (RFQ) — MST Import and Export Sdn Bhd',
+                'text_en' => 'My Quotation Requests (RFQ) — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '我的大宗采购询价单 (RFQ) — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Permintaan Sebut Harga Saya (RFQ) — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'account',
@@ -2375,9 +2375,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'auth',
                 'key'     => 'login_meta_title',
-                'text_en' => 'Sign In — MST Import and Export Sdn Bhd',
-                'text_zh' => '登录账户 — MST 进出口有限公司',
-                'text_bm' => 'Log Masuk — MST Import and Export Sdn Bhd',
+                'text_en' => 'Sign In — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '登录账户 — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Log Masuk — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'auth',
@@ -2634,9 +2634,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'auth',
                 'key'     => 'otp_page_title',
-                'text_en' => 'Verify Email Code — MST Import and Export Sdn Bhd',
-                'text_zh' => '验证电子邮箱验证码 — MST 进出口有限公司',
-                'text_bm' => 'Sahkan Kod E-mel — MST Import and Export Sdn Bhd',
+                'text_en' => 'Verify Email Code — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '验证电子邮箱验证码 — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Sahkan Kod E-mel — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'auth',
@@ -2851,9 +2851,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'auth',
                 'key'     => 'register_meta_title',
-                'text_en' => 'Create Account — MST Import and Export Sdn Bhd',
-                'text_zh' => '创建新账户 — MST 进出口有限公司',
-                'text_bm' => 'Daftar Akaun — MST Import and Export Sdn Bhd',
+                'text_en' => 'Create Account — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '创建新账户 — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Daftar Akaun — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'auth',
@@ -3649,9 +3649,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'checkout',
                 'key'     => 'meta_title',
-                'text_en' => 'Checkout — MST Import and Export Sdn Bhd',
-                'text_zh' => '安全结账 — MST 进出口有限公司',
-                'text_bm' => 'Daftar Keluar — MST Import and Export Sdn Bhd',
+                'text_en' => 'Checkout — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '安全结账 — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Daftar Keluar — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'checkout',
@@ -4553,15 +4553,15 @@ class TranslationSeeder extends Seeder
                 'group'   => 'contact',
                 'key'     => 'header_title',
                 'text_en' => 'Contact Us — MST Import and Export',
-                'text_zh' => '联系我们 — MST 进出口有限公司',
+                'text_zh' => '联系我们 — 镁嘉国际贸易有限公司',
                 'text_bm' => 'Hubungi Kami — MST Import and Export',
             ],
             [
                 'group'   => 'contact',
                 'key'     => 'hero_company_sub',
-                'text_en' => '镁嘉国际贸易有限公司 · MST IMPORT & EXPORT SDN. BHD.',
-                'text_zh' => '镁嘉国际贸易有限公司 · MST IMPORT & EXPORT SDN. BHD.',
-                'text_bm' => '镁嘉国际贸易有限公司 · MST IMPORT & EXPORT SDN. BHD.',
+                'text_en' => '镁嘉国际贸易有限公司 · MST Import and Export Sdn. Bhd.',
+                'text_zh' => '镁嘉国际贸易有限公司 · MST Import and Export Sdn. Bhd.',
+                'text_bm' => '镁嘉国际贸易有限公司 · MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'contact',
@@ -4594,9 +4594,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'contact',
                 'key'     => 'hero_title',
-                'text_en' => 'Contact Us — MST Import & Export',
+                'text_en' => 'Contact Us — MST Import and Export Sdn. Bhd.',
                 'text_zh' => '联系我们 — 镁嘉国际贸易有限公司',
-                'text_bm' => 'Hubungi Kami — MST Import & Export',
+                'text_bm' => 'Hubungi Kami — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'contact',
@@ -4811,16 +4811,16 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'contact',
                 'key'     => 'meta_desc',
-                'text_en' => 'Contact MST Import and Export Sdn Bhd. Request a quote for frozen seafood, meats, frozen foods, food ingredients, or customised sourcing across Malaysia, Singapore, and regional markets.',
-                'text_zh' => '联系 MST Import and Export Sdn Bhd。获取冷冻海鲜、肉类、冷冻食品、调味配料或量身定制采购报价，服务覆盖马来西亚、新加坡及区域市场。',
-                'text_bm' => 'Hubungi MST Import and Export Sdn Bhd. Minta sebut harga untuk makanan laut beku, daging, makanan sejuk beku, bahan makanan, atau perolehan khusus di seluruh Malaysia, Singapura, dan pasaran serantau.',
+                'text_en' => 'Contact MST Import and Export Sdn. Bhd.. Request a quote for frozen seafood, meats, frozen foods, food ingredients, or customised sourcing across Malaysia, Singapore, and regional markets.',
+                'text_zh' => '联系 MST Import and Export Sdn. Bhd.。获取冷冻海鲜、肉类、冷冻食品、调味配料或量身定制采购报价，服务覆盖马来西亚、新加坡及区域市场。',
+                'text_bm' => 'Hubungi MST Import and Export Sdn. Bhd.. Minta sebut harga untuk makanan laut beku, daging, makanan sejuk beku, bahan makanan, atau perolehan khusus di seluruh Malaysia, Singapura, dan pasaran serantau.',
             ],
             [
                 'group'   => 'contact',
                 'key'     => 'meta_title',
-                'text_en' => 'Contact Us & RFQ Sourcing — MST Import and Export Sdn Bhd',
-                'text_zh' => '联系我们与批量采购询价 — MST 进出口有限公司',
-                'text_bm' => 'Hubungi Kami & Permintaan Sebut Harga (RFQ) — MST Import and Export Sdn Bhd',
+                'text_en' => 'Contact Us & RFQ Sourcing — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '联系我们与批量采购询价 — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Hubungi Kami & Permintaan Sebut Harga (RFQ) — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'contact',
@@ -5259,9 +5259,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'email',
                 'key'     => 'account_approved_body',
-                'text_en' => 'Your application for a :group account with MST Import & Export SDN. BHD. has been approved by our management team.',
-                'text_zh' => '您向 MST 进出口有限公司申请的 :group 商业账户已由管理团队正式审核批准。',
-                'text_bm' => 'Permohonan anda untuk akaun :group bersama MST Import & Export SDN. BHD. telah diluluskan oleh pasukan pengurusan kami.',
+                'text_en' => 'Your application for a :group account with MST Import and Export Sdn. Bhd. has been approved by our management team.',
+                'text_zh' => '您向 镁嘉国际贸易有限公司申请的 :group 商业账户已由管理团队正式审核批准。',
+                'text_bm' => 'Permohonan anda untuk akaun :group bersama MST Import and Export Sdn. Bhd. telah diluluskan oleh pasukan pengurusan kami.',
             ],
             [
                 'group'   => 'email',
@@ -5287,9 +5287,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'email',
                 'key'     => 'account_rejected_greeting',
-                'text_en' => 'Dear :name, thank you for your interest in partnering with MST Import & Export SDN. BHD.',
-                'text_zh' => '尊敬的 :name，感谢您对与 MST 进出口有限公司合作的意向与关注。',
-                'text_bm' => 'Kepada :name, terima kasih atas minat anda untuk bekerjasama dengan MST Import & Export SDN. BHD.',
+                'text_en' => 'Dear :name, thank you for your interest in partnering with MST Import and Export Sdn. Bhd.',
+                'text_zh' => '尊敬的 :name，感谢您对与 镁嘉国际贸易有限公司合作的意向与关注。',
+                'text_bm' => 'Kepada :name, terima kasih atas minat anda untuk bekerjasama dengan MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'email',
@@ -5574,9 +5574,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'email',
                 'key'     => 'layout_mst_chinese_subtitle',
-                'text_en' => 'MST IMPORT & EXPORT SDN. BHD. · Cold-Chain Seafood Sourcing & Distribution',
+                'text_en' => 'MST Import and Export Sdn. Bhd. · Cold-Chain Seafood Sourcing & Distribution',
                 'text_zh' => '镁嘉国际贸易有限公司 · (原 MIKA SEAFOOD TRADING)',
-                'text_bm' => 'MST IMPORT & EXPORT SDN. BHD. · Pengedaran Makanan Laut Rangkaian Sejuk',
+                'text_bm' => 'MST Import and Export Sdn. Bhd. · Pengedaran Makanan Laut Rangkaian Sejuk',
             ],
             [
                 'group'   => 'email',
@@ -5931,9 +5931,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'footer',
                 'key'     => 'about_mst',
-                'text_en' => 'MST Import and Export Sdn Bhd is a premier frozen food sourcing, wholesale trading, and temperature-controlled distribution company serving commercial clients across Southeast Asia.',
-                'text_zh' => 'MST 进出口私人有限公司是马来西亚领先的深海优质冷冻食品进出口直采、大宗批发与全温控冷链分销龙头企业，业务辐射东南亚。',
-                'text_bm' => 'MST Import and Export Sdn Bhd ialah syarikat perolehan makanan laut beku, perdagangan borong dan pengedaran rangkaian sejuk terkemuka di Asia Tenggara.',
+                'text_en' => 'MST Import and Export Sdn. Bhd. is a premier frozen food sourcing, wholesale trading, and temperature-controlled distribution company serving commercial clients across Southeast Asia.',
+                'text_zh' => '镁嘉国际贸易有限公司是马来西亚领先的深海优质冷冻食品进出口直采、大宗批发与全温控冷链分销龙头企业，业务辐射东南亚。',
+                'text_bm' => 'MST Import and Export Sdn. Bhd. ialah syarikat perolehan makanan laut beku, perdagangan borong dan pengedaran rangkaian sejuk terkemuka di Asia Tenggara.',
             ],
             [
                 'group'   => 'footer',
@@ -5966,9 +5966,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'footer',
                 'key'     => 'company_name',
-                'text_en' => 'MST IMPORT & EXPORT SDN. BHD.',
-                'text_zh' => 'MST 进出口私人有限公司',
-                'text_bm' => 'MST IMPORT & EXPORT SDN. BHD.',
+                'text_en' => 'MST Import and Export Sdn. Bhd.',
+                'text_zh' => '镁嘉国际贸易有限公司',
+                'text_bm' => 'MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'footer',
@@ -6001,9 +6001,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'footer',
                 'key'     => 'footer.company_name',
-                'text_en' => 'MST Import & Export Sdn. Bhd.',
-                'text_zh' => 'MST 进出口私人有限公司',
-                'text_bm' => 'MST Import & Export Sdn. Bhd.',
+                'text_en' => 'MST Import and Export Sdn. Bhd.',
+                'text_zh' => '镁嘉国际贸易有限公司',
+                'text_bm' => 'MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'footer',
@@ -6722,9 +6722,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'home',
                 'key'     => 'quality_banner_sub',
-                'text_en' => 'MST Import and Export Sdn Bhd · Flow with Integrity, Grow with Strength.',
-                'text_zh' => 'MST 进出口私人有限公司 · 诚信致远，稳健共赢',
-                'text_bm' => 'MST Import and Export Sdn Bhd · Berintegriti dalam Setiap Langkah, Teguh Berkembang.',
+                'text_en' => 'MST Import and Export Sdn. Bhd. · Flow with Integrity, Grow with Strength.',
+                'text_zh' => '镁嘉国际贸易有限公司 · 诚信致远，稳健共赢',
+                'text_bm' => 'MST Import and Export Sdn. Bhd. · Berintegriti dalam Setiap Langkah, Teguh Berkembang.',
             ],
             [
                 'group'   => 'home',
@@ -7275,9 +7275,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'invoice',
                 'key'     => 'company_chinese',
-                'text_en' => 'MST IMPORT AND EXPORT SDN BHD',
+                'text_en' => 'MST Import and Export Sdn. Bhd.',
                 'text_zh' => '鎂嘉国际贸易有限公司',
-                'text_bm' => 'MST IMPORT AND EXPORT SDN BHD',
+                'text_bm' => 'MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'invoice',
@@ -7408,9 +7408,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'invoice',
                 'key'     => 'note_3',
-                'text_en' => 'All cheques to be crossed & made payable to "MST IMPORT AND EXPORT SDN BHD" or to our MAYBANK A/C NO:551342155505 and email the bank in slip to mikatrading15@gmail.com or +60 11-1271 0260.',
-                'text_zh' => '所有支票请划线并抬头注明 "MST IMPORT AND EXPORT SDN BHD" 或汇至马来亚银行账户 MAYBANK A/C NO:551342155505，并将存款凭条发送至 mikatrading15@gmail.com 或 +60 11-1271 0260。',
-                'text_bm' => 'Semua cek hendaklah dipalang & dibayar kepada "MST IMPORT AND EXPORT SDN BHD" atau ke AKAUN MAYBANK KAMI NO:551342155505 dan e-melkan slip bank ke mikatrading15@gmail.com atau +60 11-1271 0260.',
+                'text_en' => 'All cheques to be crossed & made payable to "MST Import and Export Sdn. Bhd." or to our MAYBANK A/C NO:551342155505 and email the bank in slip to mikatrading15@gmail.com or +60 11-1271 0260.',
+                'text_zh' => '所有支票请划线并抬头注明 "MST Import and Export Sdn. Bhd." 或汇至马来亚银行账户 MAYBANK A/C NO:551342155505，并将存款凭条发送至 mikatrading15@gmail.com 或 +60 11-1271 0260。',
+                'text_bm' => 'Semua cek hendaklah dipalang & dibayar kepada "MST Import and Export Sdn. Bhd." atau ke AKAUN MAYBANK KAMI NO:551342155505 dan e-melkan slip bank ke mikatrading15@gmail.com atau +60 11-1271 0260.',
             ],
             [
                 'group'   => 'invoice',
@@ -7926,9 +7926,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'rfq',
                 'key'     => 'page_title',
-                'text_en' => 'Request a Quotation (RFQ) — MST Import and Export Sdn Bhd',
-                'text_zh' => '索取报价 (RFQ) — MST 进出口有限公司',
-                'text_bm' => 'Minta Sebut Harga (RFQ) — MST Import and Export Sdn Bhd',
+                'text_en' => 'Request a Quotation (RFQ) — MST Import and Export Sdn. Bhd.',
+                'text_zh' => '索取报价 (RFQ) — 镁嘉国际贸易有限公司',
+                'text_bm' => 'Minta Sebut Harga (RFQ) — MST Import and Export Sdn. Bhd.',
             ],
             [
                 'group'   => 'rfq',

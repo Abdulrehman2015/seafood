@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Quotation ' . $quotation->quotation_number . ' — MST Import and Export Sdn Bhd')
+@section('title', 'Quotation ' . $quotation->quotation_number . ' — MST Import and Export Sdn. Bhd.')
 
 @section('content')
 <div style="padding-top:80px;padding-bottom:var(--space-16)">

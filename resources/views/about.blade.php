@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title', __t('about.meta_title', 'About Us — MST Import and Export Sdn Bhd'))
-@section('meta_description', __t('about.meta_desc', 'Learn about MST Import and Export Sdn Bhd. Sourcing, trading and distribution of seafood, meat, frozen food and food ingredients across Malaysia, Singapore and regional markets.'))
+@section('title', __t('about.meta_title', 'About Us — MST Import and Export Sdn. Bhd.'))
+@section('meta_description', __t('about.meta_desc', 'Learn about MST Import and Export Sdn. Bhd. Sourcing, trading and supply of seafood, meat, frozen food and food ingredients across Malaysia, Singapore and selected markets.'))
 
 @section('content')
 <!-- Page Header -->
@@ -18,14 +18,14 @@
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
                         @t('about.est_badge', '🏆 Established in 2014 · Johor Bahru, Malaysia')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.8rem">@t('about.cold_chain_supply', 'Regional & International Cold-Chain Supply')</span>
+                    <span style="color:#bae6fd;font-size:0.8rem">@t('about.cold_chain_supply', 'Frozen Food Sourcing & Supply')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.75rem,3.5vw,2.4rem);margin-bottom:6px;letter-spacing:-0.02em">
-                    @t('about.header_title', 'About Us — MST Import and Export')
+                    @t('about.header_title', 'About Us — MST Import and Export Sdn. Bhd.')
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.98rem;max-width:760px;line-height:1.55;margin:0">
                     <strong>@t('about.header_subtitle_strong', 'More Than a Supplier. Your Sourcing & Supply Partner.')</strong><br>
-                    @t('about.header_subtitle_text', 'Supplying seafood, meat, frozen food and selected food ingredients to commercial customers across Malaysia, Singapore and growing regional and international markets.')
+                    @t('about.header_subtitle_text', 'Supplying seafood, meat, frozen food and selected food ingredients to customers in Malaysia and Singapore, with capability to expand to selected markets.')
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -49,10 +49,10 @@
                 </h2>
                 <div class="about-intro-card">
                     <p style="margin-bottom:14px;line-height:1.7;color:#334155;">
-                        {!! __t('about.who_we_are_p1', '<strong>MST Import and Export Sdn Bhd</strong> is a Johor-based frozen food sourcing, trading and distribution company, supplying seafood, meat, frozen food and selected food ingredients to commercial customers.') !!}
+                        {!! __t('about.who_we_are_p1', '<strong>MST Import and Export Sdn. Bhd.</strong> is a Johor-based frozen food sourcing, trading and distribution company, supplying seafood, meat, frozen food and selected food ingredients to commercial customers.') !!}
                     </p>
                     <p style="margin-bottom:14px;line-height:1.7;color:#334155;">
-                        {!! __t('about.who_we_are_p2', 'Founded in <strong>2014 as Mika Seafood Trading</strong>, the business evolved into <strong>MST Import and Export Sdn Bhd in 2024</strong>, marking a new stage of growth and expansion beyond traditional seafood trading.') !!}
+                        {!! __t('about.who_we_are_p2', 'Founded in <strong>2014 as Mika Seafood Trading</strong>, the business evolved into <strong>MST Import and Export Sdn. Bhd. in 2024</strong>, marking a new stage of growth and expansion beyond traditional seafood trading.') !!}
                     </p>
                     <p style="margin-bottom:16px;line-height:1.7;color:#334155;">
                         {!! __t('about.who_we_are_p3', 'Today, MST is building a stronger supply platform through <strong>cold storage, customised sourcing, reliable supply and distribution</strong>, with a clear focus on serving customers across Malaysia, Singapore and growing regional and international markets.') !!}
@@ -61,7 +61,7 @@
                         <span style="font-weight:700;color:#1d4ed8;font-size:0.95rem;letter-spacing:0.02em;">
                             ✨ @t('about.company_motto_val', 'Flow with Integrity, Grow with Strength.')
                         </span>
-                        <span style="font-size:0.85rem;color:#64748b;">@t('about.company_name_full', 'MST Import and Export Sdn Bhd')</span>
+                        <span style="font-size:0.85rem;color:#64748b;">@t('about.company_name_full', 'MST Import and Export Sdn. Bhd.')</span>
                     </div>
                 </div>
             </div>
@@ -84,7 +84,7 @@
                     </h3>
                     
                     <p style="color:rgba(255,255,255,0.88);font-size:0.92rem;line-height:1.65;margin-bottom:20px;">
-                        @t('about.strategic_desc', "Located in Johor's established industrial corridor, MST connects commercial kitchens, food businesses, wholesalers, distributors and overseas buyers with established sourcing channels and reliable supply solutions.")
+                        @t('about.strategic_desc', "Located in Johor's established industrial corridor, MST connects commercial kitchens, food businesses, wholesalers, distributors and overseas buyers with sourcing networks and reliable supply solutions.")
                     </p>
                     <div style="display:flex;flex-direction:column;gap:10px;">
                         <div class="feature-check-item">
@@ -132,7 +132,7 @@
                 <div class="timeline-badge timeline-badge-2">2024</div>
                 <h4 class="timeline-title">@t('about.timeline_2024_title', 'A New Chapter')</h4>
                 <p class="timeline-desc">
-                    {!! __t('about.timeline_2024_desc', 'Mika Seafood Trading transitioned into <strong>MST Import and Export Sdn Bhd</strong>, expanding beyond traditional seafood trading into a broader frozen food sourcing, trading and supply business.') !!}
+                    {!! __t('about.timeline_2024_desc', 'Mika Seafood Trading transitioned into <strong>MST Import and Export Sdn. Bhd.</strong>, expanding beyond traditional seafood trading into a broader frozen food sourcing, trading and supply business.') !!}
                 </p>
             </div>
 
@@ -176,7 +176,7 @@
             <div class="fact-card">
                 <div class="fact-icon">🏛️</div>
                 <div class="fact-label">@t('about.fact_entity', 'Corporate Entity')</div>
-                <div class="fact-value" style="font-size:0.95rem;line-height:1.3;">MST Import and Export Sdn Bhd</div>
+                <div class="fact-value" style="font-size:0.95rem;line-height:1.3;">@t('about.fact_entity_val', 'MST Import and Export Sdn. Bhd.')</div>
             </div>
 
             <div class="fact-card">
@@ -188,7 +188,7 @@
             <div class="fact-card">
                 <div class="fact-icon">💼</div>
                 <div class="fact-label">@t('about.fact_business', 'Business')</div>
-                <div class="fact-value" style="font-size:0.9rem;">@t('about.fact_business_val', 'Sourcing, Trading & Distribution')</div>
+                <div class="fact-value" style="font-size:0.9rem;">@t('about.fact_business_val', 'Sourcing, Trading & Supply')</div>
             </div>
 
             <div class="fact-card">
@@ -201,7 +201,7 @@
                 <div class="fact-icon">❄️</div>
                 <div class="fact-label">@t('about.fact_cold_storage', 'Cold Storage')</div>
                 <div class="fact-value" style="color:#1d4ed8;">@t('about.fact_cold_storage_val', 'Over 50 Tonnes')</div>
-                <div style="font-size:0.72rem;color:#64748b;margin-top:2px;">(-18°C to -25°C)</div>
+                <div style="font-size:0.72rem;color:#64748b;margin-top:2px;">@t('about.fact_cold_storage_temp', '(-18°C to -25°C)')</div>
             </div>
 
             <div class="fact-card">
@@ -226,7 +226,7 @@
                 @t('about.section_4_title', 'Five Pillars of Operational Reliability')
             </h2>
             <p style="color:#64748b;font-size:0.95rem;line-height:1.6;margin:0;">
-                @t('about.section_4_desc', 'At MST Import and Export Sdn Bhd, we go beyond supplying frozen food. We focus on product quality, reliable sourcing, cold-chain integrity and consistent supply, giving our customers greater confidence from sourcing to delivery.')
+                @t('about.section_4_desc', 'At MST Import and Export Sdn. Bhd., we go beyond supplying frozen food. We focus on product quality, reliable sourcing, cold-chain integrity and consistent supply, giving our customers greater confidence from sourcing to delivery.')
             </p>
         </div>
 
@@ -261,7 +261,7 @@
             <!-- 4. Reliable Supply -->
             <div class="pillar-card">
                 <div class="pillar-icon" style="background:#eff6ff;color:#1d4ed8;">🚚</div>
-                <h3 class="pillar-title">@t('about.pillar_4_title', 'RELIABLE SUPPLY & DELIVERY')</h3>
+                <h3 class="pillar-title">@t('about.pillar_4_title', 'RELIABLE SUPPLY & DISTRIBUTION')</h3>
                 <p class="pillar-desc">
                     @t('about.pillar_4_desc', 'Our operations cover receiving, storage, packing, order preparation and dispatch. With our cold storage and distribution facility at SILC, we support regular stock supply as well as product-specific sourcing and growing customer requirements.')
                 </p>
@@ -286,7 +286,7 @@
                 <div>
                     <div class="section-eyebrow" style="color:#1d4ed8;font-weight:700;margin-bottom:8px">@t('about.section_5_eyebrow', '5. OUR FOCUS & CREED')</div>
                     <h3 style="font-size:1.35rem;font-weight:800;color:#0f172a;margin-bottom:4px;line-height:1.35;">
-                        @t('about.creed_title', 'Quality Products. Reliable Supply. Competitive Pricing. Consistent Service.')
+                        @t('about.creed_title', 'Quality Products. Reliable Supply. Flexible Sourcing. Consistent Service.')
                     </h3>
                     
                     <blockquote style="margin:16px 0;padding:16px 20px;background:#f8fafc;border-left:4px solid #2563eb;border-radius:0 12px 12px 0;font-size:0.92rem;color:#334155;line-height:1.7;">
@@ -302,7 +302,7 @@
                         @t('about.company_motto_val', 'Flow with Integrity, Grow with Strength.')
                     </div>
                     <div style="font-size:0.85rem;color:#475569;font-weight:600;">
-                        @t('about.company_name_full', 'MST Import and Export Sdn Bhd')
+                        @t('about.company_name_full', 'MST Import and Export Sdn. Bhd.')
                     </div>
                 </div>
             </div>
@@ -321,11 +321,11 @@
                         </div>
                     </div>
 
-                    <p style="font-size:0.92rem;color:#e0f2fe;line-height:1.75;margin:0 0 16px;">
-                        @t('about.wendy_bio_1', "Wendy leads MST's strategic development, sourcing network, customer relationships and business expansion, with a focus on building a reliable and scalable supply platform for regional and international customers.")
+                    <p style="font-size:0.92rem;color:#e0f2fe;line-height:1.75;margin:0 0 10px;">
+                        @t('about.wendy_bio_1', "Wendy Chiam oversees MST's business development, sourcing and supply management, commercial customer partnerships and overall operational direction.")
                     </p>
                     <p style="font-size:0.92rem;color:#e0f2fe;line-height:1.75;margin:0;">
-                        @t('about.wendy_bio_2', 'Under her direction, MST continues to strengthen its sourcing capabilities, cold-chain infrastructure and supply operations while developing long-term relationships with customers and business partners.')
+                        @t('about.wendy_bio_2', "Under her leadership, MST continues to enhance its sourcing capabilities, cold storage facilities and operational management, steadily expanding supply capabilities for regional and international markets.")
                     </p>
                 </div>
 

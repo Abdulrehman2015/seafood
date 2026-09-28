@@ -22,7 +22,7 @@ class AdminNewOrderNotification extends Mailable
     {
         $orderNo = $this->order->order_number ?? '#' . $this->order->id;
         $amount = number_format($this->order->total ?? 0, 2);
-        return new Envelope(subject: 'New Order Received: ' . $orderNo . ' (RM ' . $amount . ') — ' . config('app.name', 'MST Import & Export'));
+        return new Envelope(subject: 'New Order Received: ' . $orderNo . ' (RM ' . $amount . ') — ' . config('app.name', 'MST Import and Export Sdn. Bhd.'));
     }
 
     public function content(): Content

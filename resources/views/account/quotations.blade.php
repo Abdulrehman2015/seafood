@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __t('account.rfq_meta_title', 'My Quotation Requests (RFQ) — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd')))
+@section('title', __t('account.rfq_meta_title', 'My Quotation Requests (RFQ) — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.')))
 
 @section('content')
 <!-- Page Header -->

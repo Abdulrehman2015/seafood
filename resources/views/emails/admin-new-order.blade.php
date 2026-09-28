@@ -25,7 +25,7 @@
                 New Order: #{{ $order->order_number ?? $order->id }}
             </h1>
             <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0 0 20px 0;">
-                A new order worth <strong>RM {{ number_format($order->total ?? 0, 2) }}</strong> has been placed on <strong>MST Import &amp; Export</strong>. Please review fulfillment requirements below:
+                A new order worth <strong>RM {{ number_format($order->total ?? 0, 2) }}</strong> has been placed on <strong>MST Import and Export Sdn. Bhd.</strong>. Please review fulfillment requirements below:
             </p>
         </td>
     </tr>

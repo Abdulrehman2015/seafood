@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __t('auth.login_meta_title', 'Sign In — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd')))
+@section('title', __t('auth.login_meta_title', 'Sign In — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.')))
 
 @section('content')
 <!-- Page Header / Hero Section -->
@@ -111,12 +111,18 @@
                         @t('auth.biz_access_title', 'Need Wholesale or Trading Access?')
                     </h2>
                     <p style="color:#475569;font-size:0.84rem;line-height:1.5;margin:0 0 14px">
-                        @t('auth.biz_access_desc', 'If you are purchasing for a restaurant, retailer, distributor, trader or other business, you can register for a business account and submit your business information for verification.')
+                        @t('auth.biz_access_desc', 'If you are purchasing for a restaurant, retailer, distributor, trader or other business, you can register for a wholesale or trading account.')
                     </p>
-                    <a href="{{ route('register', ['type' => 'wholesale']) }}" 
-                       style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#1d4ed8;color:#ffffff;font-weight:700;font-size:0.84rem;padding:9px 16px;border-radius:9px;text-decoration:none;transition:background 0.15s ease;box-shadow:0 2px 6px rgba(29,78,216,0.25);">
-                        <span>@t('auth.btn_request_biz_access', 'Request Business Access →')</span>
-                    </a>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                        <a href="{{ route('register.wholesale') }}" 
+                           style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#16a34a;color:#ffffff;font-weight:700;font-size:0.84rem;padding:9px 16px;border-radius:9px;text-decoration:none;transition:all 0.15s ease;box-shadow:0 2px 6px rgba(22,163,74,0.25);">
+                            <span>@t('auth.account_type_wholesale_btn', 'Register as Wholesale →')</span>
+                        </a>
+                        <a href="{{ route('register.trading') }}" 
+                           style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#2563eb;color:#ffffff;font-weight:700;font-size:0.84rem;padding:9px 16px;border-radius:9px;text-decoration:none;transition:all 0.15s ease;box-shadow:0 2px 6px rgba(37,99,235,0.25);">
+                            <span>@t('auth.account_type_trading_btn', 'Register as Trading →')</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -142,16 +148,16 @@
             </div>
         </div>
 
-        <!-- Section 14: Business Account Information Notice -->
+        <!-- Section 14: Wholesale & Trading Information Notice -->
         <div style="background:rgba(241,245,249,0.7);border:1px dashed #cbd5e1;border-radius:14px;padding:16px 20px;">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                 <span style="font-size:0.95rem">ℹ️</span>
                 <h3 style="font-family:var(--font-heading);font-size:0.86rem;font-weight:700;color:#334155;margin:0;letter-spacing:0.01em">
-                    @t('auth.biz_info_title', 'Business Account Information')
+                    @t('auth.biz_info_title', 'Wholesale & Trading Account Information')
                 </h3>
             </div>
             <p style="color:#64748b;font-size:0.79rem;line-height:1.5;margin:0">
-                @t('auth.biz_info_desc', 'Business accounts may receive access to business-specific pricing, product availability and quotation features according to account status and order requirements.')
+                @t('auth.biz_info_desc', 'Wholesale and trading accounts may receive access to business-specific pricing, product availability and quotation features after verification, depending on account type and order requirements.')
             </p>
         </div>
 

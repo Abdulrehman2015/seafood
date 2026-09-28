@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>@yield('title', config('app.name', 'MST Import & Export SDN. BHD.'))</title>
+    <title>@yield('title', config('app.name', 'MST Import and Export Sdn. Bhd.'))</title>
     <!--[if mso]>
     <style type="text/css">
         table {border-collapse:collapse;border-spacing:0;margin:0;}
@@ -39,7 +39,7 @@
 
     <!-- Preheader Text (invisible preview) -->
     <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
-        @yield('preheader', 'Important notification from MST Import & Export SDN. BHD.')
+        @yield('preheader', 'Important notification from MST Import and Export Sdn. Bhd.')
     </div>
 
     <!-- Main Outer Wrapper -->
@@ -73,24 +73,18 @@
                                         @endphp
                                         <div style="margin-bottom: 12px;">
                                             <a href="{{ $baseUrl }}" target="_blank" style="text-decoration: none; display: inline-block;">
-                                                <img src="{{ $logoSrc }}" alt="MST Import & Export" style="height: 56px; width: auto; max-width: 220px; object-fit: contain; vertical-align: middle; border-radius: 8px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); display: block; margin: 0 auto;" />
+                                                <img src="{{ $logoSrc }}" alt="镁嘉国际贸易有限公司 — MST Import and Export Sdn. Bhd." style="height: 56px; width: auto; max-width: 220px; object-fit: contain; vertical-align: middle; border-radius: 8px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); display: block; margin: 0 auto;" />
                                             </a>
                                         </div>
-                                        <div style="font-size: 17px; font-weight: 800; color: #ffffff; letter-spacing: 0.04em; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; text-transform: uppercase;">
-                                            MST IMPORT &amp; EXPORT
+                                        <div style="font-size: 18px; font-weight: 800; color: #ffffff; letter-spacing: 0.02em; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; line-height: 1.25;">
+                                            镁嘉国际贸易有限公司
+                                        </div>
+                                        <div style="font-size: 13px; font-weight: 600; color: #93c5fd; letter-spacing: 0.02em; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; line-height: 1.25; margin-top: 3px;">
+                                            MST Import and Export Sdn. Bhd.
                                         </div>
                                         @php
                                             $mailLoc = $mailLocale ?? current_locale();
                                         @endphp
-                                        <div style="font-size: 11px; color: #94a3b8; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px;">
-                                            @if($mailLoc === 'zh')
-                                                镁嘉国际贸易有限公司 · (原 MIKA SEAFOOD TRADING)
-                                            @elseif($mailLoc === 'bm')
-                                                MST IMPORT &amp; EXPORT SDN. BHD. · Pengedaran Makanan Laut Rangkaian Sejuk
-                                            @else
-                                                MST IMPORT &amp; EXPORT SDN. BHD. · Cold-Chain Seafood Distribution
-                                            @endif
-                                        </div>
                                     </td>
                                 </tr>
                             </table>
@@ -134,8 +128,8 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
                                     <td align="center" style="font-size: 12px; color: #64748b; line-height: 1.6;">
-                                        <strong style="color: #1e293b;">MST IMPORT &amp; EXPORT SDN. BHD.</strong><br>
-                                        7 Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia<br>
+                                        <strong style="color: #1e293b;">镁嘉国际贸易有限公司 · MST Import and Export Sdn. Bhd.</strong><br>
+                                        No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia<br>
                                         <span style="color: #94a3b8; font-size: 11px;">{{ __t('email.cold_chain_cert', 'Cold-Chain Sourcing, Trading & Distribution Platform', [], $mailLoc) }}</span>
                                     </td>
                                 </tr>
@@ -153,7 +147,7 @@
                                 </tr>
                                 <tr>
                                     <td align="center" style="padding-top: 14px; font-size: 11px; color: #94a3b8;">
-                                        © {{ date('Y') }} MST Import &amp; Export SDN. BHD. {{ __t('email.all_rights_reserved', 'All rights reserved.', [], $mailLoc) }}<br>
+                                        © {{ date('Y') }} MST Import and Export Sdn. Bhd. {{ __t('email.all_rights_reserved', 'All rights reserved.', [], $mailLoc) }}<br>
                                         {{ __t('email.automated_notice', 'This is an automated system email notification. Please do not reply directly to this address.', [], $mailLoc) }}
                                     </td>
                                 </tr>

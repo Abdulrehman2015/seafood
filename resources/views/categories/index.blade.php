@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Product Categories — MST Import and Export Sdn Bhd')
+@section('title', 'Product Categories — MST Import and Export Sdn. Bhd.')
 @section('meta_description', 'Explore our full range of imported frozen seafood, Meltique beef, sashimi scallops, steamboat ingredients, and dim sum in Malaysia.')
 
 @section('content')

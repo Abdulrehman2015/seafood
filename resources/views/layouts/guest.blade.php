@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</title>
+    <title>{{ $settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.' }}</title>
 
     {{-- Favicon & Touch Icons --}}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
@@ -103,14 +103,14 @@
         <a href="{{ url('/') }}" class="guest-brand">
             @if(!empty($settings['site_logo']))
                 <img src="{{ asset('storage/' . $settings['site_logo']) }}"
-                     alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}">
+                     alt="镁嘉国际贸易有限公司 — MST Import and Export Sdn. Bhd.">
             @else
                 <img src="{{ asset('images/logo.webp') }}"
-                     alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}">
+                     alt="镁嘉国际贸易有限公司 — MST Import and Export Sdn. Bhd.">
             @endif
             <div class="guest-brand-text">
-                <span class="guest-brand-name">@t('footer.company_name', $settings['store_name'] ?? 'MST Import and Export Sdn Bhd')</span>
-                <span class="guest-brand-sub">@t('footer.tagline', $settings['store_tagline'] ?? 'Flow with Integrity, Grow with Strength')</span>
+                <span class="guest-brand-name" style="font-size:1.15rem;letter-spacing:0.02em;color:#0f172a;line-height:1.2;font-weight:800;display:block">镁嘉国际贸易有限公司</span>
+                <span class="guest-brand-sub" style="font-size:0.75rem;letter-spacing:0.02em;color:#64748b;line-height:1.2;font-weight:600;display:block">MST Import and Export Sdn. Bhd.</span>
             </div>
         </a>
 

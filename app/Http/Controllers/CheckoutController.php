@@ -36,9 +36,10 @@ class CheckoutController extends Controller
             return redirect()->route('approval.pending');
         }
 
-        $defaultState = Auth::user()?->state ?? 'Johor';
-        $defaultCity  = Auth::user()?->city ?? 'Johor Bahru';
-        $deliveryInfo = $this->delivery->calculateFee($totals['subtotal'], 'delivery', $defaultState, $defaultCity, $group);
+        $defaultState    = Auth::user()?->state ?? 'Johor';
+        $defaultCity     = Auth::user()?->city ?? 'Johor Bahru';
+        $defaultPostcode = Auth::user()?->postcode ?? '79100';
+        $deliveryInfo    = $this->delivery->calculateFee($totals['subtotal'], 'delivery', $defaultState, $defaultCity, $defaultPostcode, $group);
 
         $initialShippingFee = ($group === 'walkin') ? 0.00 : (float) ($deliveryInfo['fee'] ?? 0);
         $initialGrandTotal  = round($totals['subtotal'] + $initialShippingFee, 2);
@@ -133,7 +134,7 @@ class CheckoutController extends Controller
         $rules = [
             'fulfillment_type' => 'required|in:delivery,self_collection',
             'customer_notes'   => 'nullable|string|max:1000',
-            'payment_method'   => 'nullable|in:cash,stripe,online',
+            'payment_method'   => $isWalkin ? 'required|in:cash,stripe,online' : 'nullable|in:cash,stripe,online',
         ];
 
         if ($isWalkin) {
@@ -148,7 +149,9 @@ class CheckoutController extends Controller
             $rules['postcode'] = 'required|string';
         }
 
-        $request->validate($rules);
+        $request->validate($rules, [
+            'payment_method.required' => 'Please select a payment method before proceeding.',
+        ]);
 
         $paymentMethod = $request->input('payment_method', 'stripe');
         if ($paymentMethod === 'online') {
@@ -167,30 +170,7 @@ class CheckoutController extends Controller
             }
         }
 
-        // ─── Minimum Order Amount Enforcement (B2B Wholesale / Trading Only) ────
-        // Note: Retail (B2C) & Walk-in orders are NEVER blocked below RM100.
-        // Orders below RM100 simply incur the area transportation charge.
-        if (\App\Models\Setting::get('order_minimum_enabled', '0') === '1' && in_array($group, ['wholesale', 'trading'])) {
-            $minimumKey = ($group === 'wholesale') ? 'order_minimum_wholesale' : 'order_minimum_trading';
-            $minimumAmount = (float) \App\Models\Setting::get($minimumKey, '0');
 
-            if ($minimumAmount > 0) {
-                $quickSubtotal = 0;
-                foreach ($cartItems as $item) {
-                    $quickSubtotal += round(($item->product->getPriceForGroup($group) ?? 0) * $item->quantity, 2);
-                }
-
-                if ($quickSubtotal < $minimumAmount) {
-                    $shortfall    = number_format($minimumAmount - $quickSubtotal, 2);
-                    $minFormatted = number_format($minimumAmount, 2);
-                    $groupLabel   = ($group === 'wholesale') ? 'Wholesale' : 'Trading / Commercial';
-                    return redirect()
-                        ->route($isWalkin ? 'walkin.shop' : 'cart.index')
-                        ->with('error', "⚠️ Minimum order for {$groupLabel} partners is RM {$minFormatted}. You need RM {$shortfall} more to proceed to checkout.");
-                }
-            }
-        }
-        // ─────────────────────────────────────────────────────────────────────────
 
         $payload = [
             'fulfillment_type' => $request->fulfillment_type,
@@ -232,6 +212,7 @@ class CheckoutController extends Controller
             $request->fulfillment_type,
             $request->state,
             $request->city,
+            $request->postcode,
             $group
         );
 
@@ -379,7 +360,7 @@ class CheckoutController extends Controller
                     ];
                 }
 
-                $dResult = $this->delivery->calculateFee($subtotal, $payload['fulfillment_type'] ?? 'delivery', $payload['state'] ?? null, $payload['city'] ?? null, $group);
+                $dResult = $this->delivery->calculateFee($subtotal, $payload['fulfillment_type'] ?? 'delivery', $payload['state'] ?? null, $payload['city'] ?? null, $payload['postcode'] ?? null, $group);
                 $shippingFee = (float) ($payload['shipping_fee'] ?? $dResult['fee']);
                 $grandTotal  = round($subtotal + $shippingFee, 2);
 

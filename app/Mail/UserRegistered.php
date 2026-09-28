@@ -25,7 +25,7 @@ class UserRegistered extends Mailable
 
     public function envelope(): Envelope
     {
-        $appName = config('app.name', 'MST Import & Export');
+        $appName = config('app.name', 'MST Import and Export Sdn. Bhd.');
         $subject = $this->user->isPending()
             ? __t('email.user_registered_subject_pending', 'Account Application Received — :app', ['app' => $appName], $this->mailLocale)
             : __t('email.user_registered_subject_active', 'Welcome to :app!', ['app' => $appName], $this->mailLocale);

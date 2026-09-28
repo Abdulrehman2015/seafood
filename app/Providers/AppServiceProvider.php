@@ -47,55 +47,57 @@ class AppServiceProvider extends ServiceProvider
         }
 
         view()->composer('*', function ($view) {
-            try {
-                if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
-                    $view->with('settings', \App\Models\Setting::allKeyed());
-                } else {
-                    $view->with('settings', []);
+            static $sharedData = null;
+            if ($sharedData === null) {
+                $settings = [];
+                try {
+                    $settings = \App\Models\Setting::allKeyed();
+                } catch (\Throwable $e) {}
+
+                $currencyData = [];
+                try {
+                    $currencyService = app(\App\Services\CurrencyService::class);
+                    $currencyData = [
+                        'currencyService' => $currencyService,
+                        'currentCurrency' => $currencyService->getCurrentCurrency(),
+                        'currencySymbol'  => $currencyService->getSymbol(),
+                        'currencyLabel'   => $currencyService->getLabel(),
+                        'currencyList'    => $currencyService->getSupportedCurrencies(),
+                    ];
+                } catch (\Throwable $e) {
+                    $currencyData = [
+                        'currentCurrency' => 'MYR',
+                        'currencySymbol'  => 'RM',
+                        'currencyLabel'   => 'RM',
+                        'currencyList'    => [],
+                    ];
                 }
-            } catch (\Throwable $e) {
-                $view->with('settings', []);
+
+                $translationData = [];
+                try {
+                    $translationService = app(\App\Services\TranslationService::class);
+                    $currentLocale      = $translationService->currentLocale();
+                    $supportedLocales   = $translationService->getSupportedLocales();
+                    $translationData = [
+                        'translationService' => $translationService,
+                        'currentLocale'      => $currentLocale,
+                        'activeLocale'       => $currentLocale,
+                        'supportedLocales'   => $supportedLocales,
+                        'activeLocaleData'   => $supportedLocales[$currentLocale] ?? $supportedLocales['en'],
+                    ];
+                } catch (\Throwable $e) {
+                    $translationData = [
+                        'currentLocale'    => 'en',
+                        'activeLocale'     => 'en',
+                        'supportedLocales' => [],
+                        'activeLocaleData' => ['code' => 'en', 'label' => 'EN', 'flag' => '🇬🇧', 'native' => 'English'],
+                    ];
+                }
+
+                $sharedData = array_merge(['settings' => $settings], $currencyData, $translationData);
             }
 
-            // Share Multi-Currency Data with all views
-            try {
-                $currencyService = app(\App\Services\CurrencyService::class);
-                $view->with([
-                    'currencyService'   => $currencyService,
-                    'currentCurrency'   => $currencyService->getCurrentCurrency(),
-                    'currencySymbol'    => $currencyService->getSymbol(),
-                    'currencyLabel'     => $currencyService->getLabel(),
-                    'currencyList'      => $currencyService->getSupportedCurrencies(),
-                ]);
-            } catch (\Throwable $e) {
-                $view->with([
-                    'currentCurrency' => 'MYR',
-                    'currencySymbol'  => 'RM',
-                    'currencyLabel'   => 'RM',
-                    'currencyList'    => [],
-                ]);
-            }
-
-            // Share Multilingual Data with all views
-            try {
-                $translationService = app(\App\Services\TranslationService::class);
-                $currentLocale      = $translationService->currentLocale();
-                $supportedLocales   = $translationService->getSupportedLocales();
-                $view->with([
-                    'translationService' => $translationService,
-                    'currentLocale'      => $currentLocale,
-                    'activeLocale'       => $currentLocale,
-                    'supportedLocales'   => $supportedLocales,
-                    'activeLocaleData'   => $supportedLocales[$currentLocale] ?? $supportedLocales['en'],
-                ]);
-            } catch (\Throwable $e) {
-                $view->with([
-                    'currentLocale'    => 'en',
-                    'activeLocale'     => 'en',
-                    'supportedLocales' => [],
-                    'activeLocaleData' => ['code' => 'en', 'label' => 'EN', 'flag' => '🇬🇧', 'native' => 'English'],
-                ]);
-            }
+            $view->with($sharedData);
         });
 
         // Register custom Blade directive @t

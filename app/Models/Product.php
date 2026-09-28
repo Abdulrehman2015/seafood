@@ -274,6 +274,43 @@ class Product extends Model
         return '❄️';
     }
 
+    public function getStorageDisplay(): string
+    {
+        $st = trim($this->storage_temp ?? '');
+        $stLower = strtolower($st);
+        $nameLower = strtolower($this->name ?? '');
+        $locale = current_locale();
+
+        if (str_contains($stLower, 'live') || str_contains($nameLower, 'live')) {
+            if ($locale === 'bm') return '🦀 Storan: Live / Chilled';
+            if ($locale === 'zh') return '🦀 储存：活体 / 冰鲜';
+            return '🦀 Storage: Live / Chilled';
+        }
+        if (str_contains($stLower, 'chilled') || str_contains($stLower, '0°c to 4°c') || str_contains($stLower, '0-4°c')) {
+            if ($locale === 'bm') return '🧊 Storan: Sejuk Dingin';
+            if ($locale === 'zh') return '🧊 储存：冷藏 (0°C~4°C)';
+            return '🧊 Storage: Chilled';
+        }
+        if (str_contains($stLower, 'ambient') || str_contains($stLower, 'room')) {
+            if ($locale === 'bm') return '📦 Storan: Suhu Bilik';
+            if ($locale === 'zh') return '📦 储存：常温';
+            return '📦 Storage: Ambient';
+        }
+        if (str_contains($nameLower, 'iqf') || str_contains($stLower, 'iqf')) {
+            if ($locale === 'bm') return '❄️ Storan: -18°C · IQF';
+            if ($locale === 'zh') return '❄️ 储存：-18°C · IQF 单冻';
+            return '❄️ Storage: -18°C · IQF';
+        }
+        if (!empty($st)) {
+            if ($locale === 'bm') return '❄️ Storan: ' . $st;
+            if ($locale === 'zh') return '❄️ 储存：' . $st;
+            return '❄️ Storage: ' . $st;
+        }
+        if ($locale === 'bm') return '❄️ Storan: Beku -18°C';
+        if ($locale === 'zh') return '❄️ 储存：冷冻 -18°C';
+        return '❄️ Storage: Frozen -18°C';
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';

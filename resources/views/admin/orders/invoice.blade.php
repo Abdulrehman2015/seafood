@@ -1,6 +1,6 @@
 @extends(request()->is('admin/*') ? 'layouts.admin' : 'layouts.app')
 
-@section('title', __t('invoice.title', 'INVOICE') . ' #' . $order->order_number . ' — MST Import and Export SDN BHD')
+@section('title', __t('invoice.title', 'INVOICE') . ' #' . $order->order_number . ' — MST Import and Export Sdn. Bhd.')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
@@ -641,10 +641,10 @@
     <!-- 1. Header with Company Branding & Invoice Meta -->
     <div class="invoice-header">
         <div class="company-brand-box">
-            <img src="{{ asset('images/logo.webp') }}" alt="MST Import and Export" class="company-logo-img">
+            <img src="{{ asset('images/logo.webp') }}" alt="镁嘉国际贸易有限公司 — MST Import and Export Sdn. Bhd." class="company-logo-img">
             <div class="company-brand-info">
-                <div class="company-chinese-name">{{ __t('invoice.company_chinese', '鎂嘉国际贸易有限公司') }}</div>
-                <div class="company-english-name">MST IMPORT AND EXPORT SDN BHD</div>
+                <div class="company-chinese-name">{{ __t('invoice.company_chinese', '镁嘉国际贸易有限公司') }}</div>
+                <div class="company-english-name">MST Import and Export Sdn. Bhd.</div>
                 <div class="company-reg-number">202401053472</div>
                 <div class="company-address-lines">
                     7 JALAN SILC 2/18<br>
@@ -826,7 +826,7 @@
             <ol>
                 <li>{{ __t('invoice.note_1', 'Please notice us of discrepancy if any, within 7 days , otherwise this invoice will be considered confirmed.') }}</li>
                 <li>{{ __t('invoice.note_2', 'Goods sold and delivered are not returnable and exchangeable. Otherwise a cancellation fee of 20% on purchase price will be imposed.') }}</li>
-                <li>{{ __t('invoice.note_3', 'All cheques to be crossed & made payable to "MST IMPORT AND EXPORT SDN BHD" or to our MAYBANK A/C NO:551342155505 and email the bank in slip to mikatrading15@gmail.com or WhatsApp +60 11-1271 0260.') }}</li>
+                <li>{{ __t('invoice.note_3', 'All cheques to be crossed & made payable to "MST Import and Export Sdn. Bhd." or to our MAYBANK A/C NO:551342155505 and email the bank in slip to mikatrading15@gmail.com or WhatsApp +60 11-1271 0260.') }}</li>
                 <li>{{ __t('invoice.note_4', 'Interest will be charged at 1.5% per month on overdue payments.') }}</li>
             </ol>
         </div>

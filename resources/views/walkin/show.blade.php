@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $product->name . ' — ' . __t('walkin.title', 'Walk-in Express') . ' — ' . ($settings['store_name'] ?? 'MST Import & Export Sdn. Bhd.'))
+@section('title', $product->name . ' — ' . __t('walkin.title', 'Walk-in Express') . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.'))
 
 @section('content')
 <!-- Walk-in Ocean Header Banner -->
@@ -45,7 +45,7 @@
                 @else
                     <div class="walkin-img-placeholder" style="font-size:5rem">🐟</div>
                 @endif
-                <span class="badge-walkin-main-tag">🏬 @t('walkin.counter_2_pickup', 'Counter 2 Collection')</span>
+                <span class="badge-walkin-main-tag">🏬 @t('walkin.counter_2_pickup', 'Counter 2 Self-Collection')</span>
             </div>
 
             @if(!empty($product->images) && is_array($product->images))
@@ -67,17 +67,14 @@
                 @if($product->category)
                     <span class="badge-tag-gray">{{ $product->category->name }}</span>
                 @endif
-                @if($product->storage_temp)
-                    @php
-                        $tempLower = strtolower($product->storage_temp);
-                        $isLive = str_contains($tempLower, 'live');
-                        $isChilled = str_contains($tempLower, 'chilled');
-                        $isIqf = str_contains($tempLower, 'iqf');
-                        $badgeIcon = $product->getStorageIcon();
-                        $badgeSuffix = ($isIqf) ? ' · IQF' : '';
-                    @endphp
-                    <span class="badge-tag-cyan">{{ $badgeIcon }} {{ $product->storage_temp }}{{ $badgeSuffix }}</span>
-                @endif
+                @php
+                    $storageLabel = $product->getStorageDisplay();
+                    $tempLower = strtolower($product->storage_temp ?? '');
+                    $isLive = str_contains($tempLower, 'live') || str_contains(strtolower($product->name), 'live');
+                    $isChilled = str_contains($tempLower, 'chilled');
+                    $isAmbient = str_contains($tempLower, 'ambient') || str_contains($tempLower, 'room');
+                @endphp
+                <span class="badge-tag-cyan {{ $isLive ? 'storage-live' : ($isChilled ? 'storage-chilled' : ($isAmbient ? 'storage-ambient' : '')) }}">{{ $storageLabel }}</span>
             </div>
 
             <h2 class="walkin-detail-title">{{ $product->name }}</h2>
@@ -88,7 +85,7 @@
 
             <!-- Public Walk-in Price Box -->
             <div class="walkin-price-card">
-                <div class="price-card-label">@t('walkin.public_walkin_price', 'Public Walk-in Price')</div>
+                <div class="price-card-label">@t('walkin.public_walkin_price', 'Walk-in Pricing · No Registration Required')</div>
                 
                 @if($price > 0)
                     <div class="price-card-value-row">
@@ -106,8 +103,15 @@
                 @endif
 
                 <div class="price-card-hint">
-                    📍 <strong>@t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')</strong><br>
-                    @t('walkin.counter_desc', 'Orders are prepared for Counter 2 collection after payment confirmation. Orders are packed appropriately for collection and transport.')
+                    <div style="font-weight:700;color:#0f274a;margin-bottom:4px">
+                        📍 <strong>MST Kaunter 2, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia</strong>
+                    </div>
+                    <div style="color:#1d4ed8;margin-bottom:6px">
+                        @t('walkin.counter_desc', 'Orders are prepared for Counter 2 collection after payment confirmation. Please present your order reference or payment confirmation when collecting your order.')
+                    </div>
+                    <a href="https://maps.google.com/?q={{ urlencode('MST Counter 2, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia') }}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:4px;font-size:0.78rem;font-weight:700;color:#2563eb;text-decoration:underline">
+                        <span>📍 @t('walkin.get_directions', 'Get Directions')</span>
+                    </a>
                 </div>
             </div>
 
@@ -158,16 +162,14 @@
                         <div class="spec-name">@t('walkin.origin', 'Origin')</div>
                         <div class="spec-val">{{ $product->origin }}</div>
                     @endif
-                    @if($product->storage_temp)
-                        <div class="spec-name">@t('walkin.storage_temp', 'Storage Condition')</div>
-                        <div class="spec-val">{{ $product->getStorageIcon() }} {{ $product->storage_temp }}</div>
-                    @endif
-                    @if($product->brand)
+                    <div class="spec-name">@t('walkin.storage_temp', 'Storage Condition')</div>
+                    <div class="spec-val">{{ $storageLabel }}</div>
+                    @if($product->brand && !str_contains(strtoupper($product->brand), 'SDN') && !str_contains(strtoupper($product->brand), 'MST'))
                         <div class="spec-name">@t('walkin.brand', 'Brand')</div>
                         <div class="spec-val">{{ $product->brand }}</div>
                     @endif
                     <div class="spec-name">@t('walkin.fulfillment', 'Collection Point')</div>
-                    <div class="spec-val text-cyan" style="color:#0284c7;font-weight:700">🏬 @t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')</div>
+                    <div class="spec-val text-cyan" style="color:#0284c7;font-weight:700">🏬 MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.</div>
                 </div>
             </div>
 

@@ -26,7 +26,7 @@ class OrderConfirmation extends Mailable
     public function envelope(): Envelope
     {
         $orderNo = $this->order->order_number ?? '#' . $this->order->id;
-        $appName = config('app.name', 'MST Import & Export');
+        $appName = config('app.name', 'MST Import and Export Sdn. Bhd.');
         $subject = __t('email.order_confirmed_subject', 'Order Confirmed: :order — :app', [
             'order' => $orderNo,
             'app'   => $appName,

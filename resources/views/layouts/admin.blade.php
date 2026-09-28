@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin') — MST Import and Export Sdn Bhd</title>
+    <title>@yield('title', 'Admin') — MST Import and Export Sdn. Bhd.</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/webp" href="{{ asset('images/favicon.webp') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
@@ -1147,6 +1147,18 @@
                         </path>
                     </svg>
                     <span>Store Settings</span>
+                </a>
+                <!-- Delivery Zones Link -->
+                <a href="{{ route('admin.delivery-zones.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.delivery-zones.*') ? 'active' : '' }}">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8">
+                        <rect x="1" y="3" width="15" height="13"></rect>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                    </svg>
+                    <span>Delivery Zones</span>
                 </a>
                 <!-- Email Templates Link -->
                 <a href="{{ route('admin.emails.index') }}"

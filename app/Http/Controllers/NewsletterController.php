@@ -40,9 +40,9 @@ class NewsletterController extends Controller
                     'ip_address' => $request->ip(),
                 ]);
 
-                $message = 'Welcome back! Your subscription to MST IMPORT AND EXPORT SDN BHD updates has been reactivated.';
+                $message = 'Welcome back! Your subscription to MST Import and Export Sdn. Bhd. updates has been reactivated.';
             } else {
-                $message = 'You are already subscribed to MST IMPORT AND EXPORT SDN BHD catch alerts & updates!';
+                $message = 'You are already subscribed to MST Import and Export Sdn. Bhd. catch alerts & updates!';
             }
         } else {
             NewsletterSubscriber::create([
@@ -51,7 +51,7 @@ class NewsletterController extends Controller
                 'ip_address' => $request->ip(),
             ]);
 
-            $message = 'Thank you for subscribing! You are now on the MST IMPORT AND EXPORT SDN BHD catch updates list.';
+            $message = 'Thank you for subscribing! You are now on the MST Import and Export Sdn. Bhd. catch updates list.';
         }
 
         if ($request->expectsJson() || $request->ajax()) {

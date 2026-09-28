@@ -1,7 +1,13 @@
 @if ($paginator->hasPages())
     <nav class="custom-pagination-nav" role="navigation" aria-label="Pagination">
         <div class="custom-pagination-info">
-            @t('shop.showing', 'Showing') <span class="fw-bold">{{ $paginator->firstItem() }}</span> - <span class="fw-bold">{{ $paginator->lastItem() }}</span> / <span class="fw-bold">{{ $paginator->total() }}</span> @t('shop.items_count', 'items')
+            @if(current_locale() === 'bm')
+                Menunjukkan <span class="fw-bold">{{ $paginator->firstItem() }}</span>–<span class="fw-bold">{{ $paginator->lastItem() }}</span> daripada <span class="fw-bold">{{ $paginator->total() }}</span> produk
+            @elseif(current_locale() === 'zh')
+                显示第 <span class="fw-bold">{{ $paginator->firstItem() }}</span>–<span class="fw-bold">{{ $paginator->lastItem() }}</span> 项（共 <span class="fw-bold">{{ $paginator->total() }}</span> 件商品）
+            @else
+                @t('shop.showing', 'Showing') <span class="fw-bold">{{ $paginator->firstItem() }}</span>–<span class="fw-bold">{{ $paginator->lastItem() }}</span> @t('shop.of_total', 'of') <span class="fw-bold">{{ $paginator->total() }}</span> @t('shop.products_count', 'products')
+            @endif
         </div>
 
         <div class="custom-pagination-pages">

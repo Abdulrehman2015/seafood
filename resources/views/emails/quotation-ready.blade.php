@@ -2,7 +2,7 @@
 
 @php
     $mailLoc = $mailLocale ?? current_locale();
-    $appName = config('app.name', 'MST Import & Export');
+    $appName = config('app.name', 'MST Import and Export Sdn. Bhd.');
     $qNum = $quotation->quotation_number ?? '#' . $quotation->id;
 @endphp
 

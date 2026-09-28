@@ -17,19 +17,38 @@ class RegisteredUserController extends Controller
 {
     public function create(): View
     {
-        if (request('type') === 'trading') {
-            return view('auth.register-trading');
+        $type = request('type', 'retail');
+        if (!in_array($type, ['retail', 'wholesale', 'trading', 'general_retail'])) {
+            $type = 'retail';
         }
-        return view('auth.register');
+        if ($type === 'general_retail') {
+            $type = 'retail';
+        }
+        return view('auth.register', ['selectedType' => $type]);
+    }
+
+    public function createWholesale(): View
+    {
+        return view('auth.register', ['selectedType' => 'wholesale']);
     }
 
     public function createTrading(): View
     {
-        return view('auth.register-trading');
+        return view('auth.register', ['selectedType' => 'trading']);
     }
 
     public function store(Request $request, \App\Services\CompanyVerificationService $verifier): RedirectResponse
     {
+        // Normalize customer group to one of 3: retail (general_retail), wholesale, trading
+        $customerGroup = $request->input('customer_group', 'retail');
+        if ($customerGroup === 'general_retail') {
+            $customerGroup = 'retail';
+        }
+        if (!in_array($customerGroup, ['retail', 'wholesale', 'trading'])) {
+            $customerGroup = 'retail';
+        }
+        $request->merge(['customer_group' => $customerGroup]);
+
         $validationRules = [
             'name'                   => ['required', 'string', 'max:255'],
             'email'                  => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],

@@ -15,6 +15,9 @@ Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
+    Route::get('register/wholesale', [RegisteredUserController::class, 'createWholesale'])
+        ->name('register.wholesale');
+
     Route::get('register/trading', [RegisteredUserController::class, 'createTrading'])
         ->name('register.trading');
 

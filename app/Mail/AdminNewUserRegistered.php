@@ -20,7 +20,7 @@ class AdminNewUserRegistered extends Mailable
 
     public function envelope(): Envelope
     {
-        $subject = 'New ' . ucfirst($this->user->customer_group) . ' Registration: ' . $this->user->name . ' — ' . config('app.name', 'MST Import & Export');
+        $subject = 'New ' . ucfirst($this->user->customer_group) . ' Registration: ' . $this->user->name . ' — ' . config('app.name', 'MST Import and Export Sdn. Bhd.');
         return new Envelope(subject: $subject);
     }
 

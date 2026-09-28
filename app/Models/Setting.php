@@ -10,11 +10,20 @@ class Setting extends Model
     protected $fillable = ['key', 'value'];
 
     /**
+     * In-memory cache for the current request lifecycle.
+     */
+    protected static array $inMemorySettings = [];
+
+    /**
      * Get a setting by key with fallback.
      */
     public static function get(string $key, $default = null)
     {
-        return Cache::remember("setting.{$key}", 3600, function () use ($key, $default) {
+        if (array_key_exists($key, static::$inMemorySettings)) {
+            return static::$inMemorySettings[$key] ?? $default;
+        }
+
+        return static::$inMemorySettings[$key] = Cache::remember("setting.{$key}", 3600, function () use ($key, $default) {
             $setting = static::where('key', $key)->first();
             return $setting ? $setting->value : $default;
         });
@@ -25,6 +34,7 @@ class Setting extends Model
      */
     public static function set(string $key, $value): static
     {
+        unset(static::$inMemorySettings[$key]);
         Cache::forget("setting.{$key}");
         Cache::forget('settings.all');
 
@@ -173,15 +183,15 @@ class Setting extends Model
         return Cache::remember('settings.all', 3600, function () {
             $defaults = [
                 // General Settings
-                'site_name'               => 'MST IMPORT AND EXPORT SDN BHD | Premium Frozen Seafood Trading & Retail',
-                'site_description'        => 'Leading B2B and B2C seafood distributor, wholesale importer, and cold logistics seafood market in Malaysia and Singapore.',
-                'arabic_meta_title'       => 'MST IMPORT AND EXPORT SDN BHD | المركز الرائد لتجارة وتوزيع المأكولات البحرية المجمدة',
+                'site_name'               => 'MST Import and Export Sdn. Bhd. | Premium Seafood, Meat, Food Ingredients & Specialty Products',
+                'site_description'        => 'Leading seafood distributor, wholesale importer, and cold logistics seafood market in Malaysia and Singapore.',
+                'arabic_meta_title'       => 'MST Import and Export Sdn. Bhd. | المركز الرائد لتجارة وتوزيع المأكولات البحرية المجمدة',
                 'arabic_meta_description' => 'أفضل منتجات المأكولات البحرية المجمدة الطازجة للبيع بالجملة والتجزئة والتوزيع في ماليزيا.',
                 'meta_keywords'           => 'frozen seafood, salmon fillet, king prawns, mud crabs, wholesale seafood Malaysia, B2B seafood trading, walk-in seafood market',
                 'canonical_url'           => 'https://boat-paris-taking-singer.trycloudflare.com',
                 'header_tags'             => '',
                 'footer_tags'             => '',
-                'schema_markup'           => '{\n  "@context": "https://schema.org",\n  "@type": "SeafoodBusiness",\n  "name": "MST IMPORT AND EXPORT SDN BHD",\n  "description": "Premium Frozen Seafood Trading & Retail",\n  "currenciesAccepted": "MYR",\n  "paymentAccepted": "Cash, Credit Card, FPX Online Banking"\n}',
+                'schema_markup'           => '{\n  "@context": "https://schema.org",\n  "@type": "SeafoodBusiness",\n  "name": "MST Import and Export Sdn. Bhd.",\n  "description": "Premium Seafood, Meat, Food Ingredients & Specialty Products",\n  "currenciesAccepted": "MYR",\n  "paymentAccepted": "Cash, Credit Card, FPX Online Banking"\n}',
 
                 // SMTP Mail Settings
                 'mail_mailer'             => 'smtp',
@@ -191,7 +201,7 @@ class Setting extends Model
                 'mail_username'           => 'info@mst.my',
                 'mail_password'           => '',
                 'mail_from_address'       => 'no-reply@mst.my',
-                'mail_from_name'          => 'MST IMPORT AND EXPORT SDN BHD',
+                'mail_from_name'          => 'MST Import and Export Sdn. Bhd.',
                 'mail_contact_email'      => 'info@mst.my',
                 'mail_secondary_email'    => 'admin@mst.my',
 
@@ -218,7 +228,7 @@ class Setting extends Model
                 'site_logo'               => '',
                 'site_favicon'            => '',
                 'primary_color'           => '#0f766e',
-                'footer_copyright'        => '© ' . date('Y') . ' MST IMPORT AND EXPORT SDN BHD. All rights reserved.',
+                'footer_copyright'        => '© ' . date('Y') . ' MST Import and Export Sdn. Bhd. All rights reserved.',
 
                 // reCAPTCHA Settings
                 'recaptcha_enabled'       => '0',
@@ -227,11 +237,6 @@ class Setting extends Model
                 'recaptcha_on_contact'    => '1',
                 'recaptcha_on_register'   => '1',
 
-                // Order Minimum Settings
-                'order_minimum_enabled'   => '0',
-                'order_minimum_retail'    => '0',
-                'order_minimum_wholesale' => '0',
-                'order_minimum_trading'   => '0',
 
                 // Site Keys & Stripe Payment Integrations
                 'stripe_enabled'          => '1',
@@ -247,9 +252,9 @@ class Setting extends Model
                 'whatsapp_api_key'        => '',
 
                 // Store Legacy / Physical Details
-                'store_name'              => 'MST IMPORT AND EXPORT SDN BHD',
-                'store_tagline'           => 'Premium Frozen Seafood Trading & Retail in Malaysia',
-                'store_address'           => '7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia',
+                'store_name'              => 'MST Import and Export Sdn. Bhd.',
+                'store_tagline'           => 'Premium Seafood, Meat, Food Ingredients & Specialty Products in Malaysia',
+                'store_address'           => 'MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor',
                 'store_phone'             => '+60 13-280 0168',
                 'store_whatsapp'          => '60123456789',
                 'store_email'             => 'info@mst.my',
@@ -343,7 +348,7 @@ class Setting extends Model
             $username   = static::get('mail_username');
             $password   = static::get('mail_password');
             $fromAddr   = static::get('mail_from_address', $username ?: 'no-reply@mst.my');
-            $fromName   = static::get('mail_from_name', 'MST IMPORT AND EXPORT SDN BHD');
+            $fromName   = static::get('mail_from_name', 'MST Import and Export Sdn. Bhd.');
 
             $scheme = null;
             if ($port === 465 || $encryption === 'ssl') {

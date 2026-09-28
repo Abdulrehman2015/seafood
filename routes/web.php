@@ -381,27 +381,32 @@ Route::match(['get', 'post'], '/api/calculate-delivery-fee', function (\Illumina
     $fulfillment = $request->input('fulfillment_type', 'delivery');
     $state       = $request->input('state', '');
     $city        = $request->input('city', '');
+    $postcode    = $request->input('postcode', '');
     $group       = $pricingService->resolveGroup();
     
     $cartTotals  = $cartService->totals();
     $subtotal    = (float) ($request->input('subtotal') ?: ($cartTotals['subtotal'] ?? 0));
 
-    $result = $deliveryService->calculateFee($subtotal, $fulfillment, $state, $city, $group);
+    $result = $deliveryService->calculateFee($subtotal, $fulfillment, $state, $city, $postcode, $group);
     $total  = round($subtotal + $result['fee'], 2);
 
     $currencyService = app(\App\Services\CurrencyService::class);
     $activeCurrency  = session('currency', 'MYR');
 
-    $result['subtotal']            = $subtotal;
-    $result['total']               = $total;
-    $result['subtotal_formatted']  = number_format($subtotal, 2);
-    $result['fee_formatted']       = number_format($result['fee'], 2);
-    $result['total_formatted']     = number_format($total, 2);
-    $result['currency']            = $activeCurrency;
-    $result['currency_symbol']     = $currencyService->getSymbol($activeCurrency);
-    $result['converted_subtotal']  = number_format($currencyService->convert($subtotal, $activeCurrency), 2);
-    $result['converted_fee']       = number_format($currencyService->convert($result['fee'], $activeCurrency), 2);
-    $result['converted_total']     = number_format($currencyService->convert($total, $activeCurrency), 2);
+    $result['subtotal']                        = $subtotal;
+    $result['total']                           = $total;
+    $result['subtotal_formatted']              = number_format($subtotal, 2);
+    $result['base_delivery_fee_formatted']     = number_format($result['base_delivery_fee'] ?? 0, 2);
+    $result['below_threshold_fee_formatted']  = number_format($result['below_threshold_fee'] ?? 0, 2);
+    $result['fee_formatted']                   = number_format($result['fee'], 2);
+    $result['total_formatted']                 = number_format($total, 2);
+    $result['currency']                        = $activeCurrency;
+    $result['currency_symbol']                 = $currencyService->getSymbol($activeCurrency);
+    $result['converted_subtotal']              = number_format($currencyService->convert($subtotal, $activeCurrency), 2);
+    $result['converted_fee']                   = number_format($currencyService->convert($result['fee'], $activeCurrency), 2);
+    $result['converted_total']                 = number_format($currencyService->convert($total, $activeCurrency), 2);
+    $result['whatsapp_number']                 = \App\Models\Setting::get('store_whatsapp', '60132800168');
+    $result['whatsapp_url']                    = 'https://wa.me/' . preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '60132800168')) . '?text=' . rawurlencode("Hi MST, I would like to check delivery arrangement and quotation for postcode: {$postcode}, location: {$city}, {$state}. (Order subtotal: RM " . number_format($subtotal, 2) . ")");
 
     return response()->json($result);
 })->middleware('throttle:60,1')->name('api.delivery.calculate');
@@ -467,7 +472,7 @@ Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function
     Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
         Route::post('/add', [CartController::class, 'add'])->middleware('throttle:60,1')->name('add');
-        Route::patch('/{cartId}', [CartController::class, 'update'])->middleware('throttle:60,1')->name('update');
+        Route::match(['put', 'patch'], '/{cartId}', [CartController::class, 'update'])->middleware('throttle:60,1')->name('update');
         Route::delete('/{cartId}', [CartController::class, 'remove'])->name('remove');
         Route::get('/count', [CartController::class, 'count'])->name('count');
     });
@@ -493,8 +498,8 @@ Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function
     Route::prefix('checkout')->name('checkout.')->group(function () {
         Route::get('/', [CheckoutController::class, 'index'])->middleware('auth')->name('index');
         Route::get('/quotation/{quotation}', [CheckoutController::class, 'fromQuotation'])->middleware('auth')->name('fromQuotation');
-        Route::post('/payment-intent', [CheckoutController::class, 'createPaymentIntent'])->middleware('throttle:15,1')->name('paymentIntent');
-        Route::post('/', [CheckoutController::class, 'store'])->middleware('throttle:10,1')->name('store');
+        Route::post('/payment-intent', [CheckoutController::class, 'createPaymentIntent'])->middleware('throttle:60,1')->name('paymentIntent');
+        Route::post('/', [CheckoutController::class, 'store'])->middleware('throttle:60,1')->name('store');
         Route::get('/stripe/success', [CheckoutController::class, 'stripeSuccess'])->name('stripe.success');
         Route::get('/stripe/cancel', [CheckoutController::class, 'stripeCancel'])->name('stripe.cancel');
         Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
@@ -534,6 +539,14 @@ Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function
 
     // Auth Routes (Breeze login, register, password reset, etc.)
     require __DIR__ . '/auth.php';
+});
+
+// Unprefixed Cart AJAX Endpoints (prevents 302 method drops on direct API calls)
+Route::prefix('cart')->middleware('web')->group(function () {
+    Route::post('/add', [CartController::class, 'add'])->middleware('throttle:60,1');
+    Route::match(['put', 'patch'], '/{cartId}', [CartController::class, 'update'])->middleware('throttle:60,1');
+    Route::delete('/{cartId}', [CartController::class, 'remove']);
+    Route::get('/count', [CartController::class, 'count']);
 });
 
 // ─── Legacy Unprefixed Route Redirects ─────────────────────────────────────────
@@ -611,6 +624,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
     Route::post('newsletter/{subscriber}/toggle-status', [Admin\NewsletterController::class, 'toggleStatus'])->name('newsletter.toggleStatus');
     Route::delete('newsletter/{subscriber}', [Admin\NewsletterController::class, 'destroy'])->name('newsletter.destroy');
     Route::get('newsletter', [Admin\NewsletterController::class, 'index'])->name('newsletter.index');
+
+    // Delivery Zones Management
+    Route::get('delivery-zones', [Admin\DeliveryZoneController::class, 'index'])->name('delivery-zones.index');
+    Route::post('delivery-zones', [Admin\DeliveryZoneController::class, 'store'])->name('delivery-zones.store');
+    Route::patch('delivery-zones/{deliveryZone}', [Admin\DeliveryZoneController::class, 'update'])->name('delivery-zones.update');
+    Route::post('delivery-zones/{deliveryZone}/toggle-status', [Admin\DeliveryZoneController::class, 'toggleStatus'])->name('delivery-zones.toggleStatus');
+    Route::post('delivery-zones/threshold', [Admin\DeliveryZoneController::class, 'updateThreshold'])->name('delivery-zones.updateThreshold');
+    Route::delete('delivery-zones/{deliveryZone}', [Admin\DeliveryZoneController::class, 'destroy'])->name('delivery-zones.destroy');
 
     // Store Settings & SMTP & Stripe
     Route::get('settings', [Admin\SettingController::class, 'index'])->name('settings.index');
@@ -717,7 +738,7 @@ Route::get('/map-tile/{z}/{x}/{y}', function ($z, $x, $y) {
     if (!file_exists($cacheFile)) {
         $ch = curl_init("https://tile.openstreetmap.org/{$z}/{$x}/{$y}.png");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'MSTImportExportApp/1.0 (info@mst.my)');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'MST-Import-And-Export-App/1.0 (info@mst.my)');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 6);
         $data = curl_exec($ch);

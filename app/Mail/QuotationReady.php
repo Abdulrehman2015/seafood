@@ -25,7 +25,7 @@ class QuotationReady extends Mailable
 
     public function envelope(): Envelope
     {
-        $appName = config('app.name', 'MST Import & Export');
+        $appName = config('app.name', 'MST Import and Export Sdn. Bhd.');
         $subject = __t('email.quotation_ready_subject', 'Quotation Ready: :quotation — :app', [
             'quotation' => $this->quotation->quotation_number,
             'app'       => $appName,

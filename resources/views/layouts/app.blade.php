@@ -51,14 +51,14 @@
             : (!empty($settings['canonical_url']) ? $settings['canonical_url'] : $cleanCanonical);
     @endphp
 
-    <title>@yield('title', (!empty($activePageSeo?->meta_title) ? $activePageSeo->meta_title : ($settings['site_name'] ?? 'MST Import & Export | Frozen Food Sourcing & Trading')))</title>
+    <title>@yield('title', (!empty($activePageSeo?->meta_title) ? $activePageSeo->meta_title : ($settings['site_name'] ?? 'MST Import and Export Sdn. Bhd. | Frozen Food Sourcing & Trading')))</title>
     <meta name="description"
-        content="@yield('meta_description', (!empty($activePageSeo?->meta_description) ? $activePageSeo->meta_description : ($settings['site_description'] ?? 'MST Import and Export provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.')))">
+        content="@yield('meta_description', (!empty($activePageSeo?->meta_description) ? $activePageSeo->meta_description : ($settings['site_description'] ?? 'MST Import and Export Sdn. Bhd. provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.')))">
 
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
     @php
-        $keywords = !empty($activePageSeo?->meta_keywords) ? $activePageSeo->meta_keywords : ($settings['meta_keywords'] ?? 'frozen food sourcing, seafood, meat, frozen food, food ingredients, cold-chain distribution, customised sourcing, MST import export');
+        $keywords = !empty($activePageSeo?->meta_keywords) ? $activePageSeo->meta_keywords : ($settings['meta_keywords'] ?? 'frozen food sourcing, seafood, meat, frozen food, food ingredients, cold-chain distribution, customised sourcing, MST Import and Export Sdn. Bhd.');
     @endphp
     @if(!empty($keywords))
         <meta name="keywords" content="{{ $keywords }}">
@@ -75,18 +75,18 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ cdn_img('favicon-32x32.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url('/apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ url('/site.webmanifest') }}">
-    <meta name="apple-mobile-web-app-title" content="{{ $settings['store_name'] ?? 'MST Import & Export' }}">
-    <meta name="application-name" content="{{ $settings['store_name'] ?? 'MST Import & Export' }}">
+    <meta name="apple-mobile-web-app-title" content="{{ $settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.' }}">
+    <meta name="application-name" content="{{ $settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.' }}">
     <meta name="theme-color" content="#06152b">
     <meta name="msapplication-TileColor" content="#06152b">
     <meta name="msapplication-TileImage" content="{{ url('/apple-touch-icon.png') }}">
 
     <!-- Open Graph Meta Tags -->
-    <meta property="og:site_name" content="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}">
+    <meta property="og:site_name" content="{{ $settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.' }}">
     <meta property="og:title"
-        content="@yield('og_title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import & Export | Frozen Food Sourcing & Trading'))">
+        content="@yield('og_title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import and Export Sdn. Bhd. | Frozen Food Sourcing & Trading'))">
     <meta property="og:description"
-        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.'))">
+        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export Sdn. Bhd. provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.'))">
     <meta property="og:image" content="@yield('og_image', $resolvedOgImage)">
     <meta property="og:url" content="{{ $resolvedCanonical }}">
     <meta property="og:type" content="website">
@@ -95,9 +95,9 @@
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title"
-        content="@yield('og_title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import & Export | Frozen Food Sourcing & Trading'))">
+        content="@yield('og_title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import and Export Sdn. Bhd. | Frozen Food Sourcing & Trading'))">
     <meta name="twitter:description"
-        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.'))">
+        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export Sdn. Bhd. provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.'))">
     <meta name="twitter:image" content="@yield('og_image', $resolvedOgImage)">
 
     <link rel="stylesheet" href="{{ url('/cdn-assets/css/fonts.css') }}">
@@ -126,24 +126,29 @@
                     [
                         '@type' => 'Organization',
                         '@id' => url('/') . '/#organization',
-                        'name' => $settings['store_name'] ?? 'MST Import and Export Sdn Bhd',
+                        'name' => $settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.',
                         'url' => url('/'),
                         'logo' => [
                             '@type' => 'ImageObject',
                             'url' => cdn_img('logo.webp'),
                         ],
-                        'description' => 'MST Import and Export Sdn Bhd provides frozen food sourcing, trading and distribution solutions across regional and international markets.',
+                        'description' => 'MST Import and Export Sdn. Bhd. provides cold-chain sourcing, wholesale supply, customised sourcing and distribution across Malaysia, Singapore and selected regional markets.',
                         'address' => [
                             '@type' => 'PostalAddress',
-                            'addressLocality' => 'Johor Bahru',
+                            'streetAddress' => 'No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC',
+                            'addressLocality' => 'Iskandar Puteri',
+                            'addressRegion' => 'Johor',
+                            'postalCode' => '79200',
                             'addressCountry' => 'MY',
                         ],
+                        'telephone' => ['+60132800168', '+601112710260'],
+                        'email' => 'mikatrading15@gmail.com',
                     ],
                     [
                         '@type' => 'WebSite',
                         '@id' => url('/') . '/#website',
                         'url' => url('/'),
-                        'name' => $settings['store_name'] ?? 'MST Import and Export Sdn Bhd',
+                        'name' => $settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.',
                         'publisher' => [
                             '@id' => url('/') . '/#organization',
                         ],
@@ -241,6 +246,55 @@
             .nav-actions {
                 gap: clamp(4px, 0.5vw, 10px) !important;
                 flex-shrink: 0 !important;
+            }
+        }
+
+        /* ─── Navbar Brand Logo: Standard MST Company Identity ─── */
+        .nav-logo {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            text-decoration: none !important;
+            flex-shrink: 0 !important;
+        }
+        .nav-logo .logo-text {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            line-height: 1.25 !important;
+        }
+        .nav-logo .logo-brand {
+            font-size: 1.05rem !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.02em !important;
+            color: #0f172a !important;
+            line-height: 1.2 !important;
+            display: block !important;
+            white-space: nowrap !important;
+        }
+        .nav-logo .logo-sub {
+            font-size: 0.72rem !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.01em !important;
+            color: #64748b !important;
+            line-height: 1.2 !important;
+            display: block !important;
+            white-space: nowrap !important;
+        }
+        @media (max-width: 576px) {
+            .nav-logo .logo-brand {
+                font-size: 0.90rem !important;
+            }
+            .nav-logo .logo-sub {
+                font-size: 0.62rem !important;
+            }
+        }
+        @media (max-width: 380px) {
+            .nav-logo .logo-brand {
+                font-size: 0.82rem !important;
+            }
+            .nav-logo .logo-sub {
+                font-size: 0.58rem !important;
             }
         }
 
@@ -934,13 +988,14 @@
                 <div class="water-ripple r2"></div>
                 <div class="water-ripple r3"></div>
                 <div class="ocean-mascot-badge">
-                    <img src="{{ cdn_img('logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}" class="ocean-mascot-img">
+                    <img src="{{ cdn_img('logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.' }}" class="ocean-mascot-img">
                 </div>
             </div>
 
             {{-- Brand Typography & Cold-Chain Identity --}}
             <div class="ocean-brand-box">
-                <span class="ocean-brand-title">MST IMPORT &amp; EXPORT</span>
+                <span class="ocean-brand-title" style="font-size:1.05rem;font-weight:800;letter-spacing:0.02em;display:block">镁嘉国际贸易有限公司</span>
+                <span class="ocean-brand-sub" style="font-size:0.75rem;font-weight:600;letter-spacing:0.02em;display:block;opacity:0.9">MST Import and Export Sdn. Bhd.</span>
                 <span class="ocean-brand-tagline">
                     <span>❄️</span>
                     <span>PREMIUM FROZEN SEAFOOD &amp; COLD CHAIN</span>
@@ -964,11 +1019,11 @@
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
             <a href="{{ route('home') }}" class="nav-logo">
-                <img src="{{ cdn_img('logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}"
+                <img src="{{ cdn_img('logo.webp') }}" alt="镁嘉国际贸易有限公司 — MST Import and Export Sdn. Bhd."
                     style="height:44px;width:44px;object-fit:contain;border-radius:8px;">
                 <div class="logo-text">
-                    <span class="logo-brand">MST</span>
-                    <span class="logo-sub">@t('common.import_export_sdn_bhd', 'Import & Export Sdn Bhd')</span>
+                    <span class="logo-brand">镁嘉国际贸易有限公司</span>
+                    <span class="logo-sub">MST Import and Export Sdn. Bhd.</span>
                 </div>
             </a>
             <div class="nav-links" id="navLinks">
@@ -1154,7 +1209,7 @@
                     </div>
                 @else
                 <div class="mobile-drawer-auth-card">
-                    <div class="mobile-drawer-auth-title">@t('nav.welcome_to', 'Welcome to') {{ $settings['store_name'] ?? 'MST Import and Export Sdn Bhd' }}</div>
+                    <div class="mobile-drawer-auth-title">@t('nav.welcome_to', 'Welcome to') {{ $settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.' }}</div>
                     <div class="mobile-drawer-auth-sub">@t('nav.signin_sub', 'Sign in to manage your account or request business access')</div>
                     <div class="mobile-drawer-auth-buttons">
                         <a href="{{ route('login') }}" class="btn btn-primary"
@@ -1221,7 +1276,7 @@
                             </button>
                         @endforeach
                         <div class="currency-dropdown-note" style="padding:10px 12px;margin-top:6px;background:#f8fafc;border-top:1px solid #e2e8f0;font-size:0.73rem;color:#64748b;line-height:1.45;text-align:left;border-radius:0 0 10px 10px">
-                            ℹ️ @t('nav.currency_indicative_note', 'Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.')
+                            @t('nav.currency_indicative_note', 'ℹ️ Currency conversion is for reference only. The final amount may vary based on the applicable exchange rate at the time of payment.')
                         </div>
                     </div>
                 </div>
@@ -1303,11 +1358,11 @@
             <div class="footer-grid">
                 <div class="footer-brand footer-col">
                     <a href="{{ route('home') }}" class="footer-logo">
-                        <img src="{{ cdn_img('logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import & Export Sdn. Bhd.' }}"
-                            style="height:52px;width:52px;object-fit:contain;border-radius:10px;">
+                        <img src="{{ cdn_img('logo.webp') }}" alt="镁嘉国际贸易有限公司 — MST Import and Export Sdn. Bhd."
+                            style="height:52px;width:52px;object-fit:contain;border-radius:10px;flex-shrink:0;">
                         <div class="logo-text">
-                            <span class="logo-brand">MST</span>
-                            <span class="logo-sub">@t('common.import_export_sdn_bhd', 'Import & Export Sdn. Bhd.')</span>
+                            <span class="logo-brand" style="font-size:1.15rem;letter-spacing:0.02em;color:#ffffff;line-height:1.2;font-weight:800;display:block">镁嘉国际贸易有限公司</span>
+                            <span class="logo-sub" style="font-size:0.75rem;letter-spacing:0.02em;color:#93c5fd;line-height:1.2;font-weight:600;display:block">MST Import and Export Sdn. Bhd.</span>
                         </div>
                     </a>
                     <p class="footer-desc">
@@ -1394,7 +1449,7 @@
                 <div class="footer-col">
                     <h4 class="footer-heading">@t('footer.sourcing_support_heading', 'Sourcing & Support')</h4>
                     <p style="font-size:0.875rem;color:#cbd5e1;line-height:1.6;margin-bottom:14px">
-                        @t('footer.sourcing_desc', 'Cold-chain sourcing, wholesale supply, trading and customized import & distribution support across regional and international markets.')
+                        @t('footer.sourcing_desc', 'Frozen food sourcing, wholesale supply & customised sourcing solutions for customers in Malaysia, Singapore and selected markets.')
                     </p>
                     <div style="margin-bottom:14px">
                         <a href="{{ route('contact') }}" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg, #2563eb, #1d4ed8);color:#ffffff;padding:8px 16px;border-radius:8px;font-weight:700;font-size:0.85rem;text-decoration:none;box-shadow:0 2px 8px rgba(37,99,235,0.35);transition:transform 0.15s ease">
@@ -1416,12 +1471,12 @@
                     </div>
                     <div style="font-size:0.8rem;color:#94a3b8;line-height:1.5;display:flex;align-items:flex-start;gap:6px">
                         <span style="flex-shrink:0">📍</span>
-                        <span>7 Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia</span>
+                        <span>No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia</span>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>© 2026 @t('footer.company_name', 'MST Import & Export Sdn. Bhd.') · @t('footer.all_rights_reserved', 'All rights reserved.')</p>
+                <p>© 2026 MST Import and Export Sdn. Bhd. · @t('footer.all_rights_reserved', 'All rights reserved.')</p>
             </div>
         </div>
     </footer>
@@ -1505,7 +1560,7 @@
                 return {
                     amount: baseRm,
                     symbol: 'RM',
-                    formatted: 'RM ' + baseRm.toFixed(2),
+                    formatted: 'RM' + baseRm.toFixed(2),
                     baseRm: null
                 };
             }
@@ -1517,7 +1572,7 @@
                 return {
                     amount: converted,
                     symbol: symbol,
-                    formatted: symbol + ' ' + converted.toFixed(2),
+                    formatted: symbol + converted.toFixed(2),
                     baseRm: baseRm
                 };
             }
@@ -1536,7 +1591,7 @@
                 return {
                     amount: amt,
                     symbol: symbol,
-                    formatted: symbol + ' ' + amt.toFixed(2),
+                    formatted: symbol + amt.toFixed(2),
                     baseRm: baseRm
                 };
             }
@@ -1547,7 +1602,7 @@
             return {
                 amount: converted,
                 symbol: symbol,
-                formatted: symbol + ' ' + converted.toFixed(2),
+                formatted: symbol + converted.toFixed(2),
                 baseRm: baseRm
             };
         }
@@ -2100,7 +2155,17 @@
         document.addEventListener('submit', (e) => {
             const form = e.target;
             if (!form || e.defaultPrevented) return;
-            if (form.target === '_blank' || form.getAttribute('data-no-loader') === 'true') return;
+            const action = (form.action || '').toLowerCase();
+            if (form.target === '_blank' || 
+                form.getAttribute('data-no-loader') === 'true' || 
+                form.getAttribute('data-ajax') === 'true' || 
+                form.classList.contains('product-cart-form') || 
+                form.classList.contains('btn-add-ajax') ||
+                form.closest('#qvModal') ||
+                action.includes('/cart/add') || 
+                action.endsWith('/cart')) {
+                return;
+            }
             showPageLoader('Processing & loading data...');
         });
 

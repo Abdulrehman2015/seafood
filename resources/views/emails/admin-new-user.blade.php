@@ -5,7 +5,7 @@
 @endphp
 
 @section('title', 'New Customer Registration: ' . $user->name)
-@section('preheader', 'New customer registration on MST Import & Export (' . ucfirst($user->customer_group) . ')')
+@section('preheader', 'New customer registration on MST Import and Export Sdn. Bhd. (' . ucfirst($user->customer_group) . ')')
 
 @section('content')
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -31,7 +31,7 @@
                 New {{ ucfirst($user->customer_group) }} Registration
             </h1>
             <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0 0 20px 0;">
-                A new user has registered on <strong>MST Import &amp; Export SDN. BHD.</strong> website. Please review the details below:
+                A new user has registered on <strong>MST Import and Export Sdn. Bhd.</strong> website. Please review the details below:
             </p>
         </td>
     </tr>

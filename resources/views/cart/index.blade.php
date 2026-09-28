@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __t('cart.title', 'Shopping Cart') . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd'))
+@section('title', __t('cart.title', 'Shopping Cart') . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.'))
 
 @section('content')
 <!-- Page Header -->
@@ -230,51 +230,19 @@
                         </div>
 
                         @php
-                            $deliveryService = app(\App\Services\DeliveryService::class);
-                            $b2cThreshold    = $deliveryService->getThreshold();
-                            $cartSubtotal    = (float) ($totals['subtotal'] ?? 0);
-                            $isWalkinMode    = (bool) session('walkin_session');
-                            $isB2BGroup      = in_array($group, ['wholesale', 'trading']);
-                            $orderMinEnabled = (\App\Models\Setting::get('order_minimum_enabled', '0') === '1');
-
-                            // B2B wholesale tier minimum
-                            if ($isB2BGroup && $orderMinEnabled) {
-                                $orderMinKey = ($group === 'wholesale') ? 'order_minimum_wholesale' : 'order_minimum_trading';
-                                $orderMinAmount = (float) \App\Models\Setting::get($orderMinKey, '0');
-                                $belowB2BMin    = $orderMinAmount > 0 && $cartSubtotal < $orderMinAmount;
-                                $b2bShortfall   = max(0, $orderMinAmount - $cartSubtotal);
-                            } else {
-                                $belowB2BMin    = false;
-                                $orderMinAmount = 0;
-                                $b2bShortfall   = 0;
-                            }
-
-                            // B2C delivery threshold status
-                            $eligibleStandardDelivery = ($cartSubtotal >= $b2cThreshold);
-                            $b2cDeliveryShortfall     = max(0, $b2cThreshold - $cartSubtotal);
-                            $b2cProgressPct           = min(100, round(($cartSubtotal / $b2cThreshold) * 100));
+                            $deliveryService          = app(\App\Services\DeliveryService::class);
+                            $activeThreshold          = $deliveryService->getThreshold($group);
+                            $cartSubtotal             = (float) ($totals['subtotal'] ?? 0);
+                            $isWalkinMode             = (bool) session('walkin_session');
+                            $isTradingGroup           = ($group === 'trading');
+                            $eligibleStandardDelivery = ($cartSubtotal >= $activeThreshold);
+                            $deliveryShortfall        = max(0, $activeThreshold - $cartSubtotal);
+                            $progressPct              = min(100, round(($cartSubtotal / max(1, $activeThreshold)) * 100));
+                            $tierName                 = ($group === 'wholesale') ? 'B2B Wholesale' : 'B2C Retail';
                         @endphp
 
-                        {{-- B2B Minimum Order Warning (Wholesale/Trading only) --}}
-                        @if($belowB2BMin)
-                        <div id="orderMinWarning" style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:12px 14px;margin-bottom:12px">
-                            <div style="display:flex;align-items:flex-start;gap:8px">
-                                <span style="font-size:1.2rem;line-height:1;flex-shrink:0">⚠️</span>
-                                <div>
-                                    <div style="font-weight:700;font-size:0.82rem;color:#92400e;margin-bottom:3px">@t('cart.b2b_min_order_title', 'Wholesale Tier Minimum Order')</div>
-                                    <div style="font-size:0.78rem;color:#78350f;line-height:1.5">
-                                        @t('cart.b2b_min_order_desc', 'Minimum order for :group partners is RM :min. Add RM :shortfall more to proceed.', ['group' => ucfirst($group), 'min' => number_format($orderMinAmount, 2), 'shortfall' => number_format($b2bShortfall, 2)])
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="margin-top:10px;background:#fed7aa;border-radius:6px;height:6px;overflow:hidden">
-                                <div style="height:100%;background:#f97316;border-radius:6px;width:{{ min(100, round(($cartSubtotal / $orderMinAmount) * 100)) }}%;transition:width 0.3s"></div>
-                            </div>
-                        </div>
-                        @endif
-
-                        {{-- B2C Delivery Arrangement Status Banner (Retail Customers) --}}
-                        @if(!$isB2BGroup && !$isWalkinMode)
+                        {{-- Delivery Arrangement Status Banner (Retail & Wholesale Customers) --}}
+                        @if(!$isTradingGroup && !$isWalkinMode)
                             @if($eligibleStandardDelivery)
                             <div class="delivery-threshold-banner eligible" style="background:#ecfdf5;border:1.5px solid #a7f3d0;border-radius:10px;padding:12px 14px;margin-bottom:12px">
                                 <div style="display:flex;align-items:center;gap:8px">
@@ -284,7 +252,7 @@
                                             @t('cart.standard_delivery_eligible_title', 'Standard Delivery Arrangement Unlocked!')
                                         </div>
                                         <div style="font-size:0.78rem;color:#047857;line-height:1.4">
-                                            @t('cart.standard_delivery_eligible_desc', 'Your order total exceeds RM :threshold and qualifies for standard local delivery arrangement.', ['threshold' => number_format($b2cThreshold, 2)])
+                                            @t('cart.standard_delivery_eligible_desc', 'Your order total exceeds RM :threshold and qualifies for standard local delivery arrangement.', ['threshold' => number_format($activeThreshold, 2)])
                                         </div>
                                     </div>
                                 </div>
@@ -295,17 +263,17 @@
                                     <span style="font-size:1.2rem;line-height:1;flex-shrink:0">🚚</span>
                                     <div style="flex:1">
                                         <div style="font-weight:700;font-size:0.82rem;color:#0369a1;margin-bottom:2px">
-                                            @t('cart.delivery_threshold_info_title', 'Delivery & Transportation Arrangement')
+                                            @t('cart.delivery_fee_notice_title', 'Delivery Fee Notice')
                                         </div>
                                         <div style="font-size:0.77rem;color:#0c4a6e;line-height:1.45">
-                                            @t('cart.delivery_threshold_info_desc', 'Orders below RM :threshold are subject to area transportation charges (calculated at checkout based on delivery zone). Add RM :shortfall more to qualify for standard delivery arrangement!', ['threshold' => number_format($b2cThreshold, 2), 'shortfall' => number_format($b2cDeliveryShortfall, 2)])
+                                            @t('cart.delivery_fee_notice_desc', 'Orders below the standard delivery threshold (RM :threshold) may be subject to an additional delivery fee based on your delivery location.', ['threshold' => number_format($activeThreshold, 2)])
                                         </div>
                                         <div style="margin-top:8px;background:#e0f2fe;border-radius:6px;height:6px;overflow:hidden">
-                                            <div style="height:100%;background:#0284c7;border-radius:6px;width:{{ $b2cProgressPct }}%;transition:width 0.3s"></div>
+                                            <div style="height:100%;background:#0284c7;border-radius:6px;width:{{ $progressPct }}%;transition:width 0.3s"></div>
                                         </div>
                                         <div style="font-size:0.7rem;color:#0284c7;margin-top:4px;display:flex;justify-content:space-between">
                                             <span>RM {{ number_format($cartSubtotal, 2) }}</span>
-                                            <span><strong>{{ $b2cProgressPct }}%</strong> (RM {{ number_format($b2cThreshold, 2) }} Goal)</span>
+                                            <span><strong>{{ $progressPct }}%</strong> (RM {{ number_format($activeThreshold, 2) }} {{ $tierName }} Threshold)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1196,7 +1164,8 @@
 
 @push('scripts')
 <script>
-const csrf = document.querySelector('meta[name="csrf-token"]').content;
+const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
+const cartBaseUrl = '{{ url(current_locale() . "/cart") }}';
 
 const cartI18n = {
     cartUpdated: @json(__t('cart.cart_updated', 'Cart updated')),
@@ -1281,12 +1250,13 @@ async function sendCartUpdate(cartId, quantity) {
     if (card) card.classList.add('updating');
 
     try {
-        const response = await fetch('/cart/' + cartId, {
-            method: 'PUT',
+        const token = document.querySelector('meta[name="csrf-token"]')?.content || csrf;
+        const response = await fetch(cartBaseUrl + '/' + cartId, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrf
+                'X-CSRF-TOKEN': token
             },
             body: JSON.stringify({ quantity: quantity })
         });
@@ -1381,12 +1351,13 @@ async function removeCartItemAjax(cartId) {
     if (card) card.classList.add('updating');
 
     try {
-        const res = await fetch('/cart/' + cartId, {
+        const token = document.querySelector('meta[name="csrf-token"]')?.content || csrf;
+        const res = await fetch(cartBaseUrl + '/' + cartId, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrf
+                'X-CSRF-TOKEN': token
             }
         });
 

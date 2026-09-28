@@ -22,7 +22,7 @@ class TestSmtpMail extends Mailable
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'SMTP Connection Test Confirmation — ' . config('app.name', 'MST Import & Export'));
+        return new Envelope(subject: 'SMTP Connection Test Confirmation — ' . config('app.name', 'MST Import and Export Sdn. Bhd.'));
     }
 
     public function content(): Content

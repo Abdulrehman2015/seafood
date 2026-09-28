@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __t('walkin.checkout_title', 'Walk-in Express Checkout') . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn Bhd'))
+@section('title', __t('walkin.checkout_title', 'Walk-in Express Checkout') . ' — ' . ($settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.'))
 
 @section('content')
 <!-- Walk-in Ocean Header Banner & Process Stepper -->
@@ -31,15 +31,15 @@
         <div class="walkin-hero-heading-box">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap">
                 <span class="walkin-store-tag" style="background:rgba(30,58,138,0.6);border:1px solid rgba(56,189,248,0.35);padding:3px 10px;border-radius:8px;font-size:0.75rem;font-weight:700;color:#e0f2fe">
-                    🏬 @t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')
+                    🏬 @t('walkin.store_location', 'MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.')
                 </span>
-                <span class="walkin-tag-sub">⚡ @t('walkin.express_pickup_tag', 'Express Counter 2 Collection')</span>
+                <span class="walkin-tag-sub">⚡ @t('walkin.express_pickup_tag', 'Counter 2 Self-Collection')</span>
             </div>
             <h1 class="walkin-hero-title">
                 @t('walkin.checkout_title', 'Walk-in Express Checkout')
             </h1>
             <p class="walkin-hero-subtitle">
-                @t('walkin.checkout_subtitle', 'Please confirm your order and collection location before payment. Collect your packed order at MST Counter 2.')
+                @t('walkin.checkout_subtitle', 'Please confirm your order and Counter 2 collection location before payment. Collect your packed order at MST Counter 2.')
             </p>
         </div>
 
@@ -49,8 +49,8 @@
                 <a href="{{ route('walkin.shop') }}" class="step-item step-completed" style="text-decoration:none">
                     <div class="step-icon">1</div>
                     <div class="step-info">
-                        <span class="step-num">Step 1 — @t('walkin.step_1_name', 'Browse')</span>
-                        <span class="step-label">@t('walkin.step_1_desc', 'View available products on your phone.')</span>
+                        <span class="step-num">1. @t('walkin.step_1_name', 'Lihat')</span>
+                        <span class="step-label">@t('walkin.step_1_desc', 'Lihat produk yang tersedia di telefon anda.')</span>
                     </div>
                 </a>
                 <div class="step-divider active"></div>
@@ -58,8 +58,8 @@
                 <a href="{{ route('walkin.shop') }}" class="step-item step-completed" style="text-decoration:none">
                     <div class="step-icon">2</div>
                     <div class="step-info">
-                        <span class="step-num">Step 2 — @t('walkin.step_2_name', 'Select')</span>
-                        <span class="step-label">@t('walkin.step_2_desc', 'Choose your products and quantities.')</span>
+                        <span class="step-num">2. @t('walkin.step_2_name', 'Pilih')</span>
+                        <span class="step-label">@t('walkin.step_2_desc', 'Pilih produk dan kuantiti yang diperlukan.')</span>
                     </div>
                 </a>
                 <div class="step-divider active"></div>
@@ -67,8 +67,8 @@
                 <div class="step-item step-active">
                     <div class="step-icon">3</div>
                     <div class="step-info">
-                        <span class="step-num">Step 3 — @t('walkin.step_3_name', 'Pay')</span>
-                        <span class="step-label">@t('walkin.step_3_desc', 'Complete payment securely on your phone.')</span>
+                        <span class="step-num">3. @t('walkin.step_3_name', 'Bayar')</span>
+                        <span class="step-label">@t('walkin.step_3_desc', 'Lengkapkan pembayaran dengan selamat melalui telefon anda.')</span>
                     </div>
                 </div>
                 <div class="step-divider"></div>
@@ -76,8 +76,8 @@
                 <div class="step-item">
                     <div class="step-icon">4</div>
                     <div class="step-info">
-                        <span class="step-num">Step 4 — @t('walkin.step_4_name', 'Collect')</span>
-                        <span class="step-label">@t('walkin.step_4_desc', 'Collect your packed order at Counter 2.')</span>
+                        <span class="step-num">4. @t('walkin.step_4_name', 'Ambil')</span>
+                        <span class="step-label">@t('walkin.step_4_desc', 'Ambil pesanan yang telah disediakan di Kaunter 2.')</span>
                     </div>
                 </div>
             </div>
@@ -164,16 +164,21 @@
                 <!-- Store Counter Pickup Notice -->
                 <div class="walkin-pickup-notice-card" style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:14px;padding:16px 20px;display:flex;gap:14px;align-items:flex-start;margin-bottom:20px">
                     <div class="notice-icon" style="font-size:1.8rem">🏬</div>
-                    <div>
+                    <div style="flex:1">
                         <div class="notice-title" style="font-weight:800;font-size:0.95rem;color:#1e3a8a;margin-bottom:4px">
                             @t('walkin.confirm_pickup_title', 'Please confirm your order and collection location before payment.')
                         </div>
                         <div class="notice-desc" style="font-size:0.85rem;color:#1d4ed8;line-height:1.45;margin-bottom:8px">
-                            📍 <strong>@t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')</strong><br>
+                            📍 <strong>@t('walkin.store_location', 'MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.')</strong><br>
                             @t('walkin.counter_desc', 'Orders are prepared for Counter 2 collection after payment confirmation. Orders are packed appropriately for collection and transport.')
                         </div>
-                        <div class="notice-badge" style="font-size:0.75rem;font-weight:700;color:#1e40af;background:#ffffff;padding:3px 10px;border-radius:6px;display:inline-block;border:1px solid #bfdbfe">
-                            📋 @t('walkin.counter_note', 'Please present your order reference / payment confirmation when collecting your order.')
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+                            <span class="notice-badge" style="font-size:0.75rem;font-weight:700;color:#1e40af;background:#ffffff;padding:3px 10px;border-radius:6px;display:inline-block;border:1px solid #bfdbfe">
+                                📋 @t('walkin.counter_note', 'Please present your order reference or payment confirmation when collecting your order.')
+                            </span>
+                            <a href="https://maps.google.com/?q=MST+Counter+2+7+Jalan+SILC+2/18+SILC+Industrial+Park+Iskandar+Puteri+Johor" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:4px;font-size:0.75rem;font-weight:700;color:#1e40af;background:#ffffff;padding:3px 10px;border-radius:6px;border:1px solid #bfdbfe;text-decoration:none;transition:all 0.2s">
+                                🗺️ @t('walkin.get_directions', 'Get Directions')
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -234,9 +239,10 @@
                     <!-- Payment Selection Grid -->
                     <div class="walkin-payment-options-grid">
                         <!-- Option 1: Cash at Counter -->
-                        <label class="walkin-pay-tile {{ old('payment_method', 'cash') === 'cash' ? 'selected' : '' }}" id="payTileCash" onclick="onWalkinPaymentMethodChange('cash')">
+                        <label class="walkin-pay-tile {{ old('payment_method') === 'cash' ? 'selected' : '' }}" id="payTileCash" onclick="onWalkinPaymentMethodChange('cash')">
                             <input type="radio" name="payment_method" value="cash" id="radioCash" 
-                                   {{ old('payment_method', 'cash') === 'cash' ? 'checked' : '' }} 
+                                   {{ old('payment_method') === 'cash' ? 'checked' : '' }} 
+                                   required
                                    onchange="onWalkinPaymentMethodChange('cash')">
                             <div class="pay-tile-check">✓</div>
                             <div class="pay-tile-icon">💵</div>
@@ -251,6 +257,7 @@
                         <label class="walkin-pay-tile {{ old('payment_method') === 'stripe' ? 'selected' : '' }}" id="payTileStripe" onclick="onWalkinPaymentMethodChange('stripe')">
                             <input type="radio" name="payment_method" value="stripe" id="radioStripe" 
                                    {{ old('payment_method') === 'stripe' ? 'checked' : '' }} 
+                                   required
                                    onchange="onWalkinPaymentMethodChange('stripe')">
                             <div class="pay-tile-check">✓</div>
                             <div class="pay-tile-icon">💳</div>
@@ -262,8 +269,12 @@
                         </label>
                     </div>
 
+                    @error('payment_method')
+                        <div class="form-error" style="color:#ef4444;font-size:0.85rem;font-weight:600;margin-top:10px">⚠️ {{ $message }}</div>
+                    @enderror
+
                     <!-- Detail Info Box: Cash -->
-                    <div id="cashInfoBox" class="walkin-pay-info-box cash-box" style="{{ old('payment_method', 'cash') === 'cash' ? '' : 'display:none' }}">
+                    <div id="cashInfoBox" class="walkin-pay-info-box cash-box" style="{{ old('payment_method') === 'cash' ? '' : 'display:none' }}">
                         <div class="info-box-header">
                             <span class="info-icon">💵</span>
                             <strong>@t('walkin.cash_info_title', 'Pay Cash at Counter 2:')</strong>
@@ -304,12 +315,22 @@
                     </div>
 
                     <button type="submit" class="btn-walkin-pay-submit btn-mobile-submit" id="mobileSubmitBtn">
-                        <span id="mobileSubmitBtnIcon">{{ old('payment_method', 'cash') === 'cash' ? '💵' : '🔒' }}</span>
-                        <span id="mobileSubmitBtnText">
-                            @if(old('payment_method', 'cash') === 'cash')
-                                @t('walkin.confirm_cash_order', 'Confirm Order & Proceed to Counter 2')
+                        <span id="mobileSubmitBtnIcon">
+                            @if(old('payment_method') === 'cash')
+                                💵
+                            @elseif(old('payment_method') === 'stripe')
+                                🔒
                             @else
+                                💳
+                            @endif
+                        </span>
+                        <span id="mobileSubmitBtnText">
+                            @if(old('payment_method') === 'cash')
+                                @t('walkin.confirm_cash_order', 'Confirm Order & Proceed to Counter 2')
+                            @elseif(old('payment_method') === 'stripe')
                                 @t('walkin.proceed_to_payment', 'Proceed to Secure Payment →')
+                            @else
+                                @t('walkin.select_payment_to_proceed', 'Select a Payment Method to Proceed')
                             @endif
                         </span>
                     </button>
@@ -368,18 +389,28 @@
                     </div>
 
                     <button type="submit" class="btn-walkin-pay-submit" id="submitBtn">
-                        <span id="submitBtnIcon">{{ old('payment_method', 'cash') === 'cash' ? '💵' : '🔒' }}</span>
-                        <span id="submitBtnText">
-                            @if(old('payment_method', 'cash') === 'cash')
-                                @t('walkin.confirm_cash_order', 'Confirm Order & Proceed to Counter 2')
+                        <span id="submitBtnIcon">
+                            @if(old('payment_method') === 'cash')
+                                💵
+                            @elseif(old('payment_method') === 'stripe')
+                                🔒
                             @else
+                                💳
+                            @endif
+                        </span>
+                        <span id="submitBtnText">
+                            @if(old('payment_method') === 'cash')
+                                @t('walkin.confirm_cash_order', 'Confirm Order & Proceed to Counter 2')
+                            @elseif(old('payment_method') === 'stripe')
                                 @t('walkin.proceed_to_payment', 'Proceed to Secure Payment →')
+                            @else
+                                @t('walkin.select_payment_to_proceed', 'Select a Payment Method to Proceed')
                             @endif
                         </span>
                     </button>
 
                     <div class="summary-footer-trust">
-                        <div class="trust-line">🏬 <strong>@t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')</strong></div>
+                        <div class="trust-line">🏬 <strong>@t('walkin.store_location', 'MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.')</strong></div>
                         <div class="trust-line">⚡ <strong>@t('walkin.prepared_promptly', 'Orders prepared for Counter 2 collection after payment confirmation')</strong></div>
                         <div class="trust-line">📦 <strong>@t('walkin.packed_appropriately', 'Orders are packed appropriately for collection and transport')</strong></div>
                     </div>
@@ -603,6 +634,7 @@
 
 /* ─── Mobile Collapsible Summary Bar (< 992px) ─── */
 .mobile-order-summary-card {
+    display: none;
     background: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 16px;
@@ -1128,8 +1160,18 @@
     flex-wrap: wrap;
 }
 
-/* ─── Responsive Breakpoints (Tablet & Mobile) ─── */
+/* ─── Responsive Breakpoints (Desktop vs Tablet & Mobile) ─── */
+@media (min-width: 992px) {
+    .d-lg-none,
+    .mobile-order-summary-card {
+        display: none !important;
+    }
+}
+
 @media (max-width: 991px) {
+    .mobile-order-summary-card {
+        display: block !important;
+    }
     .walkin-checkout-grid {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -1412,8 +1454,8 @@ function onWalkinPaymentMethodChange(method) {
     const mobileBtnIcon = document.getElementById('mobileSubmitBtnIcon');
     const mobileBtnText = document.getElementById('mobileSubmitBtnText');
 
-    const cashLabel = @json(__t('walkin.confirm_cash_order', 'Confirm Order & Get Collection Token'));
-    const stripeLabel = @json(__t('walkin.proceed_to_stripe', 'Proceed to Stripe Official Checkout →'));
+    const cashLabel = @json(__t('walkin.confirm_cash_order', 'Confirm Order & Proceed to Counter 2'));
+    const stripeLabel = @json(__t('walkin.proceed_to_payment', 'Proceed to Secure Payment →'));
 
     if (method === 'cash') {
         if (radioCash) radioCash.checked = true;
@@ -1425,7 +1467,7 @@ function onWalkinPaymentMethodChange(method) {
         if (btnText) btnText.textContent = cashLabel;
         if (mobileBtnIcon) mobileBtnIcon.textContent = '💵';
         if (mobileBtnText) mobileBtnText.textContent = cashLabel;
-    } else {
+    } else if (method === 'stripe') {
         if (radioStripe) radioStripe.checked = true;
         payTileCash?.classList.remove('selected');
         payTileStripe?.classList.add('selected');
@@ -1440,9 +1482,22 @@ function onWalkinPaymentMethodChange(method) {
 
 // Form submission handler
 document.getElementById('checkoutForm')?.addEventListener('submit', function(e) {
+    const selected = document.querySelector('input[name="payment_method"]:checked')?.value;
+    if (!selected) {
+        e.preventDefault();
+        alert(@json(__t('walkin.please_select_payment', 'Please select a payment method before proceeding.')));
+        const paymentSection = document.querySelector('.walkin-payment-options-grid');
+        if (paymentSection) {
+            paymentSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            paymentSection.style.outline = '2px solid #ef4444';
+            paymentSection.style.borderRadius = '14px';
+            setTimeout(() => { paymentSection.style.outline = ''; }, 3000);
+        }
+        return false;
+    }
+
     const btn = document.getElementById('submitBtn');
     const mobileBtn = document.getElementById('mobileSubmitBtn');
-    const selected = document.querySelector('input[name="payment_method"]:checked')?.value || 'cash';
     const loadingHtml = selected === 'cash'
         ? '<span>⏳</span> <span>' + @json(__t('walkin.generating_token', 'Generating Collection Token...')) + '</span>'
         : '<span>⏳</span> <span>' + @json(__t('walkin.redirecting_stripe', 'Redirecting to Stripe...')) + '</span>';
