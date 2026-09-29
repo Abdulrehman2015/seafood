@@ -153,11 +153,11 @@
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                 <span style="font-size:0.95rem">ℹ️</span>
                 <h3 style="font-family:var(--font-heading);font-size:0.86rem;font-weight:700;color:#334155;margin:0;letter-spacing:0.01em">
-                    @t('auth.biz_info_title', 'Wholesale & Trading Account Information')
+                    @t('auth.biz_info_title', 'Business Account Information')
                 </h3>
             </div>
             <p style="color:#64748b;font-size:0.79rem;line-height:1.5;margin:0">
-                @t('auth.biz_info_desc', 'Wholesale and trading accounts may receive access to business-specific pricing, product availability and quotation features after verification, depending on account type and order requirements.')
+                @t('auth.biz_info_desc', 'Business accounts are subject to MST review and approval. Approved business accounts may receive applicable business pricing, product availability information and quotation features according to the account type, purchase requirements and applicable conditions.')
             </p>
         </div>
 

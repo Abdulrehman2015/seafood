@@ -5,6 +5,325 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>window.__pageLoadStartTime = performance.now();</script>
+
+    <!-- ─── Critical 60FPS Oceanic Page Loader CSS ─── -->
+    <style id="critical-ocean-loader-css">
+        .page-switch-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 2147483647 !important;
+            background: radial-gradient(circle at 50% 38%, #0e2952 0%, #06152b 65%, #030c18 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            user-select: none;
+            transition: opacity 0.38s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.38s ease;
+            will-change: opacity, visibility;
+        }
+
+        .page-switch-loader.loader-hidden {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        .ocean-backdrop {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        /* Underwater Caustic Sunbeam */
+        .ocean-caustic-light {
+            position: absolute;
+            top: -10%;
+            left: 20%;
+            width: 60%;
+            height: 55%;
+            background: radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.22) 0%, rgba(14, 116, 144, 0.12) 45%, transparent 75%);
+            filter: blur(50px);
+            animation: causticSway 8s ease-in-out infinite alternate;
+            transform: translate3d(0, 0, 0);
+            will-change: transform, opacity;
+        }
+
+        .ocean-depth-glow {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translate3d(-50%, 0, 0);
+            width: 600px;
+            height: 300px;
+            background: radial-gradient(ellipse, rgba(30, 64, 175, 0.3) 0%, transparent 70%);
+            filter: blur(70px);
+            pointer-events: none;
+        }
+
+        /* Rising Ocean Air Bubbles */
+        .ocean-bubble {
+            position: absolute;
+            bottom: -40px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 32% 32%, rgba(255, 255, 255, 0.85) 0%, rgba(186, 230, 253, 0.45) 40%, rgba(56, 189, 248, 0.15) 80%, transparent 100%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.6), 0 0 8px rgba(56, 189, 248, 0.3);
+            animation: bubbleRise 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            will-change: transform, opacity;
+        }
+
+        .ocean-bubble.b1 { width: 14px; height: 14px; left: 15%; animation-duration: 6.5s; animation-delay: 0s; }
+        .ocean-bubble.b2 { width: 22px; height: 22px; left: 28%; animation-duration: 7.8s; animation-delay: 1.4s; }
+        .ocean-bubble.b3 { width: 10px; height: 10px; left: 52%; animation-duration: 5.8s; animation-delay: 0.7s; }
+        .ocean-bubble.b4 { width: 18px; height: 18px; left: 70%; animation-duration: 8.2s; animation-delay: 2.1s; }
+        .ocean-bubble.b5 { width: 12px; height: 12px; left: 84%; animation-duration: 6.9s; animation-delay: 3.2s; }
+        .ocean-bubble.b6 { width: 26px; height: 26px; left: 42%; animation-duration: 9.0s; animation-delay: 2.8s; }
+
+        @keyframes bubbleRise {
+            0% {
+                transform: translate3d(0, 0, 0) scale(0.7);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.75;
+            }
+            50% {
+                transform: translate3d(16px, -50vh, 0) scale(0.95);
+            }
+            85% {
+                opacity: 0.75;
+            }
+            100% {
+                transform: translate3d(-12px, -110vh, 0) scale(1.1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes causticSway {
+            0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.18; }
+            100% { transform: translate3d(25px, 0, 0) scale(1.12); opacity: 0.28; }
+        }
+
+        /* Central Seafood Card */
+        .ocean-loader-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(9, 30, 62, 0.85);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 28px;
+            padding: 38px 46px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 20px 50px rgba(2, 10, 24, 0.7), 0 0 45px rgba(2, 132, 199, 0.25);
+            transform: translate3d(0, 0, 0) scale(1);
+            transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+            min-width: 310px;
+            max-width: 440px;
+            box-sizing: border-box;
+            will-change: transform, opacity;
+        }
+
+        .page-switch-loader.loader-hidden .ocean-loader-card {
+            transform: translate3d(0, 8px, 0) scale(0.95);
+            opacity: 0;
+        }
+
+        /* Mascot Floating Container & Expanding Water Ripples */
+        .ocean-mascot-wrap {
+            position: relative;
+            width: 136px;
+            height: 136px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .water-ripple {
+            position: absolute;
+            border: 2px solid rgba(56, 189, 248, 0.55);
+            border-radius: 50%;
+            inset: 8px;
+            pointer-events: none;
+            animation: waterRipple 2.8s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+            will-change: transform, opacity;
+        }
+
+        .water-ripple.r2 { animation-delay: 0.95s; }
+        .water-ripple.r3 { animation-delay: 1.9s; }
+
+        @keyframes waterRipple {
+            0% {
+                transform: scale(0.75);
+                opacity: 0.85;
+                border-color: rgba(125, 211, 252, 0.8);
+            }
+            100% {
+                transform: scale(1.55);
+                opacity: 0;
+                border-color: rgba(2, 132, 199, 0);
+            }
+        }
+
+        .ocean-mascot-badge {
+            position: relative;
+            width: 106px;
+            height: 106px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #ffffff 0%, #f0f9ff 70%, #e0f2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 28px rgba(2, 10, 24, 0.5), 0 0 30px rgba(56, 189, 248, 0.4);
+            padding: 8px;
+            box-sizing: border-box;
+            z-index: 2;
+            animation: oceanBob 2.8s ease-in-out infinite alternate;
+            will-change: transform;
+        }
+
+        .ocean-mascot-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 10px rgba(2, 132, 199, 0.3));
+        }
+
+        @keyframes oceanBob {
+            0% {
+                transform: translate3d(0, -5px, 0) rotate(-2deg);
+            }
+            100% {
+                transform: translate3d(0, 5px, 0) rotate(2deg);
+            }
+        }
+
+        /* Brand Typography */
+        .ocean-brand-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+
+        .ocean-brand-title {
+            font-family: 'Outfit', 'Inter', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 900;
+            letter-spacing: 0.07em;
+            line-height: 1.15;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(2, 10, 24, 0.5);
+        }
+
+        .ocean-brand-sub {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            display: block;
+            opacity: 0.9;
+            color: #93c5fd;
+        }
+
+        .ocean-brand-tagline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #7dd3fc;
+            letter-spacing: 0.12em;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Seafood Status Pill */
+        .ocean-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            border-radius: 999px;
+            padding: 6px 18px;
+            margin-top: 16px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #e0f2fe;
+            letter-spacing: 0.02em;
+        }
+
+        .ocean-live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #38bdf8;
+            box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8);
+            animation: oceanPulse 1.8s infinite;
+            flex-shrink: 0;
+            will-change: transform, box-shadow;
+        }
+
+        @keyframes oceanPulse {
+            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8); transform: scale(0.95); }
+            70% { box-shadow: 0 0 0 9px rgba(56, 189, 248, 0); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); transform: scale(0.95); }
+        }
+
+        /* Ocean Wave Progress Track & Continuous Fill Animation */
+        .ocean-wave-track {
+            width: 220px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.14);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 18px;
+            position: relative;
+        }
+
+        @keyframes oceanFillTrack {
+            0% { width: 0%; }
+            20% { width: 32%; }
+            50% { width: 68%; }
+            80% { width: 92%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes oceanShimmer {
+            0% { transform: translate3d(-100%, 0, 0); }
+            100% { transform: translate3d(200%, 0, 0); }
+        }
+
+        .ocean-wave-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #93c5fd 100%);
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.95);
+            border-radius: 999px;
+            animation: oceanFillTrack 0.88s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ocean-wave-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            animation: oceanShimmer 1.1s infinite ease-in-out;
+            will-change: transform;
+        }
+    </style>
 
     @php
         $currentRouteName = request()->route() ? request()->route()->getName() : '';
@@ -53,7 +372,7 @@
 
     <title>@yield('title', (!empty($activePageSeo?->meta_title) ? $activePageSeo->meta_title : ($settings['site_name'] ?? 'MST Import and Export Sdn. Bhd. | Frozen Food Sourcing & Trading')))</title>
     <meta name="description"
-        content="@yield('meta_description', (!empty($activePageSeo?->meta_description) ? $activePageSeo->meta_description : ($settings['site_description'] ?? 'MST Import and Export Sdn. Bhd. provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.')))">
+        content="@yield('meta_description', (!empty($activePageSeo?->meta_description) ? $activePageSeo->meta_description : ($settings['site_description'] ?? 'MST Import and Export Sdn. Bhd. provides cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.')))">
 
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
@@ -86,7 +405,7 @@
     <meta property="og:title"
         content="@yield('og_title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import and Export Sdn. Bhd. | Frozen Food Sourcing & Trading'))">
     <meta property="og:description"
-        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export Sdn. Bhd. provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.'))">
+        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export Sdn. Bhd. provides cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.'))">
     <meta property="og:image" content="@yield('og_image', $resolvedOgImage)">
     <meta property="og:url" content="{{ $resolvedCanonical }}">
     <meta property="og:type" content="website">
@@ -97,7 +416,7 @@
     <meta name="twitter:title"
         content="@yield('og_title', $activePageSeo?->meta_title ?? ($settings['site_name'] ?? 'MST Import and Export Sdn. Bhd. | Frozen Food Sourcing & Trading'))">
     <meta name="twitter:description"
-        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export Sdn. Bhd. provides frozen food sourcing, wholesale trading and cold-chain distribution for restaurants, retailers and global partners.'))">
+        content="@yield('og_description', $activePageSeo?->meta_description ?? ($settings['site_description'] ?? 'MST Import and Export Sdn. Bhd. provides cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.'))">
     <meta name="twitter:image" content="@yield('og_image', $resolvedOgImage)">
 
     <link rel="stylesheet" href="{{ url('/cdn-assets/css/fonts.css') }}">
@@ -132,7 +451,7 @@
                             '@type' => 'ImageObject',
                             'url' => cdn_img('logo.webp'),
                         ],
-                        'description' => 'MST Import and Export Sdn. Bhd. provides cold-chain sourcing, wholesale supply, customised sourcing and distribution across Malaysia, Singapore and selected regional markets.',
+                        'description' => 'MST Import and Export Sdn. Bhd. provides cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.',
                         'address' => [
                             '@type' => 'PostalAddress',
                             'streetAddress' => 'No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC',
@@ -682,280 +1001,6 @@
             line-height: 1;
         }
 
-        /* ─── Oceanic & Frozen Seafood Cold-Chain Page Switch Loader ─── */
-        .page-switch-loader {
-            position: fixed;
-            inset: 0;
-            z-index: 2147483647 !important;
-            background: radial-gradient(circle at 50% 38%, rgba(10, 36, 74, 0.95) 0%, rgba(4, 18, 38, 0.98) 100%);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            user-select: none;
-        }
-
-        .page-switch-loader.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .ocean-backdrop {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        /* Underwater Caustic Sunbeam */
-        .ocean-caustic-light {
-            position: absolute;
-            top: -10%;
-            left: 20%;
-            width: 60%;
-            height: 55%;
-            background: radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.22) 0%, rgba(14, 116, 144, 0.12) 45%, transparent 75%);
-            filter: blur(50px);
-            animation: causticSway 8s ease-in-out infinite alternate;
-        }
-
-        .ocean-depth-glow {
-            position: absolute;
-            bottom: -80px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            height: 300px;
-            background: radial-gradient(ellipse, rgba(30, 64, 175, 0.3) 0%, transparent 70%);
-            filter: blur(70px);
-        }
-
-        /* Rising Ocean Air Bubbles */
-        .ocean-bubble {
-            position: absolute;
-            bottom: -40px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 32% 32%, rgba(255, 255, 255, 0.85) 0%, rgba(186, 230, 253, 0.45) 40%, rgba(56, 189, 248, 0.15) 80%, transparent 100%);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.6), 0 0 8px rgba(56, 189, 248, 0.3);
-            animation: bubbleRise 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-
-        .ocean-bubble.b1 { width: 14px; height: 14px; left: 15%; animation-duration: 6.5s; animation-delay: 0s; }
-        .ocean-bubble.b2 { width: 22px; height: 22px; left: 28%; animation-duration: 7.8s; animation-delay: 1.4s; }
-        .ocean-bubble.b3 { width: 10px; height: 10px; left: 52%; animation-duration: 5.8s; animation-delay: 0.7s; }
-        .ocean-bubble.b4 { width: 18px; height: 18px; left: 70%; animation-duration: 8.2s; animation-delay: 2.1s; }
-        .ocean-bubble.b5 { width: 12px; height: 12px; left: 84%; animation-duration: 6.9s; animation-delay: 3.2s; }
-        .ocean-bubble.b6 { width: 26px; height: 26px; left: 42%; animation-duration: 9.0s; animation-delay: 2.8s; }
-
-        @keyframes bubbleRise {
-            0% {
-                transform: translateY(0) translateX(0) scale(0.7);
-                opacity: 0;
-            }
-            15% {
-                opacity: 0.75;
-            }
-            50% {
-                transform: translateY(-50vh) translateX(16px) scale(0.95);
-            }
-            85% {
-                opacity: 0.75;
-            }
-            100% {
-                transform: translateY(-110vh) translateX(-12px) scale(1.1);
-                opacity: 0;
-            }
-        }
-
-        @keyframes causticSway {
-            0% { transform: scale(1) translateX(0); opacity: 0.18; }
-            100% { transform: scale(1.12) translateX(25px); opacity: 0.28; }
-        }
-
-        /* Central Seafood Card */
-        .ocean-loader-card {
-            position: relative;
-            z-index: 2;
-            background: rgba(9, 30, 62, 0.72);
-            border: 1px solid rgba(56, 189, 248, 0.25);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-radius: 28px;
-            padding: 38px 46px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 20px 50px rgba(2, 10, 24, 0.65), 0 0 45px rgba(2, 132, 199, 0.25);
-            transform: scale(0.95) translateY(6px);
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            min-width: 310px;
-            max-width: 440px;
-            box-sizing: border-box;
-        }
-
-        .page-switch-loader.active .ocean-loader-card {
-            transform: scale(1) translateY(0);
-        }
-
-        /* Mascot Floating Container & Expanding Water Ripples */
-        .ocean-mascot-wrap {
-            position: relative;
-            width: 136px;
-            height: 136px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-        }
-
-        .water-ripple {
-            position: absolute;
-            border: 2px solid rgba(56, 189, 248, 0.55);
-            border-radius: 50%;
-            inset: 8px;
-            pointer-events: none;
-            animation: waterRipple 2.8s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
-        }
-
-        .water-ripple.r2 { animation-delay: 0.95s; }
-        .water-ripple.r3 { animation-delay: 1.9s; }
-
-        @keyframes waterRipple {
-            0% {
-                transform: scale(0.75);
-                opacity: 0.85;
-                border-color: rgba(125, 211, 252, 0.8);
-            }
-            100% {
-                transform: scale(1.55);
-                opacity: 0;
-                border-color: rgba(2, 132, 199, 0);
-            }
-        }
-
-        .ocean-mascot-badge {
-            position: relative;
-            width: 106px;
-            height: 106px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 35% 30%, #ffffff 0%, #f0f9ff 70%, #e0f2fe 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 28px rgba(2, 10, 24, 0.5), 0 0 30px rgba(56, 189, 248, 0.4);
-            padding: 8px;
-            box-sizing: border-box;
-            z-index: 2;
-            animation: oceanBob 2.8s ease-in-out infinite alternate;
-        }
-
-        .ocean-mascot-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 4px 10px rgba(2, 132, 199, 0.3));
-        }
-
-        @keyframes oceanBob {
-            0% {
-                transform: translateY(-5px) rotate(-2deg);
-            }
-            100% {
-                transform: translateY(5px) rotate(2deg);
-            }
-        }
-
-        /* Brand Typography */
-        .ocean-brand-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 2px;
-        }
-
-        .ocean-brand-title {
-            font-family: 'Outfit', 'Inter', sans-serif;
-            font-size: 1.55rem;
-            font-weight: 900;
-            letter-spacing: 0.07em;
-            line-height: 1.15;
-            color: #ffffff;
-            text-shadow: 0 2px 10px rgba(2, 10, 24, 0.5);
-        }
-
-        .ocean-brand-tagline {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #7dd3fc;
-            letter-spacing: 0.12em;
-            margin-top: 4px;
-            text-transform: uppercase;
-        }
-
-        /* Seafood Status Pill */
-        .ocean-status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.28);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 999px;
-            padding: 6px 18px;
-            margin-top: 16px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: #e0f2fe;
-            letter-spacing: 0.02em;
-        }
-
-        .ocean-live-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #38bdf8;
-            box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8);
-            animation: oceanPulse 1.8s infinite;
-            flex-shrink: 0;
-        }
-
-        @keyframes oceanPulse {
-            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8); }
-            70% { box-shadow: 0 0 0 9px rgba(56, 189, 248, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
-        }
-
-        /* Ocean Wave Progress Track & Fill */
-        .ocean-wave-track {
-            width: 210px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 999px;
-            overflow: hidden;
-            margin-top: 18px;
-            position: relative;
-        }
-
-        .ocean-wave-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #7dd3fc 100%);
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.85);
-            border-radius: 999px;
-            transition: width 0.35s ease;
-        }
-
         .main-content {
             transition: opacity 0.24s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -967,8 +1012,8 @@
 </head>
 
 <body>
-    <!-- ─── Oceanic Frozen Seafood & Cold-Chain Page Switch Loader ─── -->
-    <div id="pageSwitchLoader" class="page-switch-loader" aria-hidden="true">
+    <!-- ─── Oceanic Frozen Seafood & Cold-Chain Page Switch Loader (1s Display) ─── -->
+    <div id="pageSwitchLoader" class="page-switch-loader" aria-hidden="false">
         <div class="ocean-backdrop">
             <div class="ocean-caustic-light"></div>
             <div class="ocean-depth-glow"></div>
@@ -1006,7 +1051,7 @@
             {{-- Fresh Catch / Loading Status --}}
             <div class="ocean-status-pill">
                 <span class="ocean-live-dot"></span>
-                <span id="loaderStatusText" class="ocean-status-text">Updating...</span>
+                <span id="loaderStatusText" class="ocean-status-text">Loading fresh catch...</span>
             </div>
 
             {{-- Wave Progress Line --}}
@@ -1270,13 +1315,22 @@
                             <button type="button" class="currency-option {{ $currentCurrency === $code ? 'active' : '' }}" onclick="selectCurrency('{{ $code }}')" data-code="{{ $code }}">
                                 <span class="currency-option-pill">{{ $cur['label'] }}</span>
                                 <div class="currency-option-info">
-                                    <span class="currency-option-name">{{ $cur['flag'] ?? '' }} {{ $cur['label'] }} — {{ $cur['name'] }}</span>
+                                    <span class="currency-option-name">
+                                        {{ $cur['flag'] ?? '' }} {{ $cur['label'] }} — {{ $cur['name'] }}
+                                    </span>
+                                    <span class="currency-option-rate" style="font-size:0.70rem;color:#64748b;">
+                                        @if($code === 'MYR')
+                                            @t('nav.base_currency_badge', 'Base Settlement Currency')
+                                        @else
+                                            @t('nav.ref_display_badge', 'Reference Display Only')
+                                        @endif
+                                    </span>
                                 </div>
                                 <span class="currency-option-check" style="{{ $currentCurrency === $code ? '' : 'display:none' }}">✓</span>
                             </button>
                         @endforeach
                         <div class="currency-dropdown-note" style="padding:10px 12px;margin-top:6px;background:#f8fafc;border-top:1px solid #e2e8f0;font-size:0.73rem;color:#64748b;line-height:1.45;text-align:left;border-radius:0 0 10px 10px">
-                            @t('nav.currency_indicative_note', 'ℹ️ Currency conversion is for reference only. The final amount may vary based on the applicable exchange rate at the time of payment.')
+                            @t('nav.currency_indicative_note', 'ℹ️ All orders are settled in RM (Malaysian Ringgit). SGD and USD amounts are reference display only.')
                         </div>
                     </div>
                 </div>
@@ -1365,8 +1419,11 @@
                             <span class="logo-sub" style="font-size:0.75rem;letter-spacing:0.02em;color:#93c5fd;line-height:1.2;font-weight:600;display:block">MST Import and Export Sdn. Bhd.</span>
                         </div>
                     </a>
-                    <p class="footer-desc">
-                        @t('footer.tagline', $settings['store_tagline'] ?? 'Flow with Integrity, Grow with Strength')
+                    <div class="footer-slogan" style="font-size:0.9rem;font-weight:700;color:#38bdf8;letter-spacing:0.01em;margin-top:10px;margin-bottom:6px">
+                        Flow with Integrity, Grow with Strength.
+                    </div>
+                    <p class="footer-desc" style="font-size:0.84rem;color:#94a3b8;line-height:1.55;margin:0">
+                        @t('footer.brand_desc', 'Cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.')
                     </p>
                     @php
                         $validSocials = [];
@@ -1443,7 +1500,7 @@
                         @empty
                             <li><a href="{{ route('contact') }}">@t('footer.contact_support', 'Customer Support')</a></li>
                         @endforelse
-                        <li><a href="#" onclick="event.preventDefault(); if (typeof window.openCookieSettings === 'function') window.openCookieSettings();">@t('cookie.cookie_settings', 'Cookie Settings')</a></li>
+                        <li><a href="#cookie-settings" class="footer-cookie-link" data-cookie-settings="true" onclick="event.preventDefault(); if (typeof window.openCookieSettings === 'function') window.openCookieSettings();">@t('cookie.cookie_settings', 'Cookie Settings')</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
@@ -1748,39 +1805,43 @@
         }
 
         let isLanguageSwitching = false;
+        let isLoaderActive = true;
+        let loaderSafetyTimer = null;
 
-        function showPageLoader(message = 'Loading...') {
+        function showPageLoader(message = 'Loading fresh catch...') {
+            clearTimeout(loaderSafetyTimer);
             const loader = document.getElementById('pageSwitchLoader');
             const statusText = document.getElementById('loaderStatusText');
             const progressBar = document.getElementById('loaderProgressBar');
             if (statusText && message) statusText.textContent = message;
-            if (progressBar) progressBar.style.width = '20%';
             if (loader) {
-                loader.classList.add('active');
+                loader.classList.remove('loader-hidden');
                 loader.setAttribute('aria-hidden', 'false');
             }
             if (progressBar) {
-                setTimeout(() => {
-                    if (loader && loader.classList.contains('active')) {
-                        progressBar.style.width = '75%';
-                    }
-                }, 100);
+                progressBar.style.animation = 'none';
+                progressBar.offsetHeight; /* trigger reflow */
+                progressBar.style.animation = 'oceanFillTrack 0.88s cubic-bezier(0.2, 0.8, 0.2, 1) forwards';
             }
+            isLoaderActive = true;
+            // Safety auto dismiss after 6s in case navigation is cancelled
+            loaderSafetyTimer = setTimeout(() => {
+                if (isLoaderActive) hidePageLoader();
+            }, 6000);
         }
 
         function hidePageLoader() {
+            clearTimeout(loaderSafetyTimer);
             const loader = document.getElementById('pageSwitchLoader');
             const progressBar = document.getElementById('loaderProgressBar');
-            if (progressBar) progressBar.style.width = '100%';
-            setTimeout(() => {
-                if (loader) {
-                    loader.classList.remove('active');
-                    loader.setAttribute('aria-hidden', 'true');
-                }
-                if (progressBar) {
-                    setTimeout(() => { progressBar.style.width = '0%'; }, 250);
-                }
-            }, 260);
+            if (progressBar) {
+                progressBar.style.width = '100%';
+            }
+            if (loader) {
+                loader.classList.add('loader-hidden');
+                loader.setAttribute('aria-hidden', 'true');
+            }
+            isLoaderActive = false;
         }
 
         function updatePageLocaleHrefs(newLocale) {
@@ -1853,12 +1914,11 @@
             const startTime = Date.now();
 
             const switchMsgs = {
-                zh: '🐟 正在切换语言至 简体中文 · 镁嘉水产冷链',
-                bm: '🐟 Menukar bahasa ke Bahasa Melayu · Makanan Laut Beku MST',
-                en: '🐟 Switching language to English · MST Frozen Seafood'
+                zh: '🐟 正在切换语言至 简体中文 · 镁嘉国际贸易有限公司',
+                bm: '🐟 Menukar bahasa ke Bahasa Melayu · MST Import and Export Sdn. Bhd.',
+                en: '🐟 Switching language to English · MST Import and Export Sdn. Bhd.'
             };
             showPageLoader(switchMsgs[targetCode] || `Switching to ${targetLabel}...`);
-
             const mainContent = document.querySelector('.main-content');
             if (mainContent) {
                 mainContent.classList.add('lang-transitioning');
@@ -2036,9 +2096,9 @@
                 window.location.href = switchUrl || ('/language/' + encodeURIComponent(targetCode));
                 return;
             } finally {
-                // Ensure the high-quality loader displays for at least 420ms for a smooth, cinematic feel
-                const elapsed = Date.now() - startTime;
-                const remaining = Math.max(0, 420 - elapsed);
+                // Ensure the high-quality loader displays for at least 1000ms (1s) for a smooth, cinematic feel
+                const elapsed = performance.now() - startTime;
+                const remaining = Math.max(0, 1000 - elapsed);
                 setTimeout(() => {
                     hidePageLoader();
                     if (mainContent) {
@@ -2136,19 +2196,25 @@
             const link = e.target.closest('a');
             if (!link || !link.href) return;
             // Ignore new tabs, anchors, javascript, mailto, tel
-            if (link.target === '_blank' || link.hasAttribute('download') || link.href.includes('#') || link.href.startsWith('javascript:') || link.href.startsWith('mailto:') || link.href.startsWith('tel:')) return;
+            if (link.target === '_blank' || link.hasAttribute('download') || link.href.startsWith('javascript:') || link.href.startsWith('mailto:') || link.href.startsWith('tel:')) return;
             // Ignore language and currency dropdown items which have their own handlers
             if (link.closest('#languageDropdown') || link.closest('#currencyDropdown')) return;
             // Ignore modal triggers, accordions, or buttons disguised as links
             if (link.hasAttribute('onclick') || link.classList.contains('mobile-toggle')) return;
             if (e.ctrlKey || e.metaKey || e.shiftKey || e.defaultPrevented) return;
 
-            // If same-origin link, display attractive page loader
-            if (link.origin === window.location.origin) {
-                const text = (link.textContent || '').trim();
-                const hint = text && text.length < 24 ? `Loading ${text}...` : 'Loading page...';
-                showPageLoader(hint);
-            }
+            try {
+                const url = new URL(link.href, window.location.origin);
+                if (url.origin === window.location.origin) {
+                    // Ignore same-page hash navigation
+                    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) {
+                        return;
+                    }
+                    const text = (link.textContent || '').trim().replace(/\s+/g, ' ');
+                    const hint = text && text.length < 24 ? `Loading ${text}...` : 'Loading fresh catch...';
+                    showPageLoader(hint);
+                }
+            } catch (err) {}
         });
 
         // Trigger page loader on standard non-AJAX form submits
@@ -2169,19 +2235,31 @@
             showPageLoader('Processing & loading data...');
         });
 
-        // Ensure loader is smoothly hidden once all page resources (DOM, images, stylesheets) are completely loaded
-        if (document.readyState === 'complete') {
-            hidePageLoader();
-        } else {
-            window.addEventListener('load', () => {
-                setTimeout(hidePageLoader, 150);
-            });
+        // Ensure loader displays smoothly for exactly 1 second (1000ms) on all page loads
+        function schedulePageLoaderFinish() {
+            const startTime = window.__pageLoadStartTime || performance.now();
+            const elapsed = performance.now() - startTime;
+            const remaining = Math.max(0, 1000 - elapsed);
+            setTimeout(() => {
+                hidePageLoader();
+            }, remaining);
         }
 
-        // Hide loader when navigating via browser back/forward cache
+        if (document.readyState === 'complete') {
+            schedulePageLoaderFinish();
+        } else {
+            window.addEventListener('load', schedulePageLoaderFinish);
+        }
+
+        // Handle browser back/forward history cache
         window.addEventListener('pageshow', (e) => {
-            hidePageLoader();
+            if (e.persisted) {
+                hidePageLoader();
+            } else {
+                schedulePageLoaderFinish();
+            }
         });
+
         document.addEventListener('click', (e) => {
             const menu = document.getElementById('userMenu');
             if (menu && !menu.contains(e.target)) {

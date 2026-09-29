@@ -45,7 +45,7 @@
                 @else
                     <div class="walkin-img-placeholder" style="font-size:5rem">🐟</div>
                 @endif
-                <span class="badge-walkin-main-tag">🏬 @t('walkin.counter_2_pickup', 'Counter 2 Self-Collection')</span>
+                <span class="badge-walkin-main-tag">🏬 @t('walkin.counter_2_pickup', 'MST Counter 2 Self-Collection')</span>
             </div>
 
             @if(!empty($product->images) && is_array($product->images))
@@ -107,7 +107,7 @@
                         📍 <strong>MST Kaunter 2, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia</strong>
                     </div>
                     <div style="color:#1d4ed8;margin-bottom:6px">
-                        @t('walkin.counter_desc', 'Orders are prepared for Counter 2 collection after payment confirmation. Please present your order reference or payment confirmation when collecting your order.')
+                        @t('walkin.counter_desc', 'Orders are prepared for MST Counter 2 collection after payment confirmation. Please present your order reference or payment confirmation when collecting your order.')
                     </div>
                     <a href="https://maps.google.com/?q={{ urlencode('MST Counter 2, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia') }}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:4px;font-size:0.78rem;font-weight:700;color:#2563eb;text-decoration:underline">
                         <span>📍 @t('walkin.get_directions', 'Get Directions')</span>

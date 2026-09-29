@@ -28,26 +28,26 @@ class PageSeo extends Model
         return [
             'home' => [
                 'name'        => 'Home',
-                'title'       => 'MST Import and Export Sdn. Bhd. | Premium Fresh & Frozen Seafood Exporter',
-                'description' => 'MST Import and Export Sdn. Bhd. is a leading supplier and distributor of premium frozen and fresh seafood, catering to retail, wholesale, and bulk trading clients in Malaysia and Singapore.',
-                'keywords'    => 'fresh seafood, frozen salmon, king prawns, lobsters, seafood export, b2b seafood',
+                'title'       => 'MST Import and Export Sdn. Bhd. | Cold-Chain Sourcing & Wholesale Supply',
+                'description' => 'MST Import and Export Sdn. Bhd. provides cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.',
+                'keywords'    => 'frozen seafood, cold chain, seafood wholesale, meat supply, food ingredients, custom sourcing, Malaysia, Singapore',
             ],
             'about' => [
                 'name'        => 'About Us',
-                'title'       => 'About MST Import and Export Sdn. Bhd. | Global Seafood Supply & Sustainability',
-                'description' => 'Learn about MST Import and Export Sdn. Bhd., our commitment to sustainable ocean harvesting, international cold-chain quality assurance, and global seafood supply.',
-                'keywords'    => 'about MST Import and Export Sdn. Bhd., sustainable seafood, cold chain logistics, seafood wholesale',
+                'title'       => 'About Us | MST Import and Export Sdn. Bhd.',
+                'description' => 'Learn about MST Import and Export Sdn. Bhd. Cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.',
+                'keywords'    => 'about MST Import and Export Sdn. Bhd., cold chain logistics, seafood wholesale, frozen food sourcing',
             ],
             'shop' => [
                 'name'        => 'Shop / Products & Sourcing',
                 'title'       => 'Products & Sourcing | MST Import and Export Sdn. Bhd.',
-                'description' => 'Explore selected frozen seafood, meat, food ingredients and specialty products from MST. Customised sourcing available across regional and international markets.',
+                'description' => 'Explore selected frozen seafood, meat, food ingredients and specialty products from MST. Customised sourcing for customers in Malaysia and Singapore.',
                 'keywords'    => 'products and sourcing, frozen food supplier, frozen seafood, meat wholesale, food ingredients, custom sourcing',
             ],
             'contact' => [
                 'name'        => 'Contact Us',
-                'title'       => 'Contact Us & Global Enquiries | MST Import and Export Sdn. Bhd.',
-                'description' => 'Get in touch with the MST Import and Export Sdn. Bhd. team for retail questions, commercial wholesale partnerships, cold-storage logistics, or customer support.',
+                'title'       => 'Contact Us | MST Import and Export Sdn. Bhd.',
+                'description' => 'Get in touch with the MST Import and Export Sdn. Bhd. team for retail questions, commercial wholesale partnerships, cold-storage logistics, or customer support in Malaysia and Singapore.',
                 'keywords'    => 'contact seafood supplier, wholesale enquiry, seafood customer service',
             ],
             'quotations' => [

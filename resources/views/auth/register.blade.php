@@ -44,8 +44,7 @@
         
         <!-- Header -->
         <div class="register-header text-center">
-            <h2 class="register-title">@t('auth.register_header_title', 'Create Your MST Account')</h2>
-            <p class="register-subtitle">@t('auth.register_header_instruction', 'Select the account type that matches your purchasing requirements.')</p>
+            <p class="register-subtitle" style="margin-top:0">@t('auth.register_header_instruction', 'Select the account type that matches your purchasing requirements.')</p>
         </div>
 
         <!-- ════════════════════════════════════════════════════════════════════ -->
@@ -201,9 +200,12 @@
                 <!-- ════════════════════════════════════════════════════════════════════ -->
                 <!-- 3. COMPANY INFORMATION (WHOLESALE & TRADING ONLY)                   -->
                 <!-- ════════════════════════════════════════════════════════════════════ -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <!-- 1. COMPANY / BUSINESS INFORMATION (WHOLESALE & TRADING ONLY)         -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
                 <div id="companySection" style="display: {{ in_array($selectedGroup, ['wholesale', 'trading']) ? 'block' : 'none' }}">
                     <div class="section-divider">
-                        <span>@t('auth.section_company_info', 'Company Information')</span>
+                        <span>@t('auth.section_company_info', '1. Company / Business Information')</span>
                     </div>
 
                     <div class="form-grid-2">
@@ -218,34 +220,34 @@
 
                         <div class="form-group">
                             <label class="form-label" for="company_reg_no">
-                                <span>@t('auth.field_company_ssm', 'Company Registration No. / SSM No.')</span>
-                                <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
+                                <span>@t('auth.field_company_ssm_required', 'Company Registration No. / SSM / UEN / Other') <span class="required" style="color:#ef4444">*</span></span>
                             </label>
                             <input type="text" name="company_reg_no" id="company_reg_no" class="form-control {{ $errors->has('company_reg_no') ? 'is-invalid' : '' }}"
-                                   value="{{ old('company_reg_no') }}" placeholder="202301012345 (1234567-X)">
+                                   value="{{ old('company_reg_no') }}" placeholder="202301012345 (1234567-X) / UEN / Reg No">
                             @error('company_reg_no')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
                     </div>
 
-                    <!-- Business Nature / Type (Wholesale: 8 options vs Trading: 10 options) -->
+                    <!-- Business Nature / Type (Wholesale: 9 options vs Trading: 10 options) -->
                     <div class="form-group">
                         <label class="form-label" for="business_type">
                             @t('auth.field_business_nature', 'Business Nature / Type') <span class="required" style="color:#ef4444">*</span>
                         </label>
                         
-                        <!-- Wholesale Business Types (8 options) -->
+                        <!-- Wholesale Business Types (9 options) -->
                         <div id="wholesaleBtypeWrapper" style="display: {{ $selectedGroup === 'wholesale' ? 'block' : 'none' }}">
                             <div class="custom-select-wrapper">
                                 <select name="business_type_wholesale" id="business_type_wholesale" class="form-control custom-select" onchange="syncBusinessType(this.value)">
                                     <option value="">@t('auth.select_business_type', 'Select business type...')</option>
-                                    <option value="Restaurant & Catering" {{ old('business_type') == 'Restaurant & Catering' ? 'selected' : '' }}>@t('auth.btype_restaurant', 'Restaurant & Catering')</option>
-                                    <option value="Seafood Retailer" {{ old('business_type') == 'Seafood Retailer' ? 'selected' : '' }}>@t('auth.btype_seafood_retailer', 'Seafood Retailer')</option>
-                                    <option value="Food Retailer" {{ old('business_type') == 'Food Retailer' ? 'selected' : '' }}>@t('auth.btype_food_retailer', 'Food Retailer')</option>
-                                    <option value="Food Manufacturer / Central Kitchen" {{ old('business_type') == 'Food Manufacturer / Central Kitchen' ? 'selected' : '' }}>@t('auth.btype_manufacturer', 'Food Manufacturer / Central Kitchen')</option>
+                                    <option value="Restoran & Katering" {{ old('business_type') == 'Restoran & Katering' || old('business_type') == 'Restaurant & Catering' ? 'selected' : '' }}>@t('auth.btype_restaurant', 'Restoran & Katering')</option>
+                                    <option value="Kafe / Bakeri" {{ old('business_type') == 'Kafe / Bakeri' || old('business_type') == 'Cafe / Bakery' ? 'selected' : '' }}>@t('auth.btype_cafe_bakery', 'Kafe / Bakeri')</option>
                                     <option value="Hotel / Resort" {{ old('business_type') == 'Hotel / Resort' ? 'selected' : '' }}>@t('auth.btype_hotel', 'Hotel / Resort')</option>
-                                    <option value="Food Wholesaler / Distributor" {{ old('business_type') == 'Food Wholesaler / Distributor' ? 'selected' : '' }}>@t('auth.btype_distributor', 'Food Wholesaler / Distributor')</option>
-                                    <option value="Food Trader" {{ old('business_type') == 'Food Trader' ? 'selected' : '' }}>@t('auth.btype_food_trader', 'Food Trader')</option>
-                                    <option value="Other Business" {{ old('business_type') == 'Other Business' ? 'selected' : '' }}>@t('auth.btype_other_business', 'Other Business')</option>
+                                    <option value="Pasar Raya / Kedai Runcit" {{ old('business_type') == 'Pasar Raya / Kedai Runcit' || old('business_type') == 'Supermarket / Grocery Store' ? 'selected' : '' }}>@t('auth.btype_supermarket_grocery', 'Pasar Raya / Kedai Runcit')</option>
+                                    <option value="Peruncit Makanan Laut" {{ old('business_type') == 'Peruncit Makanan Laut' || old('business_type') == 'Seafood Retailer' ? 'selected' : '' }}>@t('auth.btype_seafood_retailer', 'Peruncit Makanan Laut')</option>
+                                    <option value="Pengilang Makanan / Dapur Pusat" {{ old('business_type') == 'Pengilang Makanan / Dapur Pusat' || old('business_type') == 'Food Manufacturer / Central Kitchen' ? 'selected' : '' }}>@t('auth.btype_manufacturer', 'Pengilang Makanan / Dapur Pusat')</option>
+                                    <option value="Pemborong / Pengedar Makanan" {{ old('business_type') == 'Pemborong / Pengedar Makanan' || old('business_type') == 'Food Wholesaler / Distributor' ? 'selected' : '' }}>@t('auth.btype_distributor', 'Pemborong / Pengedar Makanan')</option>
+                                    <option value="Pedagang Makanan" {{ old('business_type') == 'Pedagang Makanan' || old('business_type') == 'Food Trader' ? 'selected' : '' }}>@t('auth.btype_food_trader', 'Pedagang Makanan')</option>
+                                    <option value="Lain-lain Perniagaan" {{ old('business_type') == 'Lain-lain Perniagaan' || old('business_type') == 'Other Business' ? 'selected' : '' }}>@t('auth.btype_other_business', 'Lain-lain Perniagaan')</option>
                                 </select>
                             </div>
                         </div>
@@ -276,11 +278,67 @@
                 </div>
 
                 <!-- ════════════════════════════════════════════════════════════════════ -->
-                <!-- 4. TRADING SPECIFIC FIELDS (TRADING ONLY)                           -->
+                <!-- 2. BUSINESS ADDRESS (WHOLESALE & TRADING ONLY)                      -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <div id="businessAddressSection" style="display: {{ in_array($selectedGroup, ['wholesale', 'trading']) ? 'block' : 'none' }}">
+                    <div class="section-divider">
+                        <span>@t('auth.section_business_address', '2. Business Address')</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="business_address">
+                            <span>@t('auth.field_business_address', 'Business Address') <span class="required" style="color:#ef4444">*</span></span>
+                        </label>
+                        <input type="text" name="business_address" id="business_address" class="form-control {{ $errors->has('business_address') ? 'is-invalid' : '' }}"
+                               value="{{ old('business_address') }}" placeholder="{{ __t('auth.placeholder_business_address', 'Unit / Building / Street address of registered or operating business') }}">
+                        @error('business_address')<div class="form-error">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="register-address-grid">
+                        <div class="form-group mb-0 grid-state-col">
+                            <label class="form-label" for="business_state">
+                                <span>@t('auth.field_state', 'State') <span class="required" style="color:#ef4444">*</span></span>
+                            </label>
+                            <input type="text" name="business_state" id="business_state" class="form-control {{ $errors->has('business_state') ? 'is-invalid' : '' }}"
+                                   value="{{ old('business_state') }}" placeholder="{{ __t('auth.placeholder_state', 'e.g. Johor') }}">
+                            @error('business_state')<div class="form-error">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="form-group mb-0 grid-city-col">
+                            <label class="form-label" for="business_city">
+                                <span>@t('auth.field_city', 'City') <span class="required" style="color:#ef4444">*</span></span>
+                            </label>
+                            <input type="text" name="business_city" id="business_city" class="form-control {{ $errors->has('business_city') ? 'is-invalid' : '' }}"
+                                   value="{{ old('business_city') }}" placeholder="{{ __t('auth.placeholder_city', 'e.g. Iskandar Puteri') }}">
+                            @error('business_city')<div class="form-error">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="form-group mb-0 grid-postcode-col">
+                            <label class="form-label" for="business_postcode">
+                                <span>@t('auth.field_postcode', 'Postcode') <span class="required" style="color:#ef4444">*</span></span>
+                            </label>
+                            <input type="text" name="business_postcode" id="business_postcode" class="form-control {{ $errors->has('business_postcode') ? 'is-invalid' : '' }}"
+                                   value="{{ old('business_postcode') }}" placeholder="79200" maxlength="10">
+                            @error('business_postcode')<div class="form-error">{{ $message }}</div>@enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top:12px">
+                        <label class="form-label" for="business_country">
+                            <span>@t('auth.field_business_country', 'Country (where applicable)')</span>
+                            <span style="font-weight:400;color:#64748b;font-size:0.75rem">(@t('common.optional', 'Optional'))</span>
+                        </label>
+                        <input type="text" name="business_country" id="business_country" class="form-control {{ $errors->has('business_country') ? 'is-invalid' : '' }}"
+                               value="{{ old('business_country') }}" placeholder="{{ __t('auth.placeholder_business_country', 'e.g. Malaysia, Singapore, China, etc.') }}">
+                    </div>
+                </div>
+
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <!-- 3. TARGET MARKET & 4. FINAL DESTINATION (TRADING ONLY)              -->
                 <!-- ════════════════════════════════════════════════════════════════════ -->
                 <div id="tradingMarketSection" style="display: {{ $selectedGroup === 'trading' ? 'block' : 'none' }}">
                     <div class="section-divider">
-                        <span>@t('auth.section_trading_market_dest', 'Trading Market & Destination')</span>
+                        <span>@t('auth.section_target_market', '3. Target Market & Destination')</span>
                     </div>
 
                     <div class="form-grid-2">
@@ -295,14 +353,22 @@
 
                         <div class="form-group">
                             <label class="form-label" for="destination_country">
-                                @t('auth.field_delivery_destination', 'Delivery / Destination Location')
+                                @t('auth.field_delivery_destination', 'Delivery / Final Destination Location')
                             </label>
                             <input type="text" name="destination_country" id="destination_country" class="form-control"
                                    value="{{ old('destination_country', old('destination_market')) }}" placeholder="{{ __t('auth.placeholder_delivery_destination', 'e.g. Johor Bahru / Kuala Lumpur / Singapore / Port Klang') }}">
                         </div>
                     </div>
+                </div>
 
-                    <!-- Trading Requirements (6 options) -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <!-- 5. TRADING REQUIREMENTS (TRADING ONLY)                              -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <div id="tradingRequirementsSection" style="display: {{ $selectedGroup === 'trading' ? 'block' : 'none' }}">
+                    <div class="section-divider">
+                        <span>@t('auth.section_trading_requirements', '5. Trading Requirements')</span>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label">
                             <span>@t('auth.field_trading_requirements', 'Trading Requirements') <span class="required" style="color:#ef4444">*</span></span>
@@ -327,37 +393,20 @@
                             @endforeach
                         </div>
                     </div>
-
-                    <!-- Product Specifications / Requirements (Optional) -->
-                    <div class="form-group">
-                        <label class="form-label" for="import_requirements">
-                            @t('auth.field_product_specifications', 'Product Specifications / Requirements (Optional)')
-                        </label>
-                        <textarea name="import_requirements" id="import_requirements" class="form-control" rows="2" style="height:auto;padding:10px 14px"
-                                  placeholder="{{ __t('auth.placeholder_product_specifications', 'Specify product type, size/grade, packaging, brand, origin, quantity or other specifications') }}">{{ old('import_requirements') }}</textarea>
-                    </div>
-
-                    <!-- Additional Message (Optional) -->
-                    <div class="form-group">
-                        <label class="form-label" for="additional_message">
-                            @t('auth.field_additional_message', 'Additional Requirements / Message (Optional)')
-                        </label>
-                        <textarea name="additional_message" id="additional_message" class="form-control" rows="2" style="height:auto;padding:10px 14px"
-                                  placeholder="{{ __t('auth.placeholder_additional_message', 'Any specific commercial terms, schedules, or special requests') }}">{{ old('additional_message') }}</textarea>
-                    </div>
                 </div>
 
                 <!-- ════════════════════════════════════════════════════════════════════ -->
-                <!-- 5. PRODUCT INTEREST & VOLUME (WHOLESALE & TRADING ONLY)             -->
+                <!-- 6. PRODUCT REQUIREMENTS (WHOLESALE & TRADING ONLY — SINGLE SECTION)  -->
                 <!-- ════════════════════════════════════════════════════════════════════ -->
                 <div id="productInterestSection" style="display: {{ in_array($selectedGroup, ['wholesale', 'trading']) ? 'block' : 'none' }}">
                     <div class="section-divider">
-                        <span>@t('auth.field_product_interest', 'Product / Category Interest')</span>
+                        <span>@t('auth.section_product_requirements', '6. Product Requirements')</span>
                     </div>
 
+                    <!-- Single Product / Category Interest Selection -->
                     <div class="form-group">
                         <label class="form-label">
-                            <span>@t('auth.field_product_interest', 'Product / Category Interest')</span>
+                            <span>@t('auth.field_product_interest', 'Product / Category Interest') <span class="required" style="color:#ef4444">*</span></span>
                         </label>
                         <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:8px;margin-top:6px">
                             @php
@@ -381,15 +430,43 @@
                                 </label>
                             @endforeach
                         </div>
+                        @error('product_interest')<div class="form-error" style="margin-top:4px">{{ $message }}</div>@enderror
                     </div>
 
-                    <!-- Estimated Order Volume -->
+                    <!-- Product Specifications / Requirements (Optional) -->
+                    <div class="form-group">
+                        <label class="form-label" for="import_requirements">
+                            @t('auth.field_product_specifications', 'Product Specifications / Requirements (Optional)')
+                        </label>
+                        <textarea name="import_requirements" id="import_requirements" class="form-control" rows="2" style="height:auto;padding:10px 14px"
+                                  placeholder="{{ __t('auth.placeholder_product_specifications', 'Specify product type, size/grade, packaging, brand, origin, quantity or other specifications') }}">{{ old('import_requirements') }}</textarea>
+                    </div>
+
+                    <!-- Estimated Order Volume (Optional) -->
                     <div class="form-group">
                         <label class="form-label" for="estimated_order_volume">
                             @t('auth.field_est_volume', 'Estimated Order Volume (Optional)')
                         </label>
                         <input type="text" name="estimated_order_volume" id="estimated_order_volume" class="form-control"
                                value="{{ old('estimated_order_volume') }}" placeholder="{{ __t('auth.placeholder_est_volume', 'e.g. 500kg / month, 20 cartons / week') }}">
+                    </div>
+                </div>
+
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <!-- 7. ADDITIONAL REQUIREMENTS & HISTORY (WHOLESALE & TRADING ONLY)     -->
+                <!-- ════════════════════════════════════════════════════════════════════ -->
+                <div id="additionalRequirementsSection" style="display: {{ in_array($selectedGroup, ['wholesale', 'trading']) ? 'block' : 'none' }}">
+                    <div class="section-divider">
+                        <span>@t('auth.section_additional_requirements', '7. Additional Requirements')</span>
+                    </div>
+
+                    <!-- Additional Message (Optional) -->
+                    <div class="form-group">
+                        <label class="form-label" for="additional_message">
+                            @t('auth.field_additional_message', 'Additional Requirements / Message (Optional)')
+                        </label>
+                        <textarea name="additional_message" id="additional_message" class="form-control" rows="2" style="height:auto;padding:10px 14px"
+                                  placeholder="{{ __t('auth.placeholder_additional_message', 'Any specific commercial terms, schedules, or special requests') }}">{{ old('additional_message') }}</textarea>
                     </div>
 
                     <!-- Existing Customer Check -->
@@ -417,10 +494,18 @@
                 </div>
 
                 <!-- ════════════════════════════════════════════════════════════════════ -->
-                <!-- 6. DELIVERY / COLLECTION INFORMATION (ALL THREE ACCOUNT TYPES)      -->
+                <!-- DELIVERY / COLLECTION INFORMATION (ALL THREE ACCOUNT TYPES)          -->
                 <!-- ════════════════════════════════════════════════════════════════════ -->
                 <div class="section-divider">
                     <span>@t('auth.section_delivery', 'Delivery / Collection Information')</span>
+                </div>
+
+                <!-- Same as Business Address Toggle for Wholesale / Trading -->
+                <div id="sameAddressToggle" style="display: {{ in_array($selectedGroup, ['wholesale', 'trading']) ? 'block' : 'none' }}; margin-bottom:12px; padding:10px 14px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0">
+                    <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:0.85rem;color:#334155;margin:0">
+                        <input type="checkbox" id="same_as_business" onchange="copyBusinessToDelivery(this.checked)" style="accent-color:#2563eb;width:16px;height:16px">
+                        <span>@t('auth.same_as_business_address', 'Delivery address is the same as Business Address')</span>
+                    </label>
                 </div>
 
                 <div class="form-group">
@@ -471,7 +556,7 @@
                     <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:4px 0">
                         <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.86rem;color:#334155">
                             <input type="radio" name="preferred_fulfilment" value="walkin" {{ old('preferred_fulfilment', 'walkin') == 'walkin' ? 'checked' : '' }} style="accent-color:#2563eb">
-                            <span>@t('auth.fulfilment_walkin', '🏬 Walk-in / Counter Collection')</span>
+                            <span>@t('auth.fulfilment_walkin', '🏬 Walk-in / MST Kaunter 2 Collection')</span>
                         </label>
                         <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.86rem;color:#334155">
                             <input type="radio" name="preferred_fulfilment" value="delivery" {{ old('preferred_fulfilment') == 'delivery' ? 'checked' : '' }} style="accent-color:#2563eb">
@@ -490,41 +575,41 @@
                 
                 <!-- Wholesale Notice Box -->
                 <div id="wholesaleNoticeBox" style="display: {{ $selectedGroup === 'wholesale' ? 'block' : 'none' }}; margin-top:14px;font-size:0.80rem;color:#065f46;line-height:1.45;padding:12px 14px;background:#ecfdf5;border-radius:10px;border-left:3px solid #10b981">
-                    @t('auth.wholesale_pricing_disclaimer', 'Wholesale pricing and commercial terms are subject to business verification, product availability, order volume and applicable MST requirements.')
+                    @t('auth.wholesale_pricing_disclaimer', 'Wholesale pricing and commercial terms are subject to MST review and approval, product availability, order volume and applicable MST requirements.')
                 </div>
 
-                <!-- Trading Notice Box -->
+                <!-- Trading Notice Box (Section 17) -->
                 <div id="tradingNoticeBox" style="display: {{ $selectedGroup === 'trading' ? 'block' : 'none' }}; margin-top:14px;font-size:0.80rem;color:#1e40af;line-height:1.45;padding:12px 14px;background:#eff6ff;border-radius:10px;border-left:3px solid #2563eb">
-                    @t('auth.trading_pricing_disclaimer', 'Trading pricing, commercial terms and supply arrangements are subject to business verification, product availability, order volume, destination and specific trading requirements.')
-                </div>
-
-                <!-- Currency Reference Notice (All Account Types) -->
-                <div style="margin-top:14px;margin-bottom:8px;font-size:0.80rem;color:#1e40af;line-height:1.45;padding:10px 14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;align-items:flex-start;gap:8px">
-                    <span style="font-size:0.95rem;line-height:1">ℹ️</span>
-                    <span>@t('auth.currency_reference_notice', 'Currency conversion is for reference only. The final amount may vary based on the applicable exchange rate at the time of payment.')</span>
+                    @t('auth.trading_pricing_disclaimer', 'Harga dagangan dan pengaturan bekalan tertakluk kepada semakan dan kelulusan MST, ketersediaan produk, spesifikasi, jumlah pesanan, destinasi dan keperluan perdagangan yang berkenaan.')
                 </div>
 
                 <!-- ════════════════════════════════════════════════════════════════════ -->
-                <!-- 7. CONSENT & MARKETING (ALL THREE ACCOUNT TYPES)                    -->
+                <!-- MARKETING & LEGAL CONSENT (SECTION 18 — INDEPENDENT CONTROLS)      -->
                 <!-- ════════════════════════════════════════════════════════════════════ -->
-                <div class="consent-block" style="margin: 20px 0 16px 0; display: flex; flex-direction: column; gap: 14px; background: #f8fafc; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                <div class="consent-block" style="margin: 20px 0 16px 0; display: flex; flex-direction: column; gap: 12px; background: #f8fafc; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0;">
                     
-                    <!-- Optional Marketing Consent -->
-                    <label class="consent-item" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.86rem; color: #334155; margin:0">
-                        <input type="checkbox" name="marketing_opt_in" value="1" style="margin-top: 3px; width: 17px; height: 17px; accent-color: #2563eb; cursor: pointer;" {{ old('marketing_opt_in') ? 'checked' : '' }}>
-                        <span>
-                            <strong style="color:#0f274a;">🎁 @t('auth.marketing_opt_in_title', 'MST Updates & Offers (Optional)')</strong><br>
-                            <span style="color: #64748b; font-size: 0.82rem; line-height:1.45; display:block; margin-top:2px">
-                                @t('auth.marketing_consent_exact', 'Yes, send me MST product updates, new arrivals, promotions and relevant wholesale offers via WhatsApp and Email.')
-                            </span>
-                        </span>
+                    <div style="font-size: 0.86rem; font-weight: 700; color: #0f274a; display: flex; align-items: center; gap: 6px;">
+                        <span>🎁</span>
+                        <span>@t('auth.marketing_consent_title', 'Marketing Updates & Communications (Optional)')</span>
+                    </div>
+
+                    <!-- 1. Independent WhatsApp Marketing Consent -->
+                    <label class="consent-item" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.84rem; color: #334155; margin:0">
+                        <input type="checkbox" name="marketing_whatsapp" id="marketing_whatsapp" value="1" style="margin-top: 2px; width: 17px; height: 17px; accent-color: #2563eb; cursor: pointer;" {{ old('marketing_whatsapp') ? 'checked' : '' }}>
+                        <span>@t('auth.consent_whatsapp', 'I agree to receive MST updates via WhatsApp.')</span>
                     </label>
 
-                    <div style="border-top:1px solid #e2e8f0"></div>
+                    <!-- 2. Independent Email Marketing Consent -->
+                    <label class="consent-item" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.84rem; color: #334155; margin:0">
+                        <input type="checkbox" name="marketing_email" id="marketing_email" value="1" style="margin-top: 2px; width: 17px; height: 17px; accent-color: #2563eb; cursor: pointer;" {{ old('marketing_email') ? 'checked' : '' }}>
+                        <span>@t('auth.consent_email', 'I agree to receive MST updates via Email.')</span>
+                    </label>
 
-                    <!-- Mandatory Terms & Privacy Policy Consent -->
+                    <div style="border-top:1px solid #e2e8f0; margin: 4px 0;"></div>
+
+                    <!-- 3. Mandatory Terms & Privacy Policy Consent (Strictly Separate) -->
                     <label class="consent-item" style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.86rem; color: #334155; margin:0">
-                        <input type="checkbox" name="terms_consent" value="1" required style="margin-top: 3px; width: 17px; height: 17px; accent-color: #2563eb; cursor: pointer;" {{ old('terms_consent') ? 'checked' : '' }}>
+                        <input type="checkbox" name="terms_consent" id="terms_consent" value="1" required style="margin-top: 3px; width: 17px; height: 17px; accent-color: #2563eb; cursor: pointer;" {{ old('terms_consent') ? 'checked' : '' }}>
                         <span>
                             @t('auth.i_agree_to', 'I agree to the') 
                             <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => 'terms-and-conditions']) }}" target="_blank" style="color:#2563eb;text-decoration:underline;font-weight:600">@t('nav.terms_and_conditions', 'Terms & Conditions')</a> 
@@ -1068,15 +1153,22 @@ function selectAccountType(type) {
 
     // 3. Dynamic Section Display
     const compSec = document.getElementById('companySection');
+    const bizAddrSec = document.getElementById('businessAddressSection');
     const wsBtype = document.getElementById('wholesaleBtypeWrapper');
     const trBtype = document.getElementById('tradingBtypeWrapper');
     const trMarketSec = document.getElementById('tradingMarketSection');
+    const trReqsSec = document.getElementById('tradingRequirementsSection');
     const prodIntSec = document.getElementById('productInterestSection');
+    const addlReqsSec = document.getElementById('additionalRequirementsSection');
+    const sameAddrToggle = document.getElementById('sameAddressToggle');
     const wsNotice = document.getElementById('wholesaleNoticeBox');
     const trNotice = document.getElementById('tradingNoticeBox');
 
     if (compSec) {
         compSec.style.display = (type === 'wholesale' || type === 'trading') ? 'block' : 'none';
+    }
+    if (bizAddrSec) {
+        bizAddrSec.style.display = (type === 'wholesale' || type === 'trading') ? 'block' : 'none';
     }
     if (wsBtype) {
         wsBtype.style.display = (type === 'wholesale') ? 'block' : 'none';
@@ -1087,8 +1179,17 @@ function selectAccountType(type) {
     if (trMarketSec) {
         trMarketSec.style.display = (type === 'trading') ? 'block' : 'none';
     }
+    if (trReqsSec) {
+        trReqsSec.style.display = (type === 'trading') ? 'block' : 'none';
+    }
     if (prodIntSec) {
         prodIntSec.style.display = (type === 'wholesale' || type === 'trading') ? 'block' : 'none';
+    }
+    if (addlReqsSec) {
+        addlReqsSec.style.display = (type === 'wholesale' || type === 'trading') ? 'block' : 'none';
+    }
+    if (sameAddrToggle) {
+        sameAddrToggle.style.display = (type === 'wholesale' || type === 'trading') ? 'block' : 'none';
     }
     if (wsNotice) {
         wsNotice.style.display = (type === 'wholesale') ? 'block' : 'none';
@@ -1119,6 +1220,20 @@ function selectAccountType(type) {
         const url = new URL(window.location);
         url.searchParams.set('type', type);
         window.history.replaceState({}, '', url);
+    }
+}
+
+function copyBusinessToDelivery(isChecked) {
+    if (isChecked) {
+        const bAddr = document.getElementById('business_address')?.value || '';
+        const bState = document.getElementById('business_state')?.value || '';
+        const bCity = document.getElementById('business_city')?.value || '';
+        const bPostcode = document.getElementById('business_postcode')?.value || '';
+
+        if (bAddr) document.getElementById('address').value = bAddr;
+        if (bState) document.getElementById('state').value = bState;
+        if (bCity) document.getElementById('city').value = bCity;
+        if (bPostcode) document.getElementById('postcode').value = bPostcode;
     }
 }
 

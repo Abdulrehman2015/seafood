@@ -1,0 +1,1 @@
+{"AbsolutePath":"f:\/My AI\/Sea Food\/seafood\/resources\/views\/layouts\/app.blade.php","EndLine":725,"StartLine":680,"toolAction":"Viewing beginning of page-switch-loader CSS","toolSummary":"View lines 680-725 in app.blade.php"}

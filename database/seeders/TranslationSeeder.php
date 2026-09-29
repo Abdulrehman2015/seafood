@@ -45,8 +45,8 @@ class TranslationSeeder extends Seeder
                 'group'   => 'about',
                 'key'     => 'about.company_motto_val',
                 'text_en' => 'Flow with Integrity, Grow with Strength.',
-                'text_zh' => '诚信如流，厚德载物 (Flow with Integrity, Grow with Strength)',
-                'text_bm' => 'Mengalir dengan Integriti, Berkembang dengan Kekuatan (Flow with Integrity, Grow with Strength).',
+                'text_zh' => 'Flow with Integrity, Grow with Strength.',
+                'text_bm' => 'Flow with Integrity, Grow with Strength.',
             ],
             [
                 'group'   => 'about',
@@ -234,8 +234,8 @@ class TranslationSeeder extends Seeder
                 'group'   => 'about',
                 'key'     => 'about.motto',
                 'text_en' => 'Flow with Integrity, Grow with Strength.',
-                'text_zh' => '诚信如流，厚德载物',
-                'text_bm' => 'Mengalir dengan Integriti, Berkembang dengan Kekuatan.',
+                'text_zh' => 'Flow with Integrity, Grow with Strength.',
+                'text_bm' => 'Flow with Integrity, Grow with Strength.',
             ],
             [
                 'group'   => 'about',
@@ -577,14 +577,14 @@ class TranslationSeeder extends Seeder
                 'group'   => 'about',
                 'key'     => 'company_motto_val',
                 'text_en' => 'Flow with Integrity, Grow with Strength.',
-                'text_zh' => '秉诚信如水，聚厚德以立。',
-                'text_bm' => 'Mengalir dengan Integriti, Berkembang dengan Kekuatan.',
+                'text_zh' => 'Flow with Integrity, Grow with Strength.',
+                'text_bm' => 'Flow with Integrity, Grow with Strength.',
             ],
             [
                 'group'   => 'about',
                 'key'     => 'company_name_full',
                 'text_en' => 'MST Import and Export Sdn. Bhd.',
-                'text_zh' => '镁嘉国际贸易有限公司 (镁嘉国际贸易)',
+                'text_zh' => '镁嘉国际贸易有限公司',
                 'text_bm' => 'MST Import and Export Sdn. Bhd.',
             ],
             [
@@ -779,9 +779,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'about',
                 'key'     => 'motto',
-                'text_en' => '⭐ Flow with Integrity, Grow with Strength',
-                'text_zh' => '⭐ 秉诚信如水，聚厚德以立',
-                'text_bm' => '⭐ Mengalir dengan Integriti, Berkembang dengan Kekuatan',
+                'text_en' => 'Flow with Integrity, Grow with Strength.',
+                'text_zh' => 'Flow with Integrity, Grow with Strength.',
+                'text_bm' => 'Flow with Integrity, Grow with Strength.',
             ],
             [
                 'group'   => 'about',
@@ -5575,7 +5575,7 @@ class TranslationSeeder extends Seeder
                 'group'   => 'email',
                 'key'     => 'layout_mst_chinese_subtitle',
                 'text_en' => 'MST Import and Export Sdn. Bhd. · Cold-Chain Seafood Sourcing & Distribution',
-                'text_zh' => '镁嘉国际贸易有限公司 · (原 MIKA SEAFOOD TRADING)',
+                'text_zh' => '镁嘉国际贸易有限公司 · 冷冻食品采购与冷链分销',
                 'text_bm' => 'MST Import and Export Sdn. Bhd. · Pengedaran Makanan Laut Rangkaian Sejuk',
             ],
             [
@@ -5931,9 +5931,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'footer',
                 'key'     => 'about_mst',
-                'text_en' => 'MST Import and Export Sdn. Bhd. is a premier frozen food sourcing, wholesale trading, and temperature-controlled distribution company serving commercial clients across Southeast Asia.',
-                'text_zh' => '镁嘉国际贸易有限公司是马来西亚领先的深海优质冷冻食品进出口直采、大宗批发与全温控冷链分销龙头企业，业务辐射东南亚。',
-                'text_bm' => 'MST Import and Export Sdn. Bhd. ialah syarikat perolehan makanan laut beku, perdagangan borong dan pengedaran rangkaian sejuk terkemuka di Asia Tenggara.',
+                'text_en' => 'Cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.',
+                'text_zh' => '为马来西亚与新加坡客户提供冷链采购、批发供应及定制化采购服务。',
+                'text_bm' => 'Penyumberan rantaian sejuk, bekalan borong & penyumberan tersuai untuk pelanggan di Malaysia dan Singapura.',
             ],
             [
                 'group'   => 'footer',
@@ -6176,9 +6176,9 @@ class TranslationSeeder extends Seeder
             [
                 'group'   => 'footer',
                 'key'     => 'tagline',
-                'text_en' => 'Flow with Integrity, Grow with Strength',
-                'text_zh' => '诚信为本，稳健远航',
-                'text_bm' => 'Mengalir dengan Integriti, Berkembang dengan Kekuatan',
+                'text_en' => 'Flow with Integrity, Grow with Strength.',
+                'text_zh' => 'Flow with Integrity, Grow with Strength.',
+                'text_bm' => 'Flow with Integrity, Grow with Strength.',
             ],
             [
                 'group'   => 'footer',
@@ -6723,8 +6723,8 @@ class TranslationSeeder extends Seeder
                 'group'   => 'home',
                 'key'     => 'quality_banner_sub',
                 'text_en' => 'MST Import and Export Sdn. Bhd. · Flow with Integrity, Grow with Strength.',
-                'text_zh' => '镁嘉国际贸易有限公司 · 诚信致远，稳健共赢',
-                'text_bm' => 'MST Import and Export Sdn. Bhd. · Berintegriti dalam Setiap Langkah, Teguh Berkembang.',
+                'text_zh' => '镁嘉国际贸易有限公司 · Flow with Integrity, Grow with Strength.',
+                'text_bm' => 'MST Import and Export Sdn. Bhd. · Flow with Integrity, Grow with Strength.',
             ],
             [
                 'group'   => 'home',
@@ -7276,7 +7276,7 @@ class TranslationSeeder extends Seeder
                 'group'   => 'invoice',
                 'key'     => 'company_chinese',
                 'text_en' => 'MST Import and Export Sdn. Bhd.',
-                'text_zh' => '鎂嘉国际贸易有限公司',
+                'text_zh' => '镁嘉国际贸易有限公司',
                 'text_bm' => 'MST Import and Export Sdn. Bhd.',
             ],
             [

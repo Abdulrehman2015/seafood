@@ -51,6 +51,33 @@ class StaticController extends Controller
             'message'            => 'required|string|max:5000',
         ];
 
+        // Conditional requirement for B2B / Wholesale / Trading / Sourcing RFQs
+        $isB2B = false;
+        $b2bKeywords = ['wholesale', 'trading', 'b2b', 'customised sourcing', 'borong', 'dagangan', 'perdagangan', 'sourcing'];
+        if (!empty($request->interests) && is_array($request->interests)) {
+            foreach ($request->interests as $interest) {
+                foreach ($b2bKeywords as $kw) {
+                    if (stripos($interest, $kw) !== false) {
+                        $isB2B = true;
+                        break 2;
+                    }
+                }
+            }
+        }
+        if (!empty($request->subject)) {
+            foreach ($b2bKeywords as $kw) {
+                if (stripos($request->subject, $kw) !== false) {
+                    $isB2B = true;
+                    break;
+                }
+            }
+        }
+
+        if ($isB2B) {
+            $rules['company_name'] = 'required|string|max:200';
+            $rules['business_reg_no'] = 'required|string|max:100';
+        }
+
         if (\App\Models\Setting::isRecaptchaEnabled('contact')) {
             $rules['g-recaptcha-response'] = [
                 'required',
@@ -63,6 +90,8 @@ class StaticController extends Controller
         }
 
         $request->validate($rules, [
+            'company_name.required' => __t('contact.company_name_required', 'Company Name is required for wholesale, trading and sourcing requests.'),
+            'business_reg_no.required' => __t('contact.business_reg_no_required', 'Business Registration No. / SSM / UEN is required for business and quotation requests.'),
             'g-recaptcha-response.required' => __t('auth.recaptcha_required', 'Please verify that you are not a robot.'),
         ]);
 

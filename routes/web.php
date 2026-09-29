@@ -252,10 +252,16 @@ Route::get('/cdn-assets/img/{path}', function (string $path) {
         abort(404);
     }
 
+    $cleanPath = preg_replace('#^storage/#', '', $path);
+
     $candidates = [
+        storage_path('app/public/' . $cleanPath),
         storage_path('app/public/' . $path),
+        public_path('storage/' . $cleanPath),
         public_path('storage/' . $path),
+        public_path('images/' . $cleanPath),
         public_path('images/' . $path),
+        public_path($cleanPath),
     ];
 
     $filePath = null;
@@ -263,6 +269,7 @@ Route::get('/cdn-assets/img/{path}', function (string $path) {
         realpath(storage_path('app/public')),
         realpath(public_path('storage')),
         realpath(public_path('images')),
+        realpath(public_path()),
     ]);
 
     foreach ($candidates as $candidate) {

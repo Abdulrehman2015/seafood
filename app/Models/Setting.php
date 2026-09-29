@@ -170,7 +170,7 @@ class Setting extends Model
         $svgFallback = '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="48" viewBox="0 0 160 48">'
             . '<rect width="160" height="48" rx="8" fill="#0f274a"/>'
             . '<text x="80" y="30" text-anchor="middle" font-family="Arial,sans-serif" '
-            . 'font-size="14" font-weight="bold" fill="#38bdf8">MST Import &amp; Export</text>'
+            . 'font-size="12" font-weight="bold" fill="#38bdf8">MST Import and Export</text>'
             . '</svg>';
         return 'data:image/svg+xml;base64,' . base64_encode($svgFallback);
     }
@@ -183,15 +183,15 @@ class Setting extends Model
         return Cache::remember('settings.all', 3600, function () {
             $defaults = [
                 // General Settings
-                'site_name'               => 'MST Import and Export Sdn. Bhd. | Premium Seafood, Meat, Food Ingredients & Specialty Products',
-                'site_description'        => 'Leading seafood distributor, wholesale importer, and cold logistics seafood market in Malaysia and Singapore.',
+                'site_name'               => 'MST Import and Export Sdn. Bhd. | Cold-Chain Sourcing & Wholesale Supply',
+                'site_description'        => 'Cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.',
                 'arabic_meta_title'       => 'MST Import and Export Sdn. Bhd. | المركز الرائد لتجارة وتوزيع المأكولات البحرية المجمدة',
                 'arabic_meta_description' => 'أفضل منتجات المأكولات البحرية المجمدة الطازجة للبيع بالجملة والتجزئة والتوزيع في ماليزيا.',
                 'meta_keywords'           => 'frozen seafood, salmon fillet, king prawns, mud crabs, wholesale seafood Malaysia, B2B seafood trading, walk-in seafood market',
                 'canonical_url'           => 'https://boat-paris-taking-singer.trycloudflare.com',
                 'header_tags'             => '',
                 'footer_tags'             => '',
-                'schema_markup'           => '{\n  "@context": "https://schema.org",\n  "@type": "SeafoodBusiness",\n  "name": "MST Import and Export Sdn. Bhd.",\n  "description": "Premium Seafood, Meat, Food Ingredients & Specialty Products",\n  "currenciesAccepted": "MYR",\n  "paymentAccepted": "Cash, Credit Card, FPX Online Banking"\n}',
+                'schema_markup'           => '{\n  "@context": "https://schema.org",\n  "@type": "SeafoodBusiness",\n  "name": "MST Import and Export Sdn. Bhd.",\n  "description": "Cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.",\n  "currenciesAccepted": "MYR",\n  "paymentAccepted": "Cash, Credit Card, FPX Online Banking"\n}',
 
                 // SMTP Mail Settings
                 'mail_mailer'             => 'smtp',
@@ -253,7 +253,7 @@ class Setting extends Model
 
                 // Store Legacy / Physical Details
                 'store_name'              => 'MST Import and Export Sdn. Bhd.',
-                'store_tagline'           => 'Premium Seafood, Meat, Food Ingredients & Specialty Products in Malaysia',
+                'store_tagline'           => 'Flow with Integrity, Grow with Strength.',
                 'store_address'           => 'MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor',
                 'store_phone'             => '+60 13-280 0168',
                 'store_whatsapp'          => '60123456789',

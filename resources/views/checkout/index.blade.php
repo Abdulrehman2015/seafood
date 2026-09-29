@@ -104,8 +104,11 @@
                         @php $price = $item->product?->getPriceForGroup($item->customer_group) ?? 0; @endphp
                         <div class="mobile-summary-item-row">
                             <div class="mobile-item-thumb">
-                                @if($item->product?->image)
-                                    <img src="{{ asset('storage/'.$item->product->image) }}" alt="{{ $item->product->name }}">
+                                @php
+                                    $itemThumb = $item->product?->thumbnail ?? ($item->product?->images[0] ?? null);
+                                @endphp
+                                @if($itemThumb)
+                                    <img src="{{ cdn_storage($itemThumb) }}" alt="{{ $item->product?->name ?? 'Product' }}" onerror="this.onerror=null;this.parentElement.innerHTML='<span class=\'thumb-emoji\'>🦐</span>';">
                                 @else
                                     <span class="thumb-emoji">🦐</span>
                                 @endif
@@ -144,7 +147,7 @@
                         <span style="font-size:0.8rem;font-weight:600;color:#0f172a" id="mobileZoneDisplay">{{ $deliveryInfo['zone_name'] ?? 'Local Zone' }}</span>
                     </div>
                     <div class="summary-line" id="mobileBelowFeeRow" style="{{ (empty($deliveryInfo['below_threshold_fee']) || $deliveryInfo['below_threshold_fee'] <= 0) ? 'display:none;' : '' }}">
-                        <span style="font-size:0.8rem;color:#d97706">@t('checkout.below_threshold_additional_fee', 'Below-RM100 Additional Fee')</span>
+                        <span style="font-size:0.8rem;color:#d97706">@t('checkout.below_threshold_additional_fee', 'Below-Threshold Additional Delivery Fee')</span>
                         <span style="font-size:0.8rem;font-weight:700;color:#d97706" id="mobileBelowFeeDisplay">+ RM {{ number_format($deliveryInfo['below_threshold_fee'] ?? 0, 2) }}</span>
                     </div>
                     <div class="summary-line">
@@ -268,7 +271,7 @@
                                 @elseif($initialShippingFee <= 0)
                                     <strong>@t('checkout.standard_delivery_eligible', 'Standard Local Delivery Eligible:')</strong> @t('checkout.standard_delivery_desc', 'Your order qualifies for the standard local delivery arrangement (RM 0.00 delivery fee).')
                                 @else
-                                    <strong>@t('checkout.delivery_fee_notice_title', 'Delivery Fee Notice:')</strong> @t('checkout.below_threshold_notice', 'Orders below RM 100 may be subject to an additional delivery fee based on your delivery location.') ({{ $deliveryInfo['zone_name'] ?? 'Zone Fee' }}: +RM {{ number_format($initialShippingFee, 2) }})
+                                    <strong>@t('checkout.delivery_fee_notice_title', 'Delivery Fee Notice:')</strong> @t('checkout.below_threshold_notice', 'Orders below the standard delivery threshold (RM :threshold) may be subject to an additional delivery fee based on your delivery location.', ['threshold' => number_format($deliveryInfo['threshold'] ?? 100, 2)]) ({{ $deliveryInfo['zone_name'] ?? 'Zone Fee' }}: +RM {{ number_format($initialShippingFee, 2) }})
                                 @endif
                             </div>
                         </div>
@@ -367,8 +370,11 @@
                                 <div class="summary-item-row">
                                     <div class="summary-item-left">
                                         <div class="summary-item-thumb">
-                                            @if($item->product?->image)
-                                                <img src="{{ asset('storage/'.$item->product->image) }}" alt="{{ $item->product->name }}">
+                                            @php
+                                                $itemThumb = $item->product?->thumbnail ?? ($item->product?->images[0] ?? null);
+                                            @endphp
+                                            @if($itemThumb)
+                                                <img src="{{ cdn_storage($itemThumb) }}" alt="{{ $item->product?->name ?? 'Product' }}" onerror="this.onerror=null;this.parentElement.innerHTML='<span class=\'thumb-emoji\'>🦐</span>';">
                                             @else
                                                 <span class="thumb-emoji">🦐</span>
                                             @endif
@@ -408,7 +414,7 @@
                                 <span class="line-val" style="font-size:0.8rem;font-weight:600;color:#0f172a" id="desktopZoneDisplay">{{ $deliveryInfo['zone_name'] ?? 'Local Zone' }}</span>
                             </div>
                             <div class="summary-line" id="desktopBelowFeeRow" style="{{ (empty($deliveryInfo['below_threshold_fee']) || $deliveryInfo['below_threshold_fee'] <= 0) ? 'display:none;' : '' }}">
-                                <span class="line-label" style="font-size:0.8rem;color:#d97706">@t('checkout.below_threshold_additional_fee', 'Below-RM100 Additional Fee')</span>
+                                <span class="line-label" style="font-size:0.8rem;color:#d97706">@t('checkout.below_threshold_additional_fee', 'Below-Threshold Additional Delivery Fee')</span>
                                 <span class="line-val" style="font-size:0.8rem;font-weight:700;color:#d97706" id="desktopBelowFeeDisplay">+ RM {{ number_format($deliveryInfo['below_threshold_fee'] ?? 0, 2) }}</span>
                             </div>
                             <div class="summary-line">
@@ -462,7 +468,7 @@
 
                         @if($currentCurrency !== 'MYR')
                             <div style="font-size:0.75rem;color:#64748b;margin:10px 0 12px;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid #e2e8f0;line-height:1.4" id="currencyNoteBox">
-                                ℹ️ @t('checkout.currency_note', 'Prices displayed in :currency for reference. Final payment will be processed in MYR :amount at checkout.', ['currency' => '<strong>' . $currentCurrency . '</strong>', 'amount' => number_format($initialGrandTotal, 2)])
+                                ℹ️ @t('checkout.currency_note', 'Prices displayed in :currency are for reference only. All transactions are settled in RM / Malaysian Ringgit (RM :amount).', ['currency' => '<strong>' . $currentCurrency . '</strong>', 'amount' => number_format($initialGrandTotal, 2)])
                             </div>
                         @endif
 
@@ -1612,14 +1618,14 @@ function applyDeliveryFeeUpdate(data) {
             noticeBanner.style.border = '1px solid #bfdbfe';
             noticeBanner.style.color = '#1e40af';
             noticeIcon.textContent = 'ℹ️';
-            noticeText.innerHTML = '<strong>Delivery Fee Notice:</strong> Orders below RM ' + Number(data.threshold).toFixed(2) + ' may be subject to an additional delivery fee based on your delivery location. (<strong>' + data.zone_name + '</strong>: Delivery Fee RM ' + data.fee_formatted + (hasBelowFee ? ' including RM ' + data.below_threshold_fee_formatted + ' below-RM100 fee' : '') + ').';
+            noticeText.innerHTML = '<strong>Delivery Fee Notice:</strong> Orders below the standard delivery threshold (RM ' + Number(data.threshold).toFixed(2) + ') may be subject to an additional delivery fee based on your delivery location. (<strong>' + data.zone_name + '</strong>: Delivery Fee RM ' + data.fee_formatted + (hasBelowFee ? ' including RM ' + data.below_threshold_fee_formatted + ' below-threshold fee' : '') + ').';
         }
     }
 
     // Update Currency Note Box if present
     const currencyBox = document.getElementById('currencyNoteBox');
     if (currencyBox && isForeign) {
-        currencyBox.innerHTML = 'ℹ️ Prices displayed in <strong>' + checkoutI18n.currency + '</strong> for reference. Final payment will be processed in MYR ' + data.total_formatted + ' at checkout.';
+        currencyBox.innerHTML = 'ℹ️ Prices displayed in <strong>' + checkoutI18n.currency + '</strong> are for reference only. All transactions are settled in RM / Malaysian Ringgit (RM ' + data.total_formatted + ').';
     }
 }
 

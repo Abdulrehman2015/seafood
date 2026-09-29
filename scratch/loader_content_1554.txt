@@ -1,0 +1,59 @@
+Created At: 2026-09-29T12:39:00+05:00
+Completed At: 2026-09-29T12:39:00+05:00
+File Path: `file:///f:/My%20AI/Sea%20Food/seafood/resources/views/layouts/app.blade.php`
+Total Lines: 2373
+Total Bytes: 121779
+Showing lines 680 to 730
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+680:             font-weight: 900;
+681:             font-size: 1rem;
+682:             line-height: 1;
+683:         }
+684: 
+685:         /* ─── Oceanic & Frozen Seafood Cold-Chain Page Switch Loader ─── */
+686:         .page-switch-loader {
+687:             position: fixed;
+688:             inset: 0;
+689:             z-index: 2147483647 !important;
+690:             background: radial-gradient(circle at 50% 38%, rgba(10, 36, 74, 0.95) 0%, rgba(4, 18, 38, 0.98) 100%);
+691:             backdrop-filter: blur(20px);
+692:             -webkit-backdrop-filter: blur(20px);
+693:             display: flex;
+694:             align-items: center;
+695:             justify-content: center;
+696:             opacity: 0;
+697:             pointer-events: none;
+698:             transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+699:             user-select: none;
+700:         }
+701: 
+702:         .page-switch-loader.active {
+703:             opacity: 1;
+704:             pointer-events: auto;
+705:         }
+706: 
+707:         .ocean-backdrop {
+708:             position: absolute;
+709:             inset: 0;
+710:             overflow: hidden;
+711:             pointer-events: none;
+712:         }
+713: 
+714:         /* Underwater Caustic Sunbeam */
+715:         .ocean-caustic-light {
+716:             position: absolute;
+717:             top: -10%;
+718:             left: 20%;
+719:             width: 60%;
+720:             height: 55%;
+721:             background: radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.22) 0%, rgba(14, 116, 144, 0.12) 45%, transparent 75%);
+722:             filter: blur(50px);
+723:             animation: causticSway 8s ease-in-out infinite alternate;
+724:         }
+725: 
+726:         .ocean-depth-glow {
+727:             position: absolute;
+728:             bottom: -80px;
+729:             left: 50%;
+730:             transform: translateX(-50%);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

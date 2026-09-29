@@ -33,13 +33,13 @@
                 <span class="walkin-store-tag" style="background:rgba(30,58,138,0.6);border:1px solid rgba(56,189,248,0.35);padding:3px 10px;border-radius:8px;font-size:0.75rem;font-weight:700;color:#e0f2fe">
                     🏬 @t('walkin.store_location', 'MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.')
                 </span>
-                <span class="walkin-tag-sub">⚡ @t('walkin.express_pickup_tag', 'Counter 2 Self-Collection')</span>
+                <span class="walkin-tag-sub">⚡ @t('walkin.express_pickup_tag', 'MST Counter 2 Self-Collection')</span>
             </div>
             <h1 class="walkin-hero-title">
                 @t('walkin.checkout_title', 'Walk-in Express Checkout')
             </h1>
             <p class="walkin-hero-subtitle">
-                @t('walkin.checkout_subtitle', 'Please confirm your order and Counter 2 collection location before payment. Collect your packed order at MST Counter 2.')
+                @t('walkin.checkout_subtitle', 'Please confirm your order and MST Counter 2 collection location before payment. Collect your packed order at MST Counter 2.')
             </p>
         </div>
 
@@ -77,7 +77,7 @@
                     <div class="step-icon">4</div>
                     <div class="step-info">
                         <span class="step-num">4. @t('walkin.step_4_name', 'Ambil')</span>
-                        <span class="step-label">@t('walkin.step_4_desc', 'Ambil pesanan yang telah disediakan di Kaunter 2.')</span>
+                        <span class="step-label">@t('walkin.step_4_desc', 'Ambil pesanan yang telah disediakan di MST Kaunter 2.')</span>
                     </div>
                 </div>
             </div>
@@ -170,7 +170,7 @@
                         </div>
                         <div class="notice-desc" style="font-size:0.85rem;color:#1d4ed8;line-height:1.45;margin-bottom:8px">
                             📍 <strong>@t('walkin.store_location', 'MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.')</strong><br>
-                            @t('walkin.counter_desc', 'Orders are prepared for Counter 2 collection after payment confirmation. Orders are packed appropriately for collection and transport.')
+                            @t('walkin.counter_desc', 'Orders are prepared for MST Counter 2 collection after payment confirmation. Orders are packed appropriately for collection and transport.')
                         </div>
                         <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
                             <span class="notice-badge" style="font-size:0.75rem;font-weight:700;color:#1e40af;background:#ffffff;padding:3px 10px;border-radius:6px;display:inline-block;border:1px solid #bfdbfe">
@@ -247,8 +247,8 @@
                             <div class="pay-tile-check">✓</div>
                             <div class="pay-tile-icon">💵</div>
                             <div class="pay-tile-content">
-                                <div class="pay-tile-title">@t('walkin.pay_cash_title', 'Cash at Counter 2')</div>
-                                <div class="pay-tile-desc">@t('walkin.pay_cash_desc', 'Pay cash directly at SILC Counter 2 upon collecting your packed order.')</div>
+                                <div class="pay-tile-title">@t('walkin.pay_cash_title', 'Cash at MST Counter 2')</div>
+                                <div class="pay-tile-desc">@t('walkin.pay_cash_desc', 'Pay cash directly at MST Counter 2 upon collecting your packed order.')</div>
                                 <div class="pay-tile-badge badge-cash">@t('walkin.badge_pay_on_pickup', 'Pay on Collection')</div>
                             </div>
                         </label>
@@ -277,10 +277,10 @@
                     <div id="cashInfoBox" class="walkin-pay-info-box cash-box" style="{{ old('payment_method') === 'cash' ? '' : 'display:none' }}">
                         <div class="info-box-header">
                             <span class="info-icon">💵</span>
-                            <strong>@t('walkin.cash_info_title', 'Pay Cash at Counter 2:')</strong>
+                            <strong>@t('walkin.cash_info_title', 'Pay Cash at MST Counter 2:')</strong>
                         </div>
                         <p class="info-desc">
-                            @t('walkin.cash_info_desc', 'Your order will be registered and queued. Present your Order Reference at Counter 2 to complete payment and collect your packed order.')
+                            @t('walkin.cash_info_desc', 'Your order will be registered and queued. Present your Order Reference at MST Counter 2 to complete payment and collect your packed order.')
                         </p>
                     </div>
 
@@ -291,7 +291,7 @@
                             <strong>@t('walkin.stripe_info_title', 'Secure Phone Payment:')</strong>
                         </div>
                         <p class="info-desc">
-                            @t('walkin.stripe_info_desc', 'You will be securely redirected to Stripe checkout. Upon payment confirmation, your order will be prepared for Counter 2 collection and you will receive your collection reference.')
+                            @t('walkin.stripe_info_desc', 'You will be securely redirected to Stripe checkout. Upon payment confirmation, your order will be prepared for MST Counter 2 collection and you will receive your collection reference.')
                         </p>
                         <div class="payment-methods-badges-row">
                             <span class="pay-chip">💳 Visa</span>
@@ -326,7 +326,7 @@
                         </span>
                         <span id="mobileSubmitBtnText">
                             @if(old('payment_method') === 'cash')
-                                @t('walkin.confirm_cash_order', 'Confirm Order & Proceed to Counter 2')
+                                @t('walkin.confirm_cash_order', 'Confirm Order & Proceed to MST Counter 2')
                             @elseif(old('payment_method') === 'stripe')
                                 @t('walkin.proceed_to_payment', 'Proceed to Secure Payment →')
                             @else

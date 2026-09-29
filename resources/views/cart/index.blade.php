@@ -89,9 +89,15 @@
                             
                             <!-- Thumbnail -->
                             <div class="cart-item-thumb">
-                                @if($item->product?->thumbnail)
-                                    <a href="{{ route('shop.show', $item->product) }}">
-                                        <img src="{{ asset('storage/'.$item->product->thumbnail) }}" alt="{{ $item->product->name }}" loading="lazy">
+                                @php
+                                    $itemThumb = $item->product?->thumbnail ?? ($item->product?->images[0] ?? null);
+                                @endphp
+                                @if($itemThumb)
+                                    <a href="{{ $item->product ? route('shop.show', $item->product) : '#' }}">
+                                        <img src="{{ cdn_storage($itemThumb) }}" 
+                                             alt="{{ $item->product?->name ?? 'Product' }}" 
+                                             loading="lazy"
+                                             onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\'cart-thumb-placeholder\'>📦</div>';">
                                     </a>
                                 @else
                                     <div class="cart-thumb-placeholder">📦</div>
@@ -312,7 +318,7 @@
 
                         <div class="summary-trust-badges">
                             <div>🔒 @t('cart.trust_secure', 'Secure Checkout & Payment Processing')</div>
-                            <div>🏬 @t('cart.trust_fulfillment', 'Cold-Chain Fulfilment & Counter 2 Collection Available')</div>
+                            <div>🏬 @t('cart.trust_fulfillment', 'Cold-Chain Fulfilment & MST Counter 2 Collection Available')</div>
                         </div>
                     </div>
                 </div>

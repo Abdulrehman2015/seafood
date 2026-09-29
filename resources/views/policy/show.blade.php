@@ -122,7 +122,9 @@
         </div>
     </section>
 </div>
+@endsection
 
+@push('styles')
 <style>
     .policy-page-wrapper {
         background: #f8fafc;
@@ -544,4 +546,4 @@
         }
     }
 </style>
-@endsection
+@endpush

@@ -1,0 +1,53 @@
+Created At: 2026-09-29T13:10:09+05:00
+Completed At: 2026-09-29T13:10:09+05:00
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":481,"LineContent":"        \u003c!-- Modern Page / Tab Switching Loader Bar --\u003e"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":482,"LineContent":"        \u003cdiv class=\"shop-tab-loader\" id=\"shopTabLoader\"\u003e"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":483,"LineContent":"            \u003cdiv class=\"tab-loader-bar\"\u003e\u003c/div\u003e"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":809,"LineContent":"                                            \u003cform action=\"{{ route('cart.add') }}\" method=\"POST\" class=\"product-cart-form\" data-no-loader=\"true\" style=\"flex:1;margin:0;\"\u003e"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":859,"LineContent":"                                            \u003cform action=\"{{ route('cart.add') }}\" method=\"POST\" class=\"product-cart-form\" data-no-loader=\"true\" style=\"flex:1;margin:0;\"\u003e"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":1042,"LineContent":"                    \u003cform action=\"{{ route('cart.add') }}\" method=\"POST\" id=\"qvCartForm\" data-no-loader=\"true\" style=\"flex:1\"\u003e"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2561,"LineContent":"/* ─── Instant Customer Mode Switching \u0026 Page Loader Bar ─── */"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2562,"LineContent":".shop-tab-loader {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2576,"LineContent":".shop-tab-loader.active {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2579,"LineContent":".tab-loader-bar {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2585,"LineContent":"    animation: tabLoaderProgress 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2588,"LineContent":"@keyframes tabLoaderProgress {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2644,"LineContent":"    const loader = document.getElementById('shopTabLoader');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2648,"LineContent":"    if (loader) {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2649,"LineContent":"        loader.classList.add('active');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2693,"LineContent":"        if (loader) loader.classList.remove('active');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2713,"LineContent":"    // 2. Trigger Page Loader \u0026 Grid Transition Effect"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2714,"LineContent":"    const loader = document.getElementById('shopTabLoader');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2716,"LineContent":"    if (loader) {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2717,"LineContent":"        loader.classList.remove('active');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2718,"LineContent":"        void loader.offsetWidth; // force reflow for re-animation"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2719,"LineContent":"        loader.classList.add('active');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\shop\\index.blade.php","LineNumber":2761,"LineContent":"        if (loader) loader.classList.remove('active');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":686,"LineContent":"        /* ─── Oceanic \u0026 Frozen Seafood Cold-Chain Page Switch Loader ─── */"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":687,"LineContent":"        .page-switch-loader {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":703,"LineContent":"        .page-switch-loader.active {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":782,"LineContent":"        .ocean-loader-card {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":803,"LineContent":"        .page-switch-loader.active .ocean-loader-card {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":971,"LineContent":"    \u003c!-- ─── Oceanic Frozen Seafood \u0026 Cold-Chain Page Switch Loader (1s Display) ─── --\u003e"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":972,"LineContent":"    \u003cdiv id=\"pageSwitchLoader\" class=\"page-switch-loader active\" aria-hidden=\"false\"\u003e"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":985,"LineContent":"        \u003cdiv class=\"ocean-loader-card\"\u003e"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1010,"LineContent":"                \u003cspan id=\"loaderStatusText\" class=\"ocean-status-text\"\u003eLoading fresh catch...\u003c/span\u003e"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1015,"LineContent":"                \u003cdiv id=\"loaderProgressBar\" class=\"ocean-wave-bar\"\u003e\u003c/div\u003e"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1765,"LineContent":"        function showPageLoader(message = 'Loading...') {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1766,"LineContent":"            const loader = document.getElementById('pageSwitchLoader');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1767,"LineContent":"            const statusText = document.getElementById('loaderStatusText');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1768,"LineContent":"            const progressBar = document.getElementById('loaderProgressBar');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1771,"LineContent":"            if (loader) {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1772,"LineContent":"                loader.classList.add('active');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1773,"LineContent":"                loader.setAttribute('aria-hidden', 'false');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1777,"LineContent":"                    if (loader \u0026\u0026 loader.classList.contains('active')) {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1782,"LineContent":"                    if (loader \u0026\u0026 loader.classList.contains('active')) {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1789,"LineContent":"        function hidePageLoader() {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1790,"LineContent":"            const loader = document.getElementById('pageSwitchLoader');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1791,"LineContent":"            const progressBar = document.getElementById('loaderProgressBar');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1794,"LineContent":"                if (loader) {"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1795,"LineContent":"                    loader.classList.remove('active');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1796,"LineContent":"                    loader.setAttribute('aria-hidden', 'true');"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1869,"LineContent":"            // 3. Show high-quality hero-themed page loader with localized message"}
+{"File":"f:\\My AI\\Sea Food\\seafood\\resources\\views\\layouts\\app.blade.php","LineNumber":1878,"LineContent":"            showPageLoader(switchMsgs[targetCode] || `Switching to ${targetLabel}...`);"}
+(...15 more results not shown)

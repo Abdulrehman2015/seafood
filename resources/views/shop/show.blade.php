@@ -167,14 +167,14 @@
                         </div>
 
                         <div class="js-product-approx-note" data-base-rm="{{ $basePriceAmount ?? 0 }}" style="display:{{ ($currentCurrency !== 'MYR' && !empty($displayPrice['base_rm'])) ? 'block' : 'none' }};margin-top:4px;font-size:0.85rem;color:#64748b;font-weight:500">
-                            Approx. <strong>RM {{ number_format($displayPrice['base_rm'] ?? $basePriceAmount, 2) }}</strong> (billed in MYR at checkout)
+                            Base Settlement: <strong>RM {{ number_format($displayPrice['base_rm'] ?? $basePriceAmount, 2) }}</strong> (All transactions settled in RM / Malaysian Ringgit. SGD/USD for reference only.)
                         </div>
 
                         <div style="margin-top:8px;font-size:0.8rem;color:#1d4ed8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
                             @if($isApprovedWholesale)
                                 <span class="badge" style="background:#dbeafe;color:#1e40af;font-weight:700">✓ {{ ucfirst($group) }} Verified Tier</span>
                             @else
-                                <span>@t('shop.retail_ref_price_disclaimer', 'Public Retail Reference Pricing') · <a href="{{ route('register', ['type' => 'wholesale']) }}" style="color:#1d4ed8;font-weight:700;text-decoration:underline">@t('shop.request_wholesale_access', 'Request Wholesale Access →')</a></span>
+                                <span>@t('shop.retail_ref_price_disclaimer', 'Public Retail Reference Pricing') · <a href="{{ route('register', ['type' => 'wholesale']) }}" style="color:#1d4ed8;font-weight:700;text-decoration:underline">@t('shop.request_wholesale_access', 'Apply for Wholesale / Business Pricing →')</a></span>
                             @endif
                         </div>
                     @else
@@ -196,7 +196,7 @@
                 <!-- Disclaimers Notice -->
                 <div style="font-size:0.75rem;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:var(--space-4);line-height:1.4">
                     <div><strong>ℹ️ @t('shop.pricing_disclaimer_head', 'Notice:'):</strong> @t('shop.retail_ref_price_disclaimer', 'Retail prices are shown for reference. Wholesale and trading prices are available after account approval or by quotation.')</div>
-                    <div style="margin-top:3px">@t('shop.delivery_threshold_full_note', 'Standard local delivery arrangements apply to selected areas within Johor Bahru and Nusajaya / Iskandar Puteri. Standard Delivery Thresholds are RM100 for Retail / B2C and RM350 for Wholesale / B2B. Orders below threshold can still be placed with applicable delivery fees based on delivery location. Walk-in / Counter Collection incurs RM0 delivery fee.')</div>
+                    <div style="margin-top:3px">@t('shop.delivery_threshold_full_note', 'Standard delivery threshold is RM100 for Retail / B2C orders and RM350 for Wholesale / B2B orders. Orders below the applicable threshold may still be considered or accepted, subject to transportation or delivery charges based on the delivery location / zone and applicable logistics requirements.')</div>
                     <div style="margin-top:3px;color:#0369a1">@t('shop.currency_indicative_disclaimer', 'Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.')</div>
                 </div>
 
@@ -444,11 +444,11 @@
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-top:var(--space-3)">
                         <div style="padding:var(--space-4);border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe">
                             <div style="font-weight:700;color:#1e3a8a;margin-bottom:4px">🏪 Walk-in / Counter Collection (RM0 Delivery Fee)</div>
-                            <div class="text-xs text-muted">Collect your confirmed order directly from MST SILC facility. No delivery fee applies, and no minimum checkout threshold is required.</div>
+                            <div class="text-xs text-muted">Collect your confirmed order directly from MST SILC Cold-Chain Facility (MST Kaunter 2). No delivery fee and no delivery threshold apply.</div>
                         </div>
                         <div style="padding:var(--space-4);border-radius:10px;background:#f8fafc;border:1px solid var(--gray-200)">
                             <div style="font-weight:700;color:var(--gray-900);margin-bottom:4px">🚚 Standard Local & Cold Chain Delivery</div>
-                            <div class="text-xs text-muted">Standard local delivery arrangements apply to selected areas within Johor Bahru and Nusajaya / Iskandar Puteri. Standard Delivery Thresholds: RM100 (Retail) and RM350 (Wholesale). Orders below threshold can still be placed with applicable delivery fees.</div>
+                            <div class="text-xs text-muted">Standard delivery threshold is RM100 for Retail / B2C orders and RM350 for Wholesale / B2B orders. Orders below the applicable threshold may still be considered or accepted, subject to transportation or delivery charges based on the delivery location / zone and applicable logistics requirements.</div>
                         </div>
                     </div>
                 </div>

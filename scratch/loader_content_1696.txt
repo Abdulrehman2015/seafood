@@ -1,0 +1,74 @@
+Created At: 2026-09-29T12:54:48+05:00
+Completed At: 2026-09-29T12:54:48+05:00
+File Path: `file:///f:/My%20AI/Sea%20Food/seafood/resources/views/layouts/app.blade.php`
+Total Lines: 2381
+Total Bytes: 122069
+Showing lines 960 to 1025
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+960:         .main-content {
+961:             transition: opacity 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+962:         }
+963:         .main-content.lang-transitioning {
+964:             opacity: 0.35;
+965:         }
+966:     </style>
+967:     @stack('styles')
+968: </head>
+969: 
+970: <body>
+971:     <!-- ─── Oceanic Frozen Seafood & Cold-Chain Page Switch Loader ─── -->
+972:     <div id="pageSwitchLoader" class="page-switch-loader" aria-hidden="true">
+973:         <div class="ocean-backdrop">
+974:             <div class="ocean-caustic-light"></div>
+975:             <div class="ocean-depth-glow"></div>
+976:             <!-- Rising Ocean Bubbles -->
+977:             <div class="ocean-bubble b1"></div>
+978:             <div class="ocean-bubble b2"></div>
+979:             <div class="ocean-bubble b3"></div>
+980:             <div class="ocean-bubble b4"></div>
+981:             <div class="ocean-bubble b5"></div>
+982:             <div class="ocean-bubble b6"></div>
+983:         </div>
+984: 
+985:         <div class="ocean-loader-card">
+986:             {{-- Seafood Chef Mascot with Water Ripples --}}
+987:             <div class="ocean-mascot-wrap">
+988:                 <div class="water-ripple r1"></div>
+989:                 <div class="water-ripple r2"></div>
+990:                 <div class="water-ripple r3"></div>
+991:                 <div class="ocean-mascot-badge">
+992:                     <img src="{{ cdn_img('logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.' }}" class="ocean-mascot-img">
+993:                 </div>
+994:             </div>
+995: 
+996:             {{-- Brand Typography & Cold-Chain Identity --}}
+997:             <div class="ocean-brand-box">
+998:                 <span class="ocean-brand-title" style="font-size:1.05rem;font-weight:800;letter-spacing:0.02em;display:block">镁嘉国际贸易有限公司</span>
+999:                 <span class="ocean-brand-sub" style="font-size:0.75rem;font-weight:600;letter-spacing:0.02em;display:block;opacity:0.9">MST Import and Export Sdn. Bhd.</span>
+1000:                 <span class="ocean-brand-tagline">
+1001:                     <span>❄️</span>
+1002:                     <span>PREMIUM FROZEN SEAFOOD &amp; COLD CHAIN</span>
+1003:                     <span>🐟</span>
+1004:                 </span>
+1005:             </div>
+1006: 
+1007:             {{-- Fresh Catch / Loading Status --}}
+1008:             <div class="ocean-status-pill">
+1009:                 <span class="ocean-live-dot"></span>
+1010:                 <span id="loaderStatusText" class="ocean-status-text">Updating...</span>
+1011:             </div>
+1012: 
+1013:             {{-- Wave Progress Line --}}
+1014:             <div class="ocean-wave-track">
+1015:                 <div id="loaderProgressBar" class="ocean-wave-bar"></div>
+1016:             </div>
+1017:         </div>
+1018:     </div>
+1019: 
+1020:     <nav class="navbar" id="navbar">
+1021:         <div class="container nav-container">
+1022:             <a href="{{ route('home') }}" class="nav-logo">
+1023:                 <img src="{{ cdn_img('logo.webp') }}" alt="镁嘉国际贸易有限公司 — MST Import and Export Sdn. Bhd."
+1024:                     style="height:44px;width:44px;object-fit:contain;border-radius:8px;">
+1025:                 <div class="logo-text">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

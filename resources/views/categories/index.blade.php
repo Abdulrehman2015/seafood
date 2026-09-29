@@ -84,13 +84,13 @@
 
             $catThumbnails = [
                 'fish' => 'products/salmon_fillet_premium.jpg',
-                'fish-fillet' => 'products/barramundi_seabass.jpg',
+                'fish-fillet' => 'products/dory_fish_fillet.jpg',
                 'prawns-shrimps' => 'products/black_tiger_prawns.jpg',
                 'squid' => 'products/loligo_squid.jpg',
                 'crab' => 'products/mud_crabs_live.jpg',
                 'shellfish' => 'products/canadian_scallops.jpg',
                 'seafood-products' => 'products/prawn_paste_tube.jpg',
-                'other-frozen-seafood' => 'products/loligo_squid.jpg',
+                'other-frozen-seafood' => 'products/unagi_kabayaki.jpg',
                 'steamboat' => 'products/steamboat_hotpot_combo.jpg',
                 'meat-beef' => 'products/meltique_beef_steak.jpg',
                 'meat-lamb' => 'products/meltique_beef_steak.jpg',
@@ -157,7 +157,7 @@
             @endphp
             <div class="category-card-item" data-dept="{{ $dept }}">
                 <div class="cat-card-img-wrapper">
-                    <img src="{{ asset('storage/' . $thumb) }}" alt="{{ $category->name }}" loading="lazy">
+                    <img src="{{ cdn_storage($thumb) }}" alt="{{ $category->name }}" loading="lazy" onerror="this.style.display='none';">
                     <div class="cat-card-overlay"></div>
                     <span class="cat-badge-count">{{ $count }} {{ Str::plural('item', $count) }}</span>
                     <span class="cat-badge-icon">{{ $icon }}</span>

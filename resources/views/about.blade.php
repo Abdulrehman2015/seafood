@@ -356,7 +356,9 @@
     </div>
 
 </div>
+@endsection
 
+@push('styles')
 <style>
 /* ════════════════════════════════════════
    ABOUT US PAGE — STYLES & RESPONSIVENESS
@@ -740,4 +742,4 @@
     }
 }
 </style>
-@endsection
+@endpush

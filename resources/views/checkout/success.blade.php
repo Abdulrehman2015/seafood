@@ -30,7 +30,7 @@
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.88rem;max-width:680px;line-height:1.4;margin:0">
                     @if($order->payment_method === 'cash')
-                        @t('checkout.cash_confirmed_subtitle', 'Thank you for your order! Your in-store order is confirmed. Please show your token and pay cash at Counter 2 upon collection.')
+                        @t('checkout.cash_confirmed_subtitle', 'Thank you for your order! Your in-store order is confirmed. Please show your token and pay cash at MST Counter 2 upon collection.')
                     @else
                         @t('checkout.success_subtitle', 'Thank you for your order! Your payment has been received and your frozen seafood is being prepared.')
                     @endif
@@ -53,7 +53,7 @@
 
         @if($order->fulfillment_type === 'self_collection' || $order->customer_group === 'walkin')
             <!-- ═══════════════════════════════════════════════════════════════════════ -->
-            <!-- STORE COLLECTION PASS (WALK-IN / COUNTER 2 SELF-COLLECTION)           -->
+            <!-- STORE COLLECTION PASS (WALK-IN / MST COUNTER 2 SELF-COLLECTION)        -->
             <!-- ═══════════════════════════════════════════════════════════════════════ -->
             
             <div style="text-align:center;margin-bottom:var(--space-4)">
@@ -62,16 +62,16 @@
                 </div>
                 <h1 style="font-size:1.6rem;font-family:var(--font-heading);color:var(--seagreen-900);margin-bottom:4px">
                     @if($order->payment_method === 'cash')
-                        @t('checkout.order_confirmed_cash', 'Order Confirmed · Counter 2 Collection')
+                        @t('checkout.order_confirmed_cash', 'Order Confirmed · MST Counter 2 Collection')
                     @else
-                        @t('checkout.payment_confirmed_title', 'Payment Confirmed · Counter 2 Collection')
+                        @t('checkout.payment_confirmed_title', 'Payment Confirmed · MST Counter 2 Collection')
                     @endif
                 </h1>
                 <p class="text-sm text-muted" style="margin:0">
                     @if($order->payment_method === 'cash')
-                        @t('checkout.cash_instruction_subtitle', 'Your order is confirmed. Please show this collection reference at Counter 2 to complete payment and collect your packed order.')
+                        @t('checkout.cash_instruction_subtitle', 'Your order is confirmed. Please show this collection reference at MST Counter 2 to complete payment and collect your packed order.')
                     @else
-                        @t('checkout.payment_confirmed_desc', 'Payment confirmed. Your order is being prepared for Counter 2 collection.')
+                        @t('checkout.payment_confirmed_desc', 'Payment confirmed. Your order is being prepared for MST Counter 2 collection.')
                     @endif
                 </p>
             </div>
@@ -86,7 +86,7 @@
                         <div style="font-weight:700;font-size:0.95rem">🏬 @t('walkin.store_location', 'MST Counter 2 · SILC Industrial Park, Iskandar Puteri')</div>
                     </div>
                     <div style="background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700">
-                        @t('walkin.counter_title', 'Counter 2 Collection')
+                        @t('walkin.counter_title', 'MST Counter 2 Collection')
                     </div>
                 </div>
 
@@ -110,16 +110,16 @@
                         @else
                             <span style="display:inline-flex;align-items:center;gap:6px;background:#dcfce7;color:#166534;padding:6px 14px;border-radius:20px;font-weight:700;font-size:0.8rem;border:1px solid #86efac">
                                 <span style="width:8px;height:8px;background:#22c55e;border-radius:50%"></span>
-                                ✓ @t('checkout.paid_online', 'Payment Confirmed') · @t('walkin.prepared_promptly', 'Preparing for Counter 2 collection')
+                                ✓ @t('checkout.paid_online', 'Payment Confirmed') · @t('walkin.prepared_promptly', 'Preparing for MST Counter 2 collection')
                             </span>
                         @endif
                     </div>
 
                     <p style="font-size:0.85rem;color:var(--gray-600);max-width:440px;margin:0 auto;line-height:1.45">
                         @if($order->payment_method === 'cash')
-                            @t('checkout.cash_counter_instruction', 'Please present this reference at Counter 2 to complete payment and collect your packed order.')
+                            @t('checkout.cash_counter_instruction', 'Please present this reference at MST Counter 2 to complete payment and collect your packed order.')
                         @else
-                            @t('checkout.counter_instruction', 'Please present your order reference / payment confirmation when collecting your order at Counter 2.')
+                            @t('checkout.counter_instruction', 'Please present your order reference / payment confirmation when collecting your order at MST Counter 2.')
                         @endif
                     </p>
                 </div>

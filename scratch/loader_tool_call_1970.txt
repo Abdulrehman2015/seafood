@@ -1,0 +1,1 @@
+{"MatchPerLine":true,"Query":"page-switch-loader","SearchPath":"C:\\Users\\ss487\\.gemini\\antigravity-ide\\brain\\e51dae96-fe58-4088-8ca0-ab2fe245e817\\.system_generated\\logs\\transcript.jsonl","toolAction":"Searching transcript for loader code","toolSummary":"Find previous page loader design and code"}

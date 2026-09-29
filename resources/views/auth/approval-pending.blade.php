@@ -156,9 +156,10 @@
 
         </div>
 
-    </div>
 </div>
+@endsection
 
+@push('styles')
 <style>
 @keyframes pulseDot {
     0% { transform: scale(0.9); opacity: 0.6; }
@@ -166,7 +167,9 @@
     100% { transform: scale(0.9); opacity: 0.6; }
 }
 </style>
+@endpush
 
+@push('scripts')
 <script>
 function handleManualRefresh() {
     var btn = document.getElementById('btnRefreshStatus');
@@ -203,4 +206,4 @@ function handleManualRefresh() {
     }, 4000);
 })();
 </script>
-@endsection
+@endpush

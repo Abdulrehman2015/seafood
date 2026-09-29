@@ -1,0 +1,108 @@
+Created At: 2026-09-29T12:40:03+05:00
+Completed At: 2026-09-29T12:40:05+05:00
+The following changes were made by the multi_replace_file_content tool to: f:\My AI\Sea Food\seafood\resources\views\layouts\app.blade.php. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -5,6 +5,7 @@
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta name="csrf-token" content="{{ csrf_token() }}">
++    <script>window.__pageLoadStartTime = Date.now();</script>
+ 
+     @php
+         $currentRouteName = request()->route() ? request()->route()->getName() : '';
+@@ -966,8 +966,8 @@
+ </head>
+ 
+ <body>
+-    <!-- ─── Oceanic Frozen Seafood & Cold-Chain Page Switch Loader ─── -->
+-    <div id="pageSwitchLoader" class="page-switch-loader" aria-hidden="true">
++    <!-- ─── Oceanic Frozen Seafood & Cold-Chain Page Switch Loader (1s Min Display) ─── -->
++    <div id="pageSwitchLoader" class="page-switch-loader active" aria-hidden="false">
+         <div class="ocean-backdrop">
+             <div class="ocean-caustic-light"></div>
+             <div class="ocean-depth-glow"></div>
+@@ -1772,9 +1772,14 @@
+             if (progressBar) {
+                 setTimeout(() => {
+                     if (loader && loader.classList.contains('active')) {
+-                        progressBar.style.width = '75%';
+-                    }
+-                }, 100);
++                        progressBar.style.width = '60%';
++                    }
++                }, 250);
++                setTimeout(() => {
++                    if (loader && loader.classList.contains('active')) {
++                        progressBar.style.width = '90%';
++                    }
++                }, 650);
+             }
+         }
+ 
+@@ -1787,9 +1787,9 @@
+                     loader.setAttribute('aria-hidden', 'true');
+                 }
+                 if (progressBar) {
+-                    setTimeout(() => { progressBar.style.width = '0%'; }, 250);
+-                }
+-            }, 260);
++                    setTimeout(() => { progressBar.style.width = '0%'; }, 300);
++                }
++            }, 300);
+         }
+ 
+         function updatePageLocaleHrefs(newLocale) {
+@@ -2044,9 +2044,9 @@
+                 window.location.href = switchUrl || ('/language/' + encodeURIComponent(targetCode));
+                 return;
+             } finally {
+-                // Ensure the high-quality loader displays for at least 420ms for a smooth, cinematic feel
++                // Ensure the high-quality loader displays for at least 1000ms (1s) for a smooth, cinematic feel
+                 const elapsed = Date.now() - startTime;
+-                const remaining = Math.max(0, 420 - elapsed);
++                const remaining = Math.max(0, 1000 - elapsed);
+                 setTimeout(() => {
+                     hidePageLoader();
+                     if (mainContent) {
+@@ -2176,13 +2176,27 @@
+             showPageLoader('Processing & loading data...');
+         });
+ 
+-        // Ensure loader is smoothly hidden once all page resources (DOM, images, stylesheets) are completely loaded
++        // Ensure loader displays for at least 1000ms (1 second) on every page load
++        const initialPb = document.getElementById('loaderProgressBar');
++        if (initialPb) {
++            initialPb.style.width = '25%';
++            setTimeout(() => { if (initialPb) initialPb.style.width = '65%'; }, 250);
++            setTimeout(() => { if (initialPb) initialPb.style.width = '90%'; }, 650);
++        }
++
++        function scheduleInitialLoaderHide() {
++            const startTime = window.__pageLoadStartTime || Date.now();
++            const elapsed = Date.now() - startTime;
++            const remaining = Math.max(0, 1000 - elapsed);
++            setTimeout(() => {
++                hidePageLoader();
++            }, remaining);
++        }
++
+         if (document.readyState === 'complete') {
+-            hidePageLoader();
++            scheduleInitialLoaderHide();
+         } else {
+-            window.addEventListener('load', () => {
+-                setTimeout(hidePageLoader, 150);
+-            });
++            window.addEventListener('load', scheduleInitialLoaderHide);
+         }
+ 
+         // Hide loader when navigating via browser back/forward cache
+@@ -2189,4 +2189,4 @@
+-            hidePageLoader();
++            scheduleInitialLoaderHide();
+         });
+         document.addEventListener('click', (e) => {
+             const menu = document.getElementById('userMenu');
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

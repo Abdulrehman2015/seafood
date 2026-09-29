@@ -35,13 +35,13 @@
                     <span class="walkin-store-tag">
                         🏬 @t('walkin.store_location', 'MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.')
                     </span>
-                    <span class="walkin-tag-sub">⚡ @t('walkin.express_pickup_tag', 'Counter 2 Self-Collection')</span>
+                    <span class="walkin-tag-sub">⚡ @t('walkin.express_pickup_tag', 'MST Counter 2 Self-Collection')</span>
                 </div>
                 <h1 class="walkin-hero-title">
                     @t('walkin.title', 'Walk-in Express')
                 </h1>
                 <p class="walkin-hero-subtitle">
-                    @t('walkin.service_desc', 'Walk-in Express is intended for retail / individual purchases and Counter 2 self-collection. Browse available products, select your items, complete payment on your phone, and collect your packed order at MST Counter 2.')
+                    @t('walkin.service_desc', 'Walk-in Express is for retail / individual purchases and self-collection at MST Counter 2 only. Delivery is not available for Walk-in Express.')
                 </p>
             </div>
 
@@ -107,7 +107,7 @@
                     </div>
                     <div class="step-info">
                         <span class="step-name">@t('walkin.step_4_name', '4. Ambil')</span>
-                        <span class="step-sub">@t('walkin.step_4_desc', 'Ambil pesanan yang telah disediakan di Kaunter 2.')</span>
+                        <span class="step-sub">@t('walkin.step_4_desc', 'Ambil pesanan yang telah disediakan di MST Kaunter 2.')</span>
                     </div>
                 </div>
             </div>
@@ -121,7 +121,7 @@
         <div class="b2b-notice-content">
             <div class="b2b-notice-left">
                 <span class="b2b-notice-icon">ℹ️</span>
-                <span>@t('walkin.wholesale_note', 'Walk-in Express is intended for retail / individual purchases and Counter 2 self-collection.')</span>
+                <span>@t('walkin.wholesale_note', 'Walk-in Express is for retail / individual purchases and self-collection at MST Counter 2 only. Delivery is not available for Walk-in Express.')</span>
             </div>
             <a href="{{ route('register.wholesale') }}" class="b2b-notice-link">
                 <span>@t('walkin.wholesale_link', 'Looking for wholesale or regular supply? Register for a Wholesale Account')</span>
@@ -272,13 +272,13 @@
                 </div>
             </form>
 
-            <!-- Counter 2 Collection Info Card -->
+            <!-- MST Counter 2 Collection Info Card -->
             <div class="sidebar-instore-box">
-                <div class="instore-box-title">🏬 @t('walkin.counter_title', 'Counter 2 Collection')</div>
+                <div class="instore-box-title">🏬 @t('walkin.counter_title', 'MST Counter 2 Collection')</div>
                 <div style="font-weight:700;font-size:0.82rem;color:#1e3a8a;margin-bottom:6px;line-height:1.4">
                     MST Kaunter 2, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia
                 </div>
-                <p class="instore-box-desc">@t('walkin.counter_desc', 'Orders are prepared for Counter 2 collection after payment confirmation. Orders are packed appropriately for collection and transport.')</p>
+                <p class="instore-box-desc">@t('walkin.counter_desc', 'Orders are prepared for MST Counter 2 collection after payment confirmation. Orders are packed appropriately for collection and transport.')</p>
                 <div class="instore-box-note">📋 @t('walkin.counter_note', 'Please present your order reference or payment confirmation when collecting your order.')</div>
                 <div style="margin-top:10px">
                     <a href="https://maps.google.com/?q={{ urlencode('MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor') }}" target="_blank" rel="noopener noreferrer" class="btn-walkin-directions" style="display:inline-flex;align-items:center;gap:5px;font-size:0.78rem;font-weight:700;color:#2563eb;background:#eff6ff;padding:6px 12px;border-radius:6px;border:1px solid #bfdbfe;text-decoration:none">
@@ -293,7 +293,7 @@
             <!-- Desktop Toolbar -->
             <div class="shop-toolbar">
                 <div class="shop-toolbar-info">
-                    <span><strong>{{ $products->total() }}</strong>@t('walkin.products_count_label', ' products currently available for Walk-in / Counter Collection')</span>
+                    <span><strong>{{ $products->total() }}</strong>@t('walkin.products_count_label', ' products currently available for Walk-in / MST Counter 2 Collection')</span>
                     @if(request('search'))
                         <span class="text-muted">@t('shop.for_keyword', 'for') "<strong>{{ request('search') }}</strong>"</span>
                     @endif
@@ -349,12 +349,7 @@
                                 @endif
                             </a>
 
-                            <!-- Badges Container -->
-                            @if($product->origin)
-                                <div class="card-badges-top">
-                                    <span class="product-badge badge-origin">🌍 {{ $product->origin }}</span>
-                                </div>
-                            @endif
+
 
                             @php
                                 $storageLabel = $product->getStorageDisplay();
@@ -1313,19 +1308,6 @@
     z-index: 3;
     pointer-events: none;
 }
-.card-badges-top .badge-origin {
-    margin-left: auto;
-    background: rgba(255, 255, 255, 0.95);
-    color: #0f172a;
-    border: 1px solid #e2e8f0;
-    font-size: 0.68rem;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 999px;
-    white-space: nowrap;
-    backdrop-filter: blur(4px);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
 .product-badge-temp {
     position: absolute;
     bottom: 8px;
@@ -2113,15 +2095,6 @@
         display: flex !important;
         justify-content: flex-end !important;
         z-index: 3 !important;
-    }
-    .card-badges-top .badge-origin {
-        font-size: 0.64rem !important;
-        padding: 2px 6px !important;
-        background: rgba(255, 255, 255, 0.95) !important;
-        color: #0f172a !important;
-        border-radius: 6px !important;
-        border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
     }
     .product-badge-temp {
         font-size: 0.64rem !important;

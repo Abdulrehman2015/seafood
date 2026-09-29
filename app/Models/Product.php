@@ -130,8 +130,9 @@ class Product extends Model
 
     public function getThumbnailUrlAttribute(): string
     {
-        if ($this->thumbnail) {
-            return asset('storage/' . $this->thumbnail);
+        $thumb = $this->thumbnail ?? ($this->images[0] ?? null);
+        if ($thumb) {
+            return cdn_storage($thumb);
         }
         return asset('images/placeholder.png');
     }

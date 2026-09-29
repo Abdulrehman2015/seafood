@@ -56,15 +56,21 @@ class RegisteredUserController extends Controller
             'customer_group'         => ['required', 'in:retail,wholesale,trading'],
             'phone'                  => ['required', 'string', 'max:20'],
             'company_name'           => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:255'],
-            'company_reg_no'         => ['nullable', 'string', 'max:100'],
+            'company_reg_no'         => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:100'],
+            'business_address'       => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:500'],
+            'business_city'          => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:100'],
+            'business_state'         => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:100'],
+            'business_postcode'      => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:10'],
+            'business_country'       => ['nullable', 'string', 'max:100'],
             'business_type'          => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable', 'string', 'max:255'],
             'position_role'          => ['nullable', 'string', 'max:255'],
             'contact_person'         => ['nullable', 'string', 'max:255'],
             'business_location'      => ['nullable', 'string', 'max:255'],
             'country_market'         => ['required_if:customer_group,trading', 'nullable', 'string', 'max:255'],
-            'destination_country'    => ['required_if:customer_group,trading', 'nullable', 'string', 'max:255'],
+            'destination_country'    => ['nullable', 'string', 'max:255'],
             'destination_market'     => ['nullable', 'string', 'max:255'],
-            'product_interest'       => ['required_if:customer_group,trading', 'nullable'],
+            'trading_requirements'   => ['nullable'],
+            'product_interest'       => ['required_if:customer_group,wholesale', 'required_if:customer_group,trading', 'nullable'],
             'estimated_order_volume' => ['nullable', 'string', 'max:255'],
             'import_requirements'    => ['nullable', 'string', 'max:2000'],
             'additional_message'     => ['nullable', 'string', 'max:2000'],
@@ -76,6 +82,8 @@ class RegisteredUserController extends Controller
             'city'                   => ['nullable', 'string', 'max:100'],
             'state'                  => ['nullable', 'string', 'max:100'],
             'postcode'               => ['nullable', 'string', 'max:10'],
+            'marketing_whatsapp'     => ['nullable', 'boolean'],
+            'marketing_email'        => ['nullable', 'boolean'],
             'terms_consent'          => ['required', 'accepted'],
         ];
 
@@ -94,9 +102,13 @@ class RegisteredUserController extends Controller
             'terms_consent.accepted'            => __t('auth.terms_required', 'You must agree to the Terms of Service and Privacy Policy to register.'),
             'email.unique'                      => __t('auth.email_already_registered', 'An account with this email already exists. Please Sign In or reset your password.'),
             'company_name.required_if'          => __t('auth.company_name_required', 'Company Name is required for business and trading accounts.'),
+            'company_reg_no.required_if'        => __t('auth.company_reg_no_required', 'Company Registration No. / SSM / UEN is required for business accounts.'),
+            'business_address.required_if'      => __t('auth.business_address_required', 'Business Address is required for business and trading registration.'),
+            'business_city.required_if'         => __t('auth.business_city_required', 'Business City is required for business and trading registration.'),
+            'business_state.required_if'        => __t('auth.business_state_required', 'Business State is required for business and trading registration.'),
+            'business_postcode.required_if'     => __t('auth.business_postcode_required', 'Business Postcode is required for business and trading registration.'),
             'business_type.required_if'         => __t('auth.business_type_required', 'Business Nature / Type is required.'),
-            'country_market.required_if'        => __t('auth.country_market_required', 'Country / Market is required for trading accounts.'),
-            'destination_country.required_if'   => __t('auth.destination_country_required', 'Destination / Delivery Country is required for trading accounts.'),
+            'country_market.required_if'        => __t('auth.country_market_required', 'Country / Target Market is required for trading accounts.'),
             'product_interest.required_if'      => __t('auth.product_interest_required', 'Please select at least one product or category of interest.'),
             'g-recaptcha-response.required'     => __t('auth.recaptcha_required', 'Please verify that you are not a robot.'),
         ]);
@@ -125,13 +137,36 @@ class RegisteredUserController extends Controller
             default                => 'approved',
         };
 
-        $marketingOptIn = $request->boolean('marketing_opt_in');
+        // Separate independent optional marketing consents (Section 18)
+        $marketingWhatsapp = $request->boolean('marketing_whatsapp');
+        $marketingEmail    = $request->boolean('marketing_email') || $request->boolean('marketing_opt_in');
+        $marketingOptIn    = $marketingWhatsapp || $marketingEmail;
+
+        $channels = [];
+        if ($marketingWhatsapp) $channels[] = 'whatsapp';
+        if ($marketingEmail)    $channels[] = 'email';
+        $marketingChannels = !empty($channels) ? implode(',', $channels) : null;
 
         // Normalize product_interest (handle both array & string)
         $productInterest = $request->input('product_interest');
         if (is_array($productInterest)) {
             $productInterest = implode(', ', array_filter($productInterest));
         }
+
+        // Normalize trading_requirements (handle both array & string)
+        $tradingReqs = $request->input('trading_requirements');
+        if (is_array($tradingReqs)) {
+            $tradingReqs = implode(', ', array_filter($tradingReqs));
+        }
+        $supplyArrangement = $tradingReqs ?: $request->input('supply_arrangement');
+
+        $formattedBizAddress = implode(', ', array_filter([
+            $request->business_address,
+            $request->business_city,
+            $request->business_state,
+            $request->business_postcode,
+            $request->business_country
+        ]));
 
         $user = User::create([
             'name'                   => $request->name,
@@ -147,7 +182,7 @@ class RegisteredUserController extends Controller
             'business_type'          => $request->business_type,
             'position_role'          => $request->position_role,
             'contact_person'         => $request->contact_person ?? $request->name,
-            'business_location'      => $request->business_location ?? $request->destination_country,
+            'business_location'      => $formattedBizAddress ?: ($request->business_location ?? $request->destination_country),
             'country_market'         => $request->country_market ?? $request->destination_market,
             'destination_country'    => $request->destination_country ?? $request->destination_market,
             'destination_market'     => $request->destination_market ?? $request->country_market,
@@ -155,7 +190,7 @@ class RegisteredUserController extends Controller
             'product_interest'       => $productInterest,
             'import_requirements'    => $request->import_requirements,
             'additional_message'     => $request->additional_message,
-            'supply_arrangement'     => $request->supply_arrangement,
+            'supply_arrangement'     => $supplyArrangement,
             'existing_mst_customer'  => $request->existing_mst_customer ?? 'no',
             'existing_customer_ref'  => $request->existing_customer_ref,
             'preferred_fulfilment'   => $request->preferred_fulfilment ?? ($request->supply_arrangement ?? 'walkin'),
@@ -164,10 +199,10 @@ class RegisteredUserController extends Controller
             'state'                  => $request->state,
             'postcode'               => $request->postcode,
             'marketing_opt_in'       => $marketingOptIn,
-            'marketing_channels'     => $marketingOptIn ? 'email,whatsapp' : null,
+            'marketing_channels'     => $marketingChannels,
         ]);
 
-        if ($marketingOptIn) {
+        if ($marketingEmail) {
             \App\Models\NewsletterSubscriber::updateOrCreate(
                 ['email' => $user->email],
                 ['status' => 'active', 'ip_address' => $request->ip()]

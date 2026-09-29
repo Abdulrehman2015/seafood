@@ -47,7 +47,7 @@
             <div class="rfq-notice-text">
                 <div class="rfq-notice-title">@t('rfq.notice_title', 'B2B Sourcing & Trading Advantage')</div>
                 <div class="rfq-notice-desc">
-                    @t('rfq.notice_desc', 'Our commercial team reviews your volume inquiry and product specifications, providing a competitive quotation within 1-2 business days. Can\'t find a product in our list? You can specify custom products in the notes below or contact our sourcing team.')
+                    @t('rfq.notice_desc', 'We will review your requirements, including product availability, specifications and pricing, and contact you regarding the next steps. Can\'t find a product in our catalogue? You can specify customised sourcing requirements in the notes below.')
                 </div>
             </div>
         </div>

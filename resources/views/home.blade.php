@@ -145,6 +145,7 @@
 
 </section>
 
+@push('styles')
 <style>
 /* ════════════════════════════════════════
    MIKA HERO — Premium Banner
@@ -932,19 +933,6 @@
     backdrop-filter: blur(4px);
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
-.featured-products-section .card-badges-top .badge-origin {
-    margin-left: auto;
-    background: rgba(255, 255, 255, 0.94);
-    color: #0f172a;
-    border: 1px solid #e2e8f0;
-    font-size: 0.68rem;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 999px;
-    white-space: nowrap;
-    backdrop-filter: blur(4px);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
 .featured-products-section .product-badge-temp {
     position: absolute;
     bottom: 8px;
@@ -1232,19 +1220,6 @@
     height: 100%;
     object-fit: cover;
 }
-.quickview-origin-tag {
-    position: absolute;
-    bottom: 14px;
-    left: 14px;
-    background: rgba(10, 25, 47, 0.88);
-    backdrop-filter: blur(4px);
-    color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.15);
-}
 .quickview-details {
     padding: 28px;
     display: flex;
@@ -1337,8 +1312,7 @@
         gap: 4px !important;
         right: auto !important;
     }
-    .featured-products-section .card-badges-top .badge-featured,
-    .featured-products-section .card-badges-top .badge-origin {
+    .featured-products-section .card-badges-top .badge-featured {
         font-size: 0.62rem !important;
         padding: 2px 6px !important;
         margin-left: 0 !important;
@@ -1375,6 +1349,7 @@
     }
 }
 </style>
+@endpush
 
 
 
@@ -1487,9 +1462,6 @@
                             @if($product->is_featured)
                                 <span class="product-badge badge-featured">⭐ @t('shop.badge_featured', 'Featured')</span>
                             @endif
-                            @if($product->origin)
-                                <span class="product-badge badge-origin">🌍 {{ $product->origin }}</span>
-                            @endif
                         </div>
 
                         @if($product->storage_temp)
@@ -1509,7 +1481,6 @@
                             'name' => $product->name,
                             'category' => $product->category?->name ?? 'Seafood',
                             'sku' => $product->sku,
-                            'origin' => $product->origin,
                             'weight' => $product->weight,
                             'unit' => $product->unit,
                             'storage_temp' => $product->storage_temp,
@@ -1614,7 +1585,6 @@
         <div class="quickview-grid">
             <div class="quickview-media">
                 <img src="" id="qvImg" alt="Product Image">
-                <span class="quickview-origin-tag" id="qvOriginTag"></span>
             </div>
             <div class="quickview-details">
                 <div class="quickview-category" id="qvCategory"></div>
@@ -1767,7 +1737,7 @@
                 <div style="display:flex;align-items:center;gap:12px">
                     <span style="font-size:2rem">🏪</span>
                     <div>
-                        <div style="font-size:0.78rem;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:0.05em">@t('common.counter_pickup', 'Counter Collection')</div>
+                        <div style="font-size:0.78rem;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:0.05em">@t('common.counter_pickup', 'MST Counter 2 Collection')</div>
                         <h3 style="font-size:1.15rem;font-weight:800;color:#0f172a;margin:0">Self-Collection / Walk-In</h3>
                     </div>
                 </div>
@@ -1776,7 +1746,7 @@
                     <div style="font-size:1.3rem;font-weight:800;color:#059669">RM 0 (Free)</div>
                 </div>
                 <p style="font-size:0.85rem;color:#64748b;line-height:1.55;margin:0">
-                    @t('home.delivery_walkin_desc', 'Collect your confirmed order directly from MST SILC Cold-Chain Facility Counter 2. No delivery threshold and no delivery fee apply.')
+                    @t('home.delivery_walkin_desc', 'Collect your confirmed order directly from MST SILC Cold-Chain Facility at MST Counter 2. No delivery threshold and no delivery fee apply.')
                 </p>
             </div>
         </div>
@@ -1785,7 +1755,7 @@
         <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:14px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
             <div style="max-width:760px">
                 <div style="font-size:0.88rem;color:#334155;line-height:1.6;font-weight:500;">
-                    <span style="display:block;margin-bottom:4px">📍 <strong>@t('home.delivery_area_label', 'Delivery Area:')</strong> @t('home.delivery_area_statement', 'Standard local delivery arrangements apply to selected areas within Johor Bahru and Nusajaya / Iskandar Puteri.')</span>
+                    <span style="display:block;margin-bottom:4px">📍 <strong>@t('home.delivery_area_label', 'Delivery Area:')</strong> @t('home.delivery_area_statement', 'Standard local delivery arrangements apply to selected areas within Johor Bahru and Iskandar Puteri / Nusajaya.')</span>
                     <span style="display:block;color:#64748b">🌐 @t('home.delivery_note_outside', 'For locations outside the local delivery area, applicable transportation charges and manual delivery arrangements will apply.')</span>
                 </div>
             </div>
@@ -2097,7 +2067,6 @@ function openQuickViewModal(data) {
 
     document.getElementById('qvWeight').textContent = data.weight ? '(' + data.weight + ' / ' + data.unit + ')' : '';
     document.getElementById('qvDesc').textContent = data.short_desc || '';
-    document.getElementById('qvOriginTag').textContent = '🌍 ' + (data.origin || 'Imported');
 
     const moqNotice = document.getElementById('qvMoqNotice');
     if (moqNotice) {

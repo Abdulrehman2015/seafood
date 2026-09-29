@@ -84,12 +84,21 @@ if (!function_exists('cdn_storage')) {
      * Generate a cookie-free CDN URL for a storage image.
      * Use this instead of asset('storage/...') to pass Pingdom cookie-free domain check.
      *
-     * @param string $path  Path relative to storage/app/public (e.g. 'products/fish.webp')
+     * @param string|null $path  Path relative to storage/app/public (e.g. 'products/fish.webp')
      * @return string
      */
-    function cdn_storage(string $path): string
+    function cdn_storage(?string $path): string
     {
+        if (empty($path)) {
+            return asset('images/placeholder.png');
+        }
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
         $path = ltrim($path, '/');
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
+        }
         return url('/cdn-assets/img/' . $path);
     }
 }
@@ -99,12 +108,21 @@ if (!function_exists('cdn_img')) {
      * Generate a cookie-free CDN URL for a public image.
      * Use this instead of asset('images/...') to pass Pingdom cookie-free domain check.
      *
-     * @param string $path  Path relative to public/images (e.g. 'logo.webp')
+     * @param string|null $path  Path relative to public/images (e.g. 'logo.webp')
      * @return string
      */
-    function cdn_img(string $path): string
+    function cdn_img(?string $path): string
     {
+        if (empty($path)) {
+            return asset('images/placeholder.png');
+        }
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
         $path = ltrim($path, '/');
+        if (str_starts_with($path, 'images/')) {
+            $path = substr($path, 7);
+        }
         return url('/cdn-assets/img/' . $path);
     }
 }

@@ -405,7 +405,7 @@
                     </div>
                     <div class="form-group mb-0">
                         <label class="form-label">Brand / Producer</label>
-                        <input type="text" name="brand" class="form-control" value="{{ old('brand', $product->brand ?? 'Mika Seafood') }}" placeholder="e.g. Mika Brand">
+                        <input type="text" name="brand" class="form-control" value="{{ old('brand', $product->brand ?? 'MST') }}" placeholder="e.g. MST Brand">
                     </div>
                 </div>
             </div>

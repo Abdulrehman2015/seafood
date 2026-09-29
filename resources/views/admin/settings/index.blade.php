@@ -1103,7 +1103,7 @@
                             <div id="logoPreviewBox" class="appearance-preview-box">
                                 @if(!empty($settings['site_logo']))
                                     <img id="logoPreviewImg" src="{{ asset('storage/'.$settings['site_logo']) }}" class="appearance-logo-img">
-                                    <span id="logoPlaceholder" style="display:none" class="appearance-placeholder">🐟 Mika</span>
+                                    <span id="logoPlaceholder" style="display:none" class="appearance-placeholder">🐟 MST</span>
                                 @else
                                     <span id="logoPlaceholder" class="appearance-placeholder">🐟 No Logo Set</span>
                                     <img id="logoPreviewImg" src="" class="appearance-logo-img" style="display:none">
@@ -1185,7 +1185,7 @@
 
                     {{-- Live Footer Preview --}}
                     <div style="margin-top:14px;background:#0f172a;border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:center;gap:12px">
-                        <span id="logoFooterPreview" style="font-size:1.1rem;font-weight:800;color:#ffffff;letter-spacing:-0.5px">🐟 镁嘉 · MST</span>
+                        <span id="logoFooterPreview" style="font-size:1.1rem;font-weight:800;color:#ffffff;letter-spacing:-0.5px">🐟 镁嘉国际贸易有限公司 · MST</span>
                         <span style="color:#475569;font-size:1rem">|</span>
                         <span id="preview-footer-copyright" style="font-size:0.82rem;color:#94a3b8;font-style:italic">
                             {{ $settings['footer_copyright'] ?? '© ' . date('Y') . ' MST Import and Export Sdn. Bhd. · All rights reserved.' }}

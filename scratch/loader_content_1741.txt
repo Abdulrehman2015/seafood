@@ -1,0 +1,209 @@
+Created At: 2026-09-29T12:58:47+05:00
+Completed At: 2026-09-29T12:58:47+05:00
+File Path: `file:///f:/My%20AI/Sea%20Food/seafood/resources/views/layouts/app.blade.php`
+Total Lines: 2396
+Total Bytes: 122796
+Showing lines 900 to 1100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+900:             color: #7dd3fc;
+901:             letter-spacing: 0.12em;
+902:             margin-top: 4px;
+903:             text-transform: uppercase;
+904:         }
+905: 
+906:         /* Seafood Status Pill */
+907:         .ocean-status-pill {
+908:             display: inline-flex;
+909:             align-items: center;
+910:             gap: 8px;
+911:             background: rgba(56, 189, 248, 0.1);
+912:             border: 1px solid rgba(56, 189, 248, 0.28);
+913:             backdrop-filter: blur(10px);
+914:             -webkit-backdrop-filter: blur(10px);
+915:             border-radius: 999px;
+916:             padding: 6px 18px;
+917:             margin-top: 16px;
+918:             font-size: 0.82rem;
+919:             font-weight: 600;
+920:             color: #e0f2fe;
+921:             letter-spacing: 0.02em;
+922:         }
+923: 
+924:         .ocean-live-dot {
+925:             width: 8px;
+926:             height: 8px;
+927:             border-radius: 50%;
+928:             background: #38bdf8;
+929:             box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8);
+930:             animation: oceanPulse 1.8s infinite;
+931:             flex-shrink: 0;
+932:         }
+933: 
+934:         @keyframes oceanPulse {
+935:             0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.8); }
+936:             70% { box-shadow: 0 0 0 9px rgba(56, 189, 248, 0); }
+937:             100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+938:         }
+939: 
+940:         /* Ocean Wave Progress Track & Fill */
+941:         .ocean-wave-track {
+942:             width: 210px;
+943:             height: 6px;
+944:             background: rgba(255, 255, 255, 0.12);
+945:             border-radius: 999px;
+946:             overflow: hidden;
+947:             margin-top: 18px;
+948:             position: relative;
+949:         }
+950: 
+951:         .ocean-wave-bar {
+952:             height: 100%;
+953:             width: 0%;
+954:             background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #7dd3fc 100%);
+955:             box-shadow: 0 0 12px rgba(56, 189, 248, 0.85);
+956:             border-radius: 999px;
+957:             transition: width 0.35s ease;
+958:         }
+959: 
+960:         .main-content {
+961:             transition: opacity 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+962:         }
+963:         .main-content.lang-transitioning {
+964:             opacity: 0.35;
+965:         }
+966:     </style>
+967:     @stack('styles')
+968: </head>
+969: 
+970: <body>
+971:     <!-- ─── Oceanic Frozen Seafood & Cold-Chain Page Switch Loader (1s Display) ─── -->
+972:     <div id="pageSwitchLoader" class="page-switch-loader active" aria-hidden="false">
+973:         <div class="ocean-backdrop">
+974:             <div class="ocean-caustic-light"></div>
+975:             <div class="ocean-depth-glow"></div>
+976:             <!-- Rising Ocean Bubbles -->
+977:             <div class="ocean-bubble b1"></div>
+978:             <div class="ocean-bubble b2"></div>
+979:             <div class="ocean-bubble b3"></div>
+980:             <div class="ocean-bubble b4"></div>
+981:             <div class="ocean-bubble b5"></div>
+982:             <div class="ocean-bubble b6"></div>
+983:         </div>
+984: 
+985:         <div class="ocean-loader-card">
+986:             {{-- Seafood Chef Mascot with Water Ripples --}}
+987:             <div class="ocean-mascot-wrap">
+988:                 <div class="water-ripple r1"></div>
+989:                 <div class="water-ripple r2"></div>
+990:                 <div class="water-ripple r3"></div>
+991:                 <div class="ocean-mascot-badge">
+992:                     <img src="{{ cdn_img('logo.webp') }}" alt="{{ $settings['store_name'] ?? 'MST Import and Export Sdn. Bhd.' }}" class="ocean-mascot-img">
+993:                 </div>
+994:             </div>
+995: 
+996:             {{-- Brand Typography & Cold-Chain Identity --}}
+997:             <div class="ocean-brand-box">
+998:                 <span class="ocean-brand-title" style="font-size:1.05rem;font-weight:800;letter-spacing:0.02em;display:block">镁嘉国际贸易有限公司</span>
+999:                 <span class="ocean-brand-sub" style="font-size:0.75rem;font-weight:600;letter-spacing:0.02em;display:block;opacity:0.9">MST Import and Export Sdn. Bhd.</span>
+1000:                 <span class="ocean-brand-tagline">
+1001:                     <span>❄️</span>
+1002:                     <span>PREMIUM FROZEN SEAFOOD &amp; COLD CHAIN</span>
+1003:                     <span>🐟</span>
+1004:                 </span>
+1005:             </div>
+1006: 
+1007:             {{-- Fresh Catch / Loading Status --}}
+1008:             <div class="ocean-status-pill">
+1009:                 <span class="ocean-live-dot"></span>
+1010:                 <span id="loaderStatusText" class="ocean-status-text">Updating...</span>
+1011:             </div>
+1012: 
+1013:             {{-- Wave Progress Line --}}
+1014:             <div class="ocean-wave-track">
+1015:                 <div id="loaderProgressBar" class="ocean-wave-bar"></div>
+1016:             </div>
+1017:         </div>
+1018:     </div>
+1019: 
+1020:     <nav class="navbar" id="navbar">
+1021:         <div class="container nav-container">
+1022:             <a href="{{ route('home') }}" class="nav-logo">
+1023:                 <img src="{{ cdn_img('logo.webp') }}" alt="镁嘉国际贸易有限公司 — MST Import and Export Sdn. Bhd."
+1024:                     style="height:44px;width:44px;object-fit:contain;border-radius:8px;">
+1025:                 <div class="logo-text">
+1026:                     <span class="logo-brand">镁嘉国际贸易有限公司</span>
+1027:                     <span class="logo-sub">MST Import and Export Sdn. Bhd.</span>
+1028:                 </div>
+1029:             </a>
+1030:             <div class="nav-links" id="navLinks">
+1031:                 <div class="mobile-drawer-header-hint">@t('nav.navigation', 'Navigation')</div>
+1032:                 <div class="mobile-nav-group">
+1033:                     <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+1034:                         <span class="nav-link-content">
+1035:                             <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+1036:                                 stroke="currentColor" stroke-width="2">
+1037:                                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+1038:                                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
+1039:                             </svg>
+1040:                             <span>@t('nav.home', 'Home')</span>
+1041:                         </span>
+1042:                         <span class="mobile-chevron">›</span>
+1043:                     </a>
+1044:                     <a href="{{ route('shop.index') }}"
+1045:                         class="nav-link {{ request()->routeIs('shop.*') ? 'active' : '' }}">
+1046:                         <span class="nav-link-content">
+1047:                             <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+1048:                                 stroke="currentColor" stroke-width="2">
+1049:                                 <circle cx="9" cy="21" r="1"></circle>
+1050:                                 <circle cx="20" cy="21" r="1"></circle>
+1051:                                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+1052:                             </svg>
+1053:                             <span>@t('nav.products', 'Products')</span>
+1054:                         </span>
+1055:                         <span class="mobile-chevron">›</span>
+1056:                     </a>
+1057:                     <a href="{{ route('walkin.shop') }}"
+1058:                         class="nav-link {{ request()->routeIs('walkin.*') ? 'active' : '' }}">
+1059:                         <span class="nav-link-content">
+1060:                             <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+1061:                                 stroke="currentColor" stroke-width="2">
+1062:                                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+1063:                                 <line x1="3" y1="6" x2="21" y2="6"></line>
+1064:                                 <path d="M16 10a4 4 0 0 1-8 0"></path>
+1065:                             </svg>
+1066:                             <span>@t('nav.walkin_menu', 'Walk-in Menu')</span>
+1067:                         </span>
+1068:                         <span class="mobile-chevron">›</span>
+1069:                     </a>
+1070:                     <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">
+1071:                         <span class="nav-link-content">
+1072:                             <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+1073:                                 stroke="currentColor" stroke-width="2">
+1074:                                 <circle cx="12" cy="12" r="10"></circle>
+1075:                                 <line x1="12" y1="16" x2="12" y2="12"></line>
+1076:                                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
+1077:                             </svg>
+1078:                             <span>@t('nav.about', 'About')</span>
+1079:                         </span>
+1080:                         <span class="mobile-chevron">›</span>
+1081:                     </a>
+1082:                     <a href="{{ route('contact') }}"
+1083:                         class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">
+1084:                         <span class="nav-link-content">
+1085:                             <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+1086:                                 stroke="currentColor" stroke-width="2">
+1087:                                 <path
+1088:                                     d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+1089:                                 </path>
+1090:                             </svg>
+1091:                             <span>@t('nav.contact', 'Contact')</span>
+1092:                         </span>
+1093:                         <span class="mobile-chevron">›</span>
+1094:                     </a>
+1095:                     @auth
+1096:                         @if(auth()->user()->customer_group === 'trading' && auth()->user()->isApproved())
+1097:                             <a href="{{ route('quotations.index') }}"
+1098:                                 class="nav-link {{ request()->routeIs('quotations.*') ? 'active' : '' }}">
+1099:                                 <span class="nav-link-content">
+1100:                                     <svg class="mobile-nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

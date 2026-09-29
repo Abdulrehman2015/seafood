@@ -83,37 +83,6 @@
 
         $activeSubCat = $activeParentCat && $selectedSubSlug ? $activeParentCat->children->firstWhere('slug', $selectedSubSlug) : null;
         
-        $originFlags = [
-            'norway'        => '🇳🇴',
-            'malaysia'      => '🇲🇾',
-            'indonesia'     => '🇮🇩',
-            'japan'         => '🇯🇵',
-            'australia'     => '🇦🇺',
-            'new zealand'   => '🇳🇿',
-            'chile'         => '🇨🇱',
-            'china'         => '🇨🇳',
-            'india'         => '🇮🇳',
-            'thailand'      => '🇹🇭',
-            'vietnam'       => '🇻🇳',
-            'myanmar'       => '🇲🇲',
-            'usa'           => '🇺🇸',
-            'united states' => '🇺🇸',
-            'canada'        => '🇨🇦',
-            'taiwan'        => '🇹🇼',
-            'korea'         => '🇰🇷',
-            'singapore'     => '🇸🇬',
-            'local'         => '🇲🇾',
-        ];
-
-        $getOriginFlag = function($orig) use ($originFlags) {
-            if (!$orig) return '🌍';
-            $lower = strtolower(trim($orig));
-            foreach ($originFlags as $k => $flag) {
-                if (str_contains($lower, $k)) return $flag;
-            }
-            return '🌍';
-        };
-
         $catIcons = [
             'seafood'             => '🦐',
             'fish'                => '🐟',
@@ -154,12 +123,11 @@
         };
 
         $currentCustomerType = request('customer_type', (auth()->check() && in_array($group, ['wholesale', 'trading'])) ? 'wholesale' : 'retail');
-        $hasAnyFilter = request('search') || request('category') || request('subcategory') || request('origin') || request('brand') || request('pack_size') || request('availability') || (request('sort') && request('sort') !== 'sort_order');
+        $hasAnyFilter = request('search') || request('category') || request('subcategory') || request('brand') || request('pack_size') || request('availability') || (request('sort') && request('sort') !== 'sort_order');
         
         $activeFilterCount = 0;
         if (!empty($selectedCatSlug)) $activeFilterCount++;
         if (!empty($selectedSubSlug)) $activeFilterCount++;
-        if (!empty(request('origin'))) $activeFilterCount++;
         if (!empty(request('brand'))) $activeFilterCount++;
         if (!empty(request('pack_size'))) $activeFilterCount++;
         if (!empty(request('availability'))) $activeFilterCount++;
@@ -173,7 +141,6 @@
             <input type="hidden" name="customer_type" id="hidden_customer_type" value="{{ $currentCustomerType }}">
             <input type="hidden" name="category" id="hidden_category" value="{{ $selectedCatSlug }}">
             <input type="hidden" name="subcategory" id="hidden_subcategory" value="{{ $selectedSubSlug }}">
-            <input type="hidden" name="origin" id="hidden_origin" value="{{ request('origin') }}">
             <input type="hidden" name="brand" id="hidden_brand" value="{{ request('brand') }}">
             <input type="hidden" name="pack_size" id="hidden_pack_size" value="{{ request('pack_size') }}">
             <input type="hidden" name="availability" id="hidden_availability" value="{{ request('availability') }}">
@@ -357,48 +324,7 @@
                     </div>
                 </div>
 
-                <!-- 3. Origin Dropdown -->
-                <div class="searchable-dropdown" id="dropdown-origin" data-name="origin">
-                    <button type="button" class="searchable-dropdown-trigger {{ request('origin') ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('origin')">
-                        <span class="dropdown-trigger-content">
-                            <span class="dropdown-trigger-icon" id="icon-origin">{{ request('origin') ? $getOriginFlag(request('origin')) : '🌍' }}</span>
-                            <span class="dropdown-trigger-text" id="label-origin">{{ request('origin') ?: __t('shop.filter_origin', 'Origin') }}</span>
-                        </span>
-                        <span class="dropdown-trigger-arrows">
-                            @if(request('origin'))
-                                <span class="dropdown-clear-btn" onclick="event.stopPropagation(); clearDropdownValue('origin')" title="Clear">✕</span>
-                            @endif
-                            <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </span>
-                    </button>
-                    <div class="searchable-dropdown-menu" id="menu-origin">
-                        <div class="dropdown-search-header">
-                            <svg class="dropdown-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            <input type="text" class="dropdown-search-input" placeholder="@t('shop.search_origin', 'Search origin...')" oninput="filterDropdownOptions('origin', this.value)" autocomplete="off">
-                        </div>
-                        <div class="dropdown-options-list" id="list-origin">
-                            <button type="button" class="dropdown-option-item {{ empty(request('origin')) ? 'selected' : '' }}" data-value="" data-label="@t('shop.all_origins', 'All Origins')" onclick="selectDropdownOption('origin', '', '{{ addslashes(__t('shop.filter_origin', 'Origin')) }}', '🌍')">
-                                <span class="option-name">🌍 @t('shop.all_origins', 'All Origins')</span>
-                                @if(empty(request('origin'))) <span class="option-check">✓</span> @endif
-                            </button>
-                            @foreach($availableOrigins as $orig)
-                                @php $origFlag = $getOriginFlag($orig); @endphp
-                                <button type="button" class="dropdown-option-item {{ request('origin') === $orig ? 'selected' : '' }}" data-value="{{ $orig }}" data-label="{{ $orig }}" onclick="selectDropdownOption('origin', '{{ addslashes($orig) }}', '{{ addslashes($orig) }}', '{{ $origFlag }}')">
-                                    <span class="option-name">{{ $origFlag }} {{ $orig }}</span>
-                                    @if(request('origin') === $orig) <span class="option-check">✓</span> @endif
-                                </button>
-                            @endforeach
-                            <div class="dropdown-no-results" style="display:none;"><span>@t('shop.no_results', 'No results found')</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. Brand Dropdown -->
+                <!-- 3. Brand Dropdown -->
                 <div class="searchable-dropdown" id="dropdown-brand" data-name="brand">
                     <button type="button" class="searchable-dropdown-trigger {{ request('brand') ? 'has-value' : '' }}" onclick="toggleSearchableDropdown('brand')">
                         <span class="dropdown-trigger-content">
@@ -544,7 +470,7 @@
                     @t('auth.sign_in', 'Sign In')
                 </a>
                 <a href="{{ route('register', ['type' => 'wholesale']) }}" class="btn-biz-access">
-                    @t('shop.request_wholesale_access', 'Request Wholesale Access →')
+                    @t('shop.request_wholesale_access', 'Apply for Wholesale / Business Pricing →')
                 </a>
             </div>
         </div>
@@ -552,17 +478,29 @@
 
     <!-- ─── Main Shop Content (AJAX Updated) ─── -->
     <div id="shopMainContent" style="position:relative">
-        <!-- Modern Page / Tab Switching Loader Bar -->
-        <div class="shop-tab-loader" id="shopTabLoader">
-            <div class="tab-loader-bar"></div>
-        </div>
-        <div class="filter-loading-bar"></div>
-
         <!-- Active Filters Row & Results Header with Sort By -->
         <div class="shop-results-header" id="shopResultsHeader">
             <div class="results-header-left">
                 <div class="results-count-text">
-                    <span>@t('shop.showing_selected', 'Showing') <strong>{{ $products->total() }}</strong> @t('shop.selected_products_count', 'selected products')</span>
+                    <span>
+                        @if($products->total() > 0)
+                            @if(current_locale() === 'zh')
+                                显示第 <strong>{{ $products->firstItem() }}–{{ $products->lastItem() }}</strong> 项（共 <strong>{{ $products->total() }}</strong> 件商品）
+                            @elseif(current_locale() === 'bm')
+                                Menunjukkan <strong>{{ $products->firstItem() }}–{{ $products->lastItem() }}</strong> daripada <strong>{{ $products->total() }}</strong> produk
+                            @else
+                                Showing <strong>{{ $products->firstItem() }}–{{ $products->lastItem() }}</strong> of <strong>{{ $products->total() }}</strong> products
+                            @endif
+                        @else
+                            @if(current_locale() === 'zh')
+                                共 <strong>0</strong> 件商品
+                            @elseif(current_locale() === 'bm')
+                                <strong>0</strong> produk ditemui
+                            @else
+                                <strong>0</strong> products found
+                            @endif
+                        @endif
+                    </span>
                     @if(request('search'))
                         <span style="color:#64748b">@t('shop.for_keyword', 'for') "<strong>{{ request('search') }}</strong>"</span>
                     @endif
@@ -591,12 +529,6 @@
                         @if($selectedSubSlug)
                             <a href="{{ route('shop.index', request()->except('subcategory', 'page')) }}" class="active-filter-badge">
                                 <span>Child: {{ $activeSubCat?->name ?? $selectedSubSlug }}</span>
-                                <span class="badge-x">✕</span>
-                            </a>
-                        @endif
-                        @if(request('origin'))
-                            <a href="{{ route('shop.index', request()->except('origin', 'page')) }}" class="active-filter-badge">
-                                <span>Origin: {{ request('origin') }}</span>
                                 <span class="badge-x">✕</span>
                             </a>
                         @endif
@@ -734,9 +666,6 @@
                                     @if($product->is_featured)
                                         <span class="badge-featured">⭐ @t('shop.badge_featured', 'Featured')</span>
                                     @endif
-                                    @if($product->origin)
-                                        <span class="badge-origin">{{ $getOriginFlag($product->origin) }} {{ $product->origin }}</span>
-                                    @endif
                                 </div>
 
                                 <!-- Storage Condition Badge Bottom Left -->
@@ -750,7 +679,6 @@
                                     data-name="{{ $product->name }}"
                                     data-category="{{ $product->category?->name ?? 'Products' }}"
                                     data-sku="{{ $product->sku ?? 'N/A' }}"
-                                    data-origin="{{ $product->origin ?? '' }}"
                                     data-weight="{{ $product->weight ?? '' }}"
                                     data-unit="{{ $product->unit ?? 'pack' }}"
                                     data-storage="{{ $storageLabel }}"
@@ -860,7 +788,7 @@
                                                 <div class="wholesale-locked-title">🏢 @t('shop.wholesale_pricing_locked', 'Wholesale Pricing')</div>
                                                 <div class="wholesale-locked-sub">@t('shop.wholesale_account_required', 'Wholesale account required')</div>
                                                 <a href="{{ route('register.wholesale') }}" class="btn-request-wholesale-link">
-                                                    @t('shop.request_wholesale_access', 'Request Wholesale Access →')
+                                                    @t('shop.request_wholesale_access', 'Apply for Wholesale / Business Pricing →')
                                                 </a>
                                             </div>
                                         @endif
@@ -872,7 +800,7 @@
                                     <!-- Retail Actions -->
                                     <div class="card-action-row actions-mode-retail">
                                         @if(!$isSensitiveOrRfq && $product->retail_price !== null)
-                                            <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form" data-no-loader="true" style="flex:1;margin:0;">
+                                            <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form" style="flex:1;margin:0;">
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                                 <input type="hidden" name="quantity" value="1">
@@ -891,7 +819,6 @@
                                             data-name="{{ $product->name }}"
                                             data-category="{{ $product->category?->name ?? 'Products' }}"
                                             data-sku="{{ $product->sku ?? 'N/A' }}"
-                                            data-origin="{{ $product->origin ?? '' }}"
                                             data-weight="{{ $product->weight ?? '' }}"
                                             data-unit="{{ $product->unit ?? 'pack' }}"
                                             data-storage="{{ $storageLabel }}"
@@ -923,7 +850,7 @@
                                     <!-- Wholesale Actions -->
                                     <div class="card-action-row actions-mode-wholesale">
                                         @if($isApprovedWholesale && $basePriceAmount !== null && !$product->is_rfq_only)
-                                            <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form" data-no-loader="true" style="flex:1;margin:0;">
+                                            <form action="{{ route('cart.add') }}" method="POST" class="product-cart-form" style="flex:1;margin:0;">
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                                 <input type="hidden" name="quantity" value="{{ $product->getMoqForGroup($group) }}">
@@ -942,7 +869,6 @@
                                             data-name="{{ $product->name }}"
                                             data-category="{{ $product->category?->name ?? 'Products' }}"
                                             data-sku="{{ $product->sku ?? 'N/A' }}"
-                                            data-origin="{{ $product->origin ?? '' }}"
                                             data-weight="{{ $product->weight ?? '' }}"
                                             data-unit="{{ $product->unit ?? 'pack' }}"
                                             data-storage="{{ $storageLabel }}"
@@ -984,7 +910,7 @@
                         </p>
                         <p class="disclaimer-line disclaimer-wholesale-note">
                             <strong>@t('shop.delivery_threshold_head', 'Delivery Arrangement:')</strong>
-                            @t('shop.delivery_threshold_full_note', 'Standard local delivery arrangements apply to selected areas within Johor Bahru and Nusajaya / Iskandar Puteri. Standard Delivery Thresholds are RM100 for Retail / B2C and RM350 for Wholesale / B2B. Orders below threshold can still be placed with applicable delivery fees based on delivery location. Walk-in / Counter Collection incurs RM0 delivery fee.')
+                            @t('shop.delivery_threshold_full_note', 'Standard delivery threshold is RM100 for Retail / B2C orders and RM350 for Wholesale / B2B orders. Orders below the applicable threshold may still be considered or accepted, subject to transportation or delivery charges based on the delivery location / zone and applicable logistics requirements.')
                         </p>
                         <p class="disclaimer-line disclaimer-currency-note">
                             @t('shop.currency_indicative_disclaimer', 'Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.')
@@ -1060,7 +986,7 @@
         </div>
         <div class="wholesale-cta-btns">
             <a href="{{ route('register', ['type' => 'wholesale']) }}" class="btn-wholesale-access">
-                @t('shop.request_wholesale_access_btn', 'Request Wholesale Access →')
+                @t('shop.request_wholesale_access_btn', 'Apply for Wholesale / Business Pricing →')
             </a>
             <a href="{{ route('quotations.create') }}" class="btn-wholesale-quote">
                 @t('shop.request_a_quote', 'Request a Quote →')
@@ -1078,7 +1004,6 @@
             <div class="quickview-media">
                 <img src="" id="qvImg" alt="Product Image" style="display:none;width:100%;height:100%;object-fit:cover;">
                 <div id="qvImgPlaceholder" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:3rem;background:#f1f5f9;color:#94a3b8">📦</div>
-                <span class="quickview-origin-tag" id="qvOriginTag" style="display:none"></span>
             </div>
             <div class="quickview-details">
                 <div class="quickview-category" id="qvCategory"></div>
@@ -1102,13 +1027,13 @@
                     <div class="wholesale-locked-title">🏢 @t('shop.wholesale_pricing_locked', 'Wholesale Pricing')</div>
                     <div class="wholesale-locked-sub">@t('shop.wholesale_account_required', 'Wholesale account required')</div>
                     <a href="{{ route('register.wholesale') }}" class="btn-request-wholesale-link">
-                        @t('shop.request_wholesale_access', 'Request Wholesale Access →')
+                        @t('shop.request_wholesale_access', 'Apply for Wholesale / Business Pricing →')
                     </a>
                 </div>
 
                 <p class="quickview-desc" id="qvDesc"></p>
                 <div class="quickview-actions">
-                    <form action="{{ route('cart.add') }}" method="POST" id="qvCartForm" data-no-loader="true" style="flex:1">
+                    <form action="{{ route('cart.add') }}" method="POST" id="qvCartForm" style="flex:1">
                         @csrf
                         <input type="hidden" name="product_id" id="qvProductId">
                         <div style="display:flex;gap:10px">
@@ -1130,6 +1055,9 @@
     </div>
 </div>
 
+@endsection
+
+@push('styles')
 <style>
 /* ─── Hero Section (MST Deep Navy Gradient) ─── */
 .products-hero-section {
@@ -1463,7 +1391,7 @@
 }
 .shop-filters-row {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 8px;
     position: relative;
 }
@@ -1751,16 +1679,6 @@
     border-radius: 6px;
     backdrop-filter: blur(4px);
     border: 1px solid #fef08a;
-}
-.badge-origin {
-    background: rgba(255, 255, 255, 0.92);
-    color: #0f172a;
-    font-size: 0.68rem;
-    font-weight: 600;
-    padding: 2px 7px;
-    border-radius: 6px;
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(226, 232, 240, 0.8);
 }
 .card-storage-badge {
     position: absolute;
@@ -2130,7 +2048,7 @@
     .card-action-row {
         gap: 5px;
     }
-    .badge-featured, .badge-origin {
+    .badge-featured {
         font-size: 0.6rem;
         padding: 1px 5px;
     }
@@ -2449,19 +2367,6 @@
     height: 100%;
     object-fit: cover;
 }
-.quickview-origin-tag {
-    position: absolute;
-    bottom: 14px;
-    left: 14px;
-    background: rgba(10, 25, 47, 0.88);
-    backdrop-filter: blur(4px);
-    color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.15);
-}
 .quickview-details {
     padding: 28px;
     display: flex;
@@ -2647,39 +2552,6 @@
     }
 }
 
-/* ─── Instant Customer Mode Switching & Page Loader Bar ─── */
-.shop-tab-loader {
-    position: absolute;
-    top: -6px;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: rgba(226, 232, 240, 0.4);
-    overflow: hidden;
-    border-radius: 999px;
-    z-index: 20;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease;
-}
-.shop-tab-loader.active {
-    opacity: 1;
-}
-.tab-loader-bar {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, #38bdf8 0%, #2563eb 50%, #f59e0b 100%);
-    background-size: 200% 100%;
-    transform-origin: left;
-    animation: tabLoaderProgress 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes tabLoaderProgress {
-    0% { transform: scaleX(0); }
-    50% { transform: scaleX(0.75); }
-    100% { transform: scaleX(1); }
-}
-
 .products-catalogue-grid {
     transition: opacity 0.15s ease, transform 0.15s ease;
 }
@@ -2717,7 +2589,9 @@
     display: flex !important;
 }
 </style>
+@endpush
 
+@push('scripts')
 <script>
 // ─── Search & Dropdown Filters Engine ───
 window.IS_APPROVED_WHOLESALE = {{ (auth()->check() && in_array($group, ['wholesale', 'trading'])) ? 'true' : 'false' }};
@@ -2728,12 +2602,8 @@ function applyShopFilters() {
     if (!form) return;
 
     const contentArea = document.getElementById('shopMainContent');
-    const loader = document.getElementById('shopTabLoader');
     if (contentArea) {
         contentArea.classList.add('loading');
-    }
-    if (loader) {
-        loader.classList.add('active');
     }
 
     const formData = new FormData(form);
@@ -2777,8 +2647,6 @@ function applyShopFilters() {
             window.location.href = url;
         }
 
-        if (loader) loader.classList.remove('active');
-
         // Update browser URL without reload
         window.history.replaceState({}, '', url);
     })
@@ -2797,14 +2665,8 @@ function setCustomerType(type) {
         b.classList.toggle('active', b.getAttribute('data-type') === type);
     });
 
-    // 2. Trigger Page Loader & Grid Transition Effect
-    const loader = document.getElementById('shopTabLoader');
+    // 2. Trigger Grid Transition Effect
     const grid = document.querySelector('.products-catalogue-grid');
-    if (loader) {
-        loader.classList.remove('active');
-        void loader.offsetWidth; // force reflow for re-animation
-        loader.classList.add('active');
-    }
     if (grid) {
         grid.classList.add('mode-switching');
     }
@@ -2845,7 +2707,6 @@ function setCustomerType(type) {
 
     // 8. Smoothly complete transition animation
     setTimeout(() => {
-        if (loader) loader.classList.remove('active');
         if (grid) grid.classList.remove('mode-switching');
     }, 200);
 }
@@ -2937,7 +2798,7 @@ function selectDropdownOption(name, value, label, icon) {
     const labelEl = document.getElementById('label-' + name);
     const iconEl = document.getElementById('icon-' + name);
 
-    if (labelEl) labelEl.textContent = value ? label : (name === 'category' ? 'Parent Category' : (name === 'subcategory' ? 'Child Category' : (name === 'origin' ? 'Origin' : (name === 'brand' ? 'Brand' : (name === 'pack_size' ? 'Pack Size' : (name === 'availability' ? 'Availability' : label))))));
+    if (labelEl) labelEl.textContent = value ? label : (name === 'category' ? 'Parent Category' : (name === 'subcategory' ? 'Child Category' : (name === 'brand' ? 'Brand' : (name === 'pack_size' ? 'Pack Size' : (name === 'availability' ? 'Availability' : label)))));
     if (iconEl) iconEl.textContent = icon;
 
     if (trigger) {
@@ -2970,8 +2831,8 @@ function clearDropdownValue(name) {
     const labelEl = document.getElementById('label-' + name);
     const iconEl = document.getElementById('icon-' + name);
 
-    if (labelEl) labelEl.textContent = name === 'category' ? 'Parent Category' : (name === 'subcategory' ? 'Child Category' : (name === 'origin' ? 'Origin' : (name === 'brand' ? 'Brand' : (name === 'pack_size' ? 'Pack Size' : 'Availability'))));
-    if (iconEl) iconEl.textContent = name === 'category' ? '📁' : (name === 'subcategory' ? '📂' : (name === 'origin' ? '🌍' : (name === 'brand' ? '🏷️' : (name === 'pack_size' ? '⚖️' : '⚡'))));
+    if (labelEl) labelEl.textContent = name === 'category' ? 'Parent Category' : (name === 'subcategory' ? 'Child Category' : (name === 'brand' ? 'Brand' : (name === 'pack_size' ? 'Pack Size' : 'Availability')));
+    if (iconEl) iconEl.textContent = name === 'category' ? '📁' : (name === 'subcategory' ? '📂' : (name === 'brand' ? '🏷️' : (name === 'pack_size' ? '⚖️' : '⚡')));
 
     applyShopFilters();
 }
@@ -2992,7 +2853,6 @@ document.addEventListener('click', function(e) {
             name: qvBtn.getAttribute('data-name') || '',
             category: qvBtn.getAttribute('data-category') || 'Products',
             sku: qvBtn.getAttribute('data-sku') || 'N/A',
-            origin: qvBtn.getAttribute('data-origin') || '',
             weight: qvBtn.getAttribute('data-weight') || '',
             unit: qvBtn.getAttribute('data-unit') || 'pack',
             storage_temp: qvBtn.getAttribute('data-storage') || 'Cold-Chain',
@@ -3121,16 +2981,6 @@ function openQuickViewModal(product) {
         }
     }
 
-    const originEl = document.getElementById('qvOriginTag');
-    if (originEl) {
-        if (product.origin) {
-            originEl.textContent = '🌍 ' + product.origin;
-            originEl.style.display = 'inline-block';
-        } else {
-            originEl.style.display = 'none';
-        }
-    }
-
     const moqEl = document.getElementById('qvMoqBadge');
     if (moqEl) {
         if (product.moq) {
@@ -3185,4 +3035,4 @@ window.clearDropdownValue = clearDropdownValue;
 window.clearSearchInput = clearSearchInput;
 window.toggleMobileFilters = toggleMobileFilters;
 </script>
-@endsection
+@endpush

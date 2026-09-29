@@ -1,0 +1,109 @@
+Created At: 2026-09-29T12:58:50+05:00
+Completed At: 2026-09-29T12:58:50+05:00
+File Path: `file:///f:/My%20AI/Sea%20Food/seafood/resources/views/layouts/app.blade.php`
+Total Lines: 2396
+Total Bytes: 122796
+Showing lines 800 to 900
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+800:             box-sizing: border-box;
+801:         }
+802: 
+803:         .page-switch-loader.active .ocean-loader-card {
+804:             transform: scale(1) translateY(0);
+805:         }
+806: 
+807:         /* Mascot Floating Container & Expanding Water Ripples */
+808:         .ocean-mascot-wrap {
+809:             position: relative;
+810:             width: 136px;
+811:             height: 136px;
+812:             display: flex;
+813:             align-items: center;
+814:             justify-content: center;
+815:             margin-bottom: 16px;
+816:         }
+817: 
+818:         .water-ripple {
+819:             position: absolute;
+820:             border: 2px solid rgba(56, 189, 248, 0.55);
+821:             border-radius: 50%;
+822:             inset: 8px;
+823:             pointer-events: none;
+824:             animation: waterRipple 2.8s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+825:         }
+826: 
+827:         .water-ripple.r2 { animation-delay: 0.95s; }
+828:         .water-ripple.r3 { animation-delay: 1.9s; }
+829: 
+830:         @keyframes waterRipple {
+831:             0% {
+832:                 transform: scale(0.75);
+833:                 opacity: 0.85;
+834:                 border-color: rgba(125, 211, 252, 0.8);
+835:             }
+836:             100% {
+837:                 transform: scale(1.55);
+838:                 opacity: 0;
+839:                 border-color: rgba(2, 132, 199, 0);
+840:             }
+841:         }
+842: 
+843:         .ocean-mascot-badge {
+844:             position: relative;
+845:             width: 106px;
+846:             height: 106px;
+847:             border-radius: 50%;
+848:             background: radial-gradient(circle at 35% 30%, #ffffff 0%, #f0f9ff 70%, #e0f2fe 100%);
+849:             display: flex;
+850:             align-items: center;
+851:             justify-content: center;
+852:             box-shadow: 0 10px 28px rgba(2, 10, 24, 0.5), 0 0 30px rgba(56, 189, 248, 0.4);
+853:             padding: 8px;
+854:             box-sizing: border-box;
+855:             z-index: 2;
+856:             animation: oceanBob 2.8s ease-in-out infinite alternate;
+857:         }
+858: 
+859:         .ocean-mascot-img {
+860:             width: 100%;
+861:             height: 100%;
+862:             object-fit: contain;
+863:             filter: drop-shadow(0 4px 10px rgba(2, 132, 199, 0.3));
+864:         }
+865: 
+866:         @keyframes oceanBob {
+867:             0% {
+868:                 transform: translateY(-5px) rotate(-2deg);
+869:             }
+870:             100% {
+871:                 transform: translateY(5px) rotate(2deg);
+872:             }
+873:         }
+874: 
+875:         /* Brand Typography */
+876:         .ocean-brand-box {
+877:             display: flex;
+878:             flex-direction: column;
+879:             align-items: center;
+880:             margin-bottom: 2px;
+881:         }
+882: 
+883:         .ocean-brand-title {
+884:             font-family: 'Outfit', 'Inter', sans-serif;
+885:             font-size: 1.55rem;
+886:             font-weight: 900;
+887:             letter-spacing: 0.07em;
+888:             line-height: 1.15;
+889:             color: #ffffff;
+890:             text-shadow: 0 2px 10px rgba(2, 10, 24, 0.5);
+891:         }
+892: 
+893:         .ocean-brand-tagline {
+894:             display: flex;
+895:             align-items: center;
+896:             justify-content: center;
+897:             gap: 6px;
+898:             font-size: 0.72rem;
+899:             font-weight: 700;
+900:             color: #7dd3fc;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

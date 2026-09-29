@@ -2,10 +2,9 @@
 @section('title', __t('contact.header_title', 'Contact Us') . ' — ' . 'MST Import and Export Sdn. Bhd.')
 @section('meta_description', __t('contact.subtitle', 'Have questions about our products, wholesale supply, customised sourcing or delivery arrangements? Tell us what you need and our team will assist you.'))
 
-@section('content')
+@push('styles')
 <!-- Local Leaflet CSS (Same-Origin for strict CSP & ad-blocker compliance) -->
 <link rel="stylesheet" href="{{ asset('css/leaflet.css') }}" />
-
 <style>
     /* Base Container & Typography */
     .contact-page-container {
@@ -951,7 +950,9 @@
         }
     }
 </style>
+@endpush
 
+@section('content')
 <!-- ─── Page Header / Hero Section ──────────────────────────────────────── -->
 <div class="page-header contact-hero-section">
     <div class="contact-hero-grid-pattern"></div>
@@ -1428,24 +1429,30 @@
                     </div>
                 </div>
 
-                <!-- Row 4: Optional B2B Commercial Information (Section 20) -->
+                <!-- Row 4: Company & Commercial Information (Section 20) -->
                 <div class="consultation-form-grid-2">
                     <div>
-                        <label class="form-label-custom">
-                            @t('contact.company_name_label', 'Company Name')<span style="font-weight:400;color:#94a3b8">@t('contact.optional', ' (Optional)')</span>
+                        <label class="form-label-custom" for="contact_company_name">
+                            @t('contact.company_name_label', 'Company Name')
+                            <span id="companyRequiredStar" style="color:#ef4444;display:none">*</span>
+                            <span id="companyOptionalTag" style="font-weight:400;color:#94a3b8">@t('contact.optional', ' (Optional)')</span>
                         </label>
-                        <input type="text" name="company_name" class="form-control-custom" 
+                        <input type="text" name="company_name" id="contact_company_name" class="form-control-custom" 
                                value="{{ old('company_name', auth()->user()?->company_name) }}"
-                               placeholder="{{ __t('contact.company_name_placeholder', 'Your company name (Optional)') }}">
+                               placeholder="{{ __t('contact.company_name_placeholder', 'Your company name') }}">
+                        @error('company_name')<div style="color:#ef4444;font-size:0.78rem;margin-top:4px">{{ $message }}</div>@enderror
                     </div>
 
                     <div>
-                        <label class="form-label-custom">
-                            @t('contact.business_reg_no_label', 'Business Registration No. (SSM / UEN)')<span style="font-weight:400;color:#94a3b8">@t('contact.optional', ' (Optional)')</span>
+                        <label class="form-label-custom" for="contact_business_reg_no">
+                            @t('contact.business_reg_no_label', 'Business Registration No. / SSM / UEN / Other')
+                            <span id="regNoRequiredStar" style="color:#ef4444;display:none">*</span>
+                            <span id="regNoOptionalTag" style="font-weight:400;color:#94a3b8">@t('contact.optional', ' (Optional)')</span>
                         </label>
-                        <input type="text" name="business_reg_no" class="form-control-custom" 
+                        <input type="text" name="business_reg_no" id="contact_business_reg_no" class="form-control-custom" 
                                value="{{ old('business_reg_no', auth()->user()?->company_registration_no) }}"
-                               placeholder="{{ __t('contact.reg_no_placeholder', 'SSM / UEN / Business Reg No. (Optional)') }}">
+                               placeholder="{{ __t('contact.reg_no_placeholder', 'SSM / UEN / Registration No. / Other') }}">
+                        @error('business_reg_no')<div style="color:#ef4444;font-size:0.78rem;margin-top:4px">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
@@ -1509,7 +1516,7 @@
                 </button>
 
                 <p style="text-align:center;font-size:0.8rem;color:#64748b;margin:14px 0 0">
-                    @t('contact.submit_footer', 'We will verify stock availability and pricing based on your requirements, and contact you regarding follow-up arrangements.')
+                    @t('contact.submit_footer', 'We will review your requirements, including product availability, specifications and pricing, and contact you regarding the next steps.')
                 </p>
             </form>
 
@@ -1995,6 +2002,26 @@
                     }
                 });
             });
+
+            // Section 20: If B2B / Wholesale / Trading / Sourcing is checked, show Company & Reg No as required
+            const b2bValues = ['Wholesale / B2B', 'Trading Supply', 'Customised Sourcing'];
+            let isB2b = false;
+            checkedItems.forEach(cb => {
+                const val = cb.closest('.multi-select-option-item')?.getAttribute('data-value');
+                if (b2bValues.includes(val)) isB2b = true;
+            });
+            const compStar = document.getElementById('companyRequiredStar');
+            const compOpt = document.getElementById('companyOptionalTag');
+            const regStar = document.getElementById('regNoRequiredStar');
+            const regOpt = document.getElementById('regNoOptionalTag');
+            const compInput = document.getElementById('contact_company_name');
+            const regInput = document.getElementById('contact_business_reg_no');
+            if (compStar) compStar.style.display = isB2b ? 'inline' : 'none';
+            if (compOpt) compOpt.style.display = isB2b ? 'none' : 'inline';
+            if (regStar) regStar.style.display = isB2b ? 'inline' : 'none';
+            if (regOpt) regOpt.style.display = isB2b ? 'none' : 'inline';
+            if (compInput) compInput.required = isB2b;
+            if (regInput) regInput.required = isB2b;
         }
 
         if (interestsTrigger) {

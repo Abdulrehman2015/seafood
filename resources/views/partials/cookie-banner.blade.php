@@ -1,17 +1,18 @@
-{{-- MST Privacy & Cookie Consent Banner + Preferences Panel --}}
+{{-- MST Privacy & Cookie Consent Banner + Global Cookie Preference Center --}}
 <div id="cookie-banner" class="cookie-banner-wrapper" role="region" aria-label="Privacy & Cookie Notice" style="display:none;">
     <div class="cookie-banner-card">
-        <div class="cookie-banner-body">
-            <div class="cookie-banner-icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    <path d="m9 12 2 2 4-4"/>
-                </svg>
+        {{-- Brand Identity Header --}}
+        <div class="cookie-banner-brand-row">
+            <img src="{{ cdn_img('logo.webp') }}" alt="MST Logo" class="cookie-banner-logo">
+            <div class="cookie-banner-brand-info">
+                <div class="cookie-brand-name-zh">镁嘉国际贸易有限公司</div>
+                <div class="cookie-brand-name-en">MST Import and Export Sdn. Bhd.</div>
+                <div class="cookie-brand-slogan">Flow with Integrity, Grow with Strength.</div>
             </div>
+        </div>
+
+        <div class="cookie-banner-body">
             <div class="cookie-banner-text">
-                <h3 class="cookie-banner-title">
-                    @t('cookie.banner_title', 'We value your privacy')
-                </h3>
                 <p class="cookie-banner-desc">
                     @t('cookie.banner_desc', 'We use essential cookies to make our website work properly. Optional cookies help us remember your preferences, such as language and currency. We do not sell your personal information.')
                     <span class="cookie-banner-links">
@@ -22,26 +23,35 @@
                 </p>
             </div>
         </div>
+
         <div class="cookie-banner-actions">
-            <button type="button" id="cookie-btn-essential" class="cookie-btn cookie-btn-essential">
+            <button type="button" id="cookie-btn-essential" class="cookie-btn cookie-btn-essential" data-cookie-reject="true">
                 @t('cookie.essential_only', 'Essential Only')
             </button>
-            <button type="button" id="cookie-btn-accept" class="cookie-btn cookie-btn-accept">
+            <button type="button" id="cookie-btn-accept" class="cookie-btn cookie-btn-accept" data-cookie-accept="true">
                 @t('cookie.accept_all', 'Accept All')
             </button>
-            <button type="button" id="cookie-btn-settings" class="cookie-btn cookie-btn-settings">
+            <button type="button" id="cookie-btn-settings" class="cookie-btn cookie-btn-settings" data-cookie-settings="true">
                 @t('cookie.cookie_settings', 'Cookie Settings')
             </button>
         </div>
     </div>
 </div>
 
-{{-- Cookie Preferences Modal Panel --}}
+{{-- Global Cookie Preference Center Modal --}}
 <div id="cookie-settings-modal" class="cookie-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="cookie-modal-title" style="display:none;">
     <div class="cookie-modal-card">
         <div class="cookie-modal-header">
-            <div>
-                <h2 id="cookie-modal-title" class="cookie-modal-title">
+            <div class="cookie-modal-brand-wrap">
+                <div class="cookie-modal-brand-row">
+                    <img src="{{ cdn_img('logo.webp') }}" alt="MST Logo" class="cookie-modal-logo">
+                    <div>
+                        <div class="cookie-brand-name-zh" style="font-size:0.95rem;color:#ffffff;font-weight:800;">镁嘉国际贸易有限公司</div>
+                        <div class="cookie-brand-name-en" style="font-size:0.75rem;color:#93c5fd;font-weight:600;">MST Import and Export Sdn. Bhd.</div>
+                        <div class="cookie-brand-slogan" style="font-size:0.72rem;color:#38bdf8;font-weight:700;">Flow with Integrity, Grow with Strength.</div>
+                    </div>
+                </div>
+                <h2 id="cookie-modal-title" class="cookie-modal-title" style="margin-top:10px;">
                     @t('cookie.modal_title', 'Cookie Preferences')
                 </h2>
                 <p class="cookie-modal-subtitle">
@@ -120,7 +130,7 @@
                 </div>
             </div>
 
-            {{-- Category 4: Third-Party Cookies (Optional) --}}
+            {{-- Category 4: Third-Party Technologies (Optional) --}}
             <div class="cookie-cat-item">
                 <div class="cookie-cat-header">
                     <div class="cookie-cat-info">
@@ -170,7 +180,7 @@
     max-width: 640px;
     margin: 0 auto;
     z-index: 999990;
-    pointer-events: none; /* Allows clicks around the banner so normal browsing is non-blocking */
+    pointer-events: none;
     animation: mstCookieSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -187,17 +197,66 @@
 
 .cookie-banner-card {
     pointer-events: auto;
-    background: rgba(10, 26, 48, 0.96);
+    background: rgba(10, 26, 48, 0.97);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(147, 197, 253, 0.22);
-    border-radius: 16px;
-    padding: 16px 20px;
-    box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(147, 197, 253, 0.25);
+    border-radius: 18px;
+    padding: 18px 22px;
+    box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     color: #ffffff;
+}
+
+.cookie-banner-brand-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cookie-banner-logo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 2px;
+    flex-shrink: 0;
+}
+
+.cookie-banner-brand-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.cookie-brand-name-zh {
+    font-size: 0.94rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+}
+
+.cookie-brand-name-en {
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: #93c5fd;
+    line-height: 1.2;
+}
+
+.cookie-brand-slogan {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #38bdf8;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    margin-top: 1px;
 }
 
 .cookie-banner-body {
@@ -206,38 +265,15 @@
     gap: 12px;
 }
 
-.cookie-banner-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 9px;
-    background: rgba(37, 99, 235, 0.15);
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    color: #38bdf8;
-    flex-shrink: 0;
-    margin-top: 1px;
-}
-
 .cookie-banner-text {
     flex: 1;
     min-width: 0;
 }
 
-.cookie-banner-title {
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: #f8fafc;
-    margin: 0 0 4px 0;
-    line-height: 1.3;
-    letter-spacing: -0.01em;
-}
-
 .cookie-banner-desc {
     margin: 0;
-    font-size: 0.81rem;
-    line-height: 1.5;
+    font-size: 0.82rem;
+    line-height: 1.55;
     color: #cbd5e1;
 }
 
@@ -289,7 +325,6 @@
     text-align: center;
 }
 
-/* Comparable prominence for Essential Only and Accept All */
 .cookie-btn-essential {
     background: rgba(255, 255, 255, 0.08);
     color: #f1f5f9;
@@ -332,7 +367,7 @@
 .cookie-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(4, 13, 27, 0.7);
+    background: rgba(4, 13, 27, 0.75);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 999995;
@@ -384,11 +419,32 @@
     background: rgba(255, 255, 255, 0.02);
 }
 
+.cookie-modal-brand-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+.cookie-modal-brand-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.cookie-modal-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 2px;
+}
+
 .cookie-modal-title {
     font-size: 1.15rem;
     font-weight: 700;
     color: #ffffff;
-    margin: 0 0 6px 0;
+    margin: 0 0 4px 0;
     line-height: 1.3;
 }
 
@@ -604,7 +660,15 @@
     }
     .cookie-banner-card {
         padding: 14px 16px;
-        gap: 12px;
+        gap: 10px;
+    }
+    .cookie-banner-brand-row {
+        gap: 10px;
+        padding-bottom: 8px;
+    }
+    .cookie-banner-logo {
+        width: 36px;
+        height: 36px;
     }
     .cookie-banner-actions {
         display: grid;
@@ -668,7 +732,6 @@
             }
         } catch(e) {}
 
-        // Backwards compatibility with plain string 'accepted' or 'essential'
         if (raw === 'accepted' || raw === 'all') {
             return { essential: true, preferences: true, analytics: true, third_party: true, status: 'all' };
         } else if (raw === 'essential' || raw === 'rejected') {
@@ -725,7 +788,10 @@
 
     function openSettingsModal() {
         var modal = document.getElementById('cookie-settings-modal');
-        if (!modal) return;
+        if (!modal) {
+            console.warn('Cookie settings modal element not found');
+            return;
+        }
 
         var current = getStoredConsent();
         var prefToggle = document.getElementById('cookie-pref-preferences');
@@ -754,7 +820,7 @@
         document.body.style.overflow = '';
     }
 
-    // Public API
+    // Global Public API
     window.getCookieConsent = getStoredConsent;
     window.hasCookieConsent = function(category) {
         var consent = getStoredConsent();
@@ -780,7 +846,7 @@
     window.openCookieSettings = openSettingsModal;
     window.closeCookieSettings = closeSettingsModal;
 
-    // Initialization
+    // Auto-show banner if no consent stored
     var currentConsent = getStoredConsent();
     if (!currentConsent) {
         setTimeout(function() {
@@ -790,30 +856,43 @@
         }, BANNER_DELAY);
     }
 
-    // Event delegation
+    // Centralized Global Event Delegation for ALL Cookie triggers
     document.addEventListener('click', function(e) {
-        // Essential Only
-        if (e.target.closest('#cookie-btn-essential, [data-cookie-reject="true"]')) {
+        // Essential Only button
+        var btnReject = e.target.closest('#cookie-btn-essential, [data-cookie-reject="true"]');
+        if (btnReject) {
             e.preventDefault();
             window.setCookieConsent('essential');
+            return;
         }
-        // Accept All
-        else if (e.target.closest('#cookie-btn-accept, [data-cookie-accept="true"]')) {
+
+        // Accept All button
+        var btnAccept = e.target.closest('#cookie-btn-accept, [data-cookie-accept="true"]');
+        if (btnAccept) {
             e.preventDefault();
             window.setCookieConsent('all');
+            return;
         }
-        // Open Settings
-        else if (e.target.closest('#cookie-btn-settings, [data-cookie-settings="true"]')) {
+
+        // Open Cookie Settings trigger
+        var btnSettings = e.target.closest('#cookie-btn-settings, [data-cookie-settings="true"], .js-open-cookie-settings, a[href="#cookie-settings"], a[href*="openCookieSettings"]');
+        if (btnSettings) {
             e.preventDefault();
             openSettingsModal();
+            return;
         }
+
         // Close Modal via X or Close button
-        else if (e.target.closest('#cookie-modal-close, #cookie-modal-cancel')) {
+        var btnClose = e.target.closest('#cookie-modal-close, #cookie-modal-cancel');
+        if (btnClose) {
             e.preventDefault();
             closeSettingsModal();
+            return;
         }
+
         // Save Modal Preferences
-        else if (e.target.closest('#cookie-modal-save')) {
+        var btnSave = e.target.closest('#cookie-modal-save');
+        if (btnSave) {
             e.preventDefault();
             var prefToggle = document.getElementById('cookie-pref-preferences');
             var analyticsToggle = document.getElementById('cookie-pref-analytics');
@@ -823,9 +902,11 @@
                 analytics: analyticsToggle ? analyticsToggle.checked : false,
                 third_party: thirdPartyToggle ? thirdPartyToggle.checked : false
             });
+            return;
         }
+
         // Backdrop Click
-        else if (e.target.id === 'cookie-settings-modal') {
+        if (e.target.id === 'cookie-settings-modal') {
             closeSettingsModal();
         }
     });
