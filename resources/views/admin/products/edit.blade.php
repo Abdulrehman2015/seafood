@@ -70,7 +70,7 @@
                     <div class="form-group mb-0">
                         <label class="form-label" style="color:#059669;font-weight:700;">🇲🇾 Product Name (Bahasa Melayu)</label>
                         <input type="text" name="name_bm" class="form-control"
-                               value="{{ old('name_bm', $product->name_bm) }}" placeholder="e.g. Flet Salmon Atlantik (500g)">
+                               value="{{ old('name_bm', $product->name_bm) }}" placeholder="e.g. Fillet Salmon Atlantik (500g)">
                         <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Displayed when Malay (BM) is selected</div>
                     </div>
                 </div>
@@ -326,10 +326,62 @@
                 </div>
             </div>
 
+            <!-- Pricing Model & Weight Policy (Rule #21) -->
+            <div class="card" style="border-left: 4px solid #0284c7;">
+                <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:1.25rem;">⚖️</span>
+                        <div>
+                            <div class="card-title" style="font-size:1.1rem;font-weight:700;margin-bottom:2px;">Pricing Model &amp; Weight Distinction</div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);">Requirement #21: Distinguish between Reference / Estimated Weight and Actual Final Weight</div>
+                        </div>
+                    </div>
+                    <span style="font-size:0.72rem;background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;padding:3px 8px;border-radius:6px;font-weight:600;">
+                        Product Master Business Rules
+                    </span>
+                </div>
+
+                <div class="alert" style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;font-size:0.8rem;border-radius:8px;padding:10px 14px;margin-bottom:16px;line-height:1.45;">
+                    <strong>ℹ️ Business Rule #21:</strong> Do <strong>not</strong> guess which products are variable-weight. Products genuinely sold at a fixed price per piece, pair, pack, box, bag, or carton must <strong>not</strong> be converted to weight-based pricing simply because a weight is displayed. Where variable-weight applies (e.g. <em>Mud Crab ±800g / pair</em>), final billing is calculated using <code>Actual Final Weight × Applicable Unit Price</code>.
+                </div>
+
+                <div class="form-grid-2 mb-3">
+                    <div class="form-group mb-0">
+                        <label class="form-label" style="font-weight:700;">
+                            Pricing Model <span class="required">*</span>
+                        </label>
+                        <select name="pricing_model" id="pricing_model_select" class="form-control" required>
+                            <option value="fixed_unit" {{ old('pricing_model', $product->pricing_model ?? 'fixed_unit') === 'fixed_unit' ? 'selected' : '' }}>
+                                📦 Fixed Unit Price (Sold per piece, pair, pack, box, bag, carton — not multiplied by weight)
+                            </option>
+                            <option value="variable_weight" {{ old('pricing_model', $product->pricing_model) === 'variable_weight' ? 'selected' : '' }}>
+                                ⚖️ Variable-Weight (Final Billing = Actual Final Weight × Applicable Unit Price upon preparation)
+                            </option>
+                            <option value="pending_review" {{ old('pricing_model', $product->pricing_model) === 'pending_review' ? 'selected' : '' }}>
+                                ⏳ Pending Product-Master Review (Awaiting business model confirmation)
+                            </option>
+                        </select>
+                        <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">
+                            Only products confirmed in the product master should be set to Variable-Weight.
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <label class="form-label" style="font-weight:700;">
+                            Reference / Estimated Weight
+                        </label>
+                        <input type="text" name="reference_weight" class="form-control" value="{{ old('reference_weight', $product->reference_weight) }}" placeholder="e.g. ±800g / pair, ±1.2kg">
+                        <div class="form-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">
+                            Displayed to customer as estimated/reference weight only; not guaranteed billing weight.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Product Physical Details & Inventory -->
             <div class="card">
                 <div class="card-header" style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
-                    <span style="font-size:1.25rem;">⚖️</span>
+                    <span style="font-size:1.25rem;">📦</span>
                     <div class="card-title" style="font-size:1.1rem;font-weight:700;">Physical Specifications &amp; Inventory</div>
                 </div>
 

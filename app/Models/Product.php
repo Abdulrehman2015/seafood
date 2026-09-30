@@ -21,7 +21,8 @@ class Product extends Model
         'retail_price', 'walkin_price', 'wholesale_price', 'trading_price',
         'price_sgd', 'price_usd', 'wholesale_price_sgd', 'wholesale_price_usd',
         'trading_price_sgd', 'trading_price_usd',
-        'weight', 'unit', 'origin', 'storage_temp', 'storage_icon', 'brand',
+        'weight', 'unit', 'pricing_model', 'reference_weight', 'actual_weight_unit', 'unit_price_per_weight',
+        'origin', 'storage_temp', 'storage_icon', 'brand',
         'specifications', 'images', 'thumbnail',
         'stock_quantity', 'track_stock',
         'moq', 'moq_wholesale', 'moq_trading',
@@ -120,6 +121,21 @@ class Product extends Model
             'trading'   => $this->moq_trading   ?? $this->moq,
             default     => 1,
         };
+    }
+
+    public function isVariableWeight(): bool
+    {
+        return ($this->pricing_model ?? 'fixed_unit') === 'variable_weight';
+    }
+
+    public function isFixedUnit(): bool
+    {
+        return empty($this->pricing_model) || $this->pricing_model === 'fixed_unit';
+    }
+
+    public function getReferenceWeight(): ?string
+    {
+        return $this->reference_weight ?: $this->weight;
     }
 
     public function isInStock(): bool
@@ -230,32 +246,69 @@ class Product extends Model
     public function getUnitAttribute($value)
     {
         if (empty($value)) return $value;
+        $norm = strtolower(trim($value));
         $locale = current_locale();
         if ($locale === 'zh') {
             $unitMapZh = [
-                'pack' => '包',
-                'box'  => '箱',
-                'fish' => '条',
-                'kg'   => '公斤',
-                'pair' => '对',
-                'tube' => '条',
-                'pc'   => '件',
-                'tray' => '盒',
+                'pack'    => '包',
+                'packs'   => '包',
+                'pkt'     => '包',
+                'box'     => '盒',
+                'boxes'   => '盒',
+                'carton'  => '箱',
+                'cartons' => '箱',
+                'bag'     => '袋',
+                'bags'    => '袋',
+                'piece'   => '件',
+                'pieces'  => '件',
+                'pc'      => '件',
+                'pcs'     => '件',
+                'fish'    => '条',
+                'kg'      => '公斤',
+                'kilogram'=> '公斤',
+                'g'       => '克',
+                'gram'    => '克',
+                'pair'    => '对',
+                'pairs'   => '对',
+                'tube'    => '条',
+                'tubes'   => '条',
+                'tray'    => '盒',
+                'trays'   => '盒',
+                'bottle'  => '瓶',
+                'can'     => '罐',
             ];
-            return $unitMapZh[strtolower($value)] ?? $value;
+            return $unitMapZh[$norm] ?? $value;
         }
-        if ($locale === 'bm') {
+        if (in_array($locale, ['bm', 'ms'])) {
             $unitMapBm = [
-                'pack' => 'pek',
-                'box'  => 'kotak',
-                'fish' => 'ekor',
-                'kg'   => 'kg',
-                'pair' => 'pasang',
-                'tube' => 'tiub',
-                'pc'   => 'keping',
-                'tray' => 'dulang',
+                'pack'    => 'pek',
+                'packs'   => 'pek',
+                'pkt'     => 'pek',
+                'box'     => 'kotak',
+                'boxes'   => 'kotak',
+                'carton'  => 'karton',
+                'cartons' => 'karton',
+                'bag'     => 'beg',
+                'bags'    => 'beg',
+                'piece'   => 'keping',
+                'pieces'  => 'keping',
+                'pc'      => 'keping',
+                'pcs'     => 'keping',
+                'fish'    => 'ekor',
+                'kg'      => 'kg',
+                'kilogram'=> 'kg',
+                'g'       => 'g',
+                'gram'    => 'g',
+                'pair'    => 'pasang',
+                'pairs'   => 'pasang',
+                'tube'    => 'tiub',
+                'tubes'   => 'tiub',
+                'tray'    => 'dulang',
+                'trays'   => 'dulang',
+                'bottle'  => 'botol',
+                'can'     => 'tin',
             ];
-            return $unitMapBm[strtolower($value)] ?? $value;
+            return $unitMapBm[$norm] ?? $value;
         }
         return $value;
     }

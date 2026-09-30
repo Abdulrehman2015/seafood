@@ -28,7 +28,7 @@
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                 <div style="font-size:0.8rem;padding:6px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.25);background:#091a36;color:#7dd3fc;border:1px solid #2563eb">
-                    🔒 @t('cart.secure_checkout', 'Secure Checkout')
+                    @t('cart.secure_checkout', 'Proceed to Payment')
                 </div>
             </div>
         </div>
@@ -132,6 +132,17 @@
                                             <span class="meta-moq">@t('shop.moq_label', 'MOQ:') {{ $moq }}</span>
                                         @endif
                                     </div>
+                                    @if($item->product?->isVariableWeight())
+                                        <div style="margin-top:6px;display:flex;align-items:flex-start;gap:6px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:6px;padding:5px 9px;font-size:0.75rem;line-height:1.4">
+                                            <span style="font-size:0.9rem;line-height:1">⚖️</span>
+                                            <div>
+                                                <strong>@t('shop.reference_estimated_weight', 'Reference / Estimated Weight'):</strong> {{ $item->product->getReferenceWeight() }}
+                                                <div style="font-weight:normal;color:#b45309;margin-top:2px">
+                                                    @t('shop.variable_weight_cart_note', 'Final billing based on Actual Final Weight × Applicable Unit Price upon weighing.')
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <!-- Actions & Stepper Bar -->
@@ -216,7 +227,7 @@
                         <div class="summary-line">
                             <span>@t('cart.fulfillment', 'Fulfillment')</span>
                             @if(session('walkin_session'))
-                                <span style="color:#1d4ed8;font-weight:700">@t('cart.counter_pickup_free', 'Counter Pickup (FREE)')</span>
+                                <span style="color:#0f172a;font-weight:700">@t('walkin.self_collection_method', 'Walk-in Self-Collection')</span>
                             @else
                                 <span style="font-size:0.8rem;color:#64748b">@t('cart.calculated_at_checkout', 'Calculated at checkout')</span>
                             @endif
@@ -231,8 +242,18 @@
                                 @endif
                             </span>
                         </div>
+                        @php
+                            $hasVariableWeight = $items->contains(fn($i) => $i->product?->isVariableWeight());
+                        @endphp
+                        @if($hasVariableWeight)
+                            <div style="font-size:0.75rem;color:#92400e;margin:10px 0;background:#fffbeb;padding:8px 10px;border-radius:8px;border:1px solid #fcd34d;line-height:1.4">
+                                <strong>⚖️ @t('shop.variable_weight_notice_title', 'Variable-Weight Products Notice'):</strong>
+                                @t('shop.variable_weight_cart_summary_note', 'Your cart contains items with reference weights. Estimated total is indicative; final amount will be billed on Actual Final Weight × Unit Price upon weighing.')
+                            </div>
+                        @endif
+
                         <div class="js-cart-currency-note" style="{{ $currentCurrency !== 'MYR' ? '' : 'display:none' }};font-size:0.75rem;color:#64748b;margin:8px 0 12px 0;background:#f8fafc;padding:8px 10px;border-radius:8px;border:1px solid #e2e8f0;line-height:1.4">
-                            ℹ️ @t('cart.currency_note', 'Prices displayed in :currency for reference. Final payment will be processed in MYR at checkout.', ['currency' => '<strong class="js-cart-currency-code">' . $currentCurrency . '</strong>'])
+                            @t('common.currency_notice', 'ℹ️ SGD and USD prices are for reference only. MST\'s base prices and settlement currency are in RM. Reference exchange rates may change from time to time.')
                         </div>
 
                         @php
@@ -303,12 +324,12 @@
                                     </div>
                                 @else
                                     <a href="{{ route('checkout.index') }}" class="btn-checkout">
-                                        🔒 @t('cart.checkout_btn', 'Proceed to Checkout') →
+                                        @t('cart.checkout_btn', 'Proceed to Payment') →
                                     </a>
                                 @endif
                             @else
                                 <a href="{{ route('checkout.index') }}" class="btn-checkout">
-                                    🔒 @t('cart.checkout_btn', 'Proceed to Checkout') →
+                                    @t('cart.checkout_btn', 'Proceed to Payment') →
                                 </a>
                                 <div style="text-align:center;margin-top:10px;font-size:0.82rem;color:#64748b">
                                     @t('cart.have_wholesale_account', 'Have a Wholesale Account?') <a href="{{ route('login') }}" style="color:#1d4ed8;font-weight:700;text-decoration:underline">@t('cart.sign_in', 'Sign in')</a>
@@ -317,8 +338,8 @@
                         @endif
 
                         <div class="summary-trust-badges">
-                            <div>🔒 @t('cart.trust_secure', 'Secure Checkout & Payment Processing')</div>
-                            <div>🏬 @t('cart.trust_fulfillment', 'Cold-Chain Fulfilment & MST Counter 2 Collection Available')</div>
+                            <div>@t('cart.trust_secure', 'Order Processing & Checkout')</div>
+                            <div>🏬 @t('cart.trust_fulfillment', 'Cold-Chain Fulfilment & Self-Collection Available')</div>
                         </div>
                     </div>
                 </div>

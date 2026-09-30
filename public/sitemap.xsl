@@ -9,7 +9,7 @@
   <xsl:template match="/">
     <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
       <head>
-        <title>Google-Compliant XML Sitemap — MST Import &amp; Export Sdn Bhd</title>
+        <title>Google-Compliant XML Sitemap — MST Import and Export Sdn. Bhd.</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" type="image/webp" href="/images/favicon.webp" />
@@ -489,7 +489,7 @@
           </div>
 
           <div class="footer-note">
-            MST Import &amp; Export Sdn Bhd — Built strictly to Google Search Central specifications (Sitemaps Protocol 0.9 + Image Sitemap 1.1).
+            MST Import and Export Sdn. Bhd. — Built strictly to Google Search Central specifications (Sitemaps Protocol 0.9 + Image Sitemap 1.1).
           </div>
         </div>
       </body>

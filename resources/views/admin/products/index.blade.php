@@ -207,6 +207,11 @@
                         <td class="col-price">
                             <div class="price-val">RM {{ number_format($product->retail_price, 2) }}</div>
                             <div class="price-unit">per {{ $product->unit ?? 'unit' }}</div>
+                            @if($product->isVariableWeight())
+                                <div style="font-size:0.68rem;background:#fef3c7;color:#92400e;border:1px solid #fde68a;padding:2px 5px;border-radius:4px;margin-top:3px;display:inline-block;font-weight:700;">
+                                    ⚖️ Variable Weight (Est: {{ $product->getReferenceWeight() }})
+                                </div>
+                            @endif
                         </td>
 
                         <!-- Walk-in Price -->

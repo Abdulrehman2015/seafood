@@ -22,7 +22,7 @@
                     Browse All Product Categories
                 </h1>
                 <p style="color:#e0f2fe;font-size:1.02rem;line-height:1.6;margin:0">
-                    Supplying seafood, meat, frozen food and selected food ingredients to commercial customers across Malaysia, Singapore and regional markets.
+                    Supplying seafood, meat, frozen food and selected food ingredients to commercial customers across Malaysia and Singapore.
                 </p>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -30,7 +30,7 @@
                     <span>View All Products</span>
                     <span>→</span>
                 </a>
-                <a href="https://wa.me/601112710260?text=Hello%20MST%20Import%20%26%20Export%2C%20I%20would%20like%20to%20request%20the%20complete%20wholesale%20product%20catalog%20and%20price%20list." target="_blank" class="btn" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);font-weight:600;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center;gap:6px">
+                <a href="https://wa.me/601112710260?text=Hello%20MST%20Import%20and%20Export%20Sdn.%20Bhd.%2C%20I%20would%20like%20to%20request%20the%20complete%20wholesale%20product%20catalog%20and%20price%20list." target="_blank" class="btn" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);font-weight:600;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center;gap:6px">
                     <span>💬 Request Catalog PDF</span>
                 </a>
             </div>
@@ -189,13 +189,13 @@
     <div style="margin-top:var(--space-16);background:linear-gradient(135deg,#042f2e 0%,#0f766e 100%);border-radius:24px;padding:var(--space-10) var(--space-8);color:white;position:relative;overflow:hidden">
         <div style="max-width:700px;position:relative;z-index:2">
             <span style="background:rgba(94,234,212,0.2);color:#5eead4;padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase">
-                ❄️ Complete Temperature-Controlled Logistics
+                ❄️ Temperature-Controlled Storage & Logistics
             </span>
             <h2 style="color:white;font-family:var(--font-heading);font-size:clamp(1.6rem,3vw,2.2rem);margin-top:12px;margin-bottom:12px;line-height:1.2">
-                Unbroken Cold Chain Guarantee from SILC Iskandar Puteri
+                Temperature-Controlled Cold Storage & Logistics Coordination
             </h2>
             <p style="color:#ccfbf1;font-size:0.98rem;line-height:1.6;margin-bottom:24px">
-                Equipped with -25°C deep-freeze cold storage warehousing and an active fleet of temperature-monitored refrigerated trucks. We deliver across Johor, Klang Valley, Penang, and export directly across the border to Singapore daily.
+                Equipped with -18°C to -25°C frozen storage warehousing at SILC Iskandar Puteri, supporting temperature-controlled handling, hygienic packing and reliable delivery coordination for commercial customers across Malaysia and Singapore.
             </p>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px">
                 <div style="background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.15)">

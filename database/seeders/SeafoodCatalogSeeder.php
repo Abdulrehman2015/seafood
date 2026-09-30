@@ -297,7 +297,7 @@ class SeafoodCatalogSeeder extends Seeder
 
             // ─── 4. CRAB ──────────────────────────────────────────────────────────
             [
-                'name'                => 'Live Mud Crabs / Ketam Nipah (~800g Pair)',
+                'name'                => 'Live Mud Crabs / Ketam Nipah (±800g / pair)',
                 'slug'                => 'live-mud-crabs-ketam-nipah-800g',
                 'category_id'         => $crabCat->id,
                 'short_description'   => 'Live Grade-A male mud crabs with massive claws and succulent sweet flesh.',
@@ -307,7 +307,9 @@ class SeafoodCatalogSeeder extends Seeder
                 'walkin_price'        => 54.00,
                 'wholesale_price'     => 46.00,
                 'trading_price'       => 42.00,
-                'weight'              => '800g',
+                'weight'              => '±800g',
+                'reference_weight'    => '±800g',
+                'pricing_model'       => 'variable_weight',
                 'unit'                => 'pair',
                 'origin'              => 'Indonesia',
                 'storage_temp'        => 'Live / Chilled',

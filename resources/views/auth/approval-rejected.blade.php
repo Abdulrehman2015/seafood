@@ -46,21 +46,21 @@
             </div>
 
             <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;color:#0f274a;margin:0 0 8px">
-                Application Not Approved
+                @t('auth.application_not_approved_title', 'Application Not Approved')
             </h2>
 
             <p style="color:#475569;font-size:0.95rem;line-height:1.65;margin:0 0 24px">
-                Thank you, <strong>{{ auth()->user()->name }}</strong>. Unfortunately, your application for a 
+                @t('auth.application_received_lead', 'Thank you,') <strong>{{ auth()->user()->name }}</strong>. @t('auth.rejection_p1', 'Unfortunately, your application for a') 
                 <span style="display:inline-block;padding:2px 8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:6px;font-weight:700;font-size:0.85rem;text-transform:uppercase">
                     {{ ucfirst(auth()->user()->customer_group) }}
                 </span> 
-                account with <strong>MST Import and Export Sdn. Bhd.</strong> could not be approved at this time.
+                @t('auth.rejection_p2', 'account with') <strong>MST Import and Export Sdn. Bhd.</strong> @t('auth.rejection_p3', 'could not be approved at this time.')
             </p>
 
             @if(auth()->user()->rejection_reason)
                 <div style="background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #ef4444;border-radius:12px;padding:16px 20px;margin-bottom:24px;text-align:left">
                     <div style="font-size:0.75rem;color:#991b1b;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">
-                        Reason from Administration:
+                        @t('auth.reason_from_admin', 'Reason from Administration:')
                     </div>
                     <div style="font-size:0.92rem;color:#7f1d1d;line-height:1.5;font-weight:500">
                         {{ auth()->user()->rejection_reason }}
@@ -72,7 +72,7 @@
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 18px;margin-bottom:24px;text-align:left;display:flex;align-items:center;gap:12px">
                     <span style="font-size:1.4rem">🏢</span>
                     <div>
-                        <div style="font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;font-weight:700">Registered Business Entity</div>
+                        <div style="font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;font-weight:700">@t('auth.registered_business_entity', 'Registered Business Entity')</div>
                         <div style="font-weight:700;color:#0f172a;font-size:0.95rem">{{ auth()->user()->company_name }}</div>
                     </div>
                 </div>
@@ -81,20 +81,20 @@
             <!-- Assistance and Next Steps -->
             <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px;padding:20px;margin-bottom:28px;text-align:left">
                 <h3 style="font-size:0.9rem;color:#166534;font-weight:700;margin:0 0 14px;text-transform:uppercase;letter-spacing:0.04em">
-                    Need Assistance or Re-application?
+                    @t('auth.assistance_title', 'Need Assistance or Re-application?')
                 </h3>
                 <div style="display:flex;flex-direction:column;gap:12px">
                     <div style="display:flex;gap:12px;align-items:flex-start">
                         <span style="background:#22c55e;color:#ffffff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0">1</span>
-                        <div style="font-size:0.88rem;color:#15803d;line-height:1.45">If you believe this was in error, please contact our support desk to provide updated credentials or SSM documentation.</div>
+                        <div style="font-size:0.88rem;color:#15803d;line-height:1.45">@t('auth.rejection_step_1', 'If you believe this was in error, please contact our support desk to provide updated credentials or SSM documentation.')</div>
                     </div>
                     <div style="display:flex;gap:12px;align-items:flex-start">
                         <span style="background:#22c55e;color:#ffffff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0">2</span>
-                        <div style="font-size:0.88rem;color:#15803d;line-height:1.45">Once an admin approves or updates your status, <strong>this page will automatically redirect you</strong> into your <strong>Dashboard</strong>.</div>
+                        <div style="font-size:0.88rem;color:#15803d;line-height:1.45">@t('auth.rejection_step_2', 'Once an admin approves or updates your status, this page will automatically redirect you into your Dashboard.')</div>
                     </div>
                     <div style="display:flex;gap:12px;align-items:flex-start">
                         <span style="background:#22c55e;color:#ffffff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0">3</span>
-                        <div style="font-size:0.88rem;color:#15803d;line-height:1.45">You may also reach our team via WhatsApp or email directly for expedited review.</div>
+                        <div style="font-size:0.88rem;color:#15803d;line-height:1.45">@t('auth.rejection_step_3', 'You may also reach our team via WhatsApp or email directly for expedited review.')</div>
                     </div>
                 </div>
             </div>
@@ -106,19 +106,19 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
                     </svg>
-                    <span>Refresh Status</span>
+                    <span>@t('auth.btn_refresh_status', 'Refresh Status')</span>
                 </button>
 
                 <form method="POST" action="{{ route('logout') }}" style="display:inline">
                     @csrf
                     <button type="submit" class="btn btn-secondary" style="background:#ffffff;border:1.5px solid #cbd5e1;color:#475569;font-weight:600;padding:11px 20px;border-radius:10px">
-                        Sign Out
+                        @t('auth.btn_sign_out', 'Sign Out')
                     </button>
                 </form>
             </div>
 
             <div style="font-size:0.8rem;color:#64748b">
-                Need urgent assistance? <a href="https://wa.me/601112710260?text=Hi%20MST%20Import%20%26%20Export,%20I%20am%20inquiring%20about%20my%20account%20application%20status." target="_blank" style="color:#2563eb;font-weight:700;text-decoration:underline">WhatsApp Our Desk</a>
+                @t('auth.need_urgent_help', 'Need urgent assistance?') <a href="https://wa.me/601112710260?text=Hi%20MST%20Import%20and%20Export%20Sdn.%20Bhd.,%20regarding%20my%20account%20application." target="_blank" style="color:#2563eb;font-weight:700;text-decoration:underline">@t('auth.whatsapp_our_desk', 'WhatsApp Our Desk')</a>
             </div>
 
             <!-- Live Status Poller Indicator -->

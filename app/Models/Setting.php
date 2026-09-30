@@ -256,13 +256,13 @@ class Setting extends Model
                 'store_tagline'           => 'Flow with Integrity, Grow with Strength.',
                 'store_address'           => 'MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor',
                 'store_phone'             => '+60 13-280 0168',
-                'store_whatsapp'          => '60123456789',
+                'store_whatsapp'          => '601112710260',
                 'store_email'             => 'info@mst.my',
                 'store_wholesale_email'   => 'wholesale@mst.my',
                 'store_hours'             => 'Monday – Saturday: 8:00am – 6:00pm (Sunday & Public Holidays: Closed)',
                 'social_facebook'         => 'https://facebook.com',
                 'social_instagram'        => 'https://instagram.com',
-                'social_whatsapp'         => 'https://wa.me/60123456789',
+                'social_whatsapp'         => 'https://wa.me/601112710260',
             ];
 
             $dbSettings = static::pluck('value', 'key')->toArray();

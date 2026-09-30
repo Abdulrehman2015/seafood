@@ -412,8 +412,8 @@ Route::match(['get', 'post'], '/api/calculate-delivery-fee', function (\Illumina
     $result['converted_subtotal']              = number_format($currencyService->convert($subtotal, $activeCurrency), 2);
     $result['converted_fee']                   = number_format($currencyService->convert($result['fee'], $activeCurrency), 2);
     $result['converted_total']                 = number_format($currencyService->convert($total, $activeCurrency), 2);
-    $result['whatsapp_number']                 = \App\Models\Setting::get('store_whatsapp', '60132800168');
-    $result['whatsapp_url']                    = 'https://wa.me/' . preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '60132800168')) . '?text=' . rawurlencode("Hi MST, I would like to check delivery arrangement and quotation for postcode: {$postcode}, location: {$city}, {$state}. (Order subtotal: RM " . number_format($subtotal, 2) . ")");
+    $result['whatsapp_number']                 = \App\Models\Setting::get('store_whatsapp', '601112710260');
+    $result['whatsapp_url']                    = 'https://wa.me/' . preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '601112710260')) . '?text=' . rawurlencode("Hi MST, I would like to check delivery arrangement and quotation for postcode: {$postcode}, location: {$city}, {$state}. (Order subtotal: RM " . number_format($subtotal, 2) . ")");
 
     return response()->json($result);
 })->middleware('throttle:60,1')->name('api.delivery.calculate');

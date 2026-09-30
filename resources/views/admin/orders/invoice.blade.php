@@ -771,11 +771,11 @@
                     <td class="col-desc">
                         <div class="item-name">{{ $item->product_name }}</div>
                         @if($item->product && $item->product->weight)
-                            <div class="item-spec">{{ __t('invoice.spec', 'Spec:') }} {{ $item->product->weight }} {{ $item->product->unit ?? 'KG' }}</div>
+                            <div class="item-spec">{{ __t('invoice.spec', 'Spec:') }} {{ $item->product->weight }}@if($item->product->unit) ({{ $item->product->unit }})@endif</div>
                         @endif
                     </td>
                     <td class="col-qty">
-                        {{ number_format($item->quantity, 2) }} {{ strtoupper($item->product->unit ?? 'KG') }}
+                        {{ number_format($item->quantity, 2) }} {{ strtoupper($item->product?->unit ?? '') }}
                     </td>
                     <td class="col-price">{{ number_format($item->unit_price, 2) }}</td>
                     <td class="col-disc">0.00</td>

@@ -265,7 +265,7 @@
                         <label class="form-label" style="font-weight:700;color:#1e293b;font-size:0.875rem;margin-bottom:6px">WhatsApp Chat URL</label>
                         <input type="url" name="social_whatsapp" class="form-control settings-input"
                                value="{{ old('social_whatsapp', $settings['social_whatsapp'] ?? '') }}"
-                               placeholder="https://wa.me/60132800168"
+                               placeholder="https://wa.me/601112710260"
                                style="border-radius:10px;height:42px">
                         <div style="font-size:0.75rem;color:#64748b;margin-top:6px">
                             Format: <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;color:#0f766e;font-weight:600">https://wa.me/60XXXXXXXXXX</code> (country code without +, no dashes). Leave blank to hide the WhatsApp button.
@@ -1185,7 +1185,7 @@
 
                     {{-- Live Footer Preview --}}
                     <div style="margin-top:14px;background:#0f172a;border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:center;gap:12px">
-                        <span id="logoFooterPreview" style="font-size:1.1rem;font-weight:800;color:#ffffff;letter-spacing:-0.5px">🐟 镁嘉国际贸易有限公司 · MST</span>
+                        <span id="logoFooterPreview" style="font-size:1.1rem;font-weight:800;color:#ffffff;letter-spacing:-0.5px">🐟 镁嘉国际贸易有限公司 · MST Import and Export Sdn. Bhd.</span>
                         <span style="color:#475569;font-size:1rem">|</span>
                         <span id="preview-footer-copyright" style="font-size:0.82rem;color:#94a3b8;font-style:italic">
                             {{ $settings['footer_copyright'] ?? '© ' . date('Y') . ' MST Import and Export Sdn. Bhd. · All rights reserved.' }}

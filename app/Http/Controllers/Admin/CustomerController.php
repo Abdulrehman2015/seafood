@@ -128,6 +128,7 @@ class CustomerController extends Controller
             'destination_country'   => 'nullable|string|max:100',
             'supply_arrangement'    => 'nullable|string|max:100',
             'commercial_access'     => 'nullable|string|max:50',
+            'existing_mst_customer' => 'nullable|in:yes,no,not_sure',
             'is_existing_customer'  => 'nullable|in:yes,no,not_sure',
             'existing_customer_ref' => 'nullable|string|max:255',
             'product_interest'      => 'nullable|string|max:500',

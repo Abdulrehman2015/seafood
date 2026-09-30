@@ -22,16 +22,27 @@
                     <span>@t('policy.legal_policy', 'Store Policy & Legal Notice')</span>
                 </div>
                 <h1 class="policy-title">{{ $policy->title_for_locale }}</h1>
-                @if($policy->summary)
-                    <p class="policy-subtitle">{{ $policy->summary }}</p>
+                @if($policy->summary_for_locale)
+                    <p class="policy-subtitle">{{ $policy->summary_for_locale }}</p>
                 @endif
                 <div class="policy-meta-bar">
+                    @php
+                        $curLoc = app()->getLocale();
+                        if ($curLoc === 'zh') {
+                            $formattedDate = $policy->updated_at->format('Y年n月j日');
+                        } elseif (in_array($curLoc, ['bm', 'ms'])) {
+                            $monthsBm = [1=>'Januari', 2=>'Februari', 3=>'Mac', 4=>'April', 5=>'Mei', 6=>'Jun', 7=>'Julai', 8=>'Ogos', 9=>'September', 10=>'Oktober', 11=>'November', 12=>'Disember'];
+                            $formattedDate = $policy->updated_at->format('j ') . ($monthsBm[(int)$policy->updated_at->format('n')] ?? '') . $policy->updated_at->format(' Y');
+                        } else {
+                            $formattedDate = $policy->updated_at->format('F d, Y');
+                        }
+                    @endphp
                     <span class="meta-item">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"></circle>
                             <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
-                        @t('policy.last_updated', 'Last Updated'): {{ $policy->updated_at->format('F d, Y') }}
+                        @t('policy.last_updated', 'Last Updated'): {{ $formattedDate }}
                     </span>
                     <span class="meta-dot">·</span>
                     <span class="meta-item">
@@ -40,7 +51,7 @@
                         </svg>
                         @t('policy.official_document', 'Official MST Document')
                     </span>
-                    <button type="button" class="policy-print-btn" onclick="window.print()" title="Print this policy">
+                    <button type="button" class="policy-print-btn" onclick="window.print()" title="{{ __t('policy.print_title', 'Print this policy') }}">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="6 9 6 2 18 2 18 9"></polyline>
                             <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -109,11 +120,13 @@
                             <div class="signoff-brand">
                                 <div style="font-size:1.1rem;font-weight:800;color:#0f172a;line-height:1.2;">镁嘉国际贸易有限公司</div>
                                 <div style="font-size:0.85rem;font-weight:700;color:#2563eb;line-height:1.2;margin-top:2px;">MST Import and Export Sdn. Bhd.</div>
-                                <span style="margin-top:4px;display:block;">@t('footer.tagline', $settings['store_tagline'] ?? 'Flow with Integrity, Grow with Strength')</span>
+                                <div style="font-size:0.8rem;color:#0284c7;font-weight:700;margin-top:3px;">Flow with Integrity, Grow with Strength.</div>
+                                <p style="font-size:0.82rem;color:#64748b;margin-top:6px;margin-bottom:0;line-height:1.5;">@t('footer.sourcing_desc', 'Cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.')</p>
                             </div>
                             <div class="signoff-contact">
-                                <span>📍 {{ $settings['store_address'] ?? 'Johor, Malaysia' }}</span>
+                                <span>📍 {{ $settings['store_address'] ?? 'No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia' }}</span>
                                 <span>✉ <a href="mailto:{{ $settings['store_email'] ?? 'mikatrading15@gmail.com' }}">{{ $settings['store_email'] ?? 'mikatrading15@gmail.com' }}</a></span>
+                                <span>📞 <a href="tel:+60132800168">+60 13-280 0168</a> | 💬 <a href="https://wa.me/601112710260" target="_blank" rel="noopener noreferrer">+60 11-1271 0260</a></span>
                             </div>
                         </div>
                     </article>

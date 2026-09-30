@@ -36,7 +36,7 @@
                 @elseif(current_locale() === 'bm')
                     LEBIH DARIPADA PEMBEKAL.<br>
                     <span class="mika-hero-gradient">RAKAN STRATEGIK</span><br>
-                    <span class="mika-hero-gradient">PEROLEHAN &amp; BEKALAN ANDA.</span>
+                    <span class="mika-hero-gradient">PENYUMBERAN &amp; BEKALAN ANDA.</span>
                 @else
                     MORE THAN A SUPPLIER.<br>
                     <span class="mika-hero-gradient">YOUR SOURCING &amp;</span><br>
@@ -58,7 +58,6 @@
                 <span class="mika-pill">🏪 @t('nav.walkin_mode', 'Walk-in')</span>
                 <span class="mika-pill">🏭 @t('home.pill_wholesale_b2b', 'Wholesale & B2B')</span>
                 <span class="mika-pill">📦 @t('home.pill_trading_supply', 'Trading Supply')</span>
-                <span class="mika-pill">🌏 @t('home.regional_international_pill', 'Regional & International')</span>
             </div>
 
             {{-- CTAs --}}
@@ -1737,16 +1736,16 @@
                 <div style="display:flex;align-items:center;gap:12px">
                     <span style="font-size:2rem">🏪</span>
                     <div>
-                        <div style="font-size:0.78rem;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:0.05em">@t('common.counter_pickup', 'MST Counter 2 Collection')</div>
-                        <h3 style="font-size:1.15rem;font-weight:800;color:#0f172a;margin:0">Self-Collection / Walk-In</h3>
+                        <div style="font-size:0.78rem;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:0.05em">@t('walkin.prominent_service_tag', 'Self-collection only · No delivery')</div>
+                        <h3 style="font-size:1.15rem;font-weight:800;color:#0f172a;margin:0">@t('walkin.title', 'Self-Collection')</h3>
                     </div>
                 </div>
                 <div style="background:#ffffff;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;margin-top:4px">
-                    <div style="font-size:0.75rem;color:#64748b;font-weight:600">@t('home.delivery_charge_label', 'Delivery Fee')</div>
-                    <div style="font-size:1.3rem;font-weight:800;color:#059669">RM 0 (Free)</div>
+                    <div style="font-size:0.75rem;color:#64748b;font-weight:600">@t('cart.fulfillment', 'Fulfillment')</div>
+                    <div style="font-size:1.1rem;font-weight:800;color:#059669">@t('walkin.self_collection_method', 'Walk-in Self-Collection')</div>
                 </div>
                 <p style="font-size:0.85rem;color:#64748b;line-height:1.55;margin:0">
-                    @t('home.delivery_walkin_desc', 'Collect your confirmed order directly from MST SILC Cold-Chain Facility at MST Counter 2. No delivery threshold and no delivery fee apply.')
+                    @t('home.delivery_walkin_desc', 'Collect your confirmed order directly from MST SILC Cold-Chain Facility. Self-collection only · No delivery.')
                 </p>
             </div>
         </div>
@@ -1755,8 +1754,8 @@
         <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:14px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
             <div style="max-width:760px">
                 <div style="font-size:0.88rem;color:#334155;line-height:1.6;font-weight:500;">
-                    <span style="display:block;margin-bottom:4px">📍 <strong>@t('home.delivery_area_label', 'Delivery Area:')</strong> @t('home.delivery_area_statement', 'Standard local delivery arrangements apply to selected areas within Johor Bahru and Iskandar Puteri / Nusajaya.')</span>
-                    <span style="display:block;color:#64748b">🌐 @t('home.delivery_note_outside', 'For locations outside the local delivery area, applicable transportation charges and manual delivery arrangements will apply.')</span>
+                    <span style="display:block;margin-bottom:4px">📍 <strong>@t('home.delivery_area_label', 'Delivery Area:')</strong> @t('home.delivery_area_statement', 'Standard local delivery coverage applies to Johor Bahru and Iskandar Puteri / Nusajaya.')</span>
+                    <span style="display:block;color:#64748b">🌐 @t('home.delivery_note_outside', 'Delivery outside the standard local area may be considered on a case-by-case basis, subject to destination, product and logistics requirements, and applicable transportation charges payable by the customer unless otherwise agreed with MST. Cross-border orders are available on a case-by-case basis.')</span>
                 </div>
             </div>
             <a href="{{ route('policy.show', ['locale' => app()->getLocale(), 'slug' => 'shipping-policy']) }}" class="btn btn-secondary" style="background:#ffffff;color:#0f172a;border-color:#cbd5e1;font-weight:700;font-size:0.85rem;padding:9px 20px;border-radius:10px;white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,0.05)">

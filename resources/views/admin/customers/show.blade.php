@@ -344,6 +344,22 @@
 
             <div class="form-grid-2">
                 <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Existing MST Customer</label>
+                    <select name="existing_mst_customer" class="form-control custom-select-styled">
+                        <option value="no" {{ old('existing_mst_customer', $user->existing_mst_customer) == 'no' ? 'selected' : '' }}>No (New Customer)</option>
+                        <option value="yes" {{ old('existing_mst_customer', $user->existing_mst_customer) == 'yes' ? 'selected' : '' }}>Yes (Match with Existing Record)</option>
+                        <option value="not_sure" {{ old('existing_mst_customer', $user->existing_mst_customer) == 'not_sure' ? 'selected' : '' }}>Not Sure / Unverified</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Existing Account / Invoice Reference</label>
+                    <input type="text" name="existing_customer_ref" class="form-control" value="{{ old('existing_customer_ref', $user->existing_customer_ref) }}" placeholder="e.g. MST-ACC-001, Inv #1042" style="height:42px;border-radius:10px;border:1.5px solid #cbd5e1;">
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group mb-3">
                     <label class="form-label" style="font-weight:600;color:#334155;margin-bottom:6px;display:block;">Country / Market</label>
                     <input type="text" name="country_market" class="form-control" value="{{ old('country_market', $user->country_market) }}" placeholder="e.g. Malaysia / Singapore / Indonesia" style="height:42px;border-radius:10px;border:1.5px solid #cbd5e1;">
                 </div>
@@ -432,6 +448,24 @@
                         {{ ucfirst($user->customer_group) }} Account
                     </div>
                 </div>
+
+                @if(in_array($user->customer_group, ['wholesale', 'trading']))
+                <div>
+                    <div class="text-xs text-muted" style="color:#64748b;font-weight:600;">Existing MST Customer</div>
+                    <div style="font-weight:700;margin-top:2px;display:flex;align-items:center;gap:6px;">
+                        @if(($user->existing_mst_customer ?? '') === 'yes')
+                            <span class="badge" style="background:#d1fae5;color:#065f46;font-size:0.8rem;padding:3px 8px;border-radius:6px;font-weight:700">✓ Yes (Potential Existing Record)</span>
+                        @else
+                            <span class="badge" style="background:#f1f5f9;color:#64748b;font-size:0.8rem;padding:3px 8px;border-radius:6px;font-weight:600">No (New Applicant)</span>
+                        @endif
+                    </div>
+                    @if($user->existing_customer_ref)
+                        <div style="font-size:0.78rem;color:#1e40af;background:#eff6ff;padding:4px 8px;border-radius:6px;margin-top:4px;border:1px solid #bfdbfe;word-break:break-all;">
+                            Ref: <strong>{{ $user->existing_customer_ref }}</strong>
+                        </div>
+                    @endif
+                </div>
+                @endif
 
                 @if($user->customer_group === 'trading')
                 <div>

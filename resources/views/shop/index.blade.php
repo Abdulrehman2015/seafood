@@ -723,7 +723,9 @@
 
                                 <!-- Pack Size / Brand / Availability Row -->
                                 <div class="card-spec-row">
-                                    @if($product->weight)
+                                    @if($product->isVariableWeight())
+                                        <span class="spec-chip" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a" title="Variable-weight product: final billing determined by actual weight upon fulfillment">⚖️ Est. {{ $product->getReferenceWeight() }}</span>
+                                    @elseif($product->weight)
                                         <span class="spec-chip">📦 {{ $product->weight }}</span>
                                     @endif
                                     @if($product->brand && !str_contains($product->brand, 'SDN BHD'))
@@ -842,7 +844,7 @@
                                     </div>
 
                                     @if(!$isSensitiveOrRfq && $product->retail_price !== null)
-                                        <a href="javascript:void(0)" onclick="setCustomerType('wholesale')" class="card-wholesale-inquiry-link actions-mode-retail" title="Wholesale / Business Pricing">
+                                        <a href="#wholesale" onclick="event.preventDefault(); setCustomerType('wholesale');" class="card-wholesale-inquiry-link actions-mode-retail" title="Wholesale / Business Pricing">
                                             @t('shop.wholesale_business_pricing_link', 'Wholesale / Business Pricing →')
                                         </a>
                                     @endif
@@ -910,10 +912,10 @@
                         </p>
                         <p class="disclaimer-line disclaimer-wholesale-note">
                             <strong>@t('shop.delivery_threshold_head', 'Delivery Arrangement:')</strong>
-                            @t('shop.delivery_threshold_full_note', 'Standard delivery threshold is RM100 for Retail / B2C orders and RM350 for Wholesale / B2B orders. Orders below the applicable threshold may still be considered or accepted, subject to transportation or delivery charges based on the delivery location / zone and applicable logistics requirements.')
+                            @t('shop.delivery_threshold_full_note', 'Standard local delivery coverage applies to Johor Bahru and Iskandar Puteri / Nusajaya. Orders outside the standard area or below the applicable threshold may be considered case-by-case, subject to product, logistics requirements and applicable transportation charges.')
                         </p>
                         <p class="disclaimer-line disclaimer-currency-note">
-                            @t('shop.currency_indicative_disclaimer', 'Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.')
+                            @t('common.currency_notice', "ℹ️ SGD and USD prices are for reference only. MST's base prices and settlement currency are in RM. Reference exchange rates may change from time to time.")
                         </p>
                     </div>
                 </div>

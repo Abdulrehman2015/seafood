@@ -17,7 +17,7 @@
             <div>
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:2px 9px;border-radius:999px;font-size:0.7rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
-                        🔒 @t('checkout.encrypted_checkout_badge', '256-Bit Encrypted Secure Checkout')
+                        @t('checkout.encrypted_checkout_badge', 'Order Verification & Payment')
                     </span>
                     <span style="color:#bae6fd;font-size:0.78rem">@t('checkout.cold_chain_dispatch', 'Guaranteed Cold-Chain Dispatch')</span>
                 </div>
@@ -117,6 +117,12 @@
                             <div class="mobile-item-details">
                                 <div class="mobile-item-name">{{ $item->product?->name }}</div>
                                 <div class="mobile-item-meta">{{ $item->product?->sku ?? 'SEA-ITEM' }}</div>
+                                @if($item->product?->isVariableWeight())
+                                    <div style="font-size:0.7rem;color:#b45309;font-weight:600;margin-top:2px">
+                                        ⚖️ @t('shop.reference_estimated_weight', 'Reference / Estimated Weight'): {{ $item->product->getReferenceWeight() }}
+                                        <br><span style="font-weight:normal;color:#78350f">@t('shop.variable_weight_checkout_short', 'Actual Final Weight × Unit Price billed upon weighing')</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="mobile-item-price">
                                 @if($currentCurrency !== 'MYR')
@@ -171,6 +177,16 @@
                             @endif
                         </span>
                     </div>
+
+                    @php
+                        $hasVariableWeight = $items->contains(fn($i) => $i->product?->isVariableWeight());
+                    @endphp
+                    @if($hasVariableWeight)
+                        <div style="margin-top:10px;padding:8px 10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;font-size:0.75rem;color:#92400e;line-height:1.4">
+                            <strong>⚖️ @t('shop.variable_weight_notice_title', 'Variable-Weight Products Notice'):</strong>
+                            @t('shop.variable_weight_checkout_notice', 'Contains variable-weight items. Estimated total shown is calculated using reference weights. Final payable amount will be settled based on Actual Final Weight × Applicable Unit Price upon preparation.')
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -264,12 +280,12 @@
                                 @if(!empty($deliveryInfo['requires_manual_arrangement']))
                                     <strong>@t('checkout.delivery_arrangement_title', 'Delivery Arrangement Required:')</strong> @t('checkout.outside_zone_desc', 'Your delivery location is outside our standard delivery zones. Please contact MST to confirm the applicable delivery arrangement and charges.')
                                     <div style="margin-top:6px">
-                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '60132800168')) }}" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
+                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '601112710260')) }}" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
                                             💬 Contact via WhatsApp
                                         </a>
                                     </div>
                                 @elseif($initialShippingFee <= 0)
-                                    <strong>@t('checkout.standard_delivery_eligible', 'Standard Local Delivery Eligible:')</strong> @t('checkout.standard_delivery_desc', 'Your order qualifies for the standard local delivery arrangement (RM 0.00 delivery fee).')
+                                    <strong>@t('checkout.standard_delivery_eligible', 'Standard Local Delivery Eligible:')</strong> @t('checkout.standard_delivery_desc', 'Your order qualifies for the standard local delivery arrangement in Johor Bahru and Iskandar Puteri / Nusajaya.')
                                 @else
                                     <strong>@t('checkout.delivery_fee_notice_title', 'Delivery Fee Notice:')</strong> @t('checkout.below_threshold_notice', 'Orders below the standard delivery threshold (RM :threshold) may be subject to an additional delivery fee based on your delivery location.', ['threshold' => number_format($deliveryInfo['threshold'] ?? 100, 2)]) ({{ $deliveryInfo['zone_name'] ?? 'Zone Fee' }}: +RM {{ number_format($initialShippingFee, 2) }})
                                 @endif
@@ -383,6 +399,12 @@
                                         <div class="summary-item-details">
                                             <div class="summary-item-name">{{ $item->product?->name }}</div>
                                             <div class="summary-item-meta">{{ $item->product?->sku ?? 'SEA-ITEM' }}</div>
+                                            @if($item->product?->isVariableWeight())
+                                                <div style="font-size:0.72rem;color:#b45309;font-weight:600;margin-top:3px;background:#fef3c7;padding:3px 6px;border-radius:4px;border:1px solid #fde68a">
+                                                    ⚖️ @t('shop.reference_estimated_weight', 'Reference / Estimated Weight'): {{ $item->product->getReferenceWeight() }}
+                                                    <div style="font-weight:normal;color:#78350f;font-size:0.68rem;margin-top:1px">@t('shop.variable_weight_checkout_short', 'Actual Final Weight × Unit Price billed upon weighing')</div>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="summary-item-price">
@@ -438,10 +460,17 @@
                                     @endif
                                 </span>
                             </div>
+
+                            @if($hasVariableWeight)
+                                <div style="margin-top:10px;padding:8px 10px;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;font-size:0.75rem;color:#92400e;line-height:1.4">
+                                    <strong>⚖️ @t('shop.variable_weight_notice_title', 'Variable-Weight Products Notice'):</strong>
+                                    @t('shop.variable_weight_checkout_notice', 'Contains variable-weight items. Estimated total shown is calculated using reference weights. Final payable amount will be settled based on Actual Final Weight × Applicable Unit Price upon preparation.')
+                                </div>
+                            @endif
                         </div>
 
                         <button type="submit" class="checkout-submit-btn" id="submitBtn">
-                            <span class="btn-main-text">🔒 @t('checkout.place_order', 'Proceed to checkout')</span>
+                            <span class="btn-main-text">@t('checkout.place_order', 'Proceed to Payment')</span>
                             <span class="btn-amount-badge" id="submitBtnAmount">
                                 @if($currentCurrency !== 'MYR')
                                     {{ $currencySymbol }} {{ number_format($currencyService->convert($initialGrandTotal, $currentCurrency), 2) }}
@@ -453,8 +482,8 @@
 
                         <div class="checkout-trust-badges">
                             <div class="trust-item">
-                                <span class="trust-icon">🔒</span>
-                                <span>@t('checkout.trust_ssl', 'SSL Encrypted')</span>
+                                <span class="trust-icon">✓</span>
+                                <span>@t('checkout.trust_verified', 'Verified Order')</span>
                             </div>
                             <div class="trust-item">
                                 <span class="trust-icon">❄️</span>
@@ -468,12 +497,12 @@
 
                         @if($currentCurrency !== 'MYR')
                             <div style="font-size:0.75rem;color:#64748b;margin:10px 0 12px;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid #e2e8f0;line-height:1.4" id="currencyNoteBox">
-                                ℹ️ @t('checkout.currency_note', 'Prices displayed in :currency are for reference only. All transactions are settled in RM / Malaysian Ringgit (RM :amount).', ['currency' => '<strong>' . $currentCurrency . '</strong>', 'amount' => number_format($initialGrandTotal, 2)])
+                                @t('common.currency_notice', "ℹ️ SGD and USD prices are for reference only. MST's base prices and settlement currency are in RM. Reference exchange rates may change from time to time.")
                             </div>
                         @endif
 
                         <p class="checkout-terms-note">
-                            @t('checkout.terms_note', 'By clicking proceed, you will be redirected to Stripe to securely finalize your payment.')
+                            @t('checkout.terms_note', 'By clicking proceed, you will be redirected to finalize your payment.')
                         </p>
                     </div>
                 </div>
@@ -497,7 +526,7 @@
                 </span>
             </div>
             <button type="button" onclick="submitCheckoutForm()" class="mobile-footer-pay-btn" id="mobilePayBtn">
-                <span>🔒 @t('checkout.place_order', 'Proceed to checkout')</span>
+                <span>@t('checkout.place_order', 'Proceed to Payment')</span>
             </button>
         </div>
     </div>
@@ -1600,7 +1629,7 @@ function applyDeliveryFeeUpdate(data) {
             noticeBanner.style.border = '1px solid #bbf7d0';
             noticeBanner.style.color = '#166534';
             noticeIcon.textContent = '🏪';
-            noticeText.innerHTML = '<strong>Store Self-Collection:</strong> Collect your confirmed order directly from MST. No delivery fee applies.';
+            noticeText.innerHTML = '<strong>Self-Collection:</strong> Collect your confirmed order directly from MST (Self-collection only · no delivery).';
         } else if (requiresManual) {
             noticeBanner.style.background = '#fff7ed';
             noticeBanner.style.border = '1px solid #fdba74';
@@ -1612,7 +1641,7 @@ function applyDeliveryFeeUpdate(data) {
             noticeBanner.style.border = '1px solid #bbf7d0';
             noticeBanner.style.color = '#166534';
             noticeIcon.textContent = '✅';
-            noticeText.innerHTML = '<strong>Standard Local Delivery Eligible:</strong> Your order qualifies for standard local delivery arrangement (RM 0.00 delivery fee).';
+            noticeText.innerHTML = '<strong>Standard Local Delivery Eligible:</strong> Your order qualifies for standard local delivery arrangement in Johor Bahru and Iskandar Puteri / Nusajaya.';
         } else {
             noticeBanner.style.background = '#eff6ff';
             noticeBanner.style.border = '1px solid #bfdbfe';
@@ -1625,7 +1654,7 @@ function applyDeliveryFeeUpdate(data) {
     // Update Currency Note Box if present
     const currencyBox = document.getElementById('currencyNoteBox');
     if (currencyBox && isForeign) {
-        currencyBox.innerHTML = 'ℹ️ Prices displayed in <strong>' + checkoutI18n.currency + '</strong> are for reference only. All transactions are settled in RM / Malaysian Ringgit (RM ' + data.total_formatted + ').';
+        currencyBox.innerHTML = {!! json_encode(__t('common.currency_notice', "ℹ️ SGD and USD prices are for reference only. MST's base prices and settlement currency are in RM. Reference exchange rates may change from time to time.")) !!};
     }
 }
 

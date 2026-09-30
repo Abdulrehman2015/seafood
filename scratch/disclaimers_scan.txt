@@ -1,0 +1,22 @@
+=== scratch\policy_cookie-policy_zh.html ===
+=== scratch\policy_privacy-policy_zh.html ===
+  L81: <p>MST 对任何第三方网站的隐私政策、内容或安全性不承担任何责任。</p>
+=== scratch\policy_refund-policy_zh.html ===
+  L141: <p>对于因客户不当储存、操作不当、擅自解冻、烹饪失误、延误收货或超出 MST 合理控制范围的其他情况导致的产品变质，MST 概不承担责任。</p>
+=== scratch\policy_shipping-policy_zh.html ===
+  L86: <p class="text-muted small">因信息不准确或不完整而导致的配送延误或额外运费，MST 概不承担责任。</p>
+=== scratch\policy_terms-and-conditions_zh.html ===
+  L102: <p>因客户自身储存不当、操作失误、解冻不当、烹调或延迟签收而导致的产品变质，MST 概不承担责任。</p>
+  L131: <p>对于超出 MST 合理控制范围的涉及第三方服务的事项，MST 概不承担责任。</p>
+  L138: <p>因超出 MST 合理控制范围的情况导致履约延迟或未能履约，MST 不承担责任，此类情况包括但不限于：</p>
+=== scratch\policy_cookie-policy_en.html ===
+=== scratch\policy_privacy-policy_en.html ===
+  L82: <p>MST is not responsible for the privacy practices, content or security of third-party websites.</p>
+=== scratch\policy_refund-policy_en.html ===
+  L141: <p>MST is not responsible for deterioration caused by improper storage, handling, thawing, cooking, delay or circumstances outside MST's reasonable control.</p>
+=== scratch\policy_shipping-policy_en.html ===
+  L86: <p class="text-muted small">MST is not responsible for delays or additional charges caused by inaccurate or incomplete information.</p>
+  L102: <p class="text-muted small">MST is not responsible for deterioration caused after delivery due to improper storage, thawing, handling or other circumstances attributable to the customer.</p>
+=== scratch\policy_terms-and-conditions_en.html ===
+  L102: <p>MST is not responsible for deterioration caused by improper storage, handling, thawing, cooking or delays attributable to the customer.</p>
+  L131: <p>MST is not responsible for matters outside its reasonable control involving third-party services.</p>

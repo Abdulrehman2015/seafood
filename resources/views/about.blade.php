@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title', __t('about.meta_title', 'About Us — MST Import and Export Sdn. Bhd.'))
-@section('meta_description', __t('about.meta_desc', 'Learn about MST Import and Export Sdn. Bhd. Sourcing, trading and supply of seafood, meat, frozen food and food ingredients across Malaysia, Singapore and selected markets.'))
+@section('meta_description', __t('about.meta_desc', 'Learn about MST Import and Export Sdn. Bhd. Sourcing, trading and supply of seafood, meat, frozen food and food ingredients across Malaysia and Singapore.'))
 
 @section('content')
 <!-- Page Header -->
@@ -18,14 +18,14 @@
                     <span style="background:rgba(56,189,248,0.18);border:1px solid rgba(186,230,253,0.35);padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:700;color:#7dd3fc;text-transform:uppercase;letter-spacing:0.05em">
                         @t('about.est_badge', '🏆 Established in 2014 · Johor Bahru, Malaysia')
                     </span>
-                    <span style="color:#bae6fd;font-size:0.8rem">@t('about.cold_chain_supply', 'Frozen Food Sourcing & Supply')</span>
+                    <span style="color:#bae6fd;font-size:0.8rem">@t('about.cold_chain_supply', 'Cold-Chain Sourcing & Supply')</span>
                 </div>
                 <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.75rem,3.5vw,2.4rem);margin-bottom:6px;letter-spacing:-0.02em">
                     @t('about.header_title', 'About Us — MST Import and Export Sdn. Bhd.')
                 </h1>
                 <p class="page-subtitle" style="color:#e0f2fe;font-size:0.98rem;max-width:760px;line-height:1.55;margin:0">
                     <strong>@t('about.header_subtitle_strong', 'More Than a Supplier. Your Sourcing & Supply Partner.')</strong><br>
-                    @t('about.header_subtitle_text', 'Supplying seafood, meat, frozen food and selected food ingredients to customers in Malaysia and Singapore, with capability to expand to selected markets.')
+                    @t('about.header_subtitle_text', 'Supplying seafood, meat, frozen food and selected food ingredients to customers in Malaysia and Singapore, with plans to expand into regional and international markets.')
                 </p>
             </div>
             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -45,17 +45,17 @@
             <div>
                 <div class="section-eyebrow" style="color:#1d4ed8;font-weight:700;margin-bottom:8px">@t('about.section_1_eyebrow', '1. ABOUT MST — WHO WE ARE')</div>
                 <h2 style="font-family:var(--font-heading);font-size:clamp(1.6rem, 3.5vw, 2.2rem);color:#0f172a;margin-bottom:18px;line-height:1.3">
-                    @t('about.section_1_title', 'From Johor Bahru Roots to a Regional & International Supply Platform')
+                    @t('about.section_1_title', 'From Our Johor Bahru Roots Towards Regional & International Growth')
                 </h2>
                 <div class="about-intro-card">
                     <p style="margin-bottom:14px;line-height:1.7;color:#334155;">
                         {!! __t('about.who_we_are_p1', '<strong>MST Import and Export Sdn. Bhd.</strong> is a Johor-based frozen food sourcing, trading and distribution company, supplying seafood, meat, frozen food and selected food ingredients to commercial customers.') !!}
                     </p>
                     <p style="margin-bottom:14px;line-height:1.7;color:#334155;">
-                        {!! __t('about.who_we_are_p2', 'Founded in <strong>2014 as Mika Seafood Trading</strong>, the business evolved into <strong>MST Import and Export Sdn. Bhd. in 2024</strong>, marking a new stage of growth and expansion beyond traditional seafood trading.') !!}
+                        {!! __t('about.who_we_are_p2', 'Founded in 2014 (formerly known as Mika Seafood Trading), the business evolved into <strong>MST Import and Export Sdn. Bhd. in 2024</strong>, marking a new stage of growth and expansion beyond traditional seafood trading.') !!}
                     </p>
                     <p style="margin-bottom:16px;line-height:1.7;color:#334155;">
-                        {!! __t('about.who_we_are_p3', 'Today, MST is building a stronger supply platform through <strong>cold storage, customised sourcing, reliable supply and distribution</strong>, with a clear focus on serving customers across Malaysia, Singapore and growing regional and international markets.') !!}
+                        {!! __t('about.who_we_are_p3', 'Today, MST is building a stronger supply platform through <strong>cold storage, customised sourcing, reliable supply and distribution</strong>, serving customers in Malaysia and Singapore, with plans to expand into regional and international markets.') !!}
                     </p>
                     <div style="padding-top:14px;border-top:1px dashed #cbd5e1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
                         <span style="font-weight:700;color:#1d4ed8;font-size:0.95rem;letter-spacing:0.02em;">
@@ -97,7 +97,7 @@
                         </div>
                         <div class="feature-check-item">
                             <span class="feature-check-icon">✓</span>
-                            <span>@t('about.check_3', 'Regional & International Supply Capability')</span>
+                            <span>@t('about.check_3', 'Serving Malaysia & Singapore with Cold-Chain Reliability')</span>
                         </div>
                     </div>
                 </div>
@@ -150,7 +150,7 @@
                 <div class="timeline-badge timeline-badge-4">@t('about.timeline_future_badge', 'The Future')</div>
                 <h4 class="timeline-title">@t('about.timeline_future_title', 'Beyond Borders')</h4>
                 <p class="timeline-desc">
-                    {!! __t('about.timeline_future_desc', 'We are building MST to serve a broader <strong>regional and international market</strong>, with a scalable supply platform designed to support the evolving requirements of our customers and supply partners.') !!}
+                    {!! __t('about.timeline_future_desc', 'We are preparing MST for future regional development, with a scalable supply platform designed to support growing customer requirements and cross-border opportunities over time.') !!}
                 </p>
             </div>
         </div>
@@ -212,8 +212,8 @@
 
             <div class="fact-card">
                 <div class="fact-icon">🌏</div>
-                <div class="fact-label">@t('about.fact_market', 'Market Vision')</div>
-                <div class="fact-value" style="color:#059669;font-size:1rem;">@t('about.fact_market_val', 'Regional & International')</div>
+                <div class="fact-label">@t('about.fact_market', 'Market Focus')</div>
+                <div class="fact-value" style="color:#059669;font-size:1rem;">@t('about.fact_market_val', 'Malaysia & Singapore')</div>
             </div>
         </div>
     </section>
@@ -236,7 +236,7 @@
                 <div class="pillar-icon" style="background:#eff6ff;color:#2563eb;">🛡️</div>
                 <h3 class="pillar-title">@t('about.pillar_1_title', 'QUALITY & FOOD SAFETY')</h3>
                 <p class="pillar-desc">
-                    @t('about.pillar_1_desc', 'We source seafood, meat, frozen food and food ingredients according to product specifications and customer requirements. We work with established suppliers and processing partners to support consistent product quality and food-safety requirements.')
+                    @t('about.pillar_1_desc', 'We source seafood, meat, frozen food and food ingredients according to product specifications and customer requirements. We work with established suppliers and processing partners based on HACCP/GMP principles to support consistent product quality and food-safety requirements.')
                 </p>
             </div>
 
@@ -252,18 +252,18 @@
             <!-- 3. Cold-Chain Integrity -->
             <div class="pillar-card">
                 <div class="pillar-icon" style="background:#eff6ff;color:#0284c7;">❄️</div>
-                <h3 class="pillar-title">@t('about.pillar_3_title', 'COLD-CHAIN INTEGRITY')</h3>
+                <h3 class="pillar-title">@t('about.pillar_3_title', 'TEMPERATURE-CONTROLLED OPERATIONS')</h3>
                 <p class="pillar-desc">
-                    @t('about.pillar_3_desc', 'From receiving and storage to packing and dispatch, our temperature-controlled operations are designed to maintain product quality and cold-chain integrity throughout the supply chain. Our frozen storage operates within -18°C to -25°C, supporting proper handling and storage of frozen products.')
+                    @t('about.pillar_3_desc', 'Our operations support frozen storage (-18°C to -25°C), temperature-controlled handling, order preparation, packing and applicable logistics coordination according to product and customer requirements.')
                 </p>
             </div>
 
             <!-- 4. Reliable Supply -->
             <div class="pillar-card">
                 <div class="pillar-icon" style="background:#eff6ff;color:#1d4ed8;">🚚</div>
-                <h3 class="pillar-title">@t('about.pillar_4_title', 'RELIABLE SUPPLY & DISTRIBUTION')</h3>
+                <h3 class="pillar-title">@t('about.pillar_4_title', 'SUPPLY & DELIVERY COORDINATION')</h3>
                 <p class="pillar-desc">
-                    @t('about.pillar_4_desc', 'Our operations cover receiving, storage, packing, order preparation and dispatch. With our cold storage and distribution facility at SILC, we support regular stock supply as well as product-specific sourcing and growing customer requirements.')
+                    @t('about.pillar_4_desc', 'Our operations cover receiving, storage, packing, order preparation and delivery coordination according to customer requirements. With our cold storage and distribution facility at SILC, we support regular commercial supply as well as tailored sourcing requirements.')
                 </p>
             </div>
 
@@ -272,7 +272,7 @@
                 <div class="pillar-icon" style="background:#fef3c7;color:#b45309;">📈</div>
                 <h3 class="pillar-title">@t('about.pillar_5_title', 'BUILT TO SCALE')</h3>
                 <p class="pillar-desc">
-                    @t('about.pillar_5_desc', 'Our infrastructure and sourcing capabilities are designed to support increasing volumes and expanding regional and international markets. Whether you are a restaurant, food business, wholesaler, distributor or international buyer, we aim to be a reliable long-term sourcing and supply partner.')
+                    @t('about.pillar_5_desc', 'Our infrastructure and sourcing capabilities are designed to support increasing volumes and future regional development. Whether you are a restaurant, food business, wholesaler, distributor or commercial buyer, we aim to be a reliable long-term sourcing and supply partner.')
                 </p>
             </div>
         </div>
@@ -286,7 +286,7 @@
                 <div>
                     <div class="section-eyebrow" style="color:#1d4ed8;font-weight:700;margin-bottom:8px">@t('about.section_5_eyebrow', '5. OUR FOCUS & CREED')</div>
                     <h3 style="font-size:1.35rem;font-weight:800;color:#0f172a;margin-bottom:4px;line-height:1.35;">
-                        @t('about.creed_title', 'Quality Products. Reliable Supply. Flexible Sourcing. Consistent Service.')
+                        @t('about.creed_title', 'Quality Products. Reliable Supply. Fair Value. Consistent Service.')
                     </h3>
                     
                     <blockquote style="margin:16px 0;padding:16px 20px;background:#f8fafc;border-left:4px solid #2563eb;border-radius:0 12px 12px 0;font-size:0.92rem;color:#334155;line-height:1.7;">
@@ -310,7 +310,7 @@
             <!-- Management Profile -->
             <div class="leadership-card">
                 <div>
-                    <div style="font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#93c5fd;margin-bottom:8px;">@t('about.leadership_eyebrow', 'MANAGEMENT LEADERSHIP')</div>
+                    <div style="font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#93c5fd;margin-bottom:8px;">@t('about.leadership_eyebrow', 'MANAGEMENT')</div>
                     <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px;">
                         <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#1d4ed8);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:800;color:white;box-shadow:0 4px 12px rgba(56,189,248,0.3);flex-shrink:0;">
                             WC
@@ -322,15 +322,12 @@
                     </div>
 
                     <p style="font-size:0.92rem;color:#e0f2fe;line-height:1.75;margin:0 0 10px;">
-                        @t('about.wendy_bio_1', "Wendy Chiam oversees MST's business development, sourcing and supply management, commercial customer partnerships and overall operational direction.")
-                    </p>
-                    <p style="font-size:0.92rem;color:#e0f2fe;line-height:1.75;margin:0;">
-                        @t('about.wendy_bio_2', "Under her leadership, MST continues to enhance its sourcing capabilities, cold storage facilities and operational management, steadily expanding supply capabilities for regional and international markets.")
+                        @t('about.wendy_bio_1', 'Wendy Chiam is responsible for MST’s strategic development, sourcing and supplier relationships, commercial customer relationships and business expansion. She also drives the development of the company’s cold-chain infrastructure and supply capabilities.')
                     </p>
                 </div>
 
                 <div style="padding-top:20px;border-top:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-                    <span style="font-size:0.82rem;color:#93c5fd;">@t('about.exec_leadership', 'Executive Leadership')</span>
+                    <span style="font-size:0.82rem;color:#93c5fd;">@t('about.exec_leadership', 'Management')</span>
                     <a href="{{ route('contact') }}" class="btn btn-primary btn-sm" style="background:#2563eb;border-color:#2563eb;padding:7px 14px;font-size:0.82rem;">
                         @t('about.connect_team', 'Connect With Our Team →')
                     </a>

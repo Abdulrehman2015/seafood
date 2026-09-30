@@ -80,6 +80,7 @@ class ProductController extends Controller
         $validated['is_featured']        = $request->boolean('is_featured');
         $validated['is_rfq_only']        = $request->boolean('is_rfq_only');
         $validated['track_stock']         = $request->boolean('track_stock');
+        $validated['pricing_model']       = $request->input('pricing_model', 'fixed_unit') ?: 'fixed_unit';
 
         // Handle thumbnail upload or gallery selection
         if ($request->hasFile('thumbnail')) {
@@ -138,6 +139,7 @@ class ProductController extends Controller
         $validated['is_featured']        = $request->boolean('is_featured');
         $validated['is_rfq_only']        = $request->boolean('is_rfq_only');
         $validated['track_stock']         = $request->boolean('track_stock');
+        $validated['pricing_model']       = $request->input('pricing_model', 'fixed_unit') ?: 'fixed_unit';
 
         if ($request->hasFile('thumbnail')) {
             $media = $this->imageService->upload($request->file('thumbnail'), 'products');
@@ -216,6 +218,10 @@ class ProductController extends Controller
             'trading_price_sgd'   => 'nullable|numeric|min:0',
             'trading_price_usd'   => 'nullable|numeric|min:0',
             'weight'             => 'nullable|string|max:50',
+            'pricing_model'      => 'nullable|string|in:fixed_unit,variable_weight,pending_review',
+            'reference_weight'   => 'nullable|string|max:50',
+            'actual_weight_unit' => 'nullable|string|max:20',
+            'unit_price_per_weight' => 'nullable|numeric|min:0',
             'unit'               => 'required|string|max:20',
             'origin'             => 'nullable|string|max:100',
             'storage_temp'       => 'nullable|string|max:50',

@@ -21,7 +21,7 @@ class MultilingualCatalogueSeeder extends Seeder
             'crab'                 => ['zh' => '活肉蟹 / 花蟹 / 软壳蟹', 'bm' => 'Ketam Nipah & Ketam Bunga'],
             'shellfish'            => ['zh' => '贝类 / 扇贝 / 贻贝', 'bm' => 'Kerang-kerangan & Skalop'],
             'seafood-products'     => ['zh' => '特色海产加工调理品', 'bm' => 'Produk Makanan Laut Berproses'],
-            'fish-fillet'          => ['zh' => '精选无刺鱼柳鱼片', 'bm' => 'Flet Ikan Tanpa Tulang'],
+            'fish-fillet'          => ['zh' => '精选无刺鱼柳鱼片', 'bm' => 'Fillet Ikan Tanpa Tulang'],
             'other-frozen-seafood' => ['zh' => '其他进口急冻海产', 'bm' => 'Makanan Laut Beku Import Lain'],
             'steamboat'            => ['zh' => '火锅严选海鲜食材', 'bm' => 'Pilihan Makanan Laut Steamboat'],
             'meat-chicken'         => ['zh' => '冷冻鸡肉调理品', 'bm' => 'Daging Ayam Beku'],
@@ -46,9 +46,9 @@ class MultilingualCatalogueSeeder extends Seeder
         $productTranslations = [
             1 => [
                 'name_zh' => '挪威大西洋三文鱼柳 (500g 独立真空包)',
-                'name_bm' => 'Flet Salmon Atlantik Norway (500g)',
+                'name_bm' => 'Fillet Salmon Atlantik Norway (500g)',
                 'short_zh' => '源自挪威纯净深海冷水，带皮三文鱼柳，富含高含量 Omega-3 优质脂肪酸。',
-                'short_bm' => 'Flet salmon Atlantik Norway premium, dengan kulit, dibungkus vakum.',
+                'short_bm' => 'Fillet salmon Atlantik Norway premium, dengan kulit, dibungkus vakum.',
             ],
             2 => [
                 'name_zh' => '特级特大黑虎虾 / 草虾 (1kg 急冻装)',
@@ -82,9 +82,9 @@ class MultilingualCatalogueSeeder extends Seeder
             ],
             8 => [
                 'name_zh' => '红鲷鱼 / 红鱼纯肉切片 (500g)',
-                'name_bm' => 'Flet Ikan Merah Segar (500g)',
+                'name_bm' => 'Fillet Ikan Merah Segar (500g)',
                 'short_zh' => '精选新鲜野生红鱼取肉切片，肉质紧实，适合香煎、煮汤或煮粥。',
-                'short_bm' => 'Flet ikan merah asli tanpa tulang, sesuai untuk sup atau goreng.',
+                'short_bm' => 'Fillet ikan merah asli tanpa tulang, sesuai untuk sup atau goreng.',
             ],
             9 => [
                 'name_zh' => '野生马鲛鱼 / 鲛鱼切厚排 (500g)',
@@ -117,8 +117,8 @@ class MultilingualCatalogueSeeder extends Seeder
                 'short_bm' => 'Cincin sotong calamari disalut tepung rangup sedia digoreng.',
             ],
             16 => [
-                'name_zh' => '严选活冻青蟹 / 肉蟹 (约800g 1对装)',
-                'name_bm' => 'Ketam Nipah Segar (~800g Sepasang)',
+                'name_zh' => '青蟹 / 肉蟹 (±800g / 1对装)',
+                'name_bm' => 'Ketam Nipah Segar (±800g / Sepasang)',
                 'short_zh' => '肉质饱满实肉青蟹，蟹钳巨大，适合黑胡椒炒蟹或辣椒螃蟹。',
                 'short_bm' => 'Ketam nipah berkualiti dengan sepit padu dan isi pejal.',
             ],
@@ -148,9 +148,9 @@ class MultilingualCatalogueSeeder extends Seeder
             ],
             21 => [
                 'name_zh' => '特级多利鱼柳 / 龙利鱼片 (1kg 单冻无骨无刺)',
-                'name_bm' => 'Flet Ikan Dory Premium Tanpa Tulang (1kg)',
+                'name_bm' => 'Fillet Ikan Dory Premium Tanpa Tulang (1kg)',
                 'short_zh' => '无骨无刺无腥味，肉质雪白滑嫩，适合香煎、炸鱼薯条或做鱼汤。',
-                'short_bm' => 'Flet ikan dory tanpa tulang dan tanpa bau hanyir.',
+                'short_bm' => 'Fillet ikan dory tanpa tulang dan tanpa bau hanyir.',
             ],
             22 => [
                 'name_zh' => '日式蒲烧活烤鳗鱼 (200g 浓郁蒲烧汁)',
@@ -184,7 +184,7 @@ class MultilingualCatalogueSeeder extends Seeder
             ],
             27 => [
                 'name_zh' => '去骨无皮鲜冻鸡腿肉扒 (2kg 餐饮装)',
-                'name_bm' => 'Flet Paha Ayam Tanpa Tulang & Kulit (2kg)',
+                'name_bm' => 'Fillet Paha Ayam Tanpa Tulang & Kulit (2kg)',
                 'short_zh' => '纯净去骨去皮鸡腿肉，鲜嫩不柴，适合做鸡排、日式烧鸟及咖喱鸡。',
                 'short_bm' => 'Paha ayam tanpa tulang sedia untuk digoreng atau dibakar.',
             ],

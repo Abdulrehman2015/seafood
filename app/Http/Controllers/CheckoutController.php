@@ -422,13 +422,18 @@ class CheckoutController extends Controller
                 ];
             }
 
+            $isWalkin = $group === 'walkin' || ($payload['fulfillment_type'] ?? '') === 'self_collection';
+            $initialStatus = $isWalkin 
+                ? ($isPaid ? Order::WALKIN_STATUS_PAYMENT_CONFIRMED : Order::WALKIN_STATUS_PAYMENT_PENDING) 
+                : 'confirmed';
+
             $order = Order::create([
                 'user_id'               => $user?->id ?? ($payload['user_id'] ?? null),
                 'customer_group'        => $group,
                 'customer_name'         => $payload['customer_name'] ?? $user?->name ?? 'Customer',
                 'customer_email'        => $payload['customer_email'] ?? $user?->email,
                 'customer_phone'        => $payload['customer_phone'] ?? $user?->phone,
-                'status'                => 'confirmed',
+                'status'                => $initialStatus,
                 'payment_status'        => $isPaid ? 'paid' : 'unpaid',
                 'payment_method'        => $paymentMethod,
                 'payment_reference'     => $paymentRef,

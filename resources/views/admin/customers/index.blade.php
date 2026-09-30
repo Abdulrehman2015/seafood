@@ -251,10 +251,13 @@
                         </td>
                         <td style="padding:14px 18px;font-size:0.86rem;color:#334155;">
                             @if($customer->company_name)
-                                <div style="font-weight:600;color:#0f172a;margin-bottom:2px;display:flex;align-items:center;gap:5px;">
+                                <div style="font-weight:600;color:#0f172a;margin-bottom:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
                                     <span style="font-size:0.8rem;">🏢</span> {{ $customer->company_name }}
                                     @if($customer->company_reg_no)
                                         <span style="font-size:0.75rem;color:#64748b;font-weight:400;">({{ $customer->company_reg_no }})</span>
+                                    @endif
+                                    @if(($customer->existing_mst_customer ?? '') === 'yes')
+                                        <span style="background:#ecfdf5;color:#047857;border:1px solid #a7f3d0;padding:1px 6px;border-radius:4px;font-size:0.68rem;font-weight:700;" title="Applicant indicated they are an existing MST customer (Ref: {{ $customer->existing_customer_ref ?? 'N/A' }})">Existing MST</span>
                                     @endif
                                 </div>
                             @endif

@@ -45,7 +45,7 @@
                 @else
                     <div class="walkin-img-placeholder" style="font-size:5rem">🐟</div>
                 @endif
-                <span class="badge-walkin-main-tag">🏬 @t('walkin.counter_2_pickup', 'MST Counter 2 Self-Collection')</span>
+                <span class="badge-walkin-main-tag">🏬 @t('walkin.counter_2_pickup', 'Walk-in Self-Collection')</span>
             </div>
 
             @if(!empty($product->images) && is_array($product->images))
@@ -63,7 +63,7 @@
         <!-- Product Info Column -->
         <div class="walkin-info-col">
             <div class="walkin-info-badges">
-                <span class="badge-tag-blue">🏬 @t('walkin.walkin_retail_item', 'Walk-in Retail')</span>
+                <span class="badge-tag-blue">🏬 @t('walkin.walkin_retail_item', 'Self-Collection')</span>
                 @if($product->category)
                     <span class="badge-tag-gray">{{ $product->category->name }}</span>
                 @endif
@@ -104,14 +104,20 @@
 
                 <div class="price-card-hint">
                     <div style="font-weight:700;color:#0f274a;margin-bottom:4px">
-                        📍 <strong>MST Kaunter 2, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia</strong>
+                        📍 <strong>MST Cold-Chain Facility, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia (Collection: Counter 2)</strong>
                     </div>
                     <div style="color:#1d4ed8;margin-bottom:6px">
-                        @t('walkin.counter_desc', 'Orders are prepared for MST Counter 2 collection after payment confirmation. Please present your order reference or payment confirmation when collecting your order.')
+                        @t('walkin.counter_desc', 'Orders are prepared for collection at our SILC facility after payment confirmation. Please present your order reference or payment confirmation when collecting your order.')
                     </div>
-                    <a href="https://maps.google.com/?q={{ urlencode('MST Counter 2, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia') }}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:4px;font-size:0.78rem;font-weight:700;color:#2563eb;text-decoration:underline">
+                    <a href="https://maps.google.com/?q={{ urlencode('MST Cold-Chain Facility, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia') }}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:4px;font-size:0.78rem;font-weight:700;color:#2563eb;text-decoration:underline">
                         <span>📍 @t('walkin.get_directions', 'Get Directions')</span>
                     </a>
+                </div>
+
+                <!-- Currency Notice (Item 16 & 17) -->
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-top:12px;font-size:0.74rem;color:#64748b;line-height:1.45;display:flex;align-items:center;gap:6px">
+                    <span>ℹ️</span>
+                    <span>@t('common.currency_notice', 'ℹ️ SGD and USD prices are for reference only. MST\'s base prices and settlement currency are in RM. Reference exchange rates may change from time to time.')</span>
                 </div>
             </div>
 
@@ -169,7 +175,7 @@
                         <div class="spec-val">{{ $product->brand }}</div>
                     @endif
                     <div class="spec-name">@t('walkin.fulfillment', 'Collection Point')</div>
-                    <div class="spec-val text-cyan" style="color:#0284c7;font-weight:700">🏬 MST Counter 2, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.</div>
+                    <div class="spec-val text-cyan" style="color:#0284c7;font-weight:700">🏬 MST Cold-Chain Facility (Counter 2), 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.</div>
                 </div>
             </div>
 

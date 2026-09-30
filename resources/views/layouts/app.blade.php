@@ -1316,7 +1316,31 @@
                                 <span class="currency-option-pill">{{ $cur['label'] }}</span>
                                 <div class="currency-option-info">
                                     <span class="currency-option-name">
-                                        {{ $cur['flag'] ?? '' }} {{ $cur['label'] }} — {{ $cur['name'] }}
+                                        @if(in_array($currentLocale, ['bm', 'ms']))
+                                            @if($code === 'MYR')
+                                                RM — Ringgit Malaysia / Mata Wang Asas MST
+                                            @elseif($code === 'SGD')
+                                                SGD — Dolar Singapura / Paparan Untuk Rujukan Sahaja
+                                            @elseif($code === 'USD')
+                                                USD — Dolar AS / Paparan Untuk Rujukan Sahaja
+                                            @endif
+                                        @elseif($currentLocale === 'zh')
+                                            @if($code === 'MYR')
+                                                RM — 马来西亚令吉 / MST 基础结算货币
+                                            @elseif($code === 'SGD')
+                                                SGD — 新加坡元 / 仅供参考显示
+                                            @elseif($code === 'USD')
+                                                USD — 美元 / 仅供参考显示
+                                            @endif
+                                        @else
+                                            @if($code === 'MYR')
+                                                RM — Malaysian Ringgit / MST Base Currency
+                                            @elseif($code === 'SGD')
+                                                SGD — Singapore Dollar / Reference Display Only
+                                            @elseif($code === 'USD')
+                                                USD — US Dollar / Reference Display Only
+                                            @endif
+                                        @endif
                                     </span>
                                     <span class="currency-option-rate" style="font-size:0.70rem;color:#64748b;">
                                         @if($code === 'MYR')
@@ -1330,7 +1354,7 @@
                             </button>
                         @endforeach
                         <div class="currency-dropdown-note" style="padding:10px 12px;margin-top:6px;background:#f8fafc;border-top:1px solid #e2e8f0;font-size:0.73rem;color:#64748b;line-height:1.45;text-align:left;border-radius:0 0 10px 10px">
-                            @t('nav.currency_indicative_note', 'ℹ️ All orders are settled in RM (Malaysian Ringgit). SGD and USD amounts are reference display only.')
+                            @t('common.currency_notice', 'ℹ️ SGD and USD prices are for reference only. MST\'s base prices and settlement currency are in RM. Reference exchange rates may change from time to time.')
                         </div>
                     </div>
                 </div>
@@ -1500,13 +1524,13 @@
                         @empty
                             <li><a href="{{ route('contact') }}">@t('footer.contact_support', 'Customer Support')</a></li>
                         @endforelse
-                        <li><a href="#cookie-settings" class="footer-cookie-link" data-cookie-settings="true" onclick="event.preventDefault(); if (typeof window.openCookieSettings === 'function') window.openCookieSettings();">@t('cookie.cookie_settings', 'Cookie Settings')</a></li>
+                        <li><button type="button" class="footer-cookie-link js-open-cookie-settings" data-cookie-settings="true" onclick="if (typeof window.openCookieSettings === 'function') window.openCookieSettings();" style="background:none;border:none;padding:0;color:inherit;font:inherit;cursor:pointer;text-align:left;display:inline;">@t('cookie.cookie_settings', 'Cookie Settings')</button></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h4 class="footer-heading">@t('footer.sourcing_support_heading', 'Sourcing & Support')</h4>
                     <p style="font-size:0.875rem;color:#cbd5e1;line-height:1.6;margin-bottom:14px">
-                        @t('footer.sourcing_desc', 'Frozen food sourcing, wholesale supply & customised sourcing solutions for customers in Malaysia, Singapore and selected markets.')
+                        @t('footer.sourcing_desc', 'Cold-chain sourcing, wholesale supply & customised sourcing for customers in Malaysia and Singapore.')
                     </p>
                     <div style="margin-bottom:14px">
                         <a href="{{ route('contact') }}" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg, #2563eb, #1d4ed8);color:#ffffff;padding:8px 16px;border-radius:8px;font-weight:700;font-size:0.85rem;text-decoration:none;box-shadow:0 2px 8px rgba(37,99,235,0.35);transition:transform 0.15s ease">
@@ -1517,9 +1541,13 @@
                     <div style="font-size:0.8rem;color:#94a3b8;line-height:1.6;display:flex;flex-direction:column;gap:5px;margin-bottom:12px;">
                         <div style="display:flex;align-items:center;gap:6px;">
                             <span>📞</span>
+                            <span style="color:#64748b;font-weight:600;">Phone:</span>
                             <a href="tel:+60132800168" style="color:#94a3b8;text-decoration:none;font-weight:500;">+60 13-280 0168</a>
-                            <span style="color:#475569;">·</span>
-                            <a href="tel:+601112710260" style="color:#94a3b8;text-decoration:none;font-weight:500;">+60 11-1271 0260</a>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <span>💬</span>
+                            <span style="color:#64748b;font-weight:600;">WhatsApp:</span>
+                            <a href="https://wa.me/601112710260" target="_blank" rel="noopener noreferrer" style="color:#94a3b8;text-decoration:none;font-weight:500;">+60 11-1271 0260</a>
                         </div>
                         <div style="display:flex;align-items:center;gap:6px;">
                             <span>✉️</span>

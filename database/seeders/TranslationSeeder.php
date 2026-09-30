@@ -25,7 +25,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'about.check_2',
                 'text_en' => 'Tailored Product Specifications & Sourcing',
                 'text_zh' => '定制化产品规格与专属采购',
-                'text_bm' => 'Spesifikasi Produk & Perolehan Tersuai',
+                'text_bm' => 'Spesifikasi Produk & Penyumberan Tersuai',
             ],
             [
                 'group'   => 'about',
@@ -263,7 +263,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'about.pillar_2_title',
                 'text_en' => 'CUSTOMISED SOURCING',
                 'text_zh' => '灵活定制化采购',
-                'text_bm' => 'PEROLEHAN TERSUAI',
+                'text_bm' => 'PENYUMBERAN TERSUAI',
             ],
             [
                 'group'   => 'about',
@@ -536,7 +536,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'about.who_we_are_p3',
                 'text_en' => 'Today, MST is building a stronger supply platform through <strong>cold storage, customised sourcing, reliable supply and distribution</strong>, with a clear focus on serving customers across Malaysia, Singapore and growing regional and international markets.',
                 'text_zh' => '今天，MST 依托<strong>现代化冷库、定制化采购、稳定货源与分销网络</strong>，全力打造更坚实的供应链平台，深耕马来西亚与新加坡市场，并稳步拓展区域与国际业务。',
-                'text_bm' => 'Hari ini, MST membina platform bekalan yang lebih kukuh melalui <strong>storan sejuk, perolehan tersuai, bekalan boleh dipercayai dan pengedaran</strong>, dengan fokus jelas melayani pelanggan di Malaysia, Singapura dan pasaran serantau.',
+                'text_bm' => 'Hari ini, MST membina platform bekalan yang lebih kukuh melalui <strong>storan sejuk, penyumberan tersuai, bekalan boleh dipercayai dan pengedaran</strong>, dengan fokus jelas melayani pelanggan di Malaysia, Singapura dan pasaran serantau.',
             ],
             [
                 'group'   => 'about',
@@ -1733,7 +1733,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'rfq_badge',
                 'text_en' => '📋 B2B Trading Desk',
                 'text_zh' => '📋 B2B 贸易专席',
-                'text_bm' => '📋 Meja Perdagangan B2B',
+                'text_bm' => '📋 Meja Dagangan B2B',
             ],
             [
                 'group'   => 'account',
@@ -2006,7 +2006,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'tier_trading',
                 'text_en' => 'B2B Trading',
                 'text_zh' => 'B2B贸易商',
-                'text_bm' => 'Perdagangan B2B',
+                'text_bm' => 'Dagangan B2B',
             ],
             [
                 'group'   => 'account',
@@ -2027,7 +2027,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'trading_partner_badge',
                 'text_en' => '🏢 B2B Trading Partner Profile',
                 'text_zh' => '🏢 B2B 大宗贸易伙伴资料',
-                'text_bm' => '🏢 Profil Rakan Perdagangan B2B',
+                'text_bm' => '🏢 Profil Rakan Dagangan B2B',
             ],
             [
                 'group'   => 'account',
@@ -5730,7 +5730,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'privilege_rfq_engine',
                 'text_en' => 'RFQ & Quotation Engine: Submit custom procurement requests and formal quotations.',
                 'text_zh' => '专属询价报价引擎：随时提交定制采购需求并获取正式商务报价单。',
-                'text_bm' => 'Enjin RFQ & Sebut Harga: Hantar permintaan perolehan tersuai dan sebut harga rasmi.',
+                'text_bm' => 'Enjin RFQ & Sebut Harga: Hantar permintaan penyumberan tersuai dan sebut harga rasmi.',
             ],
             [
                 'group'   => 'email',
@@ -6367,7 +6367,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'hero_categories_highlight',
                 'text_en' => 'Seafood · Meat · Frozen Food · Food Ingredients · Customised Sourcing',
                 'text_zh' => '海鲜 · 肉类 · 冷冻食品 · 食品配料 · 定制采购',
-                'text_bm' => 'Makanan Laut · Daging · Makanan Sejuk Beku · Bahan Makanan · Perolehan Tersuai',
+                'text_bm' => 'Makanan Laut · Daging · Makanan Sejuk Beku · Bahan Makanan · Penyumberan Tersuai',
             ],
             [
                 'group'   => 'home',
@@ -6416,7 +6416,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'home.hero_categories_highlight',
                 'text_en' => 'Seafood · Meat · Frozen Food · Food Ingredients · Customised Sourcing',
                 'text_zh' => '海鲜 · 肉类 · 冷冻食品 · 食品配料 · 定制采购',
-                'text_bm' => 'Makanan Laut · Daging · Makanan Sejuk Beku · Bahan Makanan · Perolehan Tersuai',
+                'text_bm' => 'Makanan Laut · Daging · Makanan Sejuk Beku · Bahan Makanan · Penyumberan Tersuai',
             ],
             [
                 'group'   => 'home',
@@ -6437,7 +6437,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'home.partnership_subtitle',
                 'text_en' => 'From independent restaurants and food businesses to supermarkets, wholesalers and regional trading partners, we provide consistent supply, strict cold-chain assurance and customized sourcing solutions.',
                 'text_zh' => '从独立餐厅与餐饮连锁到商超零售、批量批发与区域贸易伙伴，我们提供稳定的货源供应、严谨的冷链保障与专属定制采购服务。',
-                'text_bm' => 'Daripada restoran bebas dan perniagaan makanan hingga pasar raya, pemborong dan rakan dagang serantau, kami menyediakan bekalan konsisten, jaminan rantaian sejuk ketat dan perolehan tersuai.',
+                'text_bm' => 'Daripada restoran bebas dan perniagaan makanan hingga pasar raya, pemborong dan rakan dagang serantau, kami menyediakan bekalan konsisten, jaminan rantaian sejuk ketat dan penyumberan tersuai.',
             ],
             [
                 'group'   => 'home',
@@ -6486,7 +6486,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'home.pillar_sourcing_title',
                 'text_en' => 'Customised Sourcing Network',
                 'text_zh' => '全球及区域定制采购网络',
-                'text_bm' => 'Rangkaian Perolehan Tersuai',
+                'text_bm' => 'Rangkaian Penyumberan Tersuai',
             ],
             [
                 'group'   => 'home',
@@ -6549,7 +6549,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'how_trading_desc',
                 'text_en' => 'Register for a trading account to access trading prices, bulk purchasing options and Request for Quotation (RFQ) for market-priced products.',
                 'text_zh' => '注册国际贸易进出口账户，获取一手集装箱整柜行情价，并支持针对大宗生鲜产品提交在线询价 (RFQ)。',
-                'text_bm' => 'Daftar akaun perdagangan untuk harga dagangan, pilihan pembelian pukal dan Minta Sebut Harga (RFQ).',
+                'text_bm' => 'Daftar akaun dagangan untuk harga dagangan, pilihan pembelian pukal dan Minta Sebut Harga (RFQ).',
             ],
             [
                 'group'   => 'home',
@@ -6654,7 +6654,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'partnership_subtitle',
                 'text_en' => 'From independent restaurants and food businesses to supermarkets, wholesalers and regional trading partners, we provide consistent supply, strict cold-chain assurance and customized sourcing solutions.',
                 'text_zh' => '从独立餐厅与餐饮连锁到商超零售、批量批发与区域贸易伙伴，我们提供稳定的货源供应、严谨的冷链保障与专属定制采购服务。',
-                'text_bm' => 'Daripada restoran bebas dan perniagaan makanan hingga pasar raya, pemborong dan rakan dagang serantau, kami menyediakan bekalan konsisten, jaminan rantaian sejuk ketat dan perolehan tersuai.',
+                'text_bm' => 'Daripada restoran bebas dan perniagaan makanan hingga pasar raya, pemborong dan rakan dagang serantau, kami menyediakan bekalan konsisten, jaminan rantaian sejuk ketat dan penyumberan tersuai.',
             ],
             [
                 'group'   => 'home',
@@ -6703,7 +6703,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'pillar_sourcing_title',
                 'text_en' => 'Customised Sourcing Network',
                 'text_zh' => '全球及区域定制采购网络',
-                'text_bm' => 'Rangkaian Perolehan Tersuai',
+                'text_bm' => 'Rangkaian Penyumberan Tersuai',
             ],
             [
                 'group'   => 'home',
@@ -7921,7 +7921,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'notice_title',
                 'text_en' => 'B2B Sourcing & Trading Advantage',
                 'text_zh' => 'B2B 采购与贸易优势',
-                'text_bm' => 'Kelebihan Perolehan & Perdagangan B2B',
+                'text_bm' => 'Kelebihan Perolehan & Dagangan B2B',
             ],
             [
                 'group'   => 'rfq',
@@ -8362,7 +8362,7 @@ class TranslationSeeder extends Seeder
                 'key'     => 'inquire_custom_spec',
                 'text_en' => 'Inquire Custom Sourcing →',
                 'text_zh' => '咨询定制采购 →',
-                'text_bm' => 'Tanya Sumber Tersuai →',
+                'text_bm' => 'Tanya Penyumberan Tersuai →',
             ],
             [
                 'group'   => 'shop',

@@ -42,10 +42,7 @@
 <div class="register-page-wrapper">
     <div class="register-container">
         
-        <!-- Header -->
-        <div class="register-header text-center">
-            <p class="register-subtitle" style="margin-top:0">@t('auth.register_header_instruction', 'Select the account type that matches your purchasing requirements.')</p>
-        </div>
+
 
         <!-- ════════════════════════════════════════════════════════════════════ -->
         <!-- THREE CLEAR ACCOUNT TYPE CHOICES (CUSTOMER FLOW)                   -->
@@ -93,7 +90,7 @@
             <div style="margin-bottom:20px;font-size:0.84rem;color:#475569;line-height:1.45;padding:12px 16px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
                 <div style="display:flex;align-items:center;gap:10px">
                     <span style="font-size:1.1rem">🛍️</span>
-                    <span>@t('auth.walkin_supporting_note', 'Just shopping through our Walk-in Menu? You do not need an account to browse or place a Walk-in / Counter Collection order.')</span>
+                    <span>@t('auth.walkin_supporting_note', 'Just shopping through our Walk-in Menu? You do not need an account to browse or place an order for self-collection.')</span>
                 </div>
                 <a href="{{ route('walkin.shop') }}" style="color:#2563eb;font-weight:700;text-decoration:none;font-size:0.84rem;white-space:nowrap;display:inline-flex;align-items:center;gap:4px">
                     @t('auth.btn_browse_walkin_menu', 'Browse Walk-in Menu →')
@@ -366,7 +363,7 @@
                 <!-- ════════════════════════════════════════════════════════════════════ -->
                 <div id="tradingRequirementsSection" style="display: {{ $selectedGroup === 'trading' ? 'block' : 'none' }}">
                     <div class="section-divider">
-                        <span>@t('auth.section_trading_requirements', '5. Trading Requirements')</span>
+                        <span>@t('auth.section_trading_requirements', '4. Trading Requirements')</span>
                     </div>
 
                     <div class="form-group">
@@ -400,7 +397,7 @@
                 <!-- ════════════════════════════════════════════════════════════════════ -->
                 <div id="productInterestSection" style="display: {{ in_array($selectedGroup, ['wholesale', 'trading']) ? 'block' : 'none' }}">
                     <div class="section-divider">
-                        <span>@t('auth.section_product_requirements', '6. Product Requirements')</span>
+                        <span><span id="productSectionNum">{{ $selectedGroup === 'trading' ? '5.' : ($selectedGroup === 'wholesale' ? '3.' : '6.') }}</span> @t('auth.section_product_requirements_title', 'Product Requirements')</span>
                     </div>
 
                     <!-- Single Product / Category Interest Selection -->
@@ -457,7 +454,7 @@
                 <!-- ════════════════════════════════════════════════════════════════════ -->
                 <div id="additionalRequirementsSection" style="display: {{ in_array($selectedGroup, ['wholesale', 'trading']) ? 'block' : 'none' }}">
                     <div class="section-divider">
-                        <span>@t('auth.section_additional_requirements', '7. Additional Requirements')</span>
+                        <span><span id="addlSectionNum">{{ $selectedGroup === 'trading' ? '6.' : ($selectedGroup === 'wholesale' ? '4.' : '7.') }}</span> @t('auth.section_additional_requirements_title', 'Additional Requirements')</span>
                     </div>
 
                     <!-- Additional Message (Optional) -->
@@ -471,7 +468,7 @@
 
                     <!-- Existing Customer Check -->
                     <div class="form-group" style="padding:14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-top:6px">
-                        <label class="form-label" style="margin-bottom:6px">@t('auth.field_existing_customer_question', 'Are you an existing MST customer?')</label>
+                        <label class="form-label" style="margin-bottom:6px">@t('auth.field_existing_customer_question', 'Existing MST Customer: Yes / No')</label>
                         <div style="display:flex;gap:20px;align-items:center;padding:4px 0">
                             <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.88rem;color:#334155">
                                 <input type="radio" name="existing_mst_customer" value="yes" {{ old('existing_mst_customer') == 'yes' ? 'checked' : '' }} onchange="toggleExistingRef(this.value)" style="accent-color:#2563eb">
@@ -556,7 +553,7 @@
                     <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:4px 0">
                         <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.86rem;color:#334155">
                             <input type="radio" name="preferred_fulfilment" value="walkin" {{ old('preferred_fulfilment', 'walkin') == 'walkin' ? 'checked' : '' }} style="accent-color:#2563eb">
-                            <span>@t('auth.fulfilment_walkin', '🏬 Walk-in / MST Kaunter 2 Collection')</span>
+                            <span>@t('auth.fulfilment_walkin', '🏬 Self-Collection')</span>
                         </label>
                         <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:0.86rem;color:#334155">
                             <input type="radio" name="preferred_fulfilment" value="delivery" {{ old('preferred_fulfilment') == 'delivery' ? 'checked' : '' }} style="accent-color:#2563eb">
@@ -580,7 +577,7 @@
 
                 <!-- Trading Notice Box (Section 17) -->
                 <div id="tradingNoticeBox" style="display: {{ $selectedGroup === 'trading' ? 'block' : 'none' }}; margin-top:14px;font-size:0.80rem;color:#1e40af;line-height:1.45;padding:12px 14px;background:#eff6ff;border-radius:10px;border-left:3px solid #2563eb">
-                    @t('auth.trading_pricing_disclaimer', 'Harga dagangan dan pengaturan bekalan tertakluk kepada semakan dan kelulusan MST, ketersediaan produk, spesifikasi, jumlah pesanan, destinasi dan keperluan perdagangan yang berkenaan.')
+                    @t('auth.trading_pricing_disclaimer', 'Trading pricing and supply arrangements are subject to MST review and approval, product availability, specifications, order volume, destination and applicable trading requirements.')
                 </div>
 
                 <!-- ════════════════════════════════════════════════════════════════════ -->
@@ -1184,9 +1181,13 @@ function selectAccountType(type) {
     }
     if (prodIntSec) {
         prodIntSec.style.display = (type === 'wholesale' || type === 'trading') ? 'block' : 'none';
+        const prodNum = document.getElementById('productSectionNum');
+        if (prodNum) prodNum.textContent = (type === 'trading') ? '5.' : (type === 'wholesale' ? '3.' : '6.');
     }
     if (addlReqsSec) {
         addlReqsSec.style.display = (type === 'wholesale' || type === 'trading') ? 'block' : 'none';
+        const addlNum = document.getElementById('addlSectionNum');
+        if (addlNum) addlNum.textContent = (type === 'trading') ? '6.' : (type === 'wholesale' ? '4.' : '7.');
     }
     if (sameAddrToggle) {
         sameAddrToggle.style.display = (type === 'wholesale' || type === 'trading') ? 'block' : 'none';

@@ -39,27 +39,61 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    // Standard Delivery Statuses
+    public const STATUS_PENDING    = 'pending';
+    public const STATUS_CONFIRMED  = 'confirmed';
+    public const STATUS_PROCESSING = 'processing';
+    public const STATUS_SHIPPED    = 'shipped';
+    public const STATUS_DELIVERED  = 'delivered';
+    public const STATUS_CANCELLED  = 'cancelled';
+
+    // Walk-in / Self-Collection Status Lifecycle (Item 14)
+    public const WALKIN_STATUS_PAYMENT_PENDING   = 'payment_pending';
+    public const WALKIN_STATUS_PAYMENT_CONFIRMED = 'payment_confirmed';
+    public const WALKIN_STATUS_PREPARATION       = 'preparation';
+    public const WALKIN_STATUS_READY_COLLECTION  = 'ready_collection';
+    public const WALKIN_STATUS_COLLECTED         = 'collected';
+
+    public function isWalkin(): bool
+    {
+        return $this->customer_group === 'walkin' || $this->fulfillment_type === 'self_collection';
+    }
+
+    public function canPrepare(): bool
+    {
+        // Payment confirmation must occur before preparation
+        return $this->payment_status === 'paid' || $this->status === self::WALKIN_STATUS_PAYMENT_CONFIRMED;
+    }
+
+    public function canCollect(): bool
+    {
+        // Must be paid before order can be released for collection
+        return $this->payment_status === 'paid' && in_array($this->status, [self::WALKIN_STATUS_READY_COLLECTION, 'ready']);
+    }
+
     public function getStatusBadgeAttribute(): string
     {
         $label = match ($this->status) {
-            'pending'    => __t('order.status.pending', 'Pending'),
-            'confirmed'  => __t('order.status.confirmed', 'Confirmed'),
-            'processing' => __t('order.status.processing', 'Processing'),
-            'ready'      => __t('order.status.ready', 'Ready'),
-            'shipped'    => __t('order.status.shipped', 'Shipped'),
-            'delivered'  => __t('order.status.delivered', 'Delivered'),
-            'cancelled'  => __t('order.status.cancelled', 'Cancelled'),
-            default      => ucfirst($this->status),
+            'pending', 'payment_pending'     => __t('order.status.payment_pending', 'Payment Pending'),
+            'confirmed', 'payment_confirmed' => __t('order.status.payment_confirmed', 'Payment Confirmed'),
+            'processing', 'preparation'      => __t('order.status.preparation', 'Preparation'),
+            'ready', 'ready_collection'      => __t('order.status.ready_collection', 'Ready for Collection'),
+            'collected'                      => __t('order.status.collected', 'Collected'),
+            'shipped'                        => __t('order.status.shipped', 'Shipped'),
+            'delivered'                      => __t('order.status.delivered', 'Delivered'),
+            'cancelled'                      => __t('order.status.cancelled', 'Cancelled'),
+            default                          => ucfirst($this->status),
         };
         $class = match ($this->status) {
-            'pending'    => 'badge-warning',
-            'confirmed'  => 'badge-info',
-            'processing' => 'badge-primary',
-            'ready'      => 'badge-success',
-            'shipped'    => 'badge-primary',
-            'delivered'  => 'badge-success',
-            'cancelled'  => 'badge-danger',
-            default      => 'badge-secondary',
+            'pending', 'payment_pending'     => 'badge-warning',
+            'confirmed', 'payment_confirmed' => 'badge-info',
+            'processing', 'preparation'      => 'badge-primary',
+            'ready', 'ready_collection'      => 'badge-success',
+            'collected'                      => 'badge-secondary',
+            'shipped'                        => 'badge-primary',
+            'delivered'                      => 'badge-success',
+            'cancelled'                      => 'badge-danger',
+            default                          => 'badge-secondary',
         };
         return '<span class="badge ' . $class . '">' . e($label) . '</span>';
     }

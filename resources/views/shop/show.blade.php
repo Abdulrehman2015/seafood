@@ -132,8 +132,16 @@
                         <span class="text-xs text-muted">@t('shop.sku_label', 'SKU:') <strong style="color:var(--gray-700)">{{ $product->sku }}</strong></span>
                     @endif
 
-                    @if($product->weight)
+                    @if($product->isVariableWeight())
+                        <span class="text-xs text-muted" style="display:inline-flex;align-items:center;gap:4px">
+                            <span>⚖️</span>
+                            @t('shop.estimated_reference_weight', 'Reference / Estimated Weight:')
+                            <strong style="color:var(--gray-800)">{{ $product->getReferenceWeight() }}</strong>
+                            <span style="font-size:0.75rem;color:#b45309;font-weight:600">(@t('shop.ref_weight_only', 'Estimated Reference Weight'))</span>
+                        </span>
+                    @elseif($product->weight)
                         <span class="text-xs text-muted">@t('shop.weight_label', 'Weight:') <strong style="color:var(--gray-700)">{{ $product->weight }}</strong></span>
+                        <span class="text-xs" style="color:#059669;font-weight:600">(@t('shop.fixed_unit_pricing', 'Fixed Price per :unit', ['unit' => ucfirst($product->unit ?? 'pack')]))</span>
                     @endif
                 </div>
 
@@ -193,11 +201,28 @@
                     @endif
                 </div>
 
+                @if($product->isVariableWeight())
+                <div style="background:#fffbeb;border:1.5px solid #fde68a;border-left:4px solid #d97706;border-radius:10px;padding:12px 14px;margin-bottom:var(--space-4);font-size:0.82rem;color:#92400e;line-height:1.5">
+                    <div style="font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:0.86rem;color:#b45309">
+                        <span>⚖️</span>
+                        <span>@t('shop.variable_weight_title', 'Variable-Weight Product')</span>
+                    </div>
+                    <div>
+                        @t('shop.variable_weight_billing_notice', 'The displayed weight (e.g. ±800g) is an estimated/reference weight, not a guaranteed final weight. Where applicable, final billing is calculated as: Actual Final Weight × Applicable Unit Price upon weighing and fulfilment.')
+                    </div>
+                    <div style="margin-top:6px;font-size:0.76rem;color:#78350f;background:rgba(254,243,199,0.7);padding:6px 10px;border-radius:6px">
+                        • @t('shop.rule_ref_weight', 'Reference / Estimated Weight'): <strong>{{ $product->getReferenceWeight() }}</strong><br>
+                        • @t('shop.rule_actual_weight', 'Actual Final Weight'): <em>@t('shop.determined_upon_weighing', 'Determined upon weighing at fulfillment')</em><br>
+                        • @t('shop.rule_calculation', 'Final Amount'): <strong>@t('shop.actual_weight_times_unit_price', 'Actual Final Weight × Applicable Unit Price')</strong>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Disclaimers Notice -->
                 <div style="font-size:0.75rem;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:var(--space-4);line-height:1.4">
                     <div><strong>ℹ️ @t('shop.pricing_disclaimer_head', 'Notice:'):</strong> @t('shop.retail_ref_price_disclaimer', 'Retail prices are shown for reference. Wholesale and trading prices are available after account approval or by quotation.')</div>
-                    <div style="margin-top:3px">@t('shop.delivery_threshold_full_note', 'Standard delivery threshold is RM100 for Retail / B2C orders and RM350 for Wholesale / B2B orders. Orders below the applicable threshold may still be considered or accepted, subject to transportation or delivery charges based on the delivery location / zone and applicable logistics requirements.')</div>
-                    <div style="margin-top:3px;color:#0369a1">@t('shop.currency_indicative_disclaimer', 'Currency conversion is indicative only. Final pricing may vary according to the applicable exchange rate.')</div>
+                    <div style="margin-top:3px">@t('shop.delivery_threshold_full_note', 'Standard local delivery coverage applies to Johor Bahru and Iskandar Puteri / Nusajaya. Orders outside the standard area or below the applicable threshold may be considered case-by-case, subject to product, logistics requirements and applicable transportation charges.')</div>
+                    <div style="margin-top:3px;color:#0369a1">@t('common.currency_notice', "ℹ️ SGD and USD prices are for reference only. MST's base prices and settlement currency are in RM. Reference exchange rates may change from time to time.")</div>
                 </div>
 
                 <!-- Short Description -->
@@ -385,8 +410,14 @@
                                 <td style="color:var(--gray-900)">Individually Quick Frozen (IQF) Flash Freezing</td>
                             </tr>
                             <tr>
-                                <td style="font-weight:600;color:var(--gray-700)">Glaze Ratio &amp; Weight</td>
-                                <td style="color:var(--gray-900)">Protective Ice Glaze (&lt;10%) / 100% Net Weight Guaranteed ({{ $product->weight ?? 'N/A' }})</td>
+                                <td style="font-weight:600;color:var(--gray-700)">Weight &amp; Pricing Model</td>
+                                <td style="color:var(--gray-900)">
+                                    @if($product->isVariableWeight())
+                                        <strong>⚖️ Variable-Weight Product</strong> — Reference / Estimated Weight: <strong>{{ $product->getReferenceWeight() }}</strong> (Final billing: Actual Final Weight × Applicable Unit Price)
+                                    @else
+                                        Protective Ice Glaze (&lt;10%) / Net Weight ({{ $product->weight ?? 'N/A' }}) · <strong>Fixed Price per {{ ucfirst($product->unit ?? 'pack') }}</strong>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td style="font-weight:600;color:var(--gray-700)">Storage Temperature</td>
@@ -443,8 +474,8 @@
                     <h3 style="font-size:1.1rem;color:var(--gray-900);font-weight:700;margin-bottom:var(--space-2)">Fulfillment & Collection Options</h3>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-top:var(--space-3)">
                         <div style="padding:var(--space-4);border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe">
-                            <div style="font-weight:700;color:#1e3a8a;margin-bottom:4px">🏪 Walk-in / Counter Collection (RM0 Delivery Fee)</div>
-                            <div class="text-xs text-muted">Collect your confirmed order directly from MST SILC Cold-Chain Facility (MST Kaunter 2). No delivery fee and no delivery threshold apply.</div>
+                            <div style="font-weight:700;color:#1e3a8a;margin-bottom:4px">🏪 @t('shop.walkin_collection_title', 'Walk-in / Self-Collection')</div>
+                            <div class="text-xs text-muted">@t('shop.walkin_collection_desc', 'Collect your confirmed order directly from MST SILC Cold-Chain Facility. Self-collection only · No delivery threshold applies.')</div>
                         </div>
                         <div style="padding:var(--space-4);border-radius:10px;background:#f8fafc;border:1px solid var(--gray-200)">
                             <div style="font-weight:700;color:var(--gray-900);margin-bottom:4px">🚚 Standard Local & Cold Chain Delivery</div>

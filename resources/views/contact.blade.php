@@ -967,7 +967,7 @@
                 <span class="contact-hero-pill">
                     📍 @t('contact.hero_pill', 'Sourcing & Customer Support')
                 </span>
-                <span style="color:#bae6fd;font-size:0.82rem">@t('contact.hero_location', 'Iskandar Puteri, Johor · Serving Malaysia, Singapore & Selected Regional Markets')</span>
+                <span style="color:#bae6fd;font-size:0.82rem">@t('contact.hero_location', 'Iskandar Puteri, Johor · Serving Customers in Malaysia and Singapore')</span>
             </div>
             <h1 class="page-title" style="color:#ffffff;font-family:var(--font-heading);font-size:clamp(1.8rem,3.5vw,2.5rem);margin-bottom:6px;letter-spacing:-0.02em">
                 @t('contact.header_title', 'Contact Us')
@@ -1023,8 +1023,7 @@
                 +60 13-280 0168
             </a>
             <div class="contact-card-sub" style="display:flex;flex-direction:column;gap:3px">
-                <div><a href="tel:+601112710260" style="color:#1d4ed8;font-weight:600;font-size:0.84rem;text-decoration:none">+60 11-1271 0260</a></div>
-                <div style="margin-top:6px;color:#0f172a;font-weight:700;font-size:0.8rem">@t('contact.customer_service_hours', 'Customer Service Hours')</div>
+                <div style="margin-top:4px;color:#0f172a;font-weight:700;font-size:0.8rem">@t('contact.customer_service_hours', 'Customer Service Hours')</div>
                 <div style="color:#0f172a;font-weight:600;font-size:0.8rem">@t('contact.hours_mon_sat', 'Monday – Saturday: 8:00 AM – 6:00 PM')</div>
                 <div style="color:#64748b;font-size:0.76rem">@t('contact.hours_sun_holidays', 'Sunday & Public Holidays: Closed')</div>
             </div>
@@ -1049,7 +1048,7 @@
             </a>
             <div class="contact-card-sub">
                 <div style="color:#1d4ed8;font-weight:700;font-size:0.83rem">
-                    @t('contact.card3_sub', 'B2B Wholesale & Custom RFQ')
+                    @t('contact.card3_sub', 'Wholesale B2B & RFQ for Custom Sourcing')
                 </div>
                 <div style="margin-top:4px;color:#64748b;font-size:0.78rem;line-height:1.4">
                     @t('contact.card3_desc', 'For wholesale enquiries, customised sourcing and quotation requests.')
@@ -1351,9 +1350,9 @@
                                 <div class="searchable-options-list" id="categoryOptionsList" role="listbox">
                                     <div class="searchable-option-item {{ !old('subject') ? 'selected' : '' }}" 
                                          data-value="" 
-                                         data-label="{{ __t('contact.all_categories', 'All Categories / Custom Sourcing') }}">
+                                         data-label="{{ __t('contact.all_categories', 'All Categories') }}">
                                         <div style="display:flex;align-items:center;gap:6px">
-                                            <span>@t('contact.all_categories', 'All Categories / Custom Sourcing')</span>
+                                            <span>@t('contact.all_categories', 'All Categories')</span>
                                             <span class="searchable-check-icon">
                                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                             </span>
@@ -1516,7 +1515,7 @@
                 </button>
 
                 <p style="text-align:center;font-size:0.8rem;color:#64748b;margin:14px 0 0">
-                    @t('contact.submit_footer', 'We will review your requirements, including product availability, specifications and pricing, and contact you regarding the next steps.')
+                    @t('contact.submit_footer', 'Product availability, specifications, pricing and supply arrangements are subject to confirmation. Submitting an RFQ does not guarantee product availability or supply.')
                 </p>
             </form>
 

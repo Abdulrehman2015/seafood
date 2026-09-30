@@ -875,7 +875,7 @@
         }
 
         // Open Cookie Settings trigger
-        var btnSettings = e.target.closest('#cookie-btn-settings, [data-cookie-settings="true"], .js-open-cookie-settings, a[href="#cookie-settings"], a[href*="openCookieSettings"]');
+        var btnSettings = e.target.closest('#cookie-btn-settings, [data-cookie-settings="true"], .js-open-cookie-settings, a[href*="openCookieSettings"]');
         if (btnSettings) {
             e.preventDefault();
             openSettingsModal();
