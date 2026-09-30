@@ -79,7 +79,7 @@ class CategoryController extends Controller
             'parent_id'     => 'nullable|exists:categories,id',
             'sort_order'    => 'integer|min:0',
             'is_active'     => 'nullable|boolean',
-            'image'         => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:8192',
+            'image'         => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,bmp,avif|max:15360',
             'gallery_image' => 'nullable|string|max:255',
         ]);
 
@@ -117,7 +117,7 @@ class CategoryController extends Controller
             'parent_id'     => 'nullable|exists:categories,id',
             'sort_order'    => 'integer|min:0',
             'is_active'     => 'nullable|boolean',
-            'image'         => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:8192',
+            'image'         => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,bmp,avif|max:15360',
             'gallery_image' => 'nullable|string|max:255',
         ]);
 
@@ -136,13 +136,20 @@ class CategoryController extends Controller
             }
         }
 
+        $oldImage = $category->image;
         if ($request->hasFile('image')) {
             $media = $this->imageService->upload($request->file('image'), 'categories');
             $data['image'] = $media->path;
+            if ($oldImage && $oldImage !== $media->path) {
+                $this->imageService->deleteOldImage($oldImage);
+            }
         } elseif ($request->filled('gallery_image')) {
             $data['image'] = $request->gallery_image;
         } elseif ($request->has('gallery_image') && empty($request->gallery_image)) {
             $data['image'] = null;
+            if ($oldImage) {
+                $this->imageService->deleteOldImage($oldImage);
+            }
         }
 
         $category->update($data);

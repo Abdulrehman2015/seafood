@@ -57,7 +57,7 @@ class ReviewController extends Controller
             'role_or_company' => 'nullable|string|max:200',
             'rating'          => 'required|integer|min:1|max:5',
             'comment'         => 'required|string|max:2000',
-            'avatar'          => 'nullable|image|max:2048',
+            'avatar'          => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,bmp,avif|max:15360',
             'is_featured'     => 'boolean',
             'status'          => 'required|in:approved,pending',
             'sort_order'      => 'integer|min:0',
@@ -66,7 +66,11 @@ class ReviewController extends Controller
         $data['is_featured'] = $request->boolean('is_featured');
 
         if ($request->hasFile('avatar')) {
-            $media = $this->imageService->upload($request->file('avatar'), 'reviews', $request->name);
+            $media = $this->imageService->upload($request->file('avatar'), 'reviews', $request->name, [
+                'max_width'  => 600,
+                'max_height' => 600,
+                'quality'    => 86,
+            ]);
             $data['avatar'] = $media->path;
         }
 
@@ -87,7 +91,7 @@ class ReviewController extends Controller
             'role_or_company' => 'nullable|string|max:200',
             'rating'          => 'required|integer|min:1|max:5',
             'comment'         => 'required|string|max:2000',
-            'avatar'          => 'nullable|image|max:2048',
+            'avatar'          => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,bmp,avif|max:15360',
             'is_featured'     => 'boolean',
             'status'          => 'required|in:approved,pending',
             'sort_order'      => 'integer|min:0',
@@ -96,17 +100,22 @@ class ReviewController extends Controller
 
         $data['is_featured'] = $request->boolean('is_featured');
 
-        if ($request->boolean('remove_avatar') && $review->avatar) {
-            Storage::disk('public')->delete($review->avatar);
+        $oldAvatar = $review->avatar;
+        if ($request->boolean('remove_avatar') && $oldAvatar) {
+            $this->imageService->deleteOldImage($oldAvatar);
             $data['avatar'] = null;
         }
 
         if ($request->hasFile('avatar')) {
-            if ($review->avatar) {
-                Storage::disk('public')->delete($review->avatar);
-            }
-            $media = $this->imageService->upload($request->file('avatar'), 'reviews', $request->name);
+            $media = $this->imageService->upload($request->file('avatar'), 'reviews', $request->name, [
+                'max_width'  => 600,
+                'max_height' => 600,
+                'quality'    => 86,
+            ]);
             $data['avatar'] = $media->path;
+            if ($oldAvatar && $oldAvatar !== $media->path) {
+                $this->imageService->deleteOldImage($oldAvatar);
+            }
         }
 
         $review->update($data);

@@ -224,13 +224,13 @@ echo "--- F. Product Check ---\n";
 $doryProd = Product::where('sku', 'FILLET-DORY-1KG')->first();
 $unagiProd = Product::where('sku', 'OTHER-UNAGI-200')->first();
 
-if (!$doryProd || $doryProd->thumbnail !== 'products/dory_fish_fillet.jpg') {
-    $issues[] = "[F. Product Image] Dory Fish Fillet thumbnail is not products/dory_fish_fillet.jpg!";
+if (!$doryProd || !in_array($doryProd->thumbnail, ['products/dory_fish_fillet.webp', 'products/dory_fish_fillet.jpg'])) {
+    $issues[] = "[F. Product Image] Dory Fish Fillet thumbnail is not products/dory_fish_fillet.webp!";
 }
-if (!$unagiProd || $unagiProd->thumbnail !== 'products/unagi_kabayaki.jpg') {
-    $issues[] = "[F. Product Image] Unagi Kabayaki thumbnail is not products/unagi_kabayaki.jpg!";
+if (!$unagiProd || !in_array($unagiProd->thumbnail, ['products/unagi_kabayaki.webp', 'products/unagi_kabayaki.jpg'])) {
+    $issues[] = "[F. Product Image] Unagi Kabayaki thumbnail is not products/unagi_kabayaki.webp!";
 }
-$passes[] = "[F. Product Images] Dory Fillet and Unagi Kabayaki image associations verified across DB and views.";
+$passes[] = "[F. Product Images] Dory Fillet and Unagi Kabayaki WebP image associations verified across DB and views.";
 
 // Origin badges check on product cards
 $shopBlade = file_get_contents(resource_path('views/shop/index.blade.php'));

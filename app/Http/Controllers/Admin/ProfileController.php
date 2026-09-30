@@ -11,6 +11,13 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    protected \App\Services\ImageUploadService $imageService;
+
+    public function __construct(\App\Services\ImageUploadService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
     /**
      * Display the admin profile edit view.
      */
@@ -31,14 +38,14 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name'             => ['required', 'string', 'max:255'],
             'email'            => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'avatar'           => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            'avatar'           => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,gif,bmp', 'max:8192'],
             'remove_avatar'    => ['nullable', 'boolean'],
             'current_password' => ['nullable', 'required_with:password', 'current_password'],
             'password'         => ['nullable', 'min:8', 'confirmed'],
         ], [
             'current_password.current_password' => 'The provided current password does not match our records.',
             'password.confirmed'                => 'The new password confirmation does not match.',
-            'avatar.max'                        => 'The profile picture must not exceed 2MB in size.',
+            'avatar.max'                        => 'The profile picture must not exceed 8MB in size.',
         ]);
 
         $user->name = trim($validated['name']);
@@ -46,29 +53,24 @@ class ProfileController extends Controller
 
         // Handle Avatar Removal
         if ($request->boolean('remove_avatar')) {
-            if ($user->avatar && file_exists(public_path($user->avatar))) {
-                @unlink(public_path($user->avatar));
+            if ($user->avatar) {
+                $this->imageService->deleteOldImage($user->avatar);
             }
             $user->avatar = null;
         }
 
-        // Handle Avatar Upload
+        // Handle Avatar Upload via ImageUploadService
         if ($request->hasFile('avatar')) {
-            $avatarFile = $request->file('avatar');
-            if ($avatarFile->isValid()) {
-                $uploadDir = public_path('uploads/avatars');
-                if (!is_dir($uploadDir)) {
-                    @mkdir($uploadDir, 0755, true);
-                }
+            $oldAvatar = $user->avatar;
+            $media = $this->imageService->upload($request->file('avatar'), 'avatars', $user->name, [
+                'max_width'  => 800,
+                'max_height' => 800,
+                'quality'    => 86,
+            ]);
+            $user->avatar = $media->path;
 
-                // Remove existing avatar file if custom
-                if ($user->avatar && file_exists(public_path($user->avatar))) {
-                    @unlink(public_path($user->avatar));
-                }
-
-                $filename = 'admin_' . $user->id . '_' . time() . '.' . $avatarFile->getClientOriginalExtension();
-                $avatarFile->move($uploadDir, $filename);
-                $user->avatar = 'uploads/avatars/' . $filename;
+            if ($oldAvatar && $oldAvatar !== $media->path) {
+                $this->imageService->deleteOldImage($oldAvatar);
             }
         }
 

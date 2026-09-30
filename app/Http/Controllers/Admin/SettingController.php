@@ -27,20 +27,26 @@ class SettingController extends Controller
         $tab = $request->input('tab', 'general');
 
         $request->validate([
-            'site_logo'    => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:8192',
-            'site_favicon' => 'nullable|file|mimes:jpeg,png,jpg,webp,ico,gif|max:2048',
+            'site_logo'    => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,bmp,avif,svg|max:15360',
+            'site_favicon' => 'nullable|file|mimes:jpeg,png,jpg,webp,ico,gif,bmp,avif,svg|max:8192',
         ]);
 
         // Extract and process any uploaded appearance images
         if ($request->hasFile('site_logo')) {
-            $media = $this->imageService->upload($request->file('site_logo'), 'gallery', 'Site Logo');
+            $media = $this->imageService->upload($request->file('site_logo'), 'appearance', 'Site Logo', [
+                'quality' => 90,
+            ]);
             Setting::set('site_logo', $media->path);
         } elseif ($request->filled('gallery_site_logo')) {
             Setting::set('site_logo', $request->gallery_site_logo);
         }
 
         if ($request->hasFile('site_favicon')) {
-            $media = $this->imageService->upload($request->file('site_favicon'), 'gallery', 'Site Favicon');
+            $media = $this->imageService->upload($request->file('site_favicon'), 'appearance', 'Site Favicon', [
+                'max_width'  => 512,
+                'max_height' => 512,
+                'quality'    => 92,
+            ]);
             Setting::set('site_favicon', $media->path);
         } elseif ($request->filled('gallery_site_favicon')) {
             Setting::set('site_favicon', $request->gallery_site_favicon);

@@ -83,24 +83,24 @@
             ];
 
             $catThumbnails = [
-                'fish' => 'products/salmon_fillet_premium.jpg',
-                'fish-fillet' => 'products/dory_fish_fillet.jpg',
-                'prawns-shrimps' => 'products/black_tiger_prawns.jpg',
-                'squid' => 'products/loligo_squid.jpg',
-                'crab' => 'products/mud_crabs_live.jpg',
-                'shellfish' => 'products/canadian_scallops.jpg',
-                'seafood-products' => 'products/prawn_paste_tube.jpg',
-                'other-frozen-seafood' => 'products/unagi_kabayaki.jpg',
-                'steamboat' => 'products/steamboat_hotpot_combo.jpg',
-                'meat-beef' => 'products/meltique_beef_steak.jpg',
-                'meat-lamb' => 'products/meltique_beef_steak.jpg',
-                'meat-chicken' => 'products/barramundi_seabass.jpg',
-                'meat-duck' => 'products/meltique_beef_steak.jpg',
-                'frozen-product-food' => 'products/seafood_tofu_platter.jpg',
-                'dimsum' => 'products/dimsum_har_kow.jpg',
-                'ready-to-eat' => 'products/seafood_tofu_platter.jpg',
-                'snack-food' => 'products/seafood_tofu_platter.jpg',
-                'dessert' => 'products/dimsum_har_kow.jpg',
+                'fish' => 'products/salmon_fillet_premium.webp',
+                'fish-fillet' => 'products/dory_fish_fillet.webp',
+                'prawns-shrimps' => 'products/black_tiger_prawns.webp',
+                'squid' => 'products/loligo_squid.webp',
+                'crab' => 'products/mud_crabs_live.webp',
+                'shellfish' => 'products/canadian_scallops.webp',
+                'seafood-products' => 'products/prawn_paste_tube.webp',
+                'other-frozen-seafood' => 'products/unagi_kabayaki.webp',
+                'steamboat' => 'products/steamboat_hotpot_combo.webp',
+                'meat-beef' => 'products/meltique_beef_steak.webp',
+                'meat-lamb' => 'products/meltique_beef_steak.webp',
+                'meat-chicken' => 'products/barramundi_seabass.webp',
+                'meat-duck' => 'products/meltique_beef_steak.webp',
+                'frozen-product-food' => 'products/seafood_tofu_platter.webp',
+                'dimsum' => 'products/dimsum_har_kow.webp',
+                'ready-to-eat' => 'products/seafood_tofu_platter.webp',
+                'snack-food' => 'products/seafood_tofu_platter.webp',
+                'dessert' => 'products/dimsum_har_kow.webp',
             ];
 
             $catDescriptions = [
@@ -150,7 +150,7 @@
             @php
                 $slug = $category->slug;
                 $icon = $catIcons[$slug] ?? '📦';
-                $thumb = $catThumbnails[$slug] ?? 'products/salmon_fillet_premium.jpg';
+                $thumb = $catThumbnails[$slug] ?? 'products/salmon_fillet_premium.webp';
                 $desc = $catDescriptions[$slug] ?? 'Premium quality frozen seafood and cold storage supply.';
                 $dept = $catDepartments[$slug] ?? 'seafood';
                 $count = $category->products_count ?? $category->products()->active()->count();

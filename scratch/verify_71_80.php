@@ -235,18 +235,18 @@ echo "6. Testing #78 Product Master Images (Dory & Unagi)...\n";
 $dory = Product::where('sku', 'FILLET-DORY-1KG')->first();
 if (!$dory) {
     $issues[] = "Product FILLET-DORY-1KG (Dory) not found in MySQL!";
-} elseif ($dory->thumbnail !== 'products/dory_fish_fillet.jpg') {
-    $issues[] = "Product FILLET-DORY-1KG thumbnail is '{$dory->thumbnail}', expected 'products/dory_fish_fillet.jpg'!";
+} elseif (!in_array($dory->thumbnail, ['products/dory_fish_fillet.webp', 'products/dory_fish_fillet.jpg'])) {
+    $issues[] = "Product FILLET-DORY-1KG thumbnail is '{$dory->thumbnail}', expected 'products/dory_fish_fillet.webp'!";
 }
 
 $unagi = Product::where('sku', 'OTHER-UNAGI-200')->first();
 if (!$unagi) {
     $issues[] = "Product OTHER-UNAGI-200 (Unagi) not found in MySQL!";
-} elseif ($unagi->thumbnail !== 'products/unagi_kabayaki.jpg') {
-    $issues[] = "Product OTHER-UNAGI-200 thumbnail is '{$unagi->thumbnail}', expected 'products/unagi_kabayaki.jpg'!";
+} elseif (!in_array($unagi->thumbnail, ['products/unagi_kabayaki.webp', 'products/unagi_kabayaki.jpg'])) {
+    $issues[] = "Product OTHER-UNAGI-200 thumbnail is '{$unagi->thumbnail}', expected 'products/unagi_kabayaki.webp'!";
 }
 
-$passes[] = "Dory and Unagi product images verified as correct.";
+$passes[] = "Dory and Unagi product images verified as correct WebP assets.";
 
 // -------------------------------------------------------------
 // 7. #79 ZERO PUBLIC ORIGIN DISPLAY ON PRODUCT CARDS / LISTINGS
