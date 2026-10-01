@@ -1541,12 +1541,12 @@
                     <div style="font-size:0.8rem;color:#94a3b8;line-height:1.6;display:flex;flex-direction:column;gap:5px;margin-bottom:12px;">
                         <div style="display:flex;align-items:center;gap:6px;">
                             <span>📞</span>
-                            <span style="color:#64748b;font-weight:600;">Phone:</span>
+                            <span style="color:#64748b;font-weight:600;">@t('footer.phone_label', 'Phone:')</span>
                             <a href="tel:+60132800168" style="color:#94a3b8;text-decoration:none;font-weight:500;">+60 13-280 0168</a>
                         </div>
                         <div style="display:flex;align-items:center;gap:6px;">
                             <span>💬</span>
-                            <span style="color:#64748b;font-weight:600;">WhatsApp:</span>
+                            <span style="color:#64748b;font-weight:600;">@t('footer.whatsapp_label', 'WhatsApp:')</span>
                             <a href="https://wa.me/601112710260" target="_blank" rel="noopener noreferrer" style="color:#94a3b8;text-decoration:none;font-weight:500;">+60 11-1271 0260</a>
                         </div>
                         <div style="display:flex;align-items:center;gap:6px;">

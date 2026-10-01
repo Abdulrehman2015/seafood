@@ -276,7 +276,7 @@
             <div class="sidebar-instore-box">
                 <div class="instore-box-title">🏬 @t('walkin.counter_title', 'Self-Collection')</div>
                 <div style="font-weight:700;font-size:0.82rem;color:#1e3a8a;margin-bottom:6px;line-height:1.4">
-                    MST Cold-Chain Facility, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia (Collection: Counter 2)
+                    MST Cold-Chain Facility, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia
                 </div>
                 <p class="instore-box-desc">@t('walkin.counter_desc', 'Orders are prepared for collection at our SILC facility after payment confirmation. Orders are packed appropriately for collection and transport.')</p>
                 <div class="instore-box-note">📋 @t('walkin.counter_note', 'Please present your order reference or payment confirmation when collecting your order.')</div>

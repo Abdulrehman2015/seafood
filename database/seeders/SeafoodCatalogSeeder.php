@@ -239,8 +239,8 @@ class SeafoodCatalogSeeder extends Seeder
 
             // ─── 3. SQUID ─────────────────────────────────────────────────────────
             [
-                'name'                => 'Fresh Loligo Squid / Sotong Jarum (1kg)',
-                'slug'                => 'fresh-loligo-squid-sotong-jarum-1kg',
+                'name'                => 'Frozen Loligo Squid / Sotong Jarum (1kg)',
+                'slug'                => 'frozen-loligo-squid-sotong-jarum-1kg',
                 'category_id'         => $squidCat->id,
                 'short_description'   => 'Ocean-fresh whole needle squid with glossy translucent tubes and tentacles.',
                 'description'         => 'Whole Loligo Squid (Sotong Jarum) frozen right after ocean trawling to prevent rubberiness. Tender when flash-cooked, releasing sweet natural juice. Superb for sotong bakar, sambal petai sotong, or stuffed squid.',

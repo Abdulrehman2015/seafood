@@ -19,11 +19,11 @@ class CategoryHierarchySeeder extends Seeder
                 'sort_order' => 1,
                 'children' => [
                     ['name' => 'Fish', 'name_zh' => '鱼类', 'name_bm' => 'Ikan', 'slug' => 'fish', 'icon' => '🐟'],
-                    ['name' => 'Fish Fillet', 'name_zh' => '鱼柳 / 鱼片', 'name_bm' => 'Fillet Ikan', 'slug' => 'fish-fillet', 'icon' => '🐟'],
-                    ['name' => 'Prawns / Shrimps', 'name_zh' => '虾类 / 明虾', 'name_bm' => 'Udang', 'slug' => 'prawns-shrimps', 'icon' => '🦐'],
-                    ['name' => 'Crab', 'name_zh' => '蟹类 / 螃蟹', 'name_bm' => 'Ketam', 'slug' => 'crab', 'icon' => '🦀'],
-                    ['name' => 'Squid / Cuttlefish', 'name_zh' => '鱿鱼 / 乌贼', 'name_bm' => 'Sotong', 'slug' => 'squid', 'icon' => '🦑'],
-                    ['name' => 'Shellfish', 'name_zh' => '贝类 / 扇贝', 'name_bm' => 'Kerang-kerangan', 'slug' => 'shellfish', 'icon' => '🦪'],
+                    ['name' => 'Fish Fillet', 'name_zh' => '鱼柳', 'name_bm' => 'Fillet Ikan', 'slug' => 'fish-fillet', 'icon' => '🐟'],
+                    ['name' => 'Prawns / Shrimps', 'name_zh' => '虾类', 'name_bm' => 'Udang', 'slug' => 'prawns-shrimps', 'icon' => '🦐'],
+                    ['name' => 'Crab', 'name_zh' => '蟹类', 'name_bm' => 'Ketam', 'slug' => 'crab', 'icon' => '🦀'],
+                    ['name' => 'Squid / Cuttlefish', 'name_zh' => '鱿鱼', 'name_bm' => 'Sotong', 'slug' => 'squid', 'icon' => '🦑'],
+                    ['name' => 'Shellfish', 'name_zh' => '贝类', 'name_bm' => 'Kerang-kerangan', 'slug' => 'shellfish', 'icon' => '🦪'],
                     ['name' => 'Other Seafood', 'name_zh' => '其他海产', 'name_bm' => 'Makanan Laut Lain', 'slug' => 'other-frozen-seafood', 'icon' => '🌊'],
                 ]
             ],

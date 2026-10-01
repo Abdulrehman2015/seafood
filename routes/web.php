@@ -32,12 +32,19 @@ Route::get('/products', function (\Illuminate\Http\Request $request) {
     }
     return redirect()->to("/{$locale}/products" . ($request->getQueryString() ? '?' . $request->getQueryString() : ''), 301);
 });
-Route::get('/shop', function (\Illuminate\Http\Request $request) {
+Route::get('/products/fresh-loligo-squid-sotong-jarum-1kg', function (\Illuminate\Http\Request $request) {
     $locale = session('locale', $request->cookie('app_lang', $request->cookie('locale', config('app.locale', 'en'))));
     if (!in_array($locale, ['en', 'zh', 'bm'])) {
         $locale = 'en';
     }
-    return redirect()->to("/{$locale}/products" . ($request->getQueryString() ? '?' . $request->getQueryString() : ''), 301);
+    return redirect()->to("/{$locale}/products/frozen-loligo-squid-sotong-jarum-1kg", 301);
+});
+Route::get('/shop/fresh-loligo-squid-sotong-jarum-1kg', function (\Illuminate\Http\Request $request) {
+    $locale = session('locale', $request->cookie('app_lang', $request->cookie('locale', config('app.locale', 'en'))));
+    if (!in_array($locale, ['en', 'zh', 'bm'])) {
+        $locale = 'en';
+    }
+    return redirect()->to("/{$locale}/products/frozen-loligo-squid-sotong-jarum-1kg", 301);
 });
 
 // ─── Global System Routes (No locale prefix needed) ───────────────────────────
@@ -465,10 +472,23 @@ Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function
         $loc = is_string($locale) ? $locale : (request()->route('locale') ?: 'en');
         return redirect()->route('categories.index', ['locale' => $loc], 301);
     });
+    // 301 Redirect for Frozen Loligo URL (Section 7)
+    Route::get('/products/fresh-loligo-squid-sotong-jarum-1kg', function ($locale = 'en') {
+        $loc = is_string($locale) ? $locale : (request()->route('locale') ?: 'en');
+        return redirect()->to("/{$loc}/products/frozen-loligo-squid-sotong-jarum-1kg", 301);
+    });
+    Route::get('/shop/fresh-loligo-squid-sotong-jarum-1kg', function ($locale = 'en') {
+        $loc = is_string($locale) ? $locale : (request()->route('locale') ?: 'en');
+        return redirect()->to("/{$loc}/products/frozen-loligo-squid-sotong-jarum-1kg", 301);
+    });
+
     Route::get('/products/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
     Route::get('/shop/{product}', function ($locale = 'en', $product = null) {
         $loc = is_string($locale) ? $locale : (request()->route('locale') ?: 'en');
         $slug = is_object($product) ? ($product->slug ?? $product->id) : ($product ?: request()->route('product'));
+        if ($slug === 'fresh-loligo-squid-sotong-jarum-1kg') {
+            return redirect()->to("/{$loc}/products/frozen-loligo-squid-sotong-jarum-1kg", 301);
+        }
         return redirect()->route('shop.show', ['locale' => $loc, 'product' => $slug], 301);
     });
 

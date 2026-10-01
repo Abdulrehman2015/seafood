@@ -49,8 +49,8 @@
                 <a href="{{ route('walkin.shop') }}" class="step-item step-completed" style="text-decoration:none">
                     <div class="step-icon">1</div>
                     <div class="step-info">
-                        <span class="step-num">1. @t('walkin.step_1_name', 'Lihat')</span>
-                        <span class="step-label">@t('walkin.step_1_desc', 'Lihat produk yang tersedia di telefon anda.')</span>
+                        <span class="step-num">1. @t('walkin.step_1_name', 'View')</span>
+                        <span class="step-label">@t('walkin.step_1_desc', 'Browse available products on your mobile device.')</span>
                     </div>
                 </a>
                 <div class="step-divider active"></div>
@@ -58,8 +58,8 @@
                 <a href="{{ route('walkin.shop') }}" class="step-item step-completed" style="text-decoration:none">
                     <div class="step-icon">2</div>
                     <div class="step-info">
-                        <span class="step-num">2. @t('walkin.step_2_name', 'Pilih')</span>
-                        <span class="step-label">@t('walkin.step_2_desc', 'Pilih produk dan kuantiti yang diperlukan.')</span>
+                        <span class="step-num">2. @t('walkin.step_2_name', 'Select')</span>
+                        <span class="step-label">@t('walkin.step_2_desc', 'Choose required products and quantities.')</span>
                     </div>
                 </a>
                 <div class="step-divider active"></div>
@@ -67,8 +67,8 @@
                 <div class="step-item step-active">
                     <div class="step-icon">3</div>
                     <div class="step-info">
-                        <span class="step-num">3. @t('walkin.step_3_name', 'Bayar')</span>
-                        <span class="step-label">@t('walkin.step_3_desc', 'Lengkapkan pembayaran melalui telefon anda.')</span>
+                        <span class="step-num">3. @t('walkin.step_3_name', 'Pay')</span>
+                        <span class="step-label">@t('walkin.step_3_desc', 'Complete payment via your mobile device.')</span>
                     </div>
                 </div>
                 <div class="step-divider"></div>
@@ -76,8 +76,8 @@
                 <div class="step-item">
                     <div class="step-icon">4</div>
                     <div class="step-info">
-                        <span class="step-num">4. @t('walkin.step_4_name', 'Ambil')</span>
-                        <span class="step-label">@t('walkin.step_4_desc', 'Ambil pesanan yang telah disediakan di premis.')</span>
+                        <span class="step-num">4. @t('walkin.step_4_name', 'Collect')</span>
+                        <span class="step-label">@t('walkin.step_4_desc', 'Collect your prepared order at the designated collection point.')</span>
                     </div>
                 </div>
             </div>
@@ -169,7 +169,7 @@
                             @t('walkin.confirm_pickup_title', 'Please confirm your order and collection location before payment.')
                         </div>
                         <div class="notice-desc" style="font-size:0.85rem;color:#1d4ed8;line-height:1.45;margin-bottom:8px">
-                            📍 <strong>MST Cold-Chain Facility, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia (Collection: Counter 2)</strong><br>
+                            📍 <strong>MST Cold-Chain Facility, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia</strong><br>
                             @t('walkin.counter_desc', 'Orders are prepared for collection at our SILC facility after payment confirmation. Orders are packed appropriately for collection and transport.')
                         </div>
                         <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">

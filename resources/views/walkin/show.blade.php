@@ -104,7 +104,7 @@
 
                 <div class="price-card-hint">
                     <div style="font-weight:700;color:#0f274a;margin-bottom:4px">
-                        📍 <strong>MST Cold-Chain Facility, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia (Collection: Counter 2)</strong>
+                        📍 <strong>MST Cold-Chain Facility, No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor, Malaysia</strong>
                     </div>
                     <div style="color:#1d4ed8;margin-bottom:6px">
                         @t('walkin.counter_desc', 'Orders are prepared for collection at our SILC facility after payment confirmation. Please present your order reference or payment confirmation when collecting your order.')
@@ -175,7 +175,7 @@
                         <div class="spec-val">{{ $product->brand }}</div>
                     @endif
                     <div class="spec-name">@t('walkin.fulfillment', 'Collection Point')</div>
-                    <div class="spec-val text-cyan" style="color:#0284c7;font-weight:700">🏬 MST Cold-Chain Facility (Counter 2), 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.</div>
+                    <div class="spec-val text-cyan" style="color:#0284c7;font-weight:700">🏬 MST Cold-Chain Facility, 7 Jalan SILC 2/18, SILC Industrial Park, Iskandar Puteri, Johor.</div>
                 </div>
             </div>
 
