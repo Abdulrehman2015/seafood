@@ -47,11 +47,11 @@
 
             <!-- Top Hero Cart Pill & Quick Checkout -->
             <div class="walkin-hero-actions">
-                <a href="{{ route('cart.index') }}" class="walkin-hero-cart-pill" title="@t('walkin.cart_title', 'Self-Collection Cart')">
+                <a href="{{ route('walkin.cart') }}" class="walkin-hero-cart-pill" title="@t('walkin.cart_title', 'Self-Collection Cart')">
                     <div class="cart-pill-icon">🛒</div>
                     <div class="cart-pill-text">
                         <span class="cart-pill-label">@t('walkin.cart_title', 'Self-Collection Cart')</span>
-                        <span class="cart-pill-value"><span id="walkinCartCount">0</span> @t('walkin.items', 'items')</span>
+                        <span class="cart-pill-value"><span id="walkinCartCount">{{ $cartCount ?? 0 }}</span> @t('walkin.items', 'items')</span>
                     </div>
                 </a>
                 <a href="{{ route('walkin.checkout') }}" class="btn-walkin-hero-checkout">
@@ -532,15 +532,15 @@
                 <div class="dock-cart-info">
                     <div class="dock-cart-label">@t('walkin.cart_title', 'Walk-in Express Cart')</div>
                     <div class="dock-cart-numbers">
-                        <span id="bottomBarCount" class="dock-count">0</span> @t('walkin.items', 'items')
+                        <span id="bottomBarCount" class="dock-count">{{ $cartCount ?? 0 }}</span> @t('walkin.items', 'items')
                         <span class="dock-sep">·</span>
-                        <span id="bottomBarTotal" class="dock-total">RM 0.00</span>
+                        <span id="bottomBarTotal" class="dock-total">RM {{ number_format($cartTotals['total'] ?? 0, 2) }}</span>
                     </div>
                 </div>
             </div>
             
             <div class="dock-right">
-                <a href="{{ route('cart.index') }}" class="btn-dock-cart" title="View Cart">
+                <a href="{{ route('walkin.cart') }}" class="btn-dock-cart" title="View Cart">
                     @t('walkin.view_cart', 'View Cart')
                 </a>
                 <a href="{{ route('walkin.checkout') }}" class="btn-dock-checkout">
@@ -1775,7 +1775,9 @@
     padding: 12px 0;
     box-shadow: 0 -8px 24px rgba(6, 21, 43, 0.35);
     z-index: 100;
-    transform: translateY(120%);
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .walkin-bottom-dock-inner {
@@ -2215,21 +2217,16 @@ function refreshCartDisplay(count, totalFormatted) {
     }
 
     if (stickyBar) {
-        if (count > 0) {
-            stickyBar.style.transform = 'translateY(0)';
-            stickyBar.style.opacity = '1';
-            stickyBar.style.visibility = 'visible';
-        } else {
-            stickyBar.style.transform = 'translateY(120%)';
-            stickyBar.style.opacity = '0';
-        }
+        stickyBar.style.transform = 'translateY(0)';
+        stickyBar.style.opacity = '1';
+        stickyBar.style.visibility = 'visible';
     }
 }
 
 // Fetch initial count & total
 async function initCart() {
     try {
-        const res = await fetch('{{ route("cart.count") }}');
+        const res = await fetch('{{ route("cart.count", ["group" => "walkin"]) }}');
         if (res.ok) {
             const data = await res.json();
             refreshCartDisplay(data.count, data.total_formatted);
@@ -2265,7 +2262,8 @@ window.initWalkinPage = function() {
                     },
                     body: JSON.stringify({
                         product_id: parseInt(productId),
-                        quantity: 1
+                        quantity: 1,
+                        group: 'walkin'
                     })
                 });
 

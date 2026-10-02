@@ -128,29 +128,48 @@ class CheckoutController extends Controller
     {
         \App\Models\Setting::configureStripe();
 
-        $group    = $this->pricing->resolveGroup();
-        $isWalkin = $group === 'walkin';
+        $group = $request->input('group');
+        if (!$group || !in_array($group, ['retail', 'wholesale', 'trading', 'walkin'])) {
+            if ($request->input('fulfillment_type') === 'self_collection' && (session('walkin_session') || $request->input('payment_method') === 'cash')) {
+                $group = 'walkin';
+            } else {
+                $group = $this->pricing->resolveGroup();
+            }
+        }
+        $isWalkin = ($group === 'walkin');
 
         $rules = [
             'fulfillment_type' => 'required|in:delivery,self_collection',
             'customer_notes'   => 'nullable|string|max:1000',
-            'payment_method'   => $isWalkin ? 'required|in:cash,stripe,online' : 'nullable|in:cash,stripe,online',
+            'payment_method'   => 'nullable|in:cash,stripe,online',
         ];
 
         if ($isWalkin) {
             $rules['customer_name']  = 'required|string|max:255';
-            $rules['customer_phone'] = 'required|string|max:20';
+            $rules['customer_phone'] = 'required|string|max:30';
+            $rules['payment_method'] = 'required|in:cash,stripe,online';
+        } elseif (!Auth::check()) {
+            $rules['customer_name']  = 'required|string|max:255';
+            $rules['customer_phone'] = 'required|string|max:30';
+            $rules['customer_email'] = 'required|email|max:255';
         }
 
         if ($request->fulfillment_type === 'delivery' && !$isWalkin) {
-            $rules['address']  = 'required|string';
-            $rules['city']     = 'required|string';
-            $rules['state']    = 'required|string';
-            $rules['postcode'] = 'required|string';
+            $rules['address']  = 'required|string|max:500';
+            $rules['city']     = 'required|string|max:100';
+            $rules['state']    = 'required|string|max:100';
+            $rules['postcode'] = 'required|string|max:10';
         }
 
         $request->validate($rules, [
             'payment_method.required' => 'Please select a payment method before proceeding.',
+            'customer_name.required'  => 'Please enter your full name.',
+            'customer_phone.required' => 'Please enter your contact mobile number.',
+            'customer_email.required' => 'Please enter your email address for the order confirmation receipt.',
+            'address.required'        => 'Please provide your delivery street address.',
+            'city.required'           => 'Please provide your delivery city.',
+            'state.required'          => 'Please provide your delivery state.',
+            'postcode.required'       => 'Please provide your delivery postcode.',
         ]);
 
         $paymentMethod = $request->input('payment_method', 'stripe');
@@ -158,7 +177,11 @@ class CheckoutController extends Controller
             $paymentMethod = 'stripe';
         }
 
-        $cartItems = $this->cart->getItems();
+        $cartItems = $this->cart->getItems($group);
+
+        if ($cartItems->isEmpty()) {
+            $cartItems = $this->cart->getItems();
+        }
 
         if ($cartItems->isEmpty()) {
             return redirect()->route($isWalkin ? 'walkin.shop' : 'shop.index')->with('error', 'Cart is empty.');
@@ -422,10 +445,7 @@ class CheckoutController extends Controller
                 ];
             }
 
-            $isWalkin = $group === 'walkin' || ($payload['fulfillment_type'] ?? '') === 'self_collection';
-            $initialStatus = $isWalkin 
-                ? ($isPaid ? Order::WALKIN_STATUS_PAYMENT_CONFIRMED : Order::WALKIN_STATUS_PAYMENT_PENDING) 
-                : 'confirmed';
+            $initialStatus = $isPaid ? 'confirmed' : 'pending';
 
             $order = Order::create([
                 'user_id'               => $user?->id ?? ($payload['user_id'] ?? null),
@@ -517,7 +537,7 @@ class CheckoutController extends Controller
             }
         }
 
-        $order->load('items');
+        $order->load('items.product');
 
         return view('checkout.success', compact('order'));
     }

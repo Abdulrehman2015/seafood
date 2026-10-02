@@ -90,6 +90,7 @@
     <form action="{{ route('checkout.store') }}" method="POST" id="checkoutForm">
         @csrf
         <input type="hidden" name="fulfillment_type" value="self_collection">
+        <input type="hidden" name="group" value="walkin">
 
         @if(session('error'))
             <div class="alert alert-danger" style="background:#fee2e2;border:1px solid #ef4444;color:#991b1b;padding:14px 18px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;gap:12px">

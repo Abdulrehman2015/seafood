@@ -57,9 +57,10 @@ class SecurityHeadersMiddleware
             "frame-ancestors 'self';",
             "object-src 'none';",
             "base-uri 'self';",
-            "form-action 'self';",
-            "upgrade-insecure-requests;",
+            "form-action 'self' https://checkout.stripe.com https://*.stripe.com https://api.stripe.com https://wa.me;",
+            $isHttps ? "upgrade-insecure-requests;" : "",
         ]);
+        $csp = trim(preg_replace('/\s+/', ' ', $csp));
 
         $response->headers->set('Content-Security-Policy', $csp);
 

@@ -57,6 +57,87 @@
     min-width: 200px;
     height: 42px;
 }
+
+/* Quick Status Dropdown in Orders Table */
+.order-quick-status-select {
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+    padding: 5px 24px 5px 10px !important;
+    border-radius: 20px !important;
+    cursor: pointer !important;
+    border: 1.5px solid transparent !important;
+    outline: none !important;
+    transition: all 0.2s ease !important;
+    background-repeat: no-repeat !important;
+    background-position: right 8px center !important;
+    background-size: 11px 11px !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    display: inline-block;
+    max-width: 175px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.order-quick-status-select:focus {
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.2) !important;
+}
+/* Status Color Variants */
+.status-badge-pending, .status-badge-payment_pending {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+    border-color: #fde68a !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2392400e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+.status-badge-confirmed, .status-badge-payment_confirmed {
+    background-color: #ccfbf1 !important;
+    color: #0f766e !important;
+    border-color: #99f6e4 !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230f766e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+.status-badge-processing, .status-badge-preparation {
+    background-color: #e0f2fe !important;
+    color: #0369a1 !important;
+    border-color: #bae6fd !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230369a1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+.status-badge-shipped, .status-badge-ready, .status-badge-ready_collection {
+    background-color: #e0e7ff !important;
+    color: #4338ca !important;
+    border-color: #c7d2fe !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234338ca' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+.status-badge-delivered, .status-badge-collected {
+    background-color: #dcfce7 !important;
+    color: #15803d !important;
+    border-color: #bbf7d0 !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2315803d' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+.status-badge-cancelled {
+    background-color: #fee2e2 !important;
+    color: #991b1b !important;
+    border-color: #fecaca !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23991b1b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+
+#statusToastNotice {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 99999;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3), 0 8px 10px -6px rgba(0,0,0,0.2);
+    display: none;
+    align-items: center;
+    gap: 10px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.1);
+}
 @media (max-width: 768px) {
     .cat-filter-row {
         flex-direction: column !important;
@@ -162,13 +243,23 @@
 
             <select name="status" class="cat-filter-select" onchange="document.getElementById('orderFilterForm').submit()">
                 <option value="">All Order Statuses</option>
-                <option value="pending"    {{ request('status') === 'pending'    ? 'selected' : '' }}>⏳ Pending</option>
-                <option value="confirmed"  {{ request('status') === 'confirmed'  ? 'selected' : '' }}>📋 Confirmed</option>
-                <option value="processing" {{ request('status') === 'processing' ? 'selected' : '' }}>⚙️ Processing</option>
-                <option value="ready"      {{ request('status') === 'ready'      ? 'selected' : '' }}>📦 Ready</option>
-                <option value="shipped"    {{ request('status') === 'shipped'    ? 'selected' : '' }}>🚚 Shipped</option>
-                <option value="delivered"  {{ request('status') === 'delivered'  ? 'selected' : '' }}>✅ Delivered</option>
-                <option value="cancelled"  {{ request('status') === 'cancelled'  ? 'selected' : '' }}>❌ Cancelled</option>
+                <optgroup label="Standard Delivery Lifecycle">
+                    <option value="pending"    {{ request('status') === 'pending'    ? 'selected' : '' }}>⏳ Pending (Review)</option>
+                    <option value="confirmed"  {{ request('status') === 'confirmed'  ? 'selected' : '' }}>✓ Confirmed (Paid)</option>
+                    <option value="processing" {{ request('status') === 'processing' ? 'selected' : '' }}>❄️ Cold-Chain Packing</option>
+                    <option value="shipped"    {{ request('status') === 'shipped'    ? 'selected' : '' }}>🚚 Out for Delivery</option>
+                    <option value="delivered"  {{ request('status') === 'delivered'  ? 'selected' : '' }}>📦 Delivered</option>
+                </optgroup>
+                <optgroup label="Walk-in Collection Lifecycle">
+                    <option value="payment_pending"   {{ request('status') === 'payment_pending'   ? 'selected' : '' }}>🎟 Token (Unpaid)</option>
+                    <option value="payment_confirmed" {{ request('status') === 'payment_confirmed' ? 'selected' : '' }}>💳 Paid Online</option>
+                    <option value="preparation"       {{ request('status') === 'preparation'       ? 'selected' : '' }}>🏬 Packing at SILC</option>
+                    <option value="ready_collection"  {{ request('status') === 'ready_collection'  ? 'selected' : '' }}>📋 Ready at Counter 2</option>
+                    <option value="collected"         {{ request('status') === 'collected'         ? 'selected' : '' }}>🎉 Order Collected</option>
+                </optgroup>
+                <optgroup label="Other">
+                    <option value="cancelled"  {{ request('status') === 'cancelled'  ? 'selected' : '' }}>❌ Cancelled</option>
+                </optgroup>
             </select>
 
             <select name="payment" class="cat-filter-select" onchange="document.getElementById('orderFilterForm').submit()">
@@ -302,23 +393,46 @@
                             @endif
                         </td>
                         <td style="padding:14px 18px;text-align:center;">
-                            @if($order->status === 'delivered' || $order->status === 'ready')
-                                <span style="background:#dcfce7;color:#15803d;padding:4px 12px;border-radius:20px;font-size:0.76rem;font-weight:700;border:1px solid #bbf7d0;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;">
-                                    {{ ucfirst($order->status) }}
-                                </span>
-                            @elseif($order->status === 'pending')
-                                <span style="background:#fef3c7;color:#92400e;padding:4px 12px;border-radius:20px;font-size:0.76rem;font-weight:700;border:1px solid #fde68a;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;">
-                                    ⏳ Pending
-                                </span>
-                            @elseif($order->status === 'cancelled')
-                                <span style="background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:20px;font-size:0.76rem;font-weight:700;border:1px solid #fecaca;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;">
-                                    ✕ Cancelled
-                                </span>
-                            @else
-                                <span style="background:#eff6ff;color:#1d4ed8;padding:4px 12px;border-radius:20px;font-size:0.76rem;font-weight:700;border:1px solid #bfdbfe;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;">
-                                    {{ ucfirst($order->status) }}
-                                </span>
-                            @endif
+                            <select class="order-quick-status-select status-badge-{{ $order->status }}" 
+                                    data-order-id="{{ $order->id }}" 
+                                    data-original-status="{{ $order->status }}"
+                                    title="Click to quickly change order fulfillment status"
+                                    onchange="quickUpdateOrderStatus(this, {{ $order->id }})">
+                                @if($order->fulfillment_type === 'self_collection' || $order->collection_token)
+                                    <optgroup label="🏬 Walk-in / Self-Collection">
+                                        <option value="payment_pending" {{ $order->status == 'payment_pending' ? 'selected' : '' }}>🎟 Token Generated</option>
+                                        <option value="payment_confirmed" {{ $order->status == 'payment_confirmed' ? 'selected' : '' }}>💳 Paid Online</option>
+                                        <option value="preparation" {{ $order->status == 'preparation' ? 'selected' : '' }}>🏬 Packing at SILC</option>
+                                        <option value="ready_collection" {{ $order->status == 'ready_collection' ? 'selected' : '' }}>📋 Ready for Collection</option>
+                                        <option value="collected" {{ $order->status == 'collected' ? 'selected' : '' }}>🎉 Order Collected</option>
+                                    </optgroup>
+                                    <optgroup label="🚚 Standard Delivery">
+                                        <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>⏳ Pending</option>
+                                        <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>✓ Confirmed</option>
+                                        <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>❄️ Cold Packing</option>
+                                        <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>🚚 Out for Delivery</option>
+                                        <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>📦 Delivered</option>
+                                    </optgroup>
+                                @else
+                                    <optgroup label="🚚 Standard Delivery">
+                                        <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>⏳ Pending</option>
+                                        <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>✓ Confirmed</option>
+                                        <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>❄️ Cold Packing</option>
+                                        <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>🚚 Out for Delivery</option>
+                                        <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>📦 Delivered</option>
+                                    </optgroup>
+                                    <optgroup label="🏬 Walk-in / Self-Collection">
+                                        <option value="payment_pending" {{ $order->status == 'payment_pending' ? 'selected' : '' }}>🎟 Token Generated</option>
+                                        <option value="payment_confirmed" {{ $order->status == 'payment_confirmed' ? 'selected' : '' }}>💳 Paid Online</option>
+                                        <option value="preparation" {{ $order->status == 'preparation' ? 'selected' : '' }}>🏬 Packing at SILC</option>
+                                        <option value="ready_collection" {{ $order->status == 'ready_collection' ? 'selected' : '' }}>📋 Ready for Collection</option>
+                                        <option value="collected" {{ $order->status == 'collected' ? 'selected' : '' }}>🎉 Order Collected</option>
+                                    </optgroup>
+                                @endif
+                                <optgroup label="⚠️ Other">
+                                    <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>✕ Cancelled</option>
+                                </optgroup>
+                            </select>
                         </td>
                         <td style="padding:14px 18px;font-size:0.82rem;color:#64748b;white-space:nowrap;">
                             <div>{{ $order->created_at->format('d M Y') }}</div>
@@ -363,23 +477,45 @@
                 </div>
 
                 <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-                    @if($order->status === 'delivered' || $order->status === 'ready')
-                        <span style="background:#dcfce7;color:#15803d;padding:3px 9px;border-radius:20px;font-size:0.72rem;font-weight:700;border:1px solid #bbf7d0;white-space:nowrap;">
-                            {{ ucfirst($order->status) }}
-                        </span>
-                    @elseif($order->status === 'pending')
-                        <span style="background:#fef3c7;color:#92400e;padding:3px 9px;border-radius:20px;font-size:0.72rem;font-weight:700;border:1px solid #fde68a;white-space:nowrap;">
-                            ⏳ Pending
-                        </span>
-                    @elseif($order->status === 'cancelled')
-                        <span style="background:#fee2e2;color:#991b1b;padding:3px 9px;border-radius:20px;font-size:0.72rem;font-weight:700;border:1px solid #fecaca;white-space:nowrap;">
-                            ✕ Cancelled
-                        </span>
-                    @else
-                        <span style="background:#eff6ff;color:#1d4ed8;padding:3px 9px;border-radius:20px;font-size:0.72rem;font-weight:700;border:1px solid #bfdbfe;white-space:nowrap;">
-                            {{ ucfirst($order->status) }}
-                        </span>
-                    @endif
+                    <select class="order-quick-status-select status-badge-{{ $order->status }}" 
+                            data-order-id="{{ $order->id }}" 
+                            data-original-status="{{ $order->status }}"
+                            onchange="quickUpdateOrderStatus(this, {{ $order->id }})">
+                        @if($order->fulfillment_type === 'self_collection' || $order->collection_token)
+                            <optgroup label="🏬 Walk-in / Self-Collection">
+                                <option value="payment_pending" {{ $order->status == 'payment_pending' ? 'selected' : '' }}>🎟 Token Generated</option>
+                                <option value="payment_confirmed" {{ $order->status == 'payment_confirmed' ? 'selected' : '' }}>💳 Paid Online</option>
+                                <option value="preparation" {{ $order->status == 'preparation' ? 'selected' : '' }}>🏬 Packing at SILC</option>
+                                <option value="ready_collection" {{ $order->status == 'ready_collection' ? 'selected' : '' }}>📋 Ready for Collection</option>
+                                <option value="collected" {{ $order->status == 'collected' ? 'selected' : '' }}>🎉 Order Collected</option>
+                            </optgroup>
+                            <optgroup label="🚚 Standard Delivery">
+                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>⏳ Pending</option>
+                                <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>✓ Confirmed</option>
+                                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>❄️ Cold Packing</option>
+                                <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>🚚 Out for Delivery</option>
+                                <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>📦 Delivered</option>
+                            </optgroup>
+                        @else
+                            <optgroup label="🚚 Standard Delivery">
+                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>⏳ Pending</option>
+                                <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>✓ Confirmed</option>
+                                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>❄️ Cold Packing</option>
+                                <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>🚚 Out for Delivery</option>
+                                <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>📦 Delivered</option>
+                            </optgroup>
+                            <optgroup label="🏬 Walk-in / Self-Collection">
+                                <option value="payment_pending" {{ $order->status == 'payment_pending' ? 'selected' : '' }}>🎟 Token Generated</option>
+                                <option value="payment_confirmed" {{ $order->status == 'payment_confirmed' ? 'selected' : '' }}>💳 Paid Online</option>
+                                <option value="preparation" {{ $order->status == 'preparation' ? 'selected' : '' }}>🏬 Packing at SILC</option>
+                                <option value="ready_collection" {{ $order->status == 'ready_collection' ? 'selected' : '' }}>📋 Ready for Collection</option>
+                                <option value="collected" {{ $order->status == 'collected' ? 'selected' : '' }}>🎉 Order Collected</option>
+                            </optgroup>
+                        @endif
+                        <optgroup label="⚠️ Other">
+                            <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>✕ Cancelled</option>
+                        </optgroup>
+                    </select>
                 </div>
             </div>
 
@@ -480,5 +616,111 @@
         @endif
     </div>
 @endif
+
+<!-- Floating Toast Notification for Status Update -->
+<div id="statusToastNotice">
+    <span id="toastIcon" style="font-size:1.1rem;">✓</span>
+    <span id="toastMessage">Order status updated successfully.</span>
+</div>
+
+<script>
+function showStatusToast(message, isError = false) {
+    const toast = document.getElementById('statusToastNotice');
+    const msgEl = document.getElementById('toastMessage');
+    const iconEl = document.getElementById('toastIcon');
+    if (!toast || !msgEl || !iconEl) return;
+
+    msgEl.textContent = message;
+    if (isError) {
+        toast.style.background = '#991b1b';
+        iconEl.textContent = '✕';
+    } else {
+        toast.style.background = '#0f172a';
+        iconEl.textContent = '✓';
+    }
+
+    toast.style.display = 'flex';
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+
+    clearTimeout(window._statusToastTimer);
+    window._statusToastTimer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 300);
+    }, 3200);
+}
+
+function updateSelectClass(selectEl, newStatus) {
+    // Remove all previous status badge classes
+    const classes = Array.from(selectEl.classList).filter(c => !c.startsWith('status-badge-'));
+    classes.push('status-badge-' + newStatus);
+    selectEl.className = classes.join(' ');
+}
+
+function quickUpdateOrderStatus(selectEl, orderId) {
+    const newStatus = selectEl.value;
+    const prevStatus = selectEl.getAttribute('data-original-status');
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    if (!token) {
+        alert('CSRF token not found. Please refresh the page.');
+        selectEl.value = prevStatus;
+        return;
+    }
+
+    // Disable select temporarily while updating
+    selectEl.disabled = true;
+    selectEl.style.opacity = '0.6';
+
+    fetch('/admin/orders/' + orderId, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': token,
+            'X-HTTP-Method-Override': 'PATCH'
+        },
+        body: JSON.stringify({
+            _method: 'PATCH',
+            status: newStatus
+        })
+    })
+    .then(async response => {
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to update order status.');
+        }
+        return data;
+    })
+    .then(data => {
+        selectEl.setAttribute('data-original-status', newStatus);
+        updateSelectClass(selectEl, newStatus);
+        
+        // Also update matching select element in other view (desktop vs mobile)
+        document.querySelectorAll(`select.order-quick-status-select[data-order-id="${orderId}"]`).forEach(el => {
+            if (el !== selectEl) {
+                el.value = newStatus;
+                el.setAttribute('data-original-status', newStatus);
+                updateSelectClass(el, newStatus);
+            }
+        });
+
+        showStatusToast(data.message || 'Order status updated to ' + newStatus);
+    })
+    .catch(err => {
+        console.error('Order status update error:', err);
+        selectEl.value = prevStatus;
+        updateSelectClass(selectEl, prevStatus);
+        showStatusToast(err.message || 'Could not update order status.', true);
+    })
+    .finally(() => {
+        selectEl.disabled = false;
+        selectEl.style.opacity = '1';
+    });
+}
+</script>
 
 @endsection

@@ -117,6 +117,38 @@ class Order extends Model
         return '<span class="badge ' . $class . '">' . e($label) . '</span>';
     }
 
+    /**
+     * Automatically link past guest orders matching email or phone to this user.
+     */
+    public static function linkGuestOrdersToUser(User $user): int
+    {
+        if (empty($user->id)) {
+            return 0;
+        }
+
+        $email = trim($user->email ?? '');
+        $phone = trim($user->phone ?? '');
+
+        if (empty($email) && empty($phone)) {
+            return 0;
+        }
+
+        $query = static::whereNull('user_id');
+
+        $query->where(function ($q) use ($email, $phone) {
+            if (!empty($email) && !empty($phone)) {
+                $q->where('customer_email', $email)
+                  ->orWhere('customer_phone', $phone);
+            } elseif (!empty($email)) {
+                $q->where('customer_email', $email);
+            } elseif (!empty($phone)) {
+                $q->where('customer_phone', $phone);
+            }
+        });
+
+        return $query->update(['user_id' => $user->id]);
+    }
+
     protected static function booted(): void
     {
         static::creating(function (Order $order) {

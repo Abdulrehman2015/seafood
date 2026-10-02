@@ -32,18 +32,30 @@ class PricingService
 
     /**
      * Get the current customer group for the request.
-     * Priority: authenticated user group → walk-in session → retail (default)
+     * Priority: explicit request group → walk-in route → authenticated user group → retail (default)
      */
-    public function resolveGroup(): string
+    public function resolveGroup(?string $override = null): string
     {
-        if (session('walkin_session')) {
+        if ($override && in_array($override, ['walkin', 'retail', 'wholesale', 'trading'])) {
+            return $override;
+        }
+
+        if (request()->filled('group') && in_array(request('group'), ['walkin', 'retail', 'wholesale', 'trading'])) {
+            return request('group');
+        }
+
+        // When on Walk-in routes, resolve as 'walkin'
+        if (request()->routeIs('walkin.*') || request()->segment(2) === 'walkin' || request()->segment(1) === 'walkin') {
             return 'walkin';
         }
 
+        // For all regular online shopping pages (Products, Categories, Home, Cart, Checkout, etc.):
+        // Group is strictly resolved based on authenticated user or guest retail.
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->isAdmin()) return 'retail'; // Admin sees retail prices in shop
-            if ($user->needsApproval()) return 'retail'; // Unapproved accounts only see retail pricing
+            if ($user->isAdmin() || $user->needsApproval()) {
+                return 'retail';
+            }
             return $user->customer_group ?: 'retail';
         }
 

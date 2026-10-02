@@ -21,17 +21,26 @@ class CartService
         return Session::getId();
     }
 
-    protected function getGroup(): string
+    public function getGroup(): string
     {
         return $this->pricing->resolveGroup();
     }
 
     /**
-     * Get all cart items for the current user/session.
+     * Get all cart items for the current user/session filtered by group context (walk-in vs regular delivery).
      */
-    public function getItems()
+    public function getItems(?string $targetGroup = null)
     {
+        $group = $targetGroup ?? $this->getGroup();
+        $isWalkin = ($group === 'walkin');
+
         $query = Cart::with('product.category');
+
+        if ($isWalkin) {
+            $query->where('customer_group', 'walkin');
+        } else {
+            $query->where('customer_group', '!=', 'walkin');
+        }
 
         if (Auth::check()) {
             return $query->where('user_id', Auth::id())->get();
@@ -43,10 +52,10 @@ class CartService
     /**
      * Add a product to the cart.
      */
-    public function add(int $productId, int $quantity = 1): array
+    public function add(int $productId, int $quantity = 1, ?string $explicitGroup = null): array
     {
         $product = Product::active()->findOrFail($productId);
-        $group   = $this->getGroup();
+        $group   = $explicitGroup ?? $this->getGroup();
         $moq     = $product->getMoqForGroup($group);
 
         if ($quantity < $moq) {
@@ -64,10 +73,16 @@ class CartService
 
         if (Auth::check()) {
             $cartData['user_id'] = Auth::id();
-            $existing = Cart::where('user_id', Auth::id())->where('product_id', $productId)->first();
+            $existing = Cart::where('user_id', Auth::id())
+                ->where('product_id', $productId)
+                ->where('customer_group', $group)
+                ->first();
         } else {
             $cartData['session_id'] = $this->getSessionId();
-            $existing = Cart::where('session_id', $this->getSessionId())->where('product_id', $productId)->first();
+            $existing = Cart::where('session_id', $this->getSessionId())
+                ->where('product_id', $productId)
+                ->where('customer_group', $group)
+                ->first();
         }
 
         if ($existing) {
@@ -80,7 +95,7 @@ class CartService
             Cart::create(array_merge($cartData, ['quantity' => $quantity]));
         }
 
-        return ['success' => true, 'message' => 'Product added to cart.', 'count' => $this->count()];
+        return ['success' => true, 'message' => 'Product added to cart.', 'count' => $this->count($group)];
     }
 
     /**
@@ -117,34 +132,54 @@ class CartService
     }
 
     /**
-     * Clear the entire cart.
+     * Clear the cart for the current group context.
      */
-    public function clear(): void
+    public function clear(?string $targetGroup = null): void
     {
-        if (Auth::check()) {
-            Cart::where('user_id', Auth::id())->delete();
+        $group = $targetGroup ?? $this->getGroup();
+        $isWalkin = ($group === 'walkin');
+
+        $query = Cart::query();
+        if ($isWalkin) {
+            $query->where('customer_group', 'walkin');
         } else {
-            Cart::where('session_id', $this->getSessionId())->delete();
+            $query->where('customer_group', '!=', 'walkin');
         }
-    }
 
-    /**
-     * Get the cart item count.
-     */
-    public function count(): int
-    {
         if (Auth::check()) {
-            return Cart::where('user_id', Auth::id())->sum('quantity');
+            $query->where('user_id', Auth::id())->delete();
+        } else {
+            $query->where('session_id', $this->getSessionId())->delete();
         }
-        return Cart::where('session_id', $this->getSessionId())->sum('quantity');
     }
 
     /**
-     * Get cart totals.
+     * Get the cart item count for the current group context.
      */
-    public function totals(): array
+    public function count(?string $targetGroup = null): int
     {
-        $items    = $this->getItems();
+        $group = $targetGroup ?? $this->getGroup();
+        $isWalkin = ($group === 'walkin');
+
+        $query = Cart::query();
+        if ($isWalkin) {
+            $query->where('customer_group', 'walkin');
+        } else {
+            $query->where('customer_group', '!=', 'walkin');
+        }
+
+        if (Auth::check()) {
+            return $query->where('user_id', Auth::id())->sum('quantity');
+        }
+        return $query->where('session_id', $this->getSessionId())->sum('quantity');
+    }
+
+    /**
+     * Get cart totals for the current group context.
+     */
+    public function totals(?string $targetGroup = null): array
+    {
+        $items    = $this->getItems($targetGroup);
         $subtotal = $items->sum(fn($item) => $item->subtotal);
 
         return [

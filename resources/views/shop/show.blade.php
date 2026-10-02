@@ -237,6 +237,7 @@
                 <form action="{{ route('cart.add') }}" method="POST" id="addToCartForm" class="mb-5">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <input type="hidden" name="group" value="{{ $group ?? 'retail' }}">
                     
                     <div style="display:flex;gap:var(--space-4);align-items:center;margin-bottom:var(--space-4);flex-wrap:wrap">
                         <label style="font-weight:700;font-size:0.9rem;color:var(--gray-800);margin:0">Quantity:</label>
@@ -1134,7 +1135,8 @@ if (btnAdd) {
                 },
                 body: JSON.stringify({
                     product_id: {{ $product->id }},
-                    quantity: qty
+                    quantity: qty,
+                    group: '{{ $group ?? "retail" }}'
                 })
             });
             const data = await res.json();
@@ -1197,7 +1199,8 @@ if (btnBuyNow) {
                 body: JSON.stringify({
                     product_id: {{ $product->id }},
                     quantity: qty,
-                    buy_now: 1
+                    buy_now: 1,
+                    group: '{{ $group ?? "retail" }}'
                 })
             });
             const data = await res.json();

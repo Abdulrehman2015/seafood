@@ -10,7 +10,10 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class WalkInController extends Controller
 {
-    public function __construct(protected PricingService $pricing) {}
+    public function __construct(
+        protected PricingService $pricing,
+        protected \App\Services\CartService $cart
+    ) {}
 
     /**
      * QR Code entry point — sets the walk-in session and redirects to catalogue.
@@ -63,8 +66,21 @@ class WalkInController extends Controller
         }
 
         $products = $query->paginate(32)->withQueryString();
+        $cartCount = $this->cart->count('walkin');
+        $cartTotals = $this->cart->totals('walkin');
 
-        return view('walkin.shop', compact('products', 'categories'));
+        return view('walkin.shop', compact('products', 'categories', 'cartCount', 'cartTotals'));
+    }
+
+    /**
+     * Walk-in cart page.
+     */
+    public function cart(Request $request)
+    {
+        $items  = $this->cart->getItems('walkin');
+        $totals = $this->cart->totals('walkin');
+
+        return view('walkin.cart', compact('items', 'totals'));
     }
 
     /**
@@ -87,9 +103,8 @@ class WalkInController extends Controller
      */
     public function checkout(Request $request)
     {
-        $cartService = app(\App\Services\CartService::class);
-        $items  = $cartService->getItems();
-        $totals = $cartService->totals();
+        $items  = $this->cart->getItems('walkin');
+        $totals = $this->cart->totals('walkin');
 
         if ($items->isEmpty()) {
             return redirect()->route('walkin.shop')->with('error', 'Your cart is empty.');

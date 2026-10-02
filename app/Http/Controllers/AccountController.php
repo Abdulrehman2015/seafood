@@ -10,7 +10,12 @@ class AccountController extends Controller
 {
     public function dashboard()
     {
-        $user   = Auth::user();
+        $user = Auth::user();
+        try {
+            Order::linkGuestOrdersToUser($user);
+        } catch (\Throwable $e) {
+            // Non-blocking
+        }
         $orders = Order::where('user_id', $user->id)->latest()->limit(5)->get();
 
         return view('account.dashboard', compact('user', 'orders'));
@@ -18,7 +23,13 @@ class AccountController extends Controller
 
     public function orders()
     {
-        $orders = Order::where('user_id', Auth::id())
+        $user = Auth::user();
+        try {
+            Order::linkGuestOrdersToUser($user);
+        } catch (\Throwable $e) {
+            // Non-blocking
+        }
+        $orders = Order::where('user_id', $user->id)
             ->with('items')
             ->latest()
             ->paginate(10);

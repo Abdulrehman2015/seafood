@@ -49,9 +49,6 @@
                         <span id="cartHeaderCount">{{ $totals['count'] }}</span> {{ Str::plural('item', $totals['count']) }} in your cart
                     @endif
                 </span>
-                @if(session('walkin_session'))
-                    · <span class="badge" style="background:#eff6ff;color:#1d4ed8;font-weight:700;border:1px solid #bfdbfe">🏪 @t('cart.walkin_mode', 'In-Store Walk-in Mode')</span>
-                @endif
             </div>
             @if($items->count())
                 <a href="{{ route('shop.index') }}" class="btn-continue-shopping" id="continueShopBtn">
@@ -226,11 +223,7 @@
 
                         <div class="summary-line">
                             <span>@t('cart.fulfillment', 'Fulfillment')</span>
-                            @if(session('walkin_session'))
-                                <span style="color:#0f172a;font-weight:700">@t('walkin.self_collection_method', 'Walk-in Self-Collection')</span>
-                            @else
-                                <span style="font-size:0.8rem;color:#64748b">@t('cart.calculated_at_checkout', 'Calculated at checkout')</span>
-                            @endif
+                            <span style="font-size:0.8rem;color:#64748b">@t('cart.calculated_at_checkout', 'Calculated at checkout')</span>
                         </div>
 
                         <div class="summary-total-line">
@@ -260,7 +253,6 @@
                             $deliveryService          = app(\App\Services\DeliveryService::class);
                             $activeThreshold          = $deliveryService->getThreshold($group);
                             $cartSubtotal             = (float) ($totals['subtotal'] ?? 0);
-                            $isWalkinMode             = (bool) session('walkin_session');
                             $isTradingGroup           = ($group === 'trading');
                             $eligibleStandardDelivery = ($cartSubtotal >= $activeThreshold);
                             $deliveryShortfall        = max(0, $activeThreshold - $cartSubtotal);
@@ -269,17 +261,17 @@
                         @endphp
 
                         {{-- Delivery Arrangement Status Banner (Retail & Wholesale Customers) --}}
-                        @if(!$isTradingGroup && !$isWalkinMode)
+                        @if(!$isTradingGroup)
                             @if($eligibleStandardDelivery)
                             <div class="delivery-threshold-banner eligible" style="background:#ecfdf5;border:1.5px solid #a7f3d0;border-radius:10px;padding:12px 14px;margin-bottom:12px">
                                 <div style="display:flex;align-items:center;gap:8px">
                                     <span style="font-size:1.2rem;line-height:1;flex-shrink:0">🎉</span>
                                     <div>
                                         <div style="font-weight:700;font-size:0.82rem;color:#065f46">
-                                            @t('cart.standard_delivery_eligible_title', 'Standard Delivery Arrangement Unlocked!')
+                                            @t('cart.standard_delivery_eligible_title', 'Free Standard Delivery Unlocked!')
                                         </div>
                                         <div style="font-size:0.78rem;color:#047857;line-height:1.4">
-                                            @t('cart.standard_delivery_eligible_desc', 'Your order total exceeds RM :threshold and qualifies for standard local delivery arrangement.', ['threshold' => number_format($activeThreshold, 2)])
+                                            @t('cart.standard_delivery_eligible_desc', 'Your order qualifies for Free Standard Delivery (RM :threshold Reference Threshold).', ['threshold' => number_format($activeThreshold, 2)])
                                         </div>
                                     </div>
                                 </div>
@@ -293,14 +285,14 @@
                                             @t('cart.delivery_fee_notice_title', 'Delivery Fee Notice')
                                         </div>
                                         <div style="font-size:0.77rem;color:#0c4a6e;line-height:1.45">
-                                            @t('cart.delivery_fee_notice_desc', 'Orders below the standard delivery threshold (RM :threshold) may be subject to an additional delivery fee based on your delivery location.', ['threshold' => number_format($activeThreshold, 2)])
+                                            @t('cart.delivery_fee_notice_desc', 'Standard delivery fee applies. Add RM :shortfall more to qualify for Free Standard Delivery (RM :threshold Reference Threshold).', ['shortfall' => number_format($deliveryShortfall, 2), 'threshold' => number_format($activeThreshold, 2)])
                                         </div>
                                         <div style="margin-top:8px;background:#e0f2fe;border-radius:6px;height:6px;overflow:hidden">
                                             <div style="height:100%;background:#0284c7;border-radius:6px;width:{{ $progressPct }}%;transition:width 0.3s"></div>
                                         </div>
                                         <div style="font-size:0.7rem;color:#0284c7;margin-top:4px;display:flex;justify-content:space-between">
                                             <span>RM {{ number_format($cartSubtotal, 2) }}</span>
-                                            <span><strong>{{ $progressPct }}%</strong> (RM {{ number_format($activeThreshold, 2) }} {{ $tierName }} Threshold)</span>
+                                            <span><strong>{{ $progressPct }}%</strong> (RM {{ number_format($activeThreshold, 2) }} Free Delivery Threshold)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -309,33 +301,24 @@
                         @endif
 
                         <!-- Checkout Buttons -->
-                        @if(session('walkin_session'))
-                            <a href="{{ route('walkin.checkout') }}" class="btn-checkout">
-                                🏪 @t('cart.walkin_checkout', 'Walk-in Express Checkout') →
-                            </a>
-                            <div style="text-align:center;margin-top:8px;font-size:0.75rem;color:#64748b">
-                                @t('cart.silc_counter_desc', 'Johor Bahru (SILC) Counter · Immediate Collection Token')
-                            </div>
-                        @else
-                            @auth
-                                @if(auth()->user()->needsApproval())
-                                    <div class="alert alert-warning" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;font-size:0.85rem;padding:10px;border-radius:10px">
-                                        ⏳ @t('cart.pending_approval_alert', 'Your B2B account is pending approval before you can place wholesale orders.')
-                                    </div>
-                                @else
-                                    <a href="{{ route('checkout.index') }}" class="btn-checkout">
-                                        @t('cart.checkout_btn', 'Proceed to Payment') →
-                                    </a>
-                                @endif
-                            @else
-                                <a href="{{ route('checkout.index') }}" class="btn-checkout">
-                                    @t('cart.checkout_btn', 'Proceed to Payment') →
-                                </a>
-                                <div style="text-align:center;margin-top:10px;font-size:0.82rem;color:#64748b">
-                                    @t('cart.have_wholesale_account', 'Have a Wholesale Account?') <a href="{{ route('login') }}" style="color:#1d4ed8;font-weight:700;text-decoration:underline">@t('cart.sign_in', 'Sign in')</a>
+                        @auth
+                            @if(auth()->user()->needsApproval())
+                                <div class="alert alert-warning" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;font-size:0.85rem;padding:10px;border-radius:10px">
+                                    ⏳ @t('cart.pending_approval_alert', 'Your B2B account is pending approval before you can place wholesale orders.')
                                 </div>
-                            @endauth
-                        @endif
+                            @else
+                                <a href="{{ route('checkout.index') }}" class="btn-checkout" id="checkoutBtn">
+                                    @t('cart.checkout_btn', 'Checkout') →
+                                </a>
+                            @endif
+                        @else
+                            <a href="{{ route('checkout.index') }}" class="btn-checkout" id="checkoutBtn">
+                                @t('cart.checkout_btn', 'Checkout') →
+                            </a>
+                            <div style="text-align:center;margin-top:10px;font-size:0.82rem;color:#64748b">
+                                @t('cart.have_wholesale_account', 'Have a Wholesale Account?') <a href="{{ route('login') }}" style="color:#1d4ed8;font-weight:700;text-decoration:underline">@t('cart.sign_in', 'Sign in')</a>
+                            </div>
+                        @endauth
 
                         <div class="summary-trust-badges">
                             <div>@t('cart.trust_secure', 'Order Processing & Checkout')</div>

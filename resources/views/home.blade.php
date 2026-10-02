@@ -1548,6 +1548,7 @@
                                      @csrf
                                      <input type="hidden" name="product_id" value="{{ $product->id }}">
                                      <input type="hidden" name="quantity" value="{{ $product->getMoqForGroup($group) }}">
+                                     <input type="hidden" name="group" value="{{ $group }}">
                                      <button type="submit" class="btn-card-add-cart">
                                          @t('shop.add_to_cart', 'Add to Cart')
                                      </button>

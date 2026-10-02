@@ -193,6 +193,15 @@
 
         <form action="{{ route('checkout.store') }}" method="POST" id="checkoutForm">
             @csrf
+            <input type="hidden" name="group" value="{{ $group ?? 'retail' }}">
+            <input type="hidden" name="payment_method" value="stripe">
+
+            @if(session('error'))
+                <div class="alert alert-danger" style="background:#fee2e2;border:1.5px solid #ef4444;color:#991b1b;padding:14px 18px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;gap:12px">
+                    <span style="font-size:1.3rem">⚠️</span>
+                    <div style="font-weight:600">{{ session('error') }}</div>
+                </div>
+            @endif
 
             <div class="checkout-main-grid">
 
@@ -209,10 +218,9 @@
                         </div>
 
                         <div class="fulfillment-options-grid">
-                            @if($group !== 'walkin')
-                            <label class="fulfillment-tile {{ old('fulfillment_type','delivery')=='delivery'?'selected':'' }}" id="label_delivery" for="delivery">
+                            <label class="fulfillment-tile {{ old('fulfillment_type', 'delivery') == 'delivery' ? 'selected' : '' }}" id="label_delivery" for="delivery">
                                 <input type="radio" name="fulfillment_type" id="delivery" value="delivery"
-                                       {{ old('fulfillment_type','delivery')=='delivery'?'checked':'' }}
+                                       {{ old('fulfillment_type', 'delivery') == 'delivery' ? 'checked' : '' }}
                                        onchange="onFulfillment('delivery')">
                                 <div class="tile-check-indicator">✓</div>
                                 <div class="tile-icon">🚚</div>
@@ -222,11 +230,10 @@
                                     <div class="tile-badge badge-blue">@t('checkout.refrigerated_logistics', 'Refrigerated Logistics')</div>
                                 </div>
                             </label>
-                            @endif
 
-                            <label class="fulfillment-tile {{ ($group==='walkin'||old('fulfillment_type')=='self_collection')?'selected':'' }}" id="label_self_collection" for="self_collection">
+                            <label class="fulfillment-tile {{ old('fulfillment_type') == 'self_collection' ? 'selected' : '' }}" id="label_self_collection" for="self_collection">
                                 <input type="radio" name="fulfillment_type" id="self_collection" value="self_collection"
-                                       {{ ($group==='walkin'||old('fulfillment_type')=='self_collection')?'checked':'' }}
+                                       {{ old('fulfillment_type') == 'self_collection' ? 'checked' : '' }}
                                        onchange="onFulfillment('self_collection')">
                                 <div class="tile-check-indicator">✓</div>
                                 <div class="tile-icon">🏪</div>
@@ -239,37 +246,57 @@
                         </div>
                     </div>
 
-                    <!-- Walk-in Customer Details -->
-                    @if($group === 'walkin')
+                    <!-- 2. Customer Information (Full Name, Phone, Email) -->
                     <div class="card checkout-card">
-                        <div class="card-header">
+                        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
                             <div class="card-title">
                                 <span class="card-title-icon">👤</span>
-                                <span>@t('checkout.customer_info_step', '2. Customer Information')</span>
+                                <span>@t('checkout.customer_info_step', '2. Customer Details')</span>
                             </div>
+                            @guest
+                            <span style="font-size:0.75rem;font-weight:700;color:#0284c7;background:#f0f9ff;border:1px solid #bae6fd;padding:3px 10px;border-radius:999px">
+                                🛒 @t('checkout.guest_checkout_badge', 'Guest Checkout')
+                            </span>
+                            @else
+                            <span style="font-size:0.75rem;font-weight:600;color:#166534;background:#f0fdf4;border:1px solid #bbf7d0;padding:3px 10px;border-radius:999px">
+                                ✓ @t('checkout.signed_in_badge', 'Signed In')
+                            </span>
+                            @endguest
                         </div>
-                        <div class="form-grid-2">
+
+                        @guest
+                        <div style="margin-bottom:14px;background:#f8fafc;border:1px solid #e2e8f0;padding:10px 14px;border-radius:10px;font-size:0.78rem;color:#475569;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                            <span>📧 @t('checkout.guest_receipt_notice', 'Your order confirmation receipt, itemized invoice & delivery updates will be sent to this email & mobile.')</span>
+                            <a href="{{ route('login') }}" style="color:#2563eb;font-weight:700;text-decoration:underline">@t('checkout.already_have_account_signin', 'Sign in here')</a>
+                        </div>
+                        @endguest
+
+                        <div class="form-grid-2" style="margin-bottom:12px">
                             <div class="form-group">
                                 <label class="form-label">@t('checkout.full_name', 'Full Name') <span class="required">*</span></label>
-                                <input type="text" name="customer_name" class="form-control" value="{{ old('customer_name') }}" placeholder="e.g. John Tan" required>
+                                <input type="text" name="customer_name" class="form-control" value="{{ old('customer_name', auth()->user()?->name) }}" placeholder="e.g. John Tan" required>
                                 @error('customer_name')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-group">
-                                <label class="form-label">@t('checkout.phone_number', 'Phone Number') <span class="required">*</span></label>
-                                <input type="tel" name="customer_phone" class="form-control" value="{{ old('customer_phone') }}" placeholder="e.g. 012-345 6789" required>
+                                <label class="form-label">@t('checkout.phone_number', 'Mobile / Contact Number') <span class="required">*</span></label>
+                                <input type="tel" name="customer_phone" class="form-control" value="{{ old('customer_phone', auth()->user()?->phone) }}" placeholder="e.g. 012-345 6789" required>
                                 @error('customer_phone')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                         </div>
-                    </div>
-                    @endif
 
-                    <!-- Delivery Address Card -->
-                    @if($group !== 'walkin')
-                    <div class="card checkout-card" id="addressCard">
+                        <div class="form-group">
+                            <label class="form-label">@t('checkout.email_address', 'Email Address (for Receipt & Order Confirmation)') <span class="required">*</span></label>
+                            <input type="email" name="customer_email" class="form-control" value="{{ old('customer_email', auth()->user()?->email) }}" placeholder="e.g. customer@example.com" required>
+                            @error('customer_email')<div class="form-error">{{ $message }}</div>@enderror
+                        </div>
+                    </div>
+
+                    <!-- 3. Delivery Address Card -->
+                    <div class="card checkout-card" id="addressCard" style="{{ old('fulfillment_type', 'delivery') == 'self_collection' ? 'display:none' : 'display:block' }}">
                         <div class="card-header">
                             <div class="card-title">
                                 <span class="card-title-icon">📍</span>
-                                <span>@t('checkout.shipping_info', '2. Delivery Address')</span>
+                                <span>@t('checkout.shipping_info', '3. Delivery Address')</span>
                             </div>
                         </div>
 
@@ -285,9 +312,9 @@
                                         </a>
                                     </div>
                                 @elseif($initialShippingFee <= 0)
-                                    <strong>@t('checkout.standard_delivery_eligible', 'Standard Local Delivery Eligible:')</strong> @t('checkout.standard_delivery_desc', 'Your order qualifies for the standard local delivery arrangement in Johor Bahru and Iskandar Puteri / Nusajaya.')
+                                    <strong>@t('checkout.standard_delivery_eligible', 'Free Standard Delivery (RM 0.00):')</strong> @t('checkout.standard_delivery_desc', 'Your order qualifies for the free standard local delivery arrangement in Johor Bahru and Iskandar Puteri / Nusajaya.')
                                 @else
-                                    <strong>@t('checkout.delivery_fee_notice_title', 'Delivery Fee Notice:')</strong> @t('checkout.below_threshold_notice', 'Orders below the standard delivery threshold (RM :threshold) may be subject to an additional delivery fee based on your delivery location.', ['threshold' => number_format($deliveryInfo['threshold'] ?? 100, 2)]) ({{ $deliveryInfo['zone_name'] ?? 'Zone Fee' }}: +RM {{ number_format($initialShippingFee, 2) }})
+                                    <strong>@t('checkout.delivery_fee_notice_title', 'Delivery Fee Notice:')</strong> @t('checkout.below_threshold_notice', 'Orders below the standard delivery threshold (RM :threshold) can still be placed and may be subject to transportation or delivery charges based on delivery location.', ['threshold' => number_format($deliveryInfo['threshold'] ?? 100, 2)]) ({{ $deliveryInfo['zone_name'] ?? 'Zone Fee' }}: +RM {{ number_format($initialShippingFee, 2) }})
                                 @endif
                             </div>
                         </div>
@@ -316,25 +343,24 @@
                             </div>
                         </div>
                     </div>
-                    @endif
 
-                    <!-- Order Notes Card -->
+                    <!-- 4. Order Notes Card -->
                     <div class="card checkout-card">
                         <div class="card-header">
                             <div class="card-title">
                                 <span class="card-title-icon">📝</span>
-                                <span>@t('checkout.special_notes_step', '3. Special Instructions & Notes')</span>
+                                <span>@t('checkout.special_notes_step', '4. Special Instructions & Notes')</span>
                             </div>
                         </div>
                         <textarea name="customer_notes" class="form-control" rows="3" placeholder="{{ __t('checkout.notes_placeholder', 'Add specific delivery timing, packing instructions, or gate codes (optional)...') }}">{{ old('customer_notes') }}</textarea>
                     </div>
 
-                    <!-- Payment Method Card -->
+                    <!-- 5. Payment Method Card -->
                     <div class="card checkout-card">
                         <div class="card-header flex-wrap-mobile">
                             <div class="card-title">
                                 <span class="card-title-icon">💳</span>
-                                <span>@t('checkout.payment_step', '4. Payment via Stripe')</span>
+                                <span>@t('checkout.payment_step', '5. Payment via Stripe')</span>
                             </div>
                             <div class="payment-shield-badge">
                                 🔒 @t('checkout.ssl_encrypted', '256-bit SSL Encrypted')
@@ -1688,9 +1714,13 @@ function toggleMobileSummary() {
     }
 }
 
+let isSubmitting = false;
+
 function submitCheckoutForm() {
     const form = document.getElementById('checkoutForm');
     if (!form) return;
+
+    if (isSubmitting) return;
 
     // Check HTML5 validity
     if (!form.reportValidity()) {
@@ -1702,15 +1732,19 @@ function submitCheckoutForm() {
         return;
     }
 
+    isSubmitting = true;
+
     const btn = document.getElementById('submitBtn');
     if (btn) {
-        btn.disabled = true;
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.85';
         btn.innerHTML = '<span class="btn-main-text">⏳ ' + checkoutI18n.proceeding + '</span>';
     }
 
     const mobileBtn = document.getElementById('mobilePayBtn');
     if (mobileBtn) {
-        mobileBtn.disabled = true;
+        mobileBtn.style.pointerEvents = 'none';
+        mobileBtn.style.opacity = '0.85';
         mobileBtn.innerHTML = '<span>⏳ ' + checkoutI18n.proceeding + '</span>';
     }
 
@@ -1718,15 +1752,23 @@ function submitCheckoutForm() {
 }
 
 document.getElementById('checkoutForm').addEventListener('submit', function (e) {
+    if (isSubmitting) {
+        e.preventDefault();
+        return false;
+    }
+    isSubmitting = true;
+
     const btn = document.getElementById('submitBtn');
     if (btn) {
-        btn.disabled = true;
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.85';
         btn.innerHTML = '<span class="btn-main-text">⏳ ' + checkoutI18n.proceeding + '</span>';
     }
 
     const mobileBtn = document.getElementById('mobilePayBtn');
     if (mobileBtn) {
-        mobileBtn.disabled = true;
+        mobileBtn.style.pointerEvents = 'none';
+        mobileBtn.style.opacity = '0.85';
         mobileBtn.innerHTML = '<span>⏳ ' + checkoutI18n.proceeding + '</span>';
     }
 });

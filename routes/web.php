@@ -516,6 +516,7 @@ Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function
         // Protected by walk-in session
         Route::middleware(\App\Http\Middleware\WalkInMiddleware::class)->group(function () {
             Route::get('/', [WalkInController::class, 'shop'])->name('shop');
+            Route::get('/cart', [WalkInController::class, 'cart'])->name('cart');
             Route::get('/product/{product:slug}', [WalkInController::class, 'show'])->name('show');
             Route::get('/checkout', [WalkInController::class, 'checkout'])->name('checkout');
         });
@@ -523,7 +524,7 @@ Route::prefix('{locale}')->whereIn('locale', ['en', 'zh', 'bm'])->group(function
 
     // Checkout Routes
     Route::prefix('checkout')->name('checkout.')->group(function () {
-        Route::get('/', [CheckoutController::class, 'index'])->middleware('auth')->name('index');
+        Route::get('/', [CheckoutController::class, 'index'])->name('index');
         Route::get('/quotation/{quotation}', [CheckoutController::class, 'fromQuotation'])->middleware('auth')->name('fromQuotation');
         Route::post('/payment-intent', [CheckoutController::class, 'createPaymentIntent'])->middleware('throttle:60,1')->name('paymentIntent');
         Route::post('/', [CheckoutController::class, 'store'])->middleware('throttle:60,1')->name('store');

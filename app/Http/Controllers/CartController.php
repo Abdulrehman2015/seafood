@@ -30,23 +30,25 @@ class CartController extends Controller
             'product_id' => 'required|integer|exists:products,id',
             'quantity'   => 'required|integer|min:1',
             'buy_now'    => 'nullable|boolean',
+            'group'      => 'nullable|string',
         ]);
 
-        $result = $this->cart->add((int) $request->product_id, (int) $request->quantity);
+        $group = $request->input('group') ?: $this->pricing->resolveGroup();
+        $result = $this->cart->add((int) $request->product_id, (int) $request->quantity, $group);
 
-        if ($request->expectsJson()) {
-            $totals = $this->cart->totals();
+        if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+            $totals = $this->cart->totals($group);
             return response()->json(array_merge($result, [
-                'count'           => $this->cart->count(),
+                'count'           => $this->cart->count($group),
                 'total'           => $totals['total'],
                 'total_formatted' => number_format($totals['total'], 2),
-                'redirect'        => $request->buy_now && $result['success'] ? route('checkout.index') : null,
+                'redirect'        => $request->buy_now && $result['success'] ? route($group === 'walkin' ? 'walkin.checkout' : 'checkout.index') : null,
             ]));
         }
 
         if ($result['success']) {
             if ($request->buy_now) {
-                return redirect()->route('checkout.index');
+                return redirect()->route($group === 'walkin' ? 'walkin.checkout' : 'checkout.index');
             }
             return back()->with('success', $result['message']);
         }
@@ -56,31 +58,37 @@ class CartController extends Controller
 
     public function update(Request $request, int $cartId)
     {
-        $request->validate(['quantity' => 'required|integer|min:1']);
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+            'group'    => 'nullable|string',
+        ]);
+
+        $cartItem = \App\Models\Cart::find($cartId);
+        $targetGroup = $cartItem ? $cartItem->customer_group : ($request->input('group') ?: $this->pricing->resolveGroup());
 
         $result = $this->cart->update($cartId, (int) $request->quantity);
 
         if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
-            $totals = $this->cart->totals();
-            $item   = $this->cart->getItems()->firstWhere('id', $cartId);
+            $totals = $this->cart->totals($targetGroup);
+            $items  = $this->cart->getItems($targetGroup);
+            $item   = $items->firstWhere('id', $cartId);
             $itemSubtotal = $item ? $item->subtotal : 0;
 
             $currencyService = app(\App\Services\CurrencyService::class);
             $currentCurrency = $currencyService->getCurrentCurrency();
             $symbol = $currencyService->getSymbol($currentCurrency);
 
-            $items = $this->cart->getItems();
             $convertedSubtotal = 0;
             $convertedItemSubtotal = 0;
 
-            foreach ($items as $cartItem) {
-                $pPrice = $cartItem->product ? $cartItem->product->getDisplayPrice($cartItem->customer_group, $currentCurrency) : null;
+            foreach ($items as $cItem) {
+                $pPrice = $cItem->product ? $cItem->product->getDisplayPrice($cItem->customer_group, $currentCurrency) : null;
                 $uAmt = $pPrice && $pPrice['amount'] !== null
                     ? $pPrice['amount']
-                    : $currencyService->convert($cartItem->product?->getPriceForGroup($cartItem->customer_group) ?? 0, $currentCurrency);
-                $lineAmount = round($uAmt * $cartItem->quantity, 2);
+                    : $currencyService->convert($cItem->product?->getPriceForGroup($cItem->customer_group) ?? 0, $currentCurrency);
+                $lineAmount = round($uAmt * $cItem->quantity, 2);
                 $convertedSubtotal += $lineAmount;
-                if ($cartItem->id === $cartId) {
+                if ($cItem->id === $cartId) {
                     $convertedItemSubtotal = $lineAmount;
                 }
             }
@@ -94,7 +102,7 @@ class CartController extends Controller
             $convertedTotal = $convertedSubtotal;
 
             return response()->json(array_merge($result, [
-                'count'                             => $this->cart->count(),
+                'count'                             => $this->cart->count($targetGroup),
                 'item_subtotal'                     => $itemSubtotal,
                 'item_subtotal_formatted'           => number_format($itemSubtotal, 2),
                 'currency'                          => $currentCurrency,
@@ -115,22 +123,25 @@ class CartController extends Controller
 
     public function remove(Request $request, int $cartId)
     {
+        $cartItem = \App\Models\Cart::find($cartId);
+        $targetGroup = $cartItem ? $cartItem->customer_group : ($request->input('group') ?: $this->pricing->resolveGroup());
+
         $this->cart->remove($cartId);
 
         if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
-            $totals = $this->cart->totals();
+            $totals = $this->cart->totals($targetGroup);
+            $items  = $this->cart->getItems($targetGroup);
             $currencyService = app(\App\Services\CurrencyService::class);
             $currentCurrency = $currencyService->getCurrentCurrency();
             $symbol = $currencyService->getSymbol($currentCurrency);
 
-            $items = $this->cart->getItems();
             $convertedSubtotal = 0;
-            foreach ($items as $cartItem) {
-                $pPrice = $cartItem->product ? $cartItem->product->getDisplayPrice($cartItem->customer_group, $currentCurrency) : null;
+            foreach ($items as $cItem) {
+                $pPrice = $cItem->product ? $cItem->product->getDisplayPrice($cItem->customer_group, $currentCurrency) : null;
                 $uAmt = $pPrice && $pPrice['amount'] !== null
                     ? $pPrice['amount']
-                    : $currencyService->convert($cartItem->product?->getPriceForGroup($cartItem->customer_group) ?? 0, $currentCurrency);
-                $convertedSubtotal += round($uAmt * $cartItem->quantity, 2);
+                    : $currencyService->convert($cItem->product?->getPriceForGroup($cItem->customer_group) ?? 0, $currentCurrency);
+                $convertedSubtotal += round($uAmt * $cItem->quantity, 2);
             }
             if ($convertedSubtotal === 0 && $totals['subtotal'] > 0) {
                 $convertedSubtotal = $currencyService->convert($totals['subtotal'], $currentCurrency);
@@ -140,7 +151,7 @@ class CartController extends Controller
             return response()->json([
                 'success'                     => true,
                 'message'                     => 'Item removed from cart.',
-                'count'                       => $this->cart->count(),
+                'count'                       => $this->cart->count($targetGroup),
                 'currency'                    => $currentCurrency,
                 'currency_symbol'             => $symbol,
                 'subtotal'                    => $totals['subtotal'],
@@ -149,18 +160,19 @@ class CartController extends Controller
                 'total'                       => $totals['total'],
                 'total_formatted'             => number_format($totals['total'], 2),
                 'currency_total_formatted'    => $symbol . ' ' . number_format($convertedTotal, 2),
-                'is_empty'                    => $this->cart->count() === 0,
+                'is_empty'                    => $this->cart->count($targetGroup) === 0,
             ]);
         }
 
         return back()->with('success', 'Item removed from cart.');
     }
 
-    public function count()
+    public function count(Request $request)
     {
-        $totals = $this->cart->totals();
+        $group = $request->input('group') ?: $this->pricing->resolveGroup();
+        $totals = $this->cart->totals($group);
         return response()->json([
-            'count'           => $this->cart->count(),
+            'count'           => $this->cart->count($group),
             'total'           => $totals['total'],
             'total_formatted' => number_format($totals['total'], 2),
         ]);

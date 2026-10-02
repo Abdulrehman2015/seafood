@@ -261,6 +261,16 @@ class OtpVerificationController extends Controller
             Log::warning("Cart migration failed for user {$user->id}: " . $e->getMessage());
         }
 
+        // Automatically link any past guest orders matching email/phone to this account
+        try {
+            $linkedCount = \App\Models\Order::linkGuestOrdersToUser($user);
+            if ($linkedCount > 0) {
+                Log::info("Successfully linked {$linkedCount} guest orders to user #{$user->id} ({$user->email})");
+            }
+        } catch (\Throwable $e) {
+            Log::warning("Guest orders linking failed for user {$user->id}: " . $e->getMessage());
+        }
+
         // Dispatch Welcome Email & Admin Notification
         $activeLocale = current_locale();
         $user->update(['preferred_locale' => $activeLocale]);

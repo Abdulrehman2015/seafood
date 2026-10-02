@@ -335,6 +335,9 @@
             'contact' => 'contact',
             'quotations.create' => 'quotations',
             'walkin.index' => 'walkin',
+            'walkin.shop' => 'walkin',
+            'walkin.cart' => 'walkin',
+            'walkin.checkout' => 'walkin',
             'cart.index' => 'cart',
             'checkout.index' => 'checkout',
             'terms' => 'terms_conditions',
@@ -1157,6 +1160,7 @@
                     @endauth
                 </div>
 
+                @if(!request()->routeIs('walkin.*'))
                 <div class="mobile-drawer-divider"></div>
 
                 <!-- Mobile Drawer Cart Link -->
@@ -1181,6 +1185,7 @@
                         <span class="mobile-chevron" style="color:var(--seagreen-700)">›</span>
                     </div>
                 </a>
+                @endif
 
                 <!-- Mobile Drawer User Account Section -->
                 @auth
@@ -1359,6 +1364,7 @@
                     </div>
                 </div>
 
+                @if(!request()->routeIs('walkin.*'))
                 <a href="{{ route('cart.index') }}" class="cart-btn" id="cartBtn" aria-label="Shopping Cart">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"></path>
@@ -1367,6 +1373,7 @@
                     </svg>
                     <span class="cart-count" id="cartCount" style="display:none">0</span>
                 </a>
+                @endif
                 @guest
                     <a href="{{ route('login') }}" class="btn-ghost">@t('nav.sign_in', 'Sign In')</a>
                     <a href="{{ route('register') }}" class="btn-primary-sm">@t('nav.register', 'Register')</a>

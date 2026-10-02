@@ -66,20 +66,45 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $request->validate([
-            'status'       => 'required|in:pending,confirmed,processing,ready,shipped,delivered,cancelled',
-            'shipping_fee' => 'nullable|numeric|min:0',
+            'status'         => 'required|in:pending,confirmed,processing,ready,shipped,delivered,cancelled,payment_pending,payment_confirmed,preparation,ready_collection,collected',
+            'payment_status' => 'nullable|in:paid,unpaid,refunded,failed',
+            'shipping_fee'   => 'nullable|numeric|min:0',
+            'admin_notes'    => 'nullable|string|max:1000',
         ]);
 
-        $shippingFee = $request->shipping_fee ?? $order->shipping_fee;
+        $shippingFee = $request->has('shipping_fee') ? (float) $request->shipping_fee : (float) $order->shipping_fee;
 
-        $order->update([
+        $data = [
             'status'       => $request->status,
             'shipping_fee' => $shippingFee,
             'total'        => $order->subtotal + $shippingFee,
-            'admin_notes'  => $request->admin_notes ?? $order->admin_notes,
-        ]);
+        ];
 
-        return back()->with('success', 'Order updated.');
+        if ($request->has('admin_notes')) {
+            $data['admin_notes'] = $request->admin_notes;
+        }
+
+        if ($request->filled('payment_status')) {
+            $data['payment_status'] = $request->payment_status;
+            if ($request->payment_status === 'paid' && !$order->paid_at) {
+                $data['paid_at'] = now();
+            }
+        }
+
+        $order->update($data);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success'       => true,
+                'message'       => 'Order status updated to ' . ucfirst($order->status) . '.',
+                'status'        => $order->status,
+                'status_badge'  => $order->status_badge,
+                'payment_status'=> $order->payment_status,
+                'payment_badge' => $order->payment_badge,
+            ]);
+        }
+
+        return back()->with('success', 'Order status updated successfully.');
     }
 
     public function invoice(Order $order)

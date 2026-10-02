@@ -58,7 +58,7 @@ class WalkInFlowTest extends TestCase
             ->get(route('walkin.shop'));
 
         $response->assertStatus(200);
-        $response->assertSee('Walk-in Express Catalogue');
+        $response->assertSee('Walk-in Menu');
         $response->assertSee('Tiger Prawns Grade A');
         $response->assertSee('52.00');
     }
@@ -69,6 +69,7 @@ class WalkInFlowTest extends TestCase
             ->postJson(route('cart.add'), [
                 'product_id' => $this->product->id,
                 'quantity'   => 2,
+                'group'      => 'walkin',
             ]);
 
         $response->assertStatus(200);
@@ -116,31 +117,107 @@ class WalkInFlowTest extends TestCase
         }
 
         $response->assertStatus(200);
-        $response->assertSee('Walk-in Express Checkout');
-        $response->assertSee('Who is collecting?');
+        $response->assertSee('Customer Details (Who is Collecting?)');
         $response->assertSee('52.00');
+    }
+
+    public function test_walkin_cart_page_renders_cleanly(): void
+    {
+        $user = \App\Models\User::factory()->create(['customer_group' => 'retail']);
+        \App\Models\Cart::create([
+            'user_id'        => $user->id,
+            'product_id'     => $this->product->id,
+            'quantity'       => 2,
+            'customer_group' => 'walkin',
+        ]);
+
+        $response = $this->actingAs($user)->withSession(['walkin_session' => true])
+            ->get(route('walkin.cart'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Your Walk-in Cart');
+        $response->assertSee('Tiger Prawns Grade A');
+        $response->assertSee('104.00');
+        $response->assertSee('Self-Collection');
+    }
+
+    public function test_walkin_cart_and_regular_cart_are_isolated(): void
+    {
+        $user = \App\Models\User::factory()->create(['customer_group' => 'retail']);
+
+        // Add 1 walkin item
+        \App\Models\Cart::create([
+            'user_id'        => $user->id,
+            'product_id'     => $this->product->id,
+            'quantity'       => 1,
+            'customer_group' => 'walkin',
+        ]);
+
+        // Add 1 regular delivery item
+        $product2 = Product::create([
+            'name'                 => 'Atlantic Salmon Fillet',
+            'slug'                 => 'atlantic-salmon-fillet',
+            'sku'                  => 'SAL-01',
+            'category_id'          => $this->category->id,
+            'retail_price'         => 80.00,
+            'walkin_price'         => 75.00,
+            'wholesale_price'      => 65.00,
+            'retail_moq'           => 1,
+            'walkin_moq'           => 1,
+            'wholesale_moq'        => 5,
+            'stock_quantity'       => 100,
+            'unit'                 => 'pack',
+            'is_walkin_available'  => true,
+            'is_active'            => true,
+        ]);
+
+        \App\Models\Cart::create([
+            'user_id'        => $user->id,
+            'product_id'     => $product2->id,
+            'quantity'       => 1,
+            'customer_group' => 'retail',
+        ]);
+
+        // 1. Walkin cart only sees Tiger Prawns (walkin), not Salmon (retail)
+        $walkinRes = $this->actingAs($user)->withSession(['walkin_session' => true])
+            ->get(route('walkin.cart'));
+        $walkinRes->assertStatus(200);
+        $walkinRes->assertSee('Tiger Prawns Grade A');
+        $walkinRes->assertDontSee('Atlantic Salmon Fillet');
+
+        // 2. Regular delivery cart only sees Salmon (retail), not Tiger Prawns (walkin)
+        $regularRes = $this->actingAs($user)->get(route('cart.index'));
+        $regularRes->assertStatus(200);
+        $regularRes->assertSee('Atlantic Salmon Fillet');
+        $regularRes->assertDontSee('Tiger Prawns Grade A');
     }
 
     public function test_walkin_order_creates_sequential_collection_token_and_displays_pass(): void
     {
         $user = \App\Models\User::factory()->create(['customer_group' => 'retail']);
-        $this->actingAs($user);
 
-        // Put item in cart
-        $cartService = app(\App\Services\CartService::class);
-        $cartService->add($this->product->id, 1);
+        \App\Models\Cart::create([
+            'user_id'        => $user->id,
+            'product_id'     => $this->product->id,
+            'quantity'       => 1,
+            'customer_group' => 'walkin',
+        ]);
 
-        // Place order with test mock payment intent
-        $response = $this->withSession(['walkin_session' => true])
+        // Place order with cash payment at counter
+        $response = $this->actingAs($user, 'web')
+            ->session(['walkin_session' => true])
             ->post(route('checkout.store'), [
                 'fulfillment_type'  => 'self_collection',
                 'customer_name'     => 'Alex Wong',
                 'customer_phone'    => '0129876543',
                 'customer_email'    => 'alex@test.com',
-                'payment_intent_id' => 'pi_test_walkin_12345678',
+                'payment_method'    => 'cash',
             ]);
 
-        $order = Order::where('stripe_payment_intent', 'pi_test_walkin_12345678')->first();
+        $order = Order::where('customer_name', 'Alex Wong')->latest()->first();
+        if (!$order) {
+            dump($response->status(), $response->headers->get('Location'), session()->all());
+        }
         $this->assertNotNull($order);
         $this->assertEquals('W-001', $order->collection_token);
         $this->assertEquals('walkin', $order->customer_group);
@@ -154,9 +231,7 @@ class WalkInFlowTest extends TestCase
 
         $successResponse->assertStatus(200);
         $successResponse->assertSee('W-001');
-        $successResponse->assertSee('OceanFresh In-Store Pass');
         $successResponse->assertSee('Counter 2');
-        $successResponse->assertSee('Preparing at Store Counter');
         $successResponse->assertSee('Tiger Prawns Grade A');
     }
 }

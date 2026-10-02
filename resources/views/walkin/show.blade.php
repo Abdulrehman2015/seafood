@@ -132,6 +132,7 @@
                 <form action="{{ route('cart.add') }}" method="POST" class="walkin-add-form">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <input type="hidden" name="group" value="walkin">
 
                     <div class="qty-and-add-row">
                         <div class="qty-picker-wrap">

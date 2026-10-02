@@ -1038,6 +1038,7 @@
                     <form action="{{ route('cart.add') }}" method="POST" id="qvCartForm" style="flex:1">
                         @csrf
                         <input type="hidden" name="product_id" id="qvProductId">
+                        <input type="hidden" name="group" id="qvGroup" value="retail">
                         <div style="display:flex;gap:10px">
                             <input type="number" name="quantity" id="qvQty" value="1" min="1" class="quickview-qty-input" style="width:70px;height:44px;border:1.5px solid #cbd5e1;border-radius:10px;text-align:center;font-weight:700;font-size:0.95rem">
                             <button type="submit" class="btn btn-primary" style="flex:1;height:44px;background:#2563eb;border:none;color:#ffffff !important;font-weight:700;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 10px rgba(37,99,235,0.3)">
@@ -2967,6 +2968,8 @@ function openQuickViewModal(product) {
     if (descEl) descEl.textContent = product.short_desc || '';
     const prodIdEl = document.getElementById('qvProductId');
     if (prodIdEl) prodIdEl.value = product.id;
+    const groupEl = document.getElementById('qvGroup');
+    if (groupEl) groupEl.value = product.customer_type === 'wholesale' ? 'wholesale' : (product.group || 'retail');
     const detailsLink = document.getElementById('qvDetailsLink');
     if (detailsLink) detailsLink.href = product.url;
 

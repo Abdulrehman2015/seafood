@@ -41,6 +41,13 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('otp.verify', ['locale' => current_locale()])->with('status', __t('auth.otp_login_unverified_notice', 'Please verify your email with the 6-digit verification code before logging in.'));
         }
 
+        // Link any past guest orders to this user
+        try {
+            \App\Models\Order::linkGuestOrdersToUser($user);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Guest orders linking failed for user {$user->id}: " . $e->getMessage());
+        }
+
         if ($user->isAdmin()) {
             return redirect()->intended(route('admin.dashboard'));
         }
