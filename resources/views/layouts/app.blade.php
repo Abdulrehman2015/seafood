@@ -1007,9 +1007,6 @@
         .main-content {
             transition: opacity 0.24s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .main-content.lang-transitioning {
-            opacity: 0.35;
-        }
     </style>
     @stack('styles')
 </head>
@@ -1906,7 +1903,7 @@
             });
         }
 
-        async function selectLanguage(event, code, switchUrl, directTargetUrl = null, updateHistory = true) {
+        function selectLanguage(event, code, switchUrl, directTargetUrl = null) {
             if (event && typeof event.preventDefault === 'function') {
                 event.preventDefault();
             }
@@ -1928,9 +1925,10 @@
                 return;
             }
 
-            // Immediately set cookie so subsequent requests / navigations maintain chosen locale
+            // Immediately set cookies so subsequent requests maintain chosen locale
             try {
                 document.cookie = 'locale=' + encodeURIComponent(targetCode) + '; path=/; max-age=31536000; SameSite=Lax';
+                document.cookie = 'app_lang=' + encodeURIComponent(targetCode) + '; path=/; max-age=31536000; SameSite=Lax';
             } catch (e) {}
 
             // 2. Immediate visual update of circular button and dropdown checkmarks
@@ -1946,7 +1944,6 @@
 
             // 3. Show high-quality hero-themed page loader with localized message
             isLanguageSwitching = true;
-            const startTime = Date.now();
 
             const switchMsgs = {
                 zh: '🐟 正在切换语言至 简体中文 · 镁嘉国际贸易有限公司',
@@ -1954,277 +1951,29 @@
                 en: '🐟 Switching language to English · MST Import and Export Sdn. Bhd.'
             };
             showPageLoader(switchMsgs[targetCode] || `Switching to ${targetLabel}...`);
-            const mainContent = document.querySelector('.main-content');
-            if (mainContent) {
-                mainContent.classList.add('lang-transitioning');
-            }
 
-            try {
-                let targetUrl = directTargetUrl;
+            // 4. Calculate target URL or use directTargetUrl / switchUrl
+            let targetUrl = directTargetUrl;
+            if (!targetUrl) {
+                const currentPath = window.location.pathname;
+                const currentSearch = window.location.search;
+                const currentHash = window.location.hash;
+                const segments = currentPath.split('/').filter(Boolean);
+                const supported = ['en', 'zh', 'bm'];
 
-                if (!targetUrl) {
-                    // Call backend language switcher endpoint with current URL for accurate redirection
-                    const currentFullUrl = window.location.href;
-                    const endpoint = (switchUrl || ('/language/' + encodeURIComponent(targetCode))) + 
-                        (switchUrl && switchUrl.includes('?') ? '&' : '?') + 'current_url=' + encodeURIComponent(currentFullUrl);
-
-                    const switchRes = await fetch(endpoint, {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-
-                    if (!switchRes.ok) throw new Error('Language switch endpoint failed');
-                    const switchData = await switchRes.json();
-                    targetUrl = switchData.redirect_url;
-                }
-
-                if (!targetUrl) throw new Error('No redirect URL resolved');
-
-                // 4. Fetch the target page in the new language
-                const pageRes = await fetch(targetUrl, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                if (!pageRes.ok) throw new Error('Failed to fetch translated page: ' + pageRes.status);
-                const html = await pageRes.text();
-
-                // 5. Parse the returned HTML document
-                const parser = new DOMParser();
-                const newDoc = parser.parseFromString(html, 'text/html');
-
-                // 6. Update document title & html lang attribute
-                if (newDoc.title) {
-                    document.title = newDoc.title;
-                }
-                document.documentElement.lang = targetCode;
-
-                // 7. Update Navigation Logo (.nav-logo) so clicking it routes to new locale
-                const currentNavLogo = document.querySelector('.nav-logo');
-                const newNavLogo = newDoc.querySelector('.nav-logo');
-                if (currentNavLogo && newNavLogo) {
-                    currentNavLogo.href = newNavLogo.href;
-                    currentNavLogo.innerHTML = newNavLogo.innerHTML;
-                }
-
-                // 8. Update Navigation Links & Mobile Drawer
-                const currentNavLinks = document.getElementById('navLinks');
-                const newNavLinks = newDoc.getElementById('navLinks');
-                if (currentNavLinks && newNavLinks) {
-                    currentNavLinks.innerHTML = newNavLinks.innerHTML;
-                }
-
-                // 9. Update Cart Button (#cartBtn)
-                const currentCartBtn = document.getElementById('cartBtn');
-                const newCartBtn = newDoc.getElementById('cartBtn');
-                if (currentCartBtn && newCartBtn) {
-                    currentCartBtn.href = newCartBtn.href;
-                }
-
-                // 10. Update Guest Auth Buttons if present
-                const currentGhost = document.querySelector('.nav-actions .btn-ghost');
-                const newGhost = newDoc.querySelector('.nav-actions .btn-ghost');
-                if (currentGhost && newGhost) {
-                    currentGhost.href = newGhost.href;
-                    currentGhost.innerHTML = newGhost.innerHTML;
-                }
-                const currentPrimarySm = document.querySelector('.nav-actions .btn-primary-sm');
-                const newPrimarySm = newDoc.querySelector('.nav-actions .btn-primary-sm');
-                if (currentPrimarySm && newPrimarySm) {
-                    currentPrimarySm.href = newPrimarySm.href;
-                    currentPrimarySm.innerHTML = newPrimarySm.innerHTML;
-                }
-
-                // 11. Update Walkin Exit Button if present
-                const currentWalkinExit = document.querySelector('.walkin-exit');
-                const newWalkinExit = newDoc.querySelector('.walkin-exit');
-                if (currentWalkinExit && newWalkinExit) {
-                    currentWalkinExit.href = newWalkinExit.href;
-                    currentWalkinExit.innerHTML = newWalkinExit.innerHTML;
-                }
-
-                // 12. Update User Menu / Auth buttons
-                const currentUserMenu = document.getElementById('userMenu');
-                const newUserMenu = newDoc.getElementById('userMenu');
-                if (currentUserMenu && newUserMenu) {
-                    currentUserMenu.innerHTML = newUserMenu.innerHTML;
-                }
-
-                // 13. Update Language Dropdown options for next switch
-                const currentLangDropdown = document.getElementById('languageDropdown');
-                const newLangDropdown = newDoc.getElementById('languageDropdown');
-                if (currentLangDropdown && newLangDropdown) {
-                    currentLangDropdown.innerHTML = newLangDropdown.innerHTML;
-                }
-
-                // 14. Update Main Content (.main-content)
-                const newMain = newDoc.querySelector('.main-content');
-                if (mainContent && newMain) {
-                    mainContent.innerHTML = newMain.innerHTML;
-                    mainContent.className = newMain.className;
-                    mainContent.classList.add('lang-transitioning');
-                    executeInlineScripts(mainContent);
-                }
-
-                // 15. Update Footer (.footer)
-                const currentFooter = document.querySelector('.footer');
-                const newFooter = newDoc.querySelector('.footer');
-                if (currentFooter && newFooter) {
-                    currentFooter.innerHTML = newFooter.innerHTML;
-                }
-
-                // 16. Update Cookie Consent Banner (#cookie-banner)
-                const currentCookieBanner = document.getElementById('cookie-banner');
-                const newCookieBanner = newDoc.getElementById('cookie-banner');
-                if (currentCookieBanner && newCookieBanner) {
-                    const isVisible = currentCookieBanner.style.display !== 'none' && window.getComputedStyle(currentCookieBanner).display !== 'none';
-                    currentCookieBanner.innerHTML = newCookieBanner.innerHTML;
-                    if (isVisible) {
-                        currentCookieBanner.style.display = 'block';
-                    }
-                }
-
-                // 17. Rewrite all links across the page to ensure all links retain target language
-                updatePageLocaleHrefs(targetCode);
-
-                // 17. Update Flash Notifications if any
-                const currentFlash = document.querySelector('.flash-container');
-                const newFlash = newDoc.querySelector('.flash-container');
-                if (currentFlash && newFlash) {
-                    currentFlash.innerHTML = newFlash.innerHTML;
-                } else if (!currentFlash && newFlash && newFlash.children.length > 0) {
-                    document.body.insertBefore(newFlash, mainContent);
-                }
-
-                // 13. Update Browser URL in Address Bar (pushState)
-                if (updateHistory) {
-                    window.history.pushState({ locale: targetCode, url: targetUrl }, newDoc.title || '', targetUrl);
-                }
-
-                // 14. Re-run currency formatting on newly swapped elements
-                if (window.AppCurrency && typeof updatePageCurrencies === 'function') {
-                    updatePageCurrencies(window.AppCurrency.current || 'MYR');
-                }
-
-                // 15. Re-check Cart Count & Walkin Page Dock
-                if (typeof updateCartCount === 'function') {
-                    updateCartCount();
-                }
-                if (typeof window.initWalkinPage === 'function') {
-                    window.initWalkinPage();
-                }
-
-                // 16. Re-initialize Google reCAPTCHA in newly inserted DOM
-                reinitRecaptcha(mainContent, targetCode);
-
-                // 17. Notify any listeners that language switched
-                window.dispatchEvent(new CustomEvent('app:locale-changed', {
-                    detail: { locale: targetCode, url: targetUrl }
-                }));
-
-            } catch (err) {
-                console.warn('Seamless switch error, falling back to standard navigation:', err);
-                window.location.href = switchUrl || ('/language/' + encodeURIComponent(targetCode));
-                return;
-            } finally {
-                // Ensure the high-quality loader displays for at least 1000ms (1s) for a smooth, cinematic feel
-                const elapsed = performance.now() - startTime;
-                const remaining = Math.max(0, 1000 - elapsed);
-                setTimeout(() => {
-                    hidePageLoader();
-                    if (mainContent) {
-                        setTimeout(() => {
-                            mainContent.classList.remove('lang-transitioning');
-                            reinitRecaptcha(mainContent, targetCode);
-                        }, 50);
-                    }
-                    isLanguageSwitching = false;
-                }, remaining);
-            }
-        }
-
-        function reinitRecaptcha(container, targetCode = null) {
-            const wrapper = (container || document).querySelector('.recaptcha-wrapper');
-            const recaptchaEl = (container || document).querySelector('.g-recaptcha');
-            if (!recaptchaEl) return;
-
-            const langCode = targetCode || (document.documentElement.lang || 'en');
-            const hlMap = { zh: 'zh-CN', bm: 'ms', en: 'en' };
-            const hl = hlMap[langCode] || 'en';
-            const siteKey = recaptchaEl.getAttribute('data-sitekey');
-
-            function renderWidget() {
-                document.querySelectorAll('.g-recaptcha').forEach(el => {
-                    if (!el.hasChildNodes() || el.children.length === 0) {
-                        try {
-                            const key = el.getAttribute('data-sitekey') || siteKey;
-                            if (key && typeof grecaptcha !== 'undefined' && typeof grecaptcha.render === 'function') {
-                                grecaptcha.render(el, { 'sitekey': key });
-                            }
-                        } catch (e) {}
-                    }
-                });
-            }
-
-            if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.render === 'function') {
-                setTimeout(renderWidget, 50);
-                setTimeout(renderWidget, 250);
-            } else {
-                const scriptId = 'google-recaptcha-script';
-                let script = document.getElementById(scriptId);
-                if (!script) {
-                    script = document.createElement('script');
-                    script.id = scriptId;
-                    script.src = 'https://www.google.com/recaptcha/api.js?hl=' + encodeURIComponent(hl);
-                    script.async = true;
-                    script.defer = true;
-                    script.onload = () => { setTimeout(renderWidget, 100); };
-                    document.head.appendChild(script);
+                if (segments.length > 0 && supported.includes(segments[0])) {
+                    segments[0] = targetCode;
+                    targetUrl = '/' + segments.join('/') + currentSearch + currentHash;
                 } else {
-                    let attempts = 0;
-                    const interval = setInterval(() => {
-                        attempts++;
-                        if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.render === 'function') {
-                            clearInterval(interval);
-                            renderWidget();
-                        } else if (attempts > 30) {
-                            clearInterval(interval);
-                        }
-                    }, 150);
+                    targetUrl = '/' + targetCode + (currentPath === '/' ? '' : currentPath) + currentSearch + currentHash;
                 }
             }
-        }
 
-        function executeInlineScripts(container) {
-            if (!container) return;
-            const scripts = container.querySelectorAll('script');
-            scripts.forEach(oldScript => {
-                if (oldScript.src) {
-                    const alreadyLoaded = Array.from(document.scripts).some(s => s.src === oldScript.src);
-                    if (alreadyLoaded) return;
-                }
-                const newScript = document.createElement('script');
-                Array.from(oldScript.attributes).forEach(attr => {
-                    newScript.setAttribute(attr.name, attr.value);
-                });
-                let code = oldScript.textContent;
-                if (document.readyState !== 'loading' && code.includes('DOMContentLoaded')) {
-                    code = code.replace(/document\.addEventListener\s*\(\s*['"]DOMContentLoaded['"]\s*,\s*(\([^)]*\)\s*=>|\bfunction\s*\([^)]*\))\s*\{/g, '(function() {');
-                }
-                newScript.textContent = code;
-                oldScript.parentNode.replaceChild(newScript, oldScript);
-            });
+            // 5. Clean redirect to ensure all page styles, scripts, and components load perfectly
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 180);
         }
-
-        window.addEventListener('popstate', (e) => {
-            if (e.state && e.state.locale && e.state.url) {
-                selectLanguage(null, e.state.locale, null, e.state.url, false);
-            }
-        });
 
         // Trigger page loader on internal link navigation
         document.addEventListener('click', (e) => {

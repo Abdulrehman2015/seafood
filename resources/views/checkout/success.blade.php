@@ -12,7 +12,7 @@
 @endphp
 
 @section('title', $isWalkin
-    ? __t('checkout.collection_token', 'Collection Pass') . ' #' . ($order->collection_token ?? $order->order_number) . ' — MST'
+    ? __t('checkout.collection_pass_title', 'Collection Pass') . ' #' . ($order->collection_token ?? $order->order_number) . ' — MST'
     : __t('checkout.order_confirmed_title', 'Order Confirmed') . ' #' . $order->order_number . ' — MST')
 
 @section('content')
@@ -150,44 +150,44 @@
                     <div class="timeline-step {{ $walkStep2Done ? 'step-completed' : ($walkStep2Active ? 'step-active' : 'step-upcoming') }}">
                         <div class="step-icon-node">{{ $walkStep2Done ? '✓' : '💳' }}</div>
                         <div class="step-label">{{ $isPaid ? __t('checkout.paid', 'Paid Online') : __t('walkin.pay_counter', 'Pay at Counter') }}</div>
-                        <div class="step-time">{{ $isPaid ? 'Verified' : ($walkStep2Active ? 'Pending Pay' : 'Awaiting') }}</div>
+                        <div class="step-time">{{ $isPaid ? __t('checkout.status_verified', 'Verified') : ($walkStep2Active ? __t('checkout.status_pending_pay', 'Pending Pay') : __t('checkout.status_awaiting', 'Awaiting')) }}</div>
                     </div>
                     <div class="timeline-connector {{ $walkStep3Done ? 'connector-completed' : ($walkStep3Active ? 'connector-active' : '') }}"></div>
                     <div class="timeline-step {{ $walkStep3Done ? 'step-completed' : ($walkStep3Active ? 'step-active' : 'step-upcoming') }}">
                         <div class="step-icon-node">🏬</div>
                         <div class="step-label">@t('walkin.step_preparing', 'Packing at SILC')</div>
-                        <div class="step-time">{{ $walkStep3Active ? 'In Progress' : ($walkStep3Done ? 'Packed' : 'Counter 2') }}</div>
+                        <div class="step-time">{{ $walkStep3Active ? __t('checkout.status_in_progress', 'In Progress') : ($walkStep3Done ? __t('checkout.status_packed', 'Packed') : __t('checkout.status_counter_2', 'Counter 2')) }}</div>
                     </div>
                     <div class="timeline-connector {{ $walkStep4Done ? 'connector-completed' : ($walkStep4Active ? 'connector-active' : '') }}"></div>
                     <div class="timeline-step {{ $walkStep4Done ? 'step-completed' : ($walkStep4Active ? 'step-active' : 'step-upcoming') }}">
                         <div class="step-icon-node">{{ $walkStep4Done ? '✓' : ($walkStep4Active ? '📦' : '🎉') }}</div>
                         <div class="step-label">{{ $walkStep4Active ? __t('walkin.ready_collection', 'Ready at Counter 2') : __t('walkin.step_collected', 'Order Collected') }}</div>
-                        <div class="step-time">{{ $walkStep4Done ? 'Collected' : ($walkStep4Active ? 'Ready Now' : 'Final Step') }}</div>
+                        <div class="step-time">{{ $walkStep4Done ? __t('checkout.status_collected', 'Collected') : ($walkStep4Active ? __t('checkout.status_ready_now', 'Ready Now') : __t('checkout.status_final_step', 'Final Step')) }}</div>
                     </div>
                 @else
                     <!-- Standard Delivery Stepper -->
                     <div class="timeline-step {{ $delivStep1Done ? 'step-completed' : ($delivStep1Active ? 'step-active' : 'step-upcoming') }}">
                         <div class="step-icon-node">✓</div>
                         <div class="step-label">@t('checkout.step_paid', 'Order Placed & Paid')</div>
-                        <div class="step-time">{{ $delivStep1Done ? 'Confirmed' : 'Pending' }}</div>
+                        <div class="step-time">{{ $delivStep1Done ? __t('checkout.status_confirmed', 'Confirmed') : __t('checkout.status_pending', 'Pending') }}</div>
                     </div>
                     <div class="timeline-connector {{ $delivStep2Done ? 'connector-completed' : ($delivStep2Active ? 'connector-active' : '') }}"></div>
                     <div class="timeline-step {{ $delivStep2Done ? 'step-completed' : ($delivStep2Active ? 'step-active' : 'step-upcoming') }}">
                         <div class="step-icon-node">❄️</div>
                         <div class="step-label">@t('checkout.step_cold_packing', 'Cold-Chain Packing')</div>
-                        <div class="step-time">{{ $delivStep2Active ? 'In Progress' : ($delivStep2Done ? 'Packed' : 'Pending') }}</div>
+                        <div class="step-time">{{ $delivStep2Active ? __t('checkout.status_in_progress', 'In Progress') : ($delivStep2Done ? __t('checkout.status_packed', 'Packed') : __t('checkout.status_pending', 'Pending')) }}</div>
                     </div>
                     <div class="timeline-connector {{ $delivStep3Done ? 'connector-completed' : ($delivStep3Active ? 'connector-active' : '') }}"></div>
                     <div class="timeline-step {{ $delivStep3Done ? 'step-completed' : ($delivStep3Active ? 'step-active' : 'step-upcoming') }}">
                         <div class="step-icon-node">🚚</div>
                         <div class="step-label">@t('checkout.step_out_delivery', 'Out for Delivery')</div>
-                        <div class="step-time">{{ $delivStep3Active ? 'On Route' : ($delivStep3Done ? 'Dispatched' : 'Refrigerated') }}</div>
+                        <div class="step-time">{{ $delivStep3Active ? __t('checkout.status_on_route', 'On Route') : ($delivStep3Done ? __t('checkout.status_dispatched', 'Dispatched') : __t('checkout.status_refrigerated', 'Refrigerated')) }}</div>
                     </div>
                     <div class="timeline-connector {{ $delivStep4Done ? 'connector-completed' : '' }}"></div>
                     <div class="timeline-step {{ $delivStep4Done ? 'step-completed' : 'step-upcoming' }}">
                         <div class="step-icon-node">📦</div>
                         <div class="step-label">@t('checkout.step_delivered', 'Delivered')</div>
-                        <div class="step-time">{{ $delivStep4Done ? 'Received' : 'Final Step' }}</div>
+                        <div class="step-time">{{ $delivStep4Done ? __t('checkout.status_received', 'Received') : __t('checkout.status_final_step', 'Final Step') }}</div>
                     </div>
                 @endif
             </div>
@@ -205,7 +205,7 @@
                         <div class="token-card-header">
                             <div>
                                 <span class="token-super-title">@t('walkin.title', 'Walk-in Collection Pass')</span>
-                                <h3 class="token-location-title">🏬 MST Cold-Chain Facility · SILC Industrial Park</h3>
+                                <h3 class="token-location-title">🏬 @t('walkin.facility_name', 'MST Cold-Chain Facility · SILC Industrial Park')</h3>
                             </div>
                             <span class="token-tag">@t('walkin.counter_title', 'Counter 2 Collection')</span>
                         </div>
@@ -222,7 +222,7 @@
                                 </div>
                                 <div class="qr-info-text">
                                     <span class="qr-scan-title">📱 @t('checkout.scan_or_show', 'Show this screen or QR code upon arrival at Counter 2')</span>
-                                    <span class="qr-address-sub">📍 7 Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor</span>
+                                    <span class="qr-address-sub">📍 @t('common.store_address_silc', '7 Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor')</span>
                                 </div>
                             </div>
                         </div>
@@ -269,9 +269,9 @@
                                         <div class="item-total-price">RM {{ number_format($item->subtotal, 2) }}</div>
                                     </div>
                                     <div class="item-meta-row">
-                                        <span class="item-sku">SKU: {{ $item->product_sku ?? 'SEA-ITEM' }}</span>
+                                        <span class="item-sku">@t('shop.sku_label', 'SKU'): {{ $item->product_sku ?? 'SEA-ITEM' }}</span>
                                         <span class="meta-dot">·</span>
-                                        <span class="item-unit-rate">RM {{ number_format($item->unit_price, 2) }} / unit</span>
+                                        <span class="item-unit-rate">RM {{ number_format($item->unit_price, 2) }} / @t('shop.per_unit', 'unit')</span>
                                     </div>
 
                                     @if($item->product?->isVariableWeight())
@@ -316,7 +316,7 @@
                             <div class="info-block-label">@t('checkout.recipient', 'Recipient / Contact Person')</div>
                             <div class="info-block-value-main">{{ $order->customer_name }}</div>
                             <div class="info-block-sub">
-                                <span>📞 {{ $order->customer_phone ?: 'No phone provided' }}</span>
+                                <span>📞 {{ $order->customer_phone ?: __t('checkout.no_phone_provided', 'No phone provided') }}</span>
                                 @if($order->customer_email)
                                     <span class="meta-dot">·</span>
                                     <span>✉️ {{ $order->customer_email }}</span>
@@ -330,9 +330,9 @@
                                 {{ $isWalkin ? __t('walkin.collection_location', 'Collection Location') : __t('checkout.shipping_address', 'Shipping Address') }}
                             </div>
                             @if($isWalkin)
-                                <div class="info-block-value-main">MST Import and Export Cold-Chain Facility</div>
+                                <div class="info-block-value-main">@t('walkin.facility_full_name', 'MST Import and Export Cold-Chain Facility')</div>
                                 <div class="info-block-sub">
-                                    No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor Bahru, Johor, Malaysia
+                                    @t('common.store_address_full', 'No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor Bahru, Johor, Malaysia')
                                 </div>
                                 @if($order->confirmed_date)
                                     <div style="margin-top:10px;background:#ecfdf5;border:1.5px solid #6ee7b7;border-radius:10px;padding:10px 14px;">
@@ -362,7 +362,7 @@
                                 </div>
                             @else
                                 <div class="info-block-value-main">
-                                    {{ $shippingAddr['address'] ?? 'Address on file' }}
+                                    {{ $shippingAddr['address'] ?? __t('checkout.address_on_file', 'Address on file') }}
                                 </div>
                                 <div class="info-block-sub">
                                     {{ implode(', ', array_filter([$shippingAddr['postcode'] ?? null, $shippingAddr['city'] ?? null, $shippingAddr['state'] ?? null])) ?: 'Johor Bahru, Johor' }}
@@ -429,7 +429,7 @@
                             <div class="ref-label">@t('checkout.order_reference_number', 'Order Reference Number')</div>
                             <div class="ref-code" id="orderRefNumber">{{ $order->order_number }}</div>
                         </div>
-                        <button type="button" onclick="copyOrderReference()" class="copy-ref-btn" id="copyRefBtn" title="Copy to clipboard">
+                        <button type="button" onclick="copyOrderReference()" class="copy-ref-btn" id="copyRefBtn" title="{{ __t('common.copy_to_clipboard', 'Copy to clipboard') }}">
                             <span id="copyIcon">📋</span>
                             <span id="copyText">@t('common.copy', 'Copy')</span>
                         </button>
@@ -512,7 +512,7 @@
                         <span class="concierge-icon">💬</span>
                         <div>
                             <div class="concierge-title">@t('checkout.need_help_title', 'Need Assistance with your Order?')</div>
-                            <div class="concierge-sub">MST Customer Service is on standby</div>
+                            <div class="concierge-sub">@t('checkout.support_standby', 'MST Customer Service is on standby')</div>
                         </div>
                     </div>
                     <div class="concierge-actions">
@@ -578,18 +578,18 @@
         <!-- 2. Prominent Token / Voucher Reference -->
         <div class="slip-token-section text-center">
             <div class="slip-doc-type">
-                {{ $isWalkin ? 'OFFICIAL IN-STORE COLLECTION SLIP' : 'OFFICIAL ORDER RECEIPT & PACKING SLIP' }}
+                {{ $isWalkin ? __t('receipt.slip_instore_title', 'OFFICIAL IN-STORE COLLECTION SLIP') : __t('receipt.slip_delivery_title', 'OFFICIAL ORDER RECEIPT & PACKING SLIP') }}
             </div>
 
             @if($isWalkin)
-                <div class="slip-token-title">COLLECTION TOKEN</div>
+                <div class="slip-token-title">@t('receipt.collection_token_header', 'COLLECTION TOKEN')</div>
                 <div class="slip-token-huge">
                     {{ $order->collection_token ?? ('WE-' . str_pad($order->id, 4, '0', STR_PAD_LEFT)) }}
                 </div>
-                <div class="slip-counter-badge">🏬 PRESENT AT SILC COUNTER 2</div>
+                <div class="slip-counter-badge">🏬 @t('receipt.present_counter_2', 'PRESENT AT SILC COUNTER 2')</div>
             @else
                 <div class="slip-order-num-hero">{{ $order->order_number }}</div>
-                <div class="slip-delivery-badge">🚚 COLD-CHAIN DELIVERY SHIPMENT</div>
+                <div class="slip-delivery-badge">🚚 @t('receipt.cold_chain_shipment', 'COLD-CHAIN DELIVERY SHIPMENT')</div>
             @endif
         </div>
 
@@ -598,36 +598,36 @@
         <!-- 3. Key Order Metadata -->
         <div class="slip-meta-grid">
             <div class="slip-meta-row">
-                <span class="meta-title">Order No:</span>
+                <span class="meta-title">@t('receipt.order_no', 'Order No:')</span>
                 <span class="meta-val font-mono">{{ $order->order_number }}</span>
             </div>
             <div class="slip-meta-row">
-                <span class="meta-title">Date & Time:</span>
+                <span class="meta-title">@t('receipt.date_time', 'Date & Time:')</span>
                 <span class="meta-val">{{ $order->created_at->format('d/m/Y h:i A') }}</span>
             </div>
             <div class="slip-meta-row">
-                <span class="meta-title">Customer:</span>
+                <span class="meta-title">@t('receipt.customer', 'Customer:')</span>
                 <span class="meta-val font-bold">{{ $order->customer_name }}</span>
             </div>
             @if($order->customer_phone)
             <div class="slip-meta-row">
-                <span class="meta-title">Mobile:</span>
+                <span class="meta-title">@t('receipt.mobile', 'Mobile:')</span>
                 <span class="meta-val">{{ $order->customer_phone }}</span>
             </div>
             @endif
             <div class="slip-meta-row">
-                <span class="meta-title">Payment:</span>
+                <span class="meta-title">@t('receipt.payment', 'Payment:')</span>
                 <span class="meta-val font-bold">
                     @if($order->payment_method === 'cash')
-                        💵 CASH DUE AT COUNTER
+                        💵 @t('receipt.cash_due_counter', 'CASH DUE AT COUNTER')
                     @else
-                        💳 STRIPE / ONLINE (PAID)
+                        💳 @t('receipt.stripe_paid', 'STRIPE / ONLINE (PAID)')
                     @endif
                 </span>
             </div>
             @if(!$isWalkin && !empty($shippingAddr['address']))
             <div class="slip-meta-row">
-                <span class="meta-title">Delivery To:</span>
+                <span class="meta-title">@t('receipt.delivery_to', 'Delivery To:')</span>
                 <span class="meta-val">
                     {{ $shippingAddr['address'] }}, {{ $shippingAddr['city'] ?? '' }} ({{ $shippingAddr['postcode'] ?? '' }})
                 </span>
@@ -641,10 +641,10 @@
         <table class="slip-items-table">
             <thead>
                 <tr>
-                    <th class="text-left col-item">ITEM DESCRIPTION</th>
-                    <th class="text-center col-qty">QTY</th>
-                    <th class="text-right col-price">PRICE</th>
-                    <th class="text-right col-total">TOTAL</th>
+                    <th class="text-left col-item">@t('receipt.th_item', 'ITEM DESCRIPTION')</th>
+                    <th class="text-center col-qty">@t('receipt.th_qty', 'QTY')</th>
+                    <th class="text-right col-price">@t('receipt.th_price', 'PRICE')</th>
+                    <th class="text-right col-total">@t('receipt.th_total', 'TOTAL')</th>
                 </tr>
             </thead>
             <tbody>
@@ -652,7 +652,7 @@
                     <tr>
                         <td class="col-item">
                             <div class="slip-item-name font-bold">{{ $item->product_name }}</div>
-                            <div class="slip-item-sku text-muted">SKU: {{ $item->product_sku ?? 'ITEM' }}</div>
+                            <div class="slip-item-sku text-muted">@t('shop.sku_label', 'SKU'): {{ $item->product_sku ?? 'ITEM' }}</div>
                         </td>
                         <td class="text-center col-qty font-bold">{{ $item->quantity }}</td>
                         <td class="text-right col-price">{{ number_format($item->unit_price, 2) }}</td>
@@ -667,14 +667,14 @@
         <!-- 5. Financial Summary Breakdown -->
         <div class="slip-totals-section">
             <div class="slip-total-row">
-                <span>Subtotal ({{ $order->items->count() }} items):</span>
+                <span>@t('receipt.subtotal_count', 'Subtotal (:count items):', ['count' => $order->items->count()])</span>
                 <span>RM {{ number_format($order->subtotal, 2) }}</span>
             </div>
             <div class="slip-total-row">
-                <span>{{ $isWalkin ? 'Self-Collection Fee:' : 'Cold-Chain Delivery:' }}</span>
+                <span>{{ $isWalkin ? __t('receipt.pickup_fee', 'Self-Collection Fee:') : __t('receipt.delivery_fee', 'Cold-Chain Delivery:') }}</span>
                 <span>
                     @if($order->shipping_fee <= 0)
-                        FREE
+                        @t('receipt.free', 'FREE')
                     @else
                         RM {{ number_format($order->shipping_fee, 2) }}
                     @endif
@@ -682,14 +682,14 @@
             </div>
             @if($order->discount > 0)
             <div class="slip-total-row">
-                <span>Discount:</span>
+                <span>@t('receipt.discount', 'Discount:')</span>
                 <span>- RM {{ number_format($order->discount, 2) }}</span>
             </div>
             @endif
             <div class="slip-divider-dashed"></div>
             <div class="slip-total-row slip-grand-total">
                 <span class="grand-label">
-                    {{ $order->payment_method === 'cash' ? 'TOTAL CASH PAYABLE:' : 'TOTAL AMOUNT PAID:' }}
+                    {{ $order->payment_method === 'cash' ? __t('receipt.total_cash_payable', 'TOTAL CASH PAYABLE:') : __t('receipt.total_amount_paid', 'TOTAL AMOUNT PAID:') }}
                 </span>
                 <span class="grand-val">RM {{ number_format($order->total, 2) }}</span>
             </div>
@@ -702,14 +702,14 @@
             <div class="slip-qr-image">
                 {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(84)->generate(url('/admin/orders/' . $order->id)) !!}
             </div>
-            <div class="slip-qr-caption">Scan for Digital Tracking & Counter Verification</div>
+            <div class="slip-qr-caption">@t('receipt.qr_caption', 'Scan for Digital Tracking & Counter Verification')</div>
         </div>
 
         <!-- 7. Footer Instructions & Legal -->
         <div class="slip-footer text-center">
-            <div class="slip-storage-notice">❄️ KEEP FROZEN AT -18°C · COLD-CHAIN ASSURED</div>
-            <div class="slip-thanks">Thank you for ordering with MST Import & Export Sdn. Bhd.!</div>
-            <div class="slip-website">www.mstseafood.com · Support: {{ $storePhone }}</div>
+            <div class="slip-storage-notice">@t('receipt.storage_notice', '❄️ KEEP FROZEN AT -18°C · COLD-CHAIN ASSURED')</div>
+            <div class="slip-thanks">@t('receipt.thank_you', 'Thank you for ordering with MST Import & Export Sdn. Bhd.!')</div>
+            <div class="slip-website">www.mstseafood.com · @t('receipt.support_contact', 'Support:'): {{ $storePhone }}</div>
         </div>
 
     </div>
@@ -723,7 +723,7 @@
                 <span style="font-size:1.2rem">🧾</span>
                 <span class="modal-header-title">@t('checkout.short_receipt_preview', 'Official Short Print Receipt')</span>
             </div>
-            <button type="button" onclick="closeReceiptModal()" class="modal-close-btn" aria-label="Close">✕</button>
+            <button type="button" onclick="closeReceiptModal()" class="modal-close-btn" aria-label="{{ __t('common.close', 'Close') }}">✕</button>
         </div>
 
         <div class="receipt-modal-body" id="modalReceiptBody">
@@ -1509,7 +1509,7 @@
     border: 1px solid #e2e8f0;
 }
 
-/* One-Click Copy Reference Bar */
+/* Reference Bar */
 .order-ref-copy-box {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -2175,7 +2175,7 @@ function copyOrderReference() {
             }, 2500);
         }
     }).catch(err => {
-        console.warn('Copy failed', err);
+        console.warn('Clipboard write failed', err);
     });
 }
 
