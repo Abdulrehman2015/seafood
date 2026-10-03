@@ -334,6 +334,11 @@
                                 <div class="info-block-sub">
                                     No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor Bahru, Johor, Malaysia
                                 </div>
+                                @if($order->collection_date || $order->collection_time)
+                                    <div style="margin-top:6px;font-size:0.82rem;color:#166534;font-weight:700">
+                                        📅 @t('checkout.scheduled_pickup', 'Scheduled Collection'): {{ $order->collection_date }} ({{ $order->collection_time }})
+                                    </div>
+                                @endif
                                 <div style="margin-top:8px">
                                     <a href="https://maps.google.com/?q=MST+Counter+2+7+Jalan+SILC+2/18+SILC+Industrial+Park+Iskandar+Puteri+Johor" target="_blank" rel="noopener noreferrer" class="map-link-btn">
                                         <span>📍 @t('walkin.open_maps', 'Open in Google Maps')</span>
@@ -347,6 +352,12 @@
                                 <div class="info-block-sub">
                                     {{ implode(', ', array_filter([$shippingAddr['postcode'] ?? null, $shippingAddr['city'] ?? null, $shippingAddr['state'] ?? null])) ?: 'Johor Bahru, Johor' }}
                                 </div>
+                                @if($order->delivery_date)
+                                    <div style="margin-top:6px;font-size:0.82rem;color:#1e40af;font-weight:700">
+                                        📅 @t('checkout.scheduled_delivery', 'Requested Delivery Date'): {{ $order->delivery_date }}
+                                        <div style="font-size:0.75rem;font-weight:normal;color:#64748b">(@t('checkout.delivery_date_subject_mst', 'Subject to MST Cold-Chain Confirmation'))</div>
+                                    </div>
+                                @endif
                             @endif
                         </div>
                     </div>

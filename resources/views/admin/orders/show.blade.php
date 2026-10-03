@@ -743,6 +743,25 @@
                     </div>
                     @endif
 
+                    @if($order->collection_date || $order->collection_time)
+                    <div>
+                        <div style="font-size:0.75rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.03em;">Self-Collection Schedule</div>
+                        <div style="font-weight:700;color:#0f766e;margin-top:2px;background:#f0fdf4;padding:6px 10px;border-radius:6px;border:1px solid #bbf7d0;">
+                            📅 {{ $order->collection_date }} ({{ $order->collection_time }})
+                        </div>
+                    </div>
+                    @endif
+
+                    @if($order->delivery_date)
+                    <div>
+                        <div style="font-size:0.75rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.03em;">Requested Delivery Date</div>
+                        <div style="font-weight:700;color:#1e40af;margin-top:2px;background:#eff6ff;padding:6px 10px;border-radius:6px;border:1px solid #bfdbfe;">
+                            📅 {{ $order->delivery_date }}
+                            <div style="font-size:0.72rem;font-weight:normal;color:#64748b;margin-top:2px;">(Subject to MST Availability &amp; Dispatch Scheduling)</div>
+                        </div>
+                    </div>
+                    @endif
+
                     @if($order->shipping_address && count(array_filter($order->shipping_address)))
                     <div>
                         <div style="font-size:0.75rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.03em;">Shipping Address</div>

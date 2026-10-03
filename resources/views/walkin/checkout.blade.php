@@ -213,12 +213,41 @@
                     </div>
                 </div>
 
+                <!-- Collection Date & Time Card -->
+                <div class="walkin-form-card">
+                    <div class="form-card-header">
+                        <h3 class="form-card-title">
+                            <span class="title-icon">📅</span>
+                            <span>@t('walkin.collection_schedule', '2. Collection Date & Time Slot')</span>
+                        </h3>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">@t('walkin.collection_date', 'Collection Date') <span class="required" style="color:#ef4444">*</span></label>
+                            <input type="date" name="collection_date" class="form-control walkin-input"
+                                   min="{{ date('Y-m-d') }}"
+                                   value="{{ old('collection_date', date('Y-m-d')) }}" required>
+                            @error('collection_date')<div class="form-error">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">@t('walkin.collection_time', 'Collection Time Slot') <span class="required" style="color:#ef4444">*</span></label>
+                            <select name="collection_time" class="form-control walkin-input" required>
+                                <option value="08:30 AM - 10:30 AM" {{ old('collection_time', '08:30 AM - 10:30 AM') == '08:30 AM - 10:30 AM' ? 'selected' : '' }}>08:30 AM – 10:30 AM (Morning Slot)</option>
+                                <option value="10:30 AM - 12:30 PM" {{ old('collection_time') == '10:30 AM - 12:30 PM' ? 'selected' : '' }}>10:30 AM – 12:30 PM (Midday Slot)</option>
+                                <option value="01:30 PM - 03:30 PM" {{ old('collection_time') == '01:30 PM - 03:30 PM' ? 'selected' : '' }}>01:30 PM – 03:30 PM (Afternoon Slot)</option>
+                                <option value="03:30 PM - 05:30 PM" {{ old('collection_time') == '03:30 PM - 05:30 PM' ? 'selected' : '' }}>03:30 PM – 05:30 PM (Late Afternoon Slot)</option>
+                            </select>
+                            @error('collection_time')<div class="form-error">{{ $message }}</div>@enderror
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Special Packaging Request -->
                 <div class="walkin-form-card">
                     <div class="form-card-header">
                         <h3 class="form-card-title">
                             <span class="title-icon">📝</span>
-                            <span>@t('walkin.special_packaging', '2. Special Packaging / Instructions (Optional)')</span>
+                            <span>@t('walkin.special_packaging', '3. Special Packaging / Instructions (Optional)')</span>
                         </h3>
                     </div>
                     <textarea name="customer_notes" class="form-control walkin-input" rows="2" 
@@ -227,10 +256,10 @@
 
                 <!-- Payment Section Card -->
                 <div class="walkin-form-card">
-                    <div class="form-card-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                    <div class="form-card-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:gap:8px">
                         <h3 class="form-card-title">
                             <span class="title-icon">💳</span>
-                            <span>@t('walkin.select_payment_method', '3. Select Payment Method')</span>
+                            <span>@t('walkin.select_payment_method', '4. Select Payment Method')</span>
                         </h3>
                         <div class="payment-shield-pill">
                             🔒 @t('walkin.ssl_badge', '256-bit SSL Encrypted')
@@ -1487,6 +1516,23 @@ function onWalkinPaymentMethodChange(method) {
     }
 }
 
+function resetWalkinSubmitButton() {
+    const selected = document.querySelector('input[name="payment_method"]:checked')?.value || 'cash';
+    onWalkinPaymentMethodChange(selected);
+    const btn = document.getElementById('submitBtn');
+    const mobileBtn = document.getElementById('mobileSubmitBtn');
+    [btn, mobileBtn].forEach(b => {
+        if (b) {
+            b.style.pointerEvents = 'auto';
+            b.style.opacity = '1';
+        }
+    });
+}
+
+window.addEventListener('pageshow', function(event) {
+    resetWalkinSubmitButton();
+});
+
 // Form submission handler
 document.getElementById('checkoutForm')?.addEventListener('submit', function(e) {
     const selected = document.querySelector('input[name="payment_method"]:checked')?.value;
@@ -1500,6 +1546,13 @@ document.getElementById('checkoutForm')?.addEventListener('submit', function(e) 
             paymentSection.style.borderRadius = '14px';
             setTimeout(() => { paymentSection.style.outline = ''; }, 3000);
         }
+        resetWalkinSubmitButton();
+        return false;
+    }
+
+    if (!this.reportValidity()) {
+        e.preventDefault();
+        resetWalkinSubmitButton();
         return false;
     }
 

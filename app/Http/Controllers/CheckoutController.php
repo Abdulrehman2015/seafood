@@ -142,34 +142,41 @@ class CheckoutController extends Controller
             'fulfillment_type' => 'required|in:delivery,self_collection',
             'customer_notes'   => 'nullable|string|max:1000',
             'payment_method'   => 'nullable|in:cash,stripe,online',
+            'customer_name'    => 'required|string|max:255',
+            'customer_phone'   => 'required|string|max:30',
         ];
 
         if ($isWalkin) {
-            $rules['customer_name']  = 'required|string|max:255';
-            $rules['customer_phone'] = 'required|string|max:30';
-            $rules['payment_method'] = 'required|in:cash,stripe,online';
-        } elseif (!Auth::check()) {
-            $rules['customer_name']  = 'required|string|max:255';
-            $rules['customer_phone'] = 'required|string|max:30';
-            $rules['customer_email'] = 'required|email|max:255';
-        }
+            $rules['payment_method']  = 'required|in:cash,stripe,online';
+            $rules['collection_date'] = 'required|string|max:50';
+            $rules['collection_time'] = 'required|string|max:50';
+            $rules['customer_email']  = 'nullable|email|max:255';
+        } else {
+            $rules['customer_email']  = 'required|email|max:255';
 
-        if ($request->fulfillment_type === 'delivery' && !$isWalkin) {
-            $rules['address']  = 'required|string|max:500';
-            $rules['city']     = 'required|string|max:100';
-            $rules['state']    = 'required|string|max:100';
-            $rules['postcode'] = 'required|string|max:10';
+            if ($request->fulfillment_type === 'delivery') {
+                $rules['address']       = 'required|string|max:500';
+                $rules['city']          = 'required|string|max:100';
+                $rules['state']         = 'required|string|max:100';
+                $rules['postcode']      = 'required|string|max:10';
+                $rules['delivery_date'] = 'nullable|string|max:50';
+            } else {
+                $rules['collection_date'] = 'required|string|max:50';
+                $rules['collection_time'] = 'required|string|max:50';
+            }
         }
 
         $request->validate($rules, [
-            'payment_method.required' => 'Please select a payment method before proceeding.',
-            'customer_name.required'  => 'Please enter your full name.',
-            'customer_phone.required' => 'Please enter your contact mobile number.',
-            'customer_email.required' => 'Please enter your email address for the order confirmation receipt.',
-            'address.required'        => 'Please provide your delivery street address.',
-            'city.required'           => 'Please provide your delivery city.',
-            'state.required'          => 'Please provide your delivery state.',
-            'postcode.required'       => 'Please provide your delivery postcode.',
+            'payment_method.required'  => 'Please select a payment method before proceeding.',
+            'customer_name.required'   => 'Please enter your full name.',
+            'customer_phone.required'  => 'Please enter your contact mobile number.',
+            'customer_email.required'  => 'Please enter your email address for the order confirmation receipt.',
+            'address.required'         => 'Please provide your delivery street address.',
+            'city.required'            => 'Please provide your delivery city.',
+            'state.required'           => 'Please provide your delivery state.',
+            'postcode.required'        => 'Please provide your delivery postcode.',
+            'collection_date.required' => 'Please select your preferred self-collection date.',
+            'collection_time.required' => 'Please select your preferred self-collection time slot.',
         ]);
 
         $paymentMethod = $request->input('payment_method', 'stripe');
@@ -193,7 +200,14 @@ class CheckoutController extends Controller
             }
         }
 
-
+        $collectionDate = $request->input('collection_date');
+        $collectionTime = $request->input('collection_time');
+        if ($request->fulfillment_type === 'self_collection' && empty($collectionDate)) {
+            $collectionDate = now()->toDateString();
+        }
+        if ($request->fulfillment_type === 'self_collection' && empty($collectionTime)) {
+            $collectionTime = '08:30 AM - 10:30 AM';
+        }
 
         $payload = [
             'fulfillment_type' => $request->fulfillment_type,
@@ -201,6 +215,9 @@ class CheckoutController extends Controller
             'customer_email'   => $request->customer_email ?? Auth::user()?->email,
             'customer_phone'   => $request->customer_phone ?? Auth::user()?->phone,
             'customer_notes'   => $request->customer_notes,
+            'collection_date'  => $collectionDate,
+            'collection_time'  => $collectionTime,
+            'delivery_date'    => $request->delivery_date,
             'address'          => $request->address,
             'city'             => $request->city,
             'state'            => $request->state,
@@ -460,6 +477,9 @@ class CheckoutController extends Controller
                 'paid_at'               => $isPaid ? now() : null,
                 'fulfillment_type'      => $payload['fulfillment_type'] ?? 'self_collection',
                 'shipping_address'      => $shippingAddress,
+                'collection_date'       => $payload['collection_date'] ?? null,
+                'collection_time'       => $payload['collection_time'] ?? null,
+                'delivery_date'         => $payload['delivery_date'] ?? null,
                 'subtotal'              => $subtotal,
                 'shipping_fee'          => $shippingFee,
                 'total'                 => $total,

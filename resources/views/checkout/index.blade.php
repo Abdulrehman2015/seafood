@@ -291,12 +291,21 @@
                         </div>
                     </div>
 
-                    <!-- 3. Delivery Address Card -->
-                    <div class="card checkout-card" id="addressCard" style="{{ old('fulfillment_type', 'delivery') == 'self_collection' ? 'display:none' : 'display:block' }}">
+                    <!-- 3A. Delivery Address Card (Shown when Delivery is selected) -->
+                    <div class="card checkout-card" id="addressCard" style="{{ old('fulfillment_type', 'delivery') == 'delivery' ? 'display:block' : 'display:none' }}">
                         <div class="card-header">
                             <div class="card-title">
                                 <span class="card-title-icon">📍</span>
-                                <span>@t('checkout.shipping_info', '3. Delivery Address')</span>
+                                <span>@t('checkout.shipping_info', '3. Delivery Address & Scheduling')</span>
+                            </div>
+                        </div>
+
+                        {{-- Delivery Lead Time Notice Banner (7 Working Days) --}}
+                        <div class="delivery-lead-time-notice" style="background:#eff6ff;border:1.5px solid #93c5fd;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:12px">
+                            <span style="font-size:1.3rem;line-height:1">🚚</span>
+                            <div style="font-size:0.83rem;color:#1e3a8a;line-height:1.5">
+                                <strong style="display:block;margin-bottom:3px;color:#1e40af;font-size:0.88rem">@t('checkout.delivery_lead_time_title', 'Delivery Lead Time:')</strong>
+                                @t('checkout.delivery_lead_time_desc', 'Please allow up to 7 working days for order sourcing and cold-chain delivery arrangements. The available delivery date will be provided or confirmed by MST based on product availability and delivery scheduling.')
                             </div>
                         </div>
 
@@ -321,25 +330,78 @@
 
                         <div class="form-group">
                             <label class="form-label">@t('checkout.address', 'Street Address') <span class="required">*</span></label>
-                            <input type="text" name="address" id="addressInput" class="form-control" value="{{ old('address', auth()->user()?->address) }}" placeholder="Unit / House No, Street, Taman...">
+                            <input type="text" name="address" id="addressInput" class="form-control" value="{{ old('address', auth()->user()?->address) }}" placeholder="Unit / House No, Street, Taman..." {{ old('fulfillment_type', 'delivery') == 'delivery' ? 'required' : '' }}>
                             @error('address')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="address-grid-responsive">
                             <div class="form-group">
                                 <label class="form-label">@t('checkout.postcode', 'Postcode') <span class="required">*</span></label>
-                                <input type="text" name="postcode" id="postcodeInput" class="form-control" value="{{ old('postcode', auth()->user()?->postcode ?? '79100') }}" placeholder="79100" maxlength="8" oninput="debounceDeliveryRecalculation()">
+                                <input type="text" name="postcode" id="postcodeInput" class="form-control" value="{{ old('postcode', auth()->user()?->postcode ?? '79100') }}" placeholder="79100" maxlength="8" oninput="debounceDeliveryRecalculation()" {{ old('fulfillment_type', 'delivery') == 'delivery' ? 'required' : '' }}>
                                 @error('postcode')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-group">
                                 <label class="form-label">@t('checkout.city', 'City') <span class="required">*</span></label>
-                                <input type="text" name="city" id="cityInput" class="form-control" value="{{ old('city', auth()->user()?->city ?? 'Johor Bahru') }}" placeholder="e.g. Johor Bahru / Iskandar Puteri" oninput="debounceDeliveryRecalculation()">
+                                <input type="text" name="city" id="cityInput" class="form-control" value="{{ old('city', auth()->user()?->city ?? 'Johor Bahru') }}" placeholder="e.g. Johor Bahru / Iskandar Puteri" oninput="debounceDeliveryRecalculation()" {{ old('fulfillment_type', 'delivery') == 'delivery' ? 'required' : '' }}>
                                 @error('city')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-group">
                                 <label class="form-label">@t('checkout.state', 'State') <span class="required">*</span></label>
-                                <input type="text" name="state" id="stateInput" class="form-control" value="{{ old('state', auth()->user()?->state ?? 'Johor') }}" placeholder="e.g. Johor" oninput="debounceDeliveryRecalculation()">
+                                <input type="text" name="state" id="stateInput" class="form-control" value="{{ old('state', auth()->user()?->state ?? 'Johor') }}" placeholder="e.g. Johor" oninput="debounceDeliveryRecalculation()" {{ old('fulfillment_type', 'delivery') == 'delivery' ? 'required' : '' }}>
                                 @error('state')<div class="form-error">{{ $message }}</div>@enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top:14px">
+                            <label class="form-label">
+                                @t('checkout.delivery_date_label', 'Earliest Available / Preferred Delivery Date')
+                                <span style="font-size:0.75rem;font-weight:normal;color:#64748b">(@t('checkout.delivery_date_subject_mst', 'Subject to MST Confirmation'))</span>
+                            </label>
+                            <input type="date" name="delivery_date" id="deliveryDateInput" class="form-control"
+                                   min="{{ date('Y-m-d', strtotime('+3 days')) }}"
+                                   value="{{ old('delivery_date', date('Y-m-d', strtotime('+7 days'))) }}">
+                            <div style="font-size:0.75rem;color:#64748b;margin-top:4px">
+                                ℹ️ @t('checkout.delivery_date_notice', 'The delivery date is subject to product availability and MST cold-chain delivery scheduling.')
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3B. Store Self-Collection Card (Shown when Self-Collection is selected) -->
+                    <div class="card checkout-card" id="selfCollectionCard" style="{{ old('fulfillment_type', 'delivery') == 'self_collection' ? 'display:block' : 'display:none' }}">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-title-icon">🏪</span>
+                                <span>@t('checkout.self_collection_info_title', '3. Self-Collection Details (SILC Facility, Iskandar Puteri)')</span>
+                            </div>
+                        </div>
+
+                        <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:12px">
+                            <span style="font-size:1.3rem;line-height:1">🏬</span>
+                            <div style="font-size:0.83rem;color:#166534;line-height:1.5">
+                                <strong style="display:block;margin-bottom:2px;color:#15803d;font-size:0.88rem">@t('checkout.collection_location_title', 'Collection Point: MST Cold-Chain Facility')</strong>
+                                7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor Bahru, Malaysia.<br>
+                                <span style="font-weight:700;color:#166534">@t('checkout.self_collection_free_tag', 'Store Self-Collection is 100% Free (RM 0.00 Delivery Fee).')</span>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label">@t('checkout.collection_date', 'Self-Collection Date') <span class="required">*</span></label>
+                                <input type="date" name="collection_date" id="collectionDateInput" class="form-control"
+                                       min="{{ date('Y-m-d') }}"
+                                       value="{{ old('collection_date', date('Y-m-d', strtotime('+1 day'))) }}"
+                                       {{ old('fulfillment_type', 'delivery') == 'self_collection' ? 'required' : '' }}>
+                                @error('collection_date')<div class="form-error">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">@t('checkout.collection_time', 'Self-Collection Time Slot') <span class="required">*</span></label>
+                                <select name="collection_time" id="collectionTimeInput" class="form-control" {{ old('fulfillment_type', 'delivery') == 'self_collection' ? 'required' : '' }}>
+                                    <option value="08:30 AM - 10:30 AM" {{ old('collection_time', '08:30 AM - 10:30 AM') == '08:30 AM - 10:30 AM' ? 'selected' : '' }}>08:30 AM – 10:30 AM (Morning Slot)</option>
+                                    <option value="10:30 AM - 12:30 PM" {{ old('collection_time') == '10:30 AM - 12:30 PM' ? 'selected' : '' }}>10:30 AM – 12:30 PM (Midday Slot)</option>
+                                    <option value="01:30 PM - 03:30 PM" {{ old('collection_time') == '01:30 PM - 03:30 PM' ? 'selected' : '' }}>01:30 PM – 03:30 PM (Afternoon Slot)</option>
+                                    <option value="03:30 PM - 05:30 PM" {{ old('collection_time') == '03:30 PM - 05:30 PM' ? 'selected' : '' }}>03:30 PM – 05:30 PM (Late Afternoon Slot)</option>
+                                </select>
+                                @error('collection_time')<div class="form-error">{{ $message }}</div>@enderror
                             </div>
                         </div>
                     </div>
@@ -1690,8 +1752,38 @@ function onFulfillment(type) {
     if (labelEl) labelEl.classList.add('selected');
 
     const addressCard = document.getElementById('addressCard');
-    if (addressCard) {
-        addressCard.style.display = type === 'delivery' ? 'block' : 'none';
+    const selfCollectionCard = document.getElementById('selfCollectionCard');
+
+    const addressInput = document.getElementById('addressInput');
+    const postcodeInput = document.getElementById('postcodeInput');
+    const cityInput = document.getElementById('cityInput');
+    const stateInput = document.getElementById('stateInput');
+
+    const collectionDateInput = document.getElementById('collectionDateInput');
+    const collectionTimeInput = document.getElementById('collectionTimeInput');
+
+    if (type === 'delivery') {
+        if (addressCard) addressCard.style.display = 'block';
+        if (selfCollectionCard) selfCollectionCard.style.display = 'none';
+
+        if (addressInput) addressInput.required = true;
+        if (postcodeInput) postcodeInput.required = true;
+        if (cityInput) cityInput.required = true;
+        if (stateInput) stateInput.required = true;
+
+        if (collectionDateInput) collectionDateInput.required = false;
+        if (collectionTimeInput) collectionTimeInput.required = false;
+    } else {
+        if (addressCard) addressCard.style.display = 'none';
+        if (selfCollectionCard) selfCollectionCard.style.display = 'block';
+
+        if (addressInput) addressInput.required = false;
+        if (postcodeInput) postcodeInput.required = false;
+        if (cityInput) cityInput.required = false;
+        if (stateInput) stateInput.required = false;
+
+        if (collectionDateInput) collectionDateInput.required = true;
+        if (collectionTimeInput) collectionTimeInput.required = true;
     }
 
     fetchDeliveryFee();
@@ -1716,6 +1808,27 @@ function toggleMobileSummary() {
 
 let isSubmitting = false;
 
+function resetSubmitButton() {
+    isSubmitting = false;
+    const btn = document.getElementById('submitBtn');
+    if (btn) {
+        btn.style.pointerEvents = 'auto';
+        btn.style.opacity = '1';
+        btn.innerHTML = '<span class="btn-main-text">@t("checkout.place_order", "Proceed to Payment")</span><span class="btn-amount-badge" id="submitBtnAmount">' + (document.getElementById('grandTotalDisplay') ? document.getElementById('grandTotalDisplay').innerText.split('\n')[0] : '') + '</span>';
+    }
+
+    const mobileBtn = document.getElementById('mobilePayBtn');
+    if (mobileBtn) {
+        mobileBtn.style.pointerEvents = 'auto';
+        mobileBtn.style.opacity = '1';
+        mobileBtn.innerHTML = '<span>@t("checkout.place_order", "Proceed to Payment")</span>';
+    }
+}
+
+window.addEventListener('pageshow', function(event) {
+    resetSubmitButton();
+});
+
 function submitCheckoutForm() {
     const form = document.getElementById('checkoutForm');
     if (!form) return;
@@ -1729,6 +1842,7 @@ function submitCheckoutForm() {
             firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
             firstInvalid.focus();
         }
+        resetSubmitButton();
         return;
     }
 
@@ -1756,6 +1870,13 @@ document.getElementById('checkoutForm').addEventListener('submit', function (e) 
         e.preventDefault();
         return false;
     }
+
+    if (!this.reportValidity()) {
+        e.preventDefault();
+        resetSubmitButton();
+        return false;
+    }
+
     isSubmitting = true;
 
     const btn = document.getElementById('submitBtn');

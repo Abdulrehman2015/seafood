@@ -13,7 +13,7 @@ class Order extends Model
         'order_number', 'collection_token', 'user_id', 'customer_group',
         'customer_name', 'customer_email', 'customer_phone',
         'status', 'payment_status', 'payment_method', 'payment_reference', 'paid_at',
-        'fulfillment_type', 'shipping_address', 'collection_date', 'collection_time',
+        'fulfillment_type', 'shipping_address', 'collection_date', 'collection_time', 'delivery_date',
         'subtotal', 'shipping_fee', 'tax', 'discount', 'total',
         'stripe_payment_intent',
         'customer_notes', 'admin_notes',
