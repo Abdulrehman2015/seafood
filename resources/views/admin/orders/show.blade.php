@@ -320,6 +320,20 @@
 
 <div class="admin-order-container">
 
+    @if(session('success'))
+        <div style="background:#ecfdf5;color:#065f46;border:1.5px solid #a7f3d0;padding:12px 18px;border-radius:12px;margin-bottom:18px;font-weight:700;display:flex;align-items:center;gap:10px;font-size:0.92rem;box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+            <span style="font-size:1.1rem;">✓</span>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div style="background:#fef2f2;color:#991b1b;border:1.5px solid #fecaca;padding:12px 18px;border-radius:12px;margin-bottom:18px;font-weight:700;display:flex;align-items:center;gap:10px;font-size:0.92rem;box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+            <span style="font-size:1.1rem;">✕</span>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
     <!-- Top Header Bar -->
     <div class="order-header-bar">
         <div class="order-title-group">
@@ -743,22 +757,156 @@
                     </div>
                     @endif
 
-                    @if($order->collection_date || $order->collection_time)
-                    <div>
-                        <div style="font-size:0.75rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.03em;">Self-Collection Schedule</div>
-                        <div style="font-weight:700;color:#0f766e;margin-top:2px;background:#f0fdf4;padding:6px 10px;border-radius:6px;border:1px solid #bbf7d0;">
-                            📅 {{ $order->collection_date }} ({{ $order->collection_time }})
+                    <!-- SELF-COLLECTION / DELIVERY SCHEDULE CARD -->
+                    @if($order->isWalkin())
+                    <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:4px;">
+                            <div style="font-size:0.75rem;font-weight:800;color:#166534;text-transform:uppercase;letter-spacing:0.04em;">
+                                📅 Self-Collection Schedule
+                            </div>
+                            @if($order->notified_at)
+                                <span style="font-size:0.7rem;background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:10px;font-weight:700;border:1px solid #bbf7d0;">
+                                    ✓ Mail Sent: {{ $order->notified_at->format('d M, h:i A') }}
+                                </span>
+                            @endif
                         </div>
-                    </div>
-                    @endif
 
-                    @if($order->delivery_date)
-                    <div>
-                        <div style="font-size:0.75rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.03em;">Requested Delivery Date</div>
-                        <div style="font-weight:700;color:#1e40af;margin-top:2px;background:#eff6ff;padding:6px 10px;border-radius:6px;border:1px solid #bfdbfe;">
-                            📅 {{ $order->delivery_date }}
-                            <div style="font-size:0.72rem;font-weight:normal;color:#64748b;margin-top:2px;">(Subject to MST Availability &amp; Dispatch Scheduling)</div>
+                        <div style="font-weight:800;color:#065f46;font-size:1rem;margin-bottom:12px;background:#ffffff;padding:8px 12px;border-radius:8px;border:1px solid #bbf7d0;">
+                            📅 {{ $order->confirmed_date ?: $order->collection_date ?: 'Not set' }}
+                            @if($order->confirmed_time || $order->collection_time)
+                                <span style="font-size:0.85rem;font-weight:700;color:#047857;">({{ $order->confirmed_time ?: $order->collection_time }})</span>
+                            @endif
                         </div>
+
+                        <!-- Inline Update Schedule & Send Mail Form -->
+                        <form action="{{ route('admin.orders.notify_schedule', $order) }}" method="POST" id="notifyScheduleForm">
+                            @csrf
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                <div style="font-size:0.75rem;font-weight:700;color:#334155;">
+                                    Update Collection Schedule &amp; Notify User:
+                                </div>
+                                
+                                <div>
+                                    <label style="font-size:0.72rem;font-weight:700;color:#64748b;margin-bottom:2px;display:block;">
+                                        Collection Date <span style="color:#ef4444;">*</span>
+                                    </label>
+                                    <input type="date" name="confirmed_date" id="adminConfirmedDate" class="form-control" required
+                                           value="{{ old('confirmed_date', $order->confirmed_date ?: $order->collection_date ?: date('Y-m-d')) }}"
+                                           style="height:36px;border-radius:6px;border:1.5px solid #cbd5e1;font-weight:700;font-size:0.85rem;width:100%;box-sizing:border-box;padding:0 10px;"
+                                           onchange="updateWhatsAppMessage();">
+                                </div>
+
+                                <div>
+                                    <label style="font-size:0.72rem;font-weight:700;color:#64748b;margin-bottom:2px;display:block;">
+                                        Collection Time Window
+                                    </label>
+                                    <input type="text" name="confirmed_time" id="adminConfirmedTime" class="form-control" list="timeSlotOptions"
+                                           value="{{ old('confirmed_time', $order->confirmed_time ?: $order->collection_time ?: '08:30 AM - 10:30 AM') }}"
+                                           placeholder="e.g. 08:30 AM - 10:30 AM"
+                                           style="height:36px;border-radius:6px;border:1.5px solid #cbd5e1;font-weight:600;font-size:0.82rem;width:100%;box-sizing:border-box;padding:0 10px;"
+                                           oninput="updateWhatsAppMessage();">
+                                    <datalist id="timeSlotOptions">
+                                        <option value="08:30 AM - 10:30 AM">Morning (08:30 AM - 10:30 AM)</option>
+                                        <option value="10:30 AM - 12:30 PM">Late Morning (10:30 AM - 12:30 PM)</option>
+                                        <option value="02:00 PM - 04:00 PM">Afternoon (02:00 PM - 04:00 PM)</option>
+                                        <option value="04:00 PM - 06:00 PM">Late Afternoon (04:00 PM - 06:00 PM)</option>
+                                    </datalist>
+                                </div>
+
+                                <div>
+                                    <label style="font-size:0.72rem;font-weight:700;color:#64748b;margin-bottom:2px;display:block;">
+                                        Note to User (Optional)
+                                    </label>
+                                    <input type="text" name="notification_notes" id="adminNotificationNotes" class="form-control"
+                                           value="{{ old('notification_notes', $order->notification_notes) }}"
+                                           placeholder="e.g. Counter 2 pickup ready. Please present token."
+                                           style="height:34px;border-radius:6px;border:1.5px solid #cbd5e1;font-size:0.8rem;width:100%;box-sizing:border-box;padding:0 10px;"
+                                           oninput="updateWhatsAppMessage();">
+                                </div>
+
+                                <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px;">
+                                    <button type="submit" name="send_email" value="1" class="btn btn-primary btn-sm" style="height:38px;border-radius:8px;font-weight:800;font-size:0.82rem;justify-content:center;display:flex;align-items:center;gap:6px;width:100%;">
+                                        ✉️ Update Date &amp; Send Mail to User
+                                    </button>
+                                    
+                                    @if($order->customer_phone)
+                                    <a id="whatsAppNotifyBtn" href="#" target="_blank" class="btn btn-sm" style="background:#16a34a;color:#ffffff;height:34px;border-radius:8px;font-weight:700;font-size:0.8rem;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;box-sizing:border-box;">
+                                        💬 Send via WhatsApp
+                                    </a>
+                                    @endif
+
+                                    <button type="submit" name="send_email" value="0" class="btn btn-secondary btn-sm" style="height:30px;border-radius:6px;font-weight:600;font-size:0.75rem;justify-content:center;display:flex;align-items:center;gap:4px;width:100%;color:#475569;">
+                                        💾 Save Date Only (Without Email)
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    @else
+                    <!-- DELIVERY SCHEDULE CARD -->
+                    <div style="background:#eff6ff;border:1.5px solid #93c5fd;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:4px;">
+                            <div style="font-size:0.75rem;font-weight:800;color:#1e40af;text-transform:uppercase;letter-spacing:0.04em;">
+                                📅 Cold-Chain Delivery Schedule
+                            </div>
+                            @if($order->notified_at)
+                                <span style="font-size:0.7rem;background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:10px;font-weight:700;border:1px solid #bfdbfe;">
+                                    ✓ Mail Sent: {{ $order->notified_at->format('d M, h:i A') }}
+                                </span>
+                            @endif
+                        </div>
+
+                        <div style="font-weight:800;color:#1e40af;font-size:1rem;margin-bottom:12px;background:#ffffff;padding:8px 12px;border-radius:8px;border:1px solid #bfdbfe;">
+                            📅 {{ $order->confirmed_date ?: $order->delivery_date ?: 'Not set' }}
+                            <div style="font-size:0.72rem;font-weight:normal;color:#64748b;margin-top:2px;">(Subject to MST Cold-Chain Dispatch)</div>
+                        </div>
+
+                        <!-- Inline Update Schedule & Send Mail Form -->
+                        <form action="{{ route('admin.orders.notify_schedule', $order) }}" method="POST" id="notifyScheduleForm">
+                            @csrf
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                <div style="font-size:0.75rem;font-weight:700;color:#334155;">
+                                    Update Delivery Date &amp; Notify User:
+                                </div>
+                                
+                                <div>
+                                    <label style="font-size:0.72rem;font-weight:700;color:#64748b;margin-bottom:2px;display:block;">
+                                        Delivery Date <span style="color:#ef4444;">*</span>
+                                    </label>
+                                    <input type="date" name="confirmed_date" id="adminConfirmedDate" class="form-control" required
+                                           value="{{ old('confirmed_date', $order->confirmed_date ?: $order->delivery_date ?: date('Y-m-d')) }}"
+                                           style="height:36px;border-radius:6px;border:1.5px solid #cbd5e1;font-weight:700;font-size:0.85rem;width:100%;box-sizing:border-box;padding:0 10px;"
+                                           onchange="updateWhatsAppMessage();">
+                                </div>
+
+                                <div>
+                                    <label style="font-size:0.72rem;font-weight:700;color:#64748b;margin-bottom:2px;display:block;">
+                                        Note to User (Optional)
+                                    </label>
+                                    <input type="text" name="notification_notes" id="adminNotificationNotes" class="form-control"
+                                           value="{{ old('notification_notes', $order->notification_notes) }}"
+                                           placeholder="e.g. Sub-zero delivery truck dispatch scheduled."
+                                           style="height:34px;border-radius:6px;border:1.5px solid #cbd5e1;font-size:0.8rem;width:100%;box-sizing:border-box;padding:0 10px;"
+                                           oninput="updateWhatsAppMessage();">
+                                </div>
+
+                                <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px;">
+                                    <button type="submit" name="send_email" value="1" class="btn btn-primary btn-sm" style="height:38px;border-radius:8px;font-weight:800;font-size:0.82rem;justify-content:center;display:flex;align-items:center;gap:6px;width:100%;">
+                                        ✉️ Update Date &amp; Send Mail to User
+                                    </button>
+                                    
+                                    @if($order->customer_phone)
+                                    <a id="whatsAppNotifyBtn" href="#" target="_blank" class="btn btn-sm" style="background:#16a34a;color:#ffffff;height:34px;border-radius:8px;font-weight:700;font-size:0.8rem;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;box-sizing:border-box;">
+                                        💬 Send via WhatsApp
+                                    </a>
+                                    @endif
+
+                                    <button type="submit" name="send_email" value="0" class="btn btn-secondary btn-sm" style="height:30px;border-radius:6px;font-weight:600;font-size:0.75rem;justify-content:center;display:flex;align-items:center;gap:4px;width:100%;color:#475569;">
+                                        💾 Save Date Only (Without Email)
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     @endif
 
@@ -842,5 +990,52 @@
     </div>
 
 </div>
+
+<script>
+function updateWhatsAppMessage() {
+    const phone = '{{ preg_replace('/[^0-9]/', '', $order->customer_phone ?? '') }}';
+    const btn = document.getElementById('whatsAppNotifyBtn');
+    if (!phone || !btn) return;
+    
+    const dateInput = document.getElementById('adminConfirmedDate');
+    const timeInput = document.getElementById('adminConfirmedTime');
+    const notesInput = document.getElementById('adminNotificationNotes');
+    
+    const dateVal = dateInput ? dateInput.value : '{{ $order->confirmed_date ?: ($order->isWalkin() ? $order->collection_date : $order->delivery_date) }}';
+    const timeVal = timeInput ? timeInput.value : '{{ $order->confirmed_time ?: $order->collection_time }}';
+    const notesVal = notesInput ? notesInput.value.trim() : '';
+    
+    const isWalkin = {{ $order->isWalkin() ? 'true' : 'false' }};
+    const orderNo = '{{ $order->order_number ?? $order->id }}';
+    const customerName = '{{ addslashes($order->customer_name ?? 'Customer') }}';
+    const token = '{{ $order->collection_token ?? '' }}';
+    const trackingUrl = '{{ route('checkout.success', ['order' => $order->id]) }}';
+
+    let msg = '';
+    if (isWalkin) {
+        msg = `*MST IMPORT & EXPORT - READY FOR COLLECTION*\n\n` +
+              `Hello *${customerName}*,\n` +
+              `Your seafood order *#${orderNo}*` + (token ? ` (Token: *${token}*)` : '') + ` is confirmed and ready for collection on *${dateVal}*` + (timeVal ? ` (${timeVal})` : '') + `.\n\n` +
+              `📍 *Collection Location:* MST SILC Facility Counter 2 Pickup\n` +
+              `No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor.\n` +
+              (token ? `🎟 *Please present your Token:* ${token}\n` : '') +
+              (notesVal ? `📌 *Note:* ${notesVal}\n` : '') +
+              `\n🔗 *Track Live Order Status:* ${trackingUrl}\n\n` +
+              `Thank you for choosing MST Marine Foods!`;
+    } else {
+        msg = `*MST IMPORT & EXPORT - COLD-CHAIN DELIVERY SCHEDULE*\n\n` +
+              `Hello *${customerName}*,\n` +
+              `Your seafood order *#${orderNo}* cold-chain delivery is confirmed for *${dateVal}*.\n\n` +
+              `🚚 *Fulfillment:* Temperature-Controlled Sub-Zero Cold-Chain Logistics\n` +
+              (notesVal ? `📌 *Note:* ${notesVal}\n` : '') +
+              `\n🔗 *Track Live Order Status:* ${trackingUrl}\n\n` +
+              `Thank you for choosing MST Marine Foods!`;
+    }
+
+    btn.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+}
+
+document.addEventListener('DOMContentLoaded', updateWhatsAppMessage);
+</script>
 
 @endsection

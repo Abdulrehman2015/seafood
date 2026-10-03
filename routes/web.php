@@ -648,6 +648,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware
     Route::get('orders', [Admin\OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{order}', [Admin\OrderController::class, 'show'])->name('orders.show');
     Route::patch('orders/{order}', [Admin\OrderController::class, 'update'])->name('orders.update');
+    Route::post('orders/{order}/notify-schedule', [Admin\OrderController::class, 'notifySchedule'])->name('orders.notify_schedule');
     Route::get('orders/{order}/invoice', [Admin\OrderController::class, 'invoice'])->name('orders.invoice');
 
     // Quotations

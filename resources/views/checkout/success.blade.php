@@ -334,7 +334,22 @@
                                 <div class="info-block-sub">
                                     No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor Bahru, Johor, Malaysia
                                 </div>
-                                @if($order->collection_date || $order->collection_time)
+                                @if($order->confirmed_date)
+                                    <div style="margin-top:10px;background:#ecfdf5;border:1.5px solid #6ee7b7;border-radius:10px;padding:10px 14px;">
+                                        <div style="display:flex;align-items:center;gap:6px;color:#065f46;font-size:0.85rem;font-weight:800;">
+                                            <span>✓</span>
+                                            <span>@t('checkout.mst_confirmed_collection_date', 'MST Confirmed Collection Date'):</span>
+                                        </div>
+                                        <div style="font-size:0.95rem;font-weight:800;color:#047857;margin-top:2px;">
+                                            📅 {{ $order->confirmed_date }} {{ $order->confirmed_time ? '(' . $order->confirmed_time . ')' : '' }}
+                                        </div>
+                                        @if($order->notification_notes)
+                                            <div style="font-size:0.78rem;color:#065f46;margin-top:4px;">
+                                                ℹ️ {{ $order->notification_notes }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                @elseif($order->collection_date || $order->collection_time)
                                     <div style="margin-top:6px;font-size:0.82rem;color:#166534;font-weight:700">
                                         📅 @t('checkout.scheduled_pickup', 'Scheduled Collection'): {{ $order->collection_date }} ({{ $order->collection_time }})
                                     </div>
@@ -352,7 +367,22 @@
                                 <div class="info-block-sub">
                                     {{ implode(', ', array_filter([$shippingAddr['postcode'] ?? null, $shippingAddr['city'] ?? null, $shippingAddr['state'] ?? null])) ?: 'Johor Bahru, Johor' }}
                                 </div>
-                                @if($order->delivery_date)
+                                @if($order->confirmed_date)
+                                    <div style="margin-top:10px;background:#eff6ff;border:1.5px solid #93c5fd;border-radius:10px;padding:10px 14px;">
+                                        <div style="display:flex;align-items:center;gap:6px;color:#1e40af;font-size:0.85rem;font-weight:800;">
+                                            <span>✓</span>
+                                            <span>@t('checkout.mst_confirmed_delivery_date', 'MST Confirmed Delivery Date'):</span>
+                                        </div>
+                                        <div style="font-size:0.95rem;font-weight:800;color:#1d4ed8;margin-top:2px;">
+                                            📅 {{ $order->confirmed_date }}
+                                        </div>
+                                        @if($order->notification_notes)
+                                            <div style="font-size:0.78rem;color:#1e40af;margin-top:4px;">
+                                                ℹ️ {{ $order->notification_notes }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                @elseif($order->delivery_date)
                                     <div style="margin-top:6px;font-size:0.82rem;color:#1e40af;font-weight:700">
                                         📅 @t('checkout.scheduled_delivery', 'Requested Delivery Date'): {{ $order->delivery_date }}
                                         <div style="font-size:0.75rem;font-weight:normal;color:#64748b">(@t('checkout.delivery_date_subject_mst', 'Subject to MST Cold-Chain Confirmation'))</div>

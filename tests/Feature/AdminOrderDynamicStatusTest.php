@@ -107,4 +107,107 @@ class AdminOrderDynamicStatusTest extends TestCase
         $successPage->assertStatus(200);
         $successPage->assertSee('Ready at Counter 2');
     }
+
+    public function test_admin_can_notify_user_on_collection_date()
+    {
+        \Illuminate\Support\Facades\Mail::fake();
+
+        $admin = User::factory()->create([
+            'customer_group' => 'admin',
+            'email' => 'admin@example.com',
+        ]);
+
+        $walkinOrder = Order::create([
+            'order_number'      => 'ORD-WALKIN-NOTIFY',
+            'collection_token'  => 'W-009',
+            'customer_name'     => 'Ahmad Test',
+            'customer_email'    => 'ahmad@example.com',
+            'customer_phone'    => '60123456789',
+            'customer_group'    => 'walkin',
+            'fulfillment_type'  => 'self_collection',
+            'collection_date'   => '2026-10-03',
+            'collection_time'   => '08:30 AM - 10:30 AM',
+            'status'            => 'pending',
+            'payment_status'    => 'paid',
+            'subtotal'          => 50.00,
+            'total'             => 50.00,
+        ]);
+
+        $response = $this->actingAs($admin)
+            ->post(route('admin.orders.notify_schedule', $walkinOrder), [
+                'confirmed_date'     => '2026-10-05',
+                'confirmed_time'     => '10:30 AM - 12:30 PM',
+                'notification_notes' => 'Packed and ready in cold locker #3.',
+                'target_status'      => 'ready',
+                'send_email'         => '1',
+            ]);
+
+        $response->assertRedirect();
+        $fresh = $walkinOrder->fresh();
+        $this->assertEquals('2026-10-05', $fresh->confirmed_date);
+        $this->assertEquals('10:30 AM - 12:30 PM', $fresh->confirmed_time);
+        $this->assertEquals('ready', $fresh->status);
+        $this->assertNotNull($fresh->notified_at);
+        $this->assertEquals('Packed and ready in cold locker #3.', $fresh->notification_notes);
+
+        \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\OrderScheduleNotification::class, function ($mail) use ($fresh) {
+            return $mail->hasTo('ahmad@example.com') && $mail->order->id === $fresh->id;
+        });
+
+        // Test live tracker shows MST Confirmed date
+        $successPage = $this->withSession(['guest_order_id' => $walkinOrder->id])
+            ->get(route('checkout.success', ['order' => $walkinOrder->id]));
+        $successPage->assertStatus(200);
+        $successPage->assertSee('2026-10-05');
+        $successPage->assertSee('10:30 AM - 12:30 PM');
+    }
+
+    public function test_admin_can_notify_user_on_delivery_date()
+    {
+        \Illuminate\Support\Facades\Mail::fake();
+
+        $admin = User::factory()->create([
+            'customer_group' => 'admin',
+            'email' => 'admin@example.com',
+        ]);
+
+        $deliveryOrder = Order::create([
+            'order_number'      => 'ORD-DELIV-NOTIFY',
+            'customer_name'     => 'Delivery Customer',
+            'customer_email'    => 'deliv@example.com',
+            'customer_phone'    => '60129998888',
+            'customer_group'    => 'retail',
+            'fulfillment_type'  => 'delivery',
+            'delivery_date'     => '2026-10-04',
+            'shipping_address'  => ['address' => '123 Ocean Street', 'city' => 'Johor Bahru', 'state' => 'Johor', 'postcode' => '80000'],
+            'status'            => 'processing',
+            'payment_status'    => 'paid',
+            'subtotal'          => 120.00,
+            'total'             => 120.00,
+        ]);
+
+        $response = $this->actingAs($admin)
+            ->post(route('admin.orders.notify_schedule', $deliveryOrder), [
+                'confirmed_date'     => '2026-10-06',
+                'notification_notes' => 'Cold truck driver #4 will arrive around 11:00 AM.',
+                'target_status'      => 'confirmed',
+                'send_email'         => '1',
+            ]);
+
+        $response->assertRedirect();
+        $fresh = $deliveryOrder->fresh();
+        $this->assertEquals('2026-10-06', $fresh->confirmed_date);
+        $this->assertEquals('confirmed', $fresh->status);
+        $this->assertNotNull($fresh->notified_at);
+
+        \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\OrderScheduleNotification::class, function ($mail) use ($fresh) {
+            return $mail->hasTo('deliv@example.com') && $mail->order->id === $fresh->id;
+        });
+
+        // Test live tracker shows MST Confirmed delivery date
+        $successPage = $this->withSession(['guest_order_id' => $deliveryOrder->id])
+            ->get(route('checkout.success', ['order' => $deliveryOrder->id]));
+        $successPage->assertStatus(200);
+        $successPage->assertSee('2026-10-06');
+    }
 }

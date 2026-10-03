@@ -14,6 +14,7 @@ class Order extends Model
         'customer_name', 'customer_email', 'customer_phone',
         'status', 'payment_status', 'payment_method', 'payment_reference', 'paid_at',
         'fulfillment_type', 'shipping_address', 'collection_date', 'collection_time', 'delivery_date',
+        'confirmed_date', 'confirmed_time', 'notified_at', 'notification_notes',
         'subtotal', 'shipping_fee', 'tax', 'discount', 'total',
         'stripe_payment_intent',
         'customer_notes', 'admin_notes',
@@ -22,6 +23,7 @@ class Order extends Model
     protected $casts = [
         'shipping_address' => 'array',
         'paid_at'          => 'datetime',
+        'notified_at'      => 'datetime',
         'subtotal'         => 'decimal:2',
         'shipping_fee'     => 'decimal:2',
         'tax'              => 'decimal:2',

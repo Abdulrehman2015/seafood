@@ -66,17 +66,37 @@ class AppServiceProvider extends ServiceProvider
             if (\Illuminate\Support\Facades\Schema::hasTable('orders')) {
                 if (!\Illuminate\Support\Facades\Schema::hasColumn('orders', 'delivery_date')) {
                     \Illuminate\Support\Facades\Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
-                        $table->date('delivery_date')->nullable()->after('fulfillment_type');
+                        $table->string('delivery_date')->nullable()->after('fulfillment_type');
                     });
                 }
                 if (!\Illuminate\Support\Facades\Schema::hasColumn('orders', 'collection_date')) {
                     \Illuminate\Support\Facades\Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
-                        $table->date('collection_date')->nullable()->after('shipping_address');
+                        $table->string('collection_date')->nullable()->after('shipping_address');
                     });
                 }
                 if (!\Illuminate\Support\Facades\Schema::hasColumn('orders', 'collection_time')) {
                     \Illuminate\Support\Facades\Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
                         $table->string('collection_time')->nullable()->after('collection_date');
+                    });
+                }
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('orders', 'confirmed_date')) {
+                    \Illuminate\Support\Facades\Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->string('confirmed_date')->nullable()->after('delivery_date');
+                    });
+                }
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('orders', 'confirmed_time')) {
+                    \Illuminate\Support\Facades\Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->string('confirmed_time')->nullable()->after('confirmed_date');
+                    });
+                }
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('orders', 'notified_at')) {
+                    \Illuminate\Support\Facades\Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->timestamp('notified_at')->nullable()->after('confirmed_time');
+                    });
+                }
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('orders', 'notification_notes')) {
+                    \Illuminate\Support\Facades\Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->text('notification_notes')->nullable()->after('notified_at');
                     });
                 }
             }

@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
+use App\Mail\OrderScheduleNotification;
+use Illuminate\Support\Facades\Mail;
+
 class OrderController extends Controller
 {
     public function index(Request $request)
@@ -66,10 +69,15 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $request->validate([
-            'status'         => 'required|in:pending,confirmed,processing,ready,shipped,delivered,cancelled,payment_pending,payment_confirmed,preparation,ready_collection,collected',
-            'payment_status' => 'nullable|in:paid,unpaid,refunded,failed',
-            'shipping_fee'   => 'nullable|numeric|min:0',
-            'admin_notes'    => 'nullable|string|max:1000',
+            'status'            => 'required|in:pending,confirmed,processing,ready,shipped,delivered,cancelled,payment_pending,payment_confirmed,preparation,ready_collection,collected',
+            'payment_status'    => 'nullable|in:paid,unpaid,refunded,failed',
+            'shipping_fee'      => 'nullable|numeric|min:0',
+            'admin_notes'       => 'nullable|string|max:1000',
+            'confirmed_date'    => 'nullable|string|max:50',
+            'confirmed_time'    => 'nullable|string|max:50',
+            'collection_date'   => 'nullable|string|max:50',
+            'collection_time'   => 'nullable|string|max:50',
+            'delivery_date'     => 'nullable|string|max:50',
         ]);
 
         $shippingFee = $request->has('shipping_fee') ? (float) $request->shipping_fee : (float) $order->shipping_fee;
@@ -82,6 +90,22 @@ class OrderController extends Controller
 
         if ($request->has('admin_notes')) {
             $data['admin_notes'] = $request->admin_notes;
+        }
+
+        if ($request->filled('confirmed_date')) {
+            $data['confirmed_date'] = $request->confirmed_date;
+        }
+        if ($request->filled('confirmed_time')) {
+            $data['confirmed_time'] = $request->confirmed_time;
+        }
+        if ($request->filled('collection_date')) {
+            $data['collection_date'] = $request->collection_date;
+        }
+        if ($request->filled('collection_time')) {
+            $data['collection_time'] = $request->collection_time;
+        }
+        if ($request->filled('delivery_date')) {
+            $data['delivery_date'] = $request->delivery_date;
         }
 
         if ($request->filled('payment_status')) {
@@ -105,6 +129,78 @@ class OrderController extends Controller
         }
 
         return back()->with('success', 'Order status updated successfully.');
+    }
+
+    public function notifySchedule(Request $request, Order $order)
+    {
+        $request->validate([
+            'confirmed_date'     => 'required|string|max:50',
+            'confirmed_time'     => 'nullable|string|max:50',
+            'notification_notes' => 'nullable|string|max:1000',
+            'target_status'      => 'nullable|in:pending,confirmed,processing,ready,shipped,delivered,cancelled,payment_pending,payment_confirmed,preparation,ready_collection,collected',
+            'send_email'         => 'nullable',
+        ]);
+
+        $date = trim($request->confirmed_date);
+        $time = trim($request->confirmed_time ?? '');
+        $notes = $request->notification_notes;
+
+        $updateData = [
+            'confirmed_date'     => $date,
+            'confirmed_time'     => $time ?: null,
+            'notification_notes' => $notes ?: null,
+            'notified_at'        => now(),
+        ];
+
+        // Also sync primary date fields
+        if ($order->isWalkin()) {
+            $updateData['collection_date'] = $date;
+            if ($time) {
+                $updateData['collection_time'] = $time;
+            }
+        } else {
+            $updateData['delivery_date'] = $date;
+        }
+
+        if ($request->filled('target_status')) {
+            $updateData['status'] = $request->target_status;
+        }
+
+        $order->update($updateData);
+
+        $emailSent = false;
+        $emailError = null;
+
+        if ($request->has('send_email') && $request->send_email != '0' && !empty($order->customer_email)) {
+            try {
+                Mail::to($order->customer_email)->send(new OrderScheduleNotification($order, $notes));
+                $emailSent = true;
+            } catch (\Throwable $e) {
+                $emailError = $e->getMessage();
+            }
+        }
+
+        $actionType = $order->isWalkin() ? 'collection' : 'delivery';
+        $msg = "Customer {$actionType} schedule set to {$date}" . ($time ? " ({$time})" : "") . " and recorded successfully.";
+        
+        if ($emailSent) {
+            $msg .= " An email notification has been dispatched to {$order->customer_email}.";
+        } elseif ($emailError) {
+            $msg .= " Note: Email could not be sent ({$emailError}).";
+        }
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success'        => true,
+                'message'        => $msg,
+                'email_sent'     => $emailSent,
+                'confirmed_date' => $order->confirmed_date,
+                'confirmed_time' => $order->confirmed_time,
+                'notified_at'    => $order->notified_at?->format('d M Y, h:i A'),
+            ]);
+        }
+
+        return back()->with('success', $msg);
     }
 
     public function invoice(Order $order)
