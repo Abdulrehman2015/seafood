@@ -3,7 +3,7 @@
 
 @section('content')
 <!-- Page Header -->
-<div class="page-header" style="padding-top:calc(75px + var(--space-6));background:linear-gradient(135deg, #091a36 0%, #0f274a 45%, #1e3a8a 100%);color:#ffffff;border-bottom:1px solid #1e3a8a;padding-bottom:var(--space-8);position:relative;overflow:hidden">
+<div class="page-header" style="padding-top:clamp(70px, 9vw, 95px);padding-bottom:clamp(18px, 3.5vw, 36px);background:linear-gradient(135deg, #091a36 0%, #0f274a 45%, #1e3a8a 100%);color:#ffffff;border-bottom:1px solid #1e3a8a;position:relative;overflow:hidden">
     <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(#38bdf8 1px, transparent 1px);background-size:20px 20px"></div>
     <div class="container page-header-content" style="position:relative;z-index:2">
         <div class="breadcrumb" style="margin-bottom:4px">
@@ -943,6 +943,13 @@
 .badge-blue { background: #dbeafe; color: #1e40af; }
 .badge-green { background: #dcfce7; color: #15803d; }
 
+/* Form Grid 2-Column */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
 /* Responsive Address Grid */
 .address-grid-responsive {
     display: grid;
@@ -1386,7 +1393,8 @@ textarea.form-control {
     }
 }
 
-@media (max-width: 992px) {
+/* Tablet & Smaller PC (769px - 1024px) */
+@media (max-width: 1024px) {
     .checkout-main-grid {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -1394,13 +1402,43 @@ textarea.form-control {
 
     .checkout-summary-column {
         position: static;
+        margin-top: 10px;
+    }
+
+    .address-grid-responsive {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
     }
 }
 
+/* Tablets (<= 768px) */
+@media (max-width: 768px) {
+    .fulfillment-options-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .address-grid-responsive {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+/* Mobile Screens (<= 640px) */
 @media (max-width: 640px) {
     .checkout-page-wrapper {
-        padding-top: calc(60px + 14px);
+        padding-top: 1.5rem;
         padding-bottom: 110px; /* Room for mobile sticky bottom footer */
+    }
+
+    .checkout-container {
+        padding-left: 12px;
+        padding-right: 12px;
     }
 
     .label-full { display: none; }
@@ -1408,7 +1446,7 @@ textarea.form-control {
 
     .checkout-stepper-bar {
         gap: 6px;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
     }
 
     .stepper-item {
@@ -1423,22 +1461,12 @@ textarea.form-control {
     }
 
     .stepper-divider {
-        width: 14px;
+        width: 12px;
     }
 
     .checkout-header-box {
-        margin-bottom: 16px;
-        padding-bottom: 14px;
-    }
-
-    .fulfillment-options-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-
-    .address-grid-responsive {
-        grid-template-columns: 1fr;
-        gap: 10px;
+        margin-bottom: 14px;
+        padding-bottom: 12px;
     }
 
     .flex-wrap-mobile {
@@ -1448,6 +1476,7 @@ textarea.form-control {
     }
 
     .checkout-card {
+        padding: 16px 14px;
         border-radius: 14px;
     }
 
