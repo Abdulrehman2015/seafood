@@ -318,20 +318,29 @@ class CheckoutController extends Controller
 
         session(['stripe_checkout_payload' => $payload]);
 
+        $currentAppLocale = app()->getLocale();
+        $stripeLocale = match ($currentAppLocale) {
+            'zh'       => 'zh',
+            'bm', 'ms' => 'ms',
+            default    => 'en',
+        };
+
         try {
             $session = StripeSession::create([
                 'payment_method_types' => ['card'],
                 'line_items'           => $lineItems,
                 'mode'                 => 'payment',
+                'locale'               => $stripeLocale,
                 'success_url'          => route('checkout.stripe.success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url'           => $isWalkin ? route('walkin.checkout') : route('checkout.stripe.cancel'),
-                'customer_email'       => $payload['customer_email'] ?: null,
+                'customer_email'       => !empty($payload['customer_email']) ? trim($payload['customer_email']) : null,
                 'metadata'             => [
                     'user_id'              => Auth::id() ?? 'guest',
                     'fulfillment_type'     => $request->fulfillment_type,
                     'customer_group'       => $group,
                     'shipping_fee'         => (string) $shippingFee,
                     'expected_total_cents' => $expectedTotalCents,
+                    'site_locale'          => $currentAppLocale,
                 ],
             ]);
 
