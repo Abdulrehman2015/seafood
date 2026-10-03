@@ -1,1 +1,0 @@
-{"MatchPerLine":true,"Query":"page-switch-loader","SearchPath":"f:\/My AI\/Sea Food\/seafood\/resources\/views\/layouts\/app.blade.php","toolAction":"Searching loader references","toolSummary":"Find loader in app layout"}

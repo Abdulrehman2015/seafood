@@ -72,7 +72,7 @@
                         @t('walkin.pickup_at_facility', 'Self-Collection Location: MST Cold-Chain Facility (Counter 2)')
                     </div>
                     <div style="font-size:0.8rem;color:#1d4ed8;margin-top:2px">
-                        No. 7, Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor · <em>@t('walkin.no_delivery_charges', 'No delivery charges applied')</em>
+                        @t('common.store_address_silc', '7 Jalan SILC 2/18, Kawasan Perindustrian SILC, 79200 Iskandar Puteri, Johor') · <em>@t('walkin.no_delivery_charges', 'No delivery charges applied')</em>
                     </div>
                 </div>
             </div>
@@ -241,7 +241,7 @@
 
                         <!-- SILC Counter pickup note -->
                         <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin-bottom:16px;font-size:0.76rem;color:#475569;line-height:1.45">
-                            📍 <strong>@t('walkin.pickup_point', 'Collection Point'):</strong> Counter 2 · MST Cold-Chain Facility, Iskandar Puteri, Johor.<br>
+                            📍 <strong>@t('walkin.pickup_point', 'Collection Point'):</strong> @t('walkin.pickup_point_desc', 'Counter 2 · MST Cold-Chain Facility, Iskandar Puteri, Johor.')<br>
                             ⚡ <em>@t('walkin.collection_token_note', 'Immediate sequential collection token issued upon checkout.')</em>
                         </div>
 
