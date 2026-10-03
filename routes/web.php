@@ -103,14 +103,27 @@ Route::get('/apple-touch-icon.png', function () {
 
 Route::get('/site.webmanifest', function () {
     $path = public_path('site.webmanifest');
-    if (!file_exists($path)) abort(404);
-    $content = file_get_contents($path);
+    $content = (file_exists($path) && filesize($path) > 0) 
+        ? file_get_contents($path) 
+        : json_encode([
+            "name" => "MST Import and Export Sdn. Bhd.",
+            "short_name" => "MST Seafood",
+            "description" => "Premium fresh & frozen seafood importer and distributor",
+            "start_url" => "/",
+            "display" => "standalone",
+            "background_color" => "#06152b",
+            "theme_color" => "#06152b",
+            "icons" => []
+        ]);
+
     return response($content, 200, [
-        'Content-Type'   => 'application/manifest+json',
+        'Content-Type'   => 'application/manifest+json; charset=utf-8',
         'Cache-Control'  => 'public, max-age=86400',
-        'Expires'        => gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT',
-        'Content-Length' => strlen($content),
     ]);
+})->withoutMiddleware('web');
+
+Route::get('/manifest.json', function () {
+    return redirect('/site.webmanifest', 301);
 })->withoutMiddleware('web');
 
 // Cookie-free fonts delivery

@@ -9,6 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
+            if (!Schema::hasColumn('orders', 'collection_date')) {
+                $table->string('collection_date')->nullable()->after('shipping_address');
+            }
+            if (!Schema::hasColumn('orders', 'collection_time')) {
+                $table->string('collection_time')->nullable()->after('collection_date');
+            }
             if (!Schema::hasColumn('orders', 'delivery_date')) {
                 $table->string('delivery_date')->nullable()->after('collection_time');
             }
