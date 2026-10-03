@@ -1862,13 +1862,16 @@ function submitCheckoutForm() {
         mobileBtn.innerHTML = '<span>⏳ ' + checkoutI18n.proceeding + '</span>';
     }
 
+    setTimeout(function() {
+        resetSubmitButton();
+    }, 15000);
+
     form.submit();
 }
 
 document.getElementById('checkoutForm').addEventListener('submit', function (e) {
     if (isSubmitting) {
-        e.preventDefault();
-        return false;
+        return;
     }
 
     if (!this.reportValidity()) {
@@ -1892,6 +1895,10 @@ document.getElementById('checkoutForm').addEventListener('submit', function (e) 
         mobileBtn.style.opacity = '0.85';
         mobileBtn.innerHTML = '<span>⏳ ' + checkoutI18n.proceeding + '</span>';
     }
+
+    setTimeout(function() {
+        resetSubmitButton();
+    }, 15000);
 });
 </script>
 @endpush

@@ -338,7 +338,8 @@ class CheckoutController extends Controller
             // Redirect user to Stripe's official hosted checkout page URL (checkout.stripe.com)
             return redirect()->away($session->url);
         } catch (\Throwable $e) {
-            return back()->with('error', 'Stripe Hosted Checkout Error: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Stripe Hosted Checkout Error: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Stripe Hosted Checkout Error: ' . $e->getMessage());
         }
     }
 

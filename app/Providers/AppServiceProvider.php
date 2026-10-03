@@ -46,6 +46,27 @@ class AppServiceProvider extends ServiceProvider
             } catch (\Throwable $e) {}
         }
 
+        // Self-healing database schema on live environments (e.g. shared hosting without CLI)
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('orders')) {
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('orders', 'delivery_date')) {
+                    \Illuminate\Support\Facades\Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->date('delivery_date')->nullable()->after('fulfillment_type');
+                    });
+                }
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('orders', 'collection_date')) {
+                    \Illuminate\Support\Facades\Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->date('collection_date')->nullable()->after('shipping_address');
+                    });
+                }
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('orders', 'collection_time')) {
+                    \Illuminate\Support\Facades\Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->string('collection_time')->nullable()->after('collection_date');
+                    });
+                }
+            }
+        } catch (\Throwable $e) {}
+
         view()->composer('*', function ($view) {
             static $sharedData = null;
             if ($sharedData === null) {

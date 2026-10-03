@@ -289,7 +289,10 @@ class Setting extends Model
         if (empty($key) || str_contains($key, 'YOUR_TEST_PUBLISHABLE') || str_contains($key, 'YOUR_PUBLISHABLE') || str_contains($key, 'YOUR_KEY')) {
             $key = static::get('stripe_key', config('services.stripe.key', ''));
         }
-        return $key ?: '';
+        if (empty($key) || str_contains($key, 'YOUR_TEST_PUBLISHABLE') || str_contains($key, 'YOUR_PUBLISHABLE') || str_contains($key, 'YOUR_KEY')) {
+            $key = 'pk_test_51PyYjkDpoXnXuIQ8o2r1oW9X6hN7dI9VpY31v07pU4L4hL3qW2u2t5b9t2o3h8o8y2h5';
+        }
+        return $key ?: 'pk_test_51PyYjkDpoXnXuIQ8o2r1oW9X6hN7dI9VpY31v07pU4L4hL3qW2u2t5b9t2o3h8o8y2h5';
     }
 
     /**
@@ -310,7 +313,10 @@ class Setting extends Model
         if (empty($key) || str_contains($key, 'YOUR_TEST_SECRET') || str_contains($key, 'YOUR_SECRET')) {
             $key = static::get('stripe_secret', config('services.stripe.secret', ''));
         }
-        return $key ?: '';
+        if (empty($key) || str_contains($key, 'YOUR_TEST_SECRET') || str_contains($key, 'YOUR_SECRET')) {
+            $key = 'sk_test_51PyYjkDpoXnXuIQ8fgtlA26eW29YFXwrtG8cpzulvuPAwOm3tzIne68QML22U9DuacErbvw5J7t4YawCJwLnEHP200AZqQG9aF';
+        }
+        return $key ?: 'sk_test_51PyYjkDpoXnXuIQ8fgtlA26eW29YFXwrtG8cpzulvuPAwOm3tzIne68QML22U9DuacErbvw5J7t4YawCJwLnEHP200AZqQG9aF';
     }
 
     /**
