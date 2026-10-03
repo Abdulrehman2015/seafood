@@ -20,6 +20,10 @@ class SecurityHeadersMiddleware
 
         $isHttps = $request->isSecure()
             || $request->header('X-Forwarded-Proto') === 'https'
+            || $request->header('HTTP_X_FORWARDED_PROTO') === 'https'
+            || $request->header('X-Forwarded-Ssl') === 'on'
+            || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
             || app()->environment('production');
 
         // ── 1. Content-Security-Policy ─────────────────────────────────────────
@@ -57,7 +61,7 @@ class SecurityHeadersMiddleware
             "frame-ancestors 'self';",
             "object-src 'none';",
             "base-uri 'self';",
-            "form-action 'self' https://checkout.stripe.com https://*.stripe.com https://api.stripe.com https://wa.me;",
+            "form-action 'self' http: https: https://checkout.stripe.com https://*.stripe.com https://api.stripe.com https://wa.me;",
             $isHttps ? "upgrade-insecure-requests;" : "",
         ]);
         $csp = trim(preg_replace('/\s+/', ' ', $csp));

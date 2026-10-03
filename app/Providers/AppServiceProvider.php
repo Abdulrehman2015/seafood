@@ -30,6 +30,21 @@ class AppServiceProvider extends ServiceProvider
 
         // Always ensure a fallback default for localized routes ({locale})
         \Illuminate\Support\Facades\URL::defaults(['locale' => config('app.locale', 'en')]);
+
+        // Enforce HTTPS URLs when request is secure, or behind reverse proxy, or running on live/production domain
+        if (
+            request()->isSecure()
+            || request()->header('X-Forwarded-Proto') === 'https'
+            || request()->header('HTTP_X_FORWARDED_PROTO') === 'https'
+            || request()->header('X-Forwarded-Ssl') === 'on'
+            || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+            || (request()->getHost() && !in_array(request()->getHost(), ['127.0.0.1', 'localhost']))
+            || app()->environment('production')
+        ) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         Password::defaults(function () {
             return Password::min(8)
                 ->letters()
