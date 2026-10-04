@@ -251,19 +251,19 @@
 
                         @php
                             $deliveryService          = app(\App\Services\DeliveryService::class);
-                            $activeThreshold          = $deliveryService->getThreshold($group);
+                            $activeThreshold          = (float) $deliveryService->getThreshold($group);
                             $cartSubtotal             = (float) ($totals['subtotal'] ?? 0);
                             $isTradingGroup           = ($group === 'trading');
                             $eligibleStandardDelivery = ($cartSubtotal >= $activeThreshold);
-                            $deliveryShortfall        = max(0, $activeThreshold - $cartSubtotal);
-                            $progressPct              = min(100, round(($cartSubtotal / max(1, $activeThreshold)) * 100));
+                            $deliveryShortfall        = max(0.0, $activeThreshold - $cartSubtotal);
+                            $progressPct              = min(100, (int) round(($cartSubtotal / max(1, $activeThreshold)) * 100));
                             $tierName                 = ($group === 'wholesale') ? 'B2B Wholesale' : 'B2C Retail';
                         @endphp
 
                         {{-- Delivery Arrangement Status Banner (Retail & Wholesale Customers) --}}
                         @if(!$isTradingGroup)
-                            @if($eligibleStandardDelivery)
-                            <div class="delivery-threshold-banner eligible" style="background:#ecfdf5;border:1.5px solid #a7f3d0;border-radius:10px;padding:12px 14px;margin-bottom:12px">
+                        <div id="cartDeliveryThresholdContainer" data-threshold="{{ $activeThreshold }}" data-group="{{ $group }}">
+                            <div id="bannerEligible" class="delivery-threshold-banner eligible" style="{{ $eligibleStandardDelivery ? 'display:block;' : 'display:none;' }}background:#ecfdf5;border:1.5px solid #a7f3d0;border-radius:10px;padding:12px 14px;margin-bottom:12px">
                                 <div style="display:flex;align-items:center;gap:8px">
                                     <span style="font-size:1.2rem;line-height:1;flex-shrink:0">🎉</span>
                                     <div>
@@ -276,28 +276,28 @@
                                     </div>
                                 </div>
                             </div>
-                            @else
-                            <div class="delivery-threshold-banner below-threshold" style="background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;padding:12px 14px;margin-bottom:12px">
+                            <div id="bannerBelow" class="delivery-threshold-banner below-threshold" style="{{ !$eligibleStandardDelivery ? 'display:block;' : 'display:none;' }}background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;padding:12px 14px;margin-bottom:12px">
                                 <div style="display:flex;align-items:flex-start;gap:8px">
                                     <span style="font-size:1.2rem;line-height:1;flex-shrink:0">🚚</span>
                                     <div style="flex:1">
-                                        <div style="font-weight:700;font-size:0.82rem;color:#0369a1;margin-bottom:2px">
+                                        <div style="font-weight:700;font-size:0.84rem;color:#0369a1;margin-bottom:2px">
                                             @t('cart.delivery_fee_notice_title', 'Delivery Fee Notice')
                                         </div>
-                                        <div style="font-size:0.77rem;color:#0c4a6e;line-height:1.45">
-                                            @t('cart.delivery_fee_notice_desc', 'Standard delivery fee applies. Add RM :shortfall more to qualify for Free Standard Delivery (RM :threshold Reference Threshold).', ['shortfall' => number_format($deliveryShortfall, 2), 'threshold' => number_format($activeThreshold, 2)])
+                                        <div style="font-size:0.80rem;color:#0c4a6e;line-height:1.45" id="bannerShortfallText">
+                                            Add <strong id="bannerShortfallAmount">RM {{ number_format($deliveryShortfall, 2) }}</strong> more to qualify for Free Standard Delivery.
+                                            <span style="display:block;font-size:0.74rem;color:#0369a1;margin-top:2px">(@t('cart.reference_threshold_note', 'RM :threshold :tier Reference Threshold', ['threshold' => number_format($activeThreshold, 2), 'tier' => $tierName]))</span>
                                         </div>
                                         <div style="margin-top:8px;background:#e0f2fe;border-radius:6px;height:6px;overflow:hidden">
-                                            <div style="height:100%;background:#0284c7;border-radius:6px;width:{{ $progressPct }}%;transition:width 0.3s"></div>
+                                            <div id="bannerProgressBar" style="height:100%;background:#0284c7;border-radius:6px;width:{{ $progressPct }}%;transition:width 0.3s"></div>
                                         </div>
                                         <div style="font-size:0.7rem;color:#0284c7;margin-top:4px;display:flex;justify-content:space-between">
-                                            <span>RM {{ number_format($cartSubtotal, 2) }}</span>
-                                            <span><strong>{{ $progressPct }}%</strong> (RM {{ number_format($activeThreshold, 2) }} Free Delivery Threshold)</span>
+                                            <span id="bannerCurrentSubtotal">RM {{ number_format($cartSubtotal, 2) }}</span>
+                                            <span><strong id="bannerProgressPctVal">{{ $progressPct }}%</strong> (RM {{ number_format($activeThreshold, 2) }} @t('cart.threshold_short_label', 'Threshold'))</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            @endif
+                        </div>
                         @endif
 
                         <!-- Checkout Buttons -->
@@ -1336,6 +1336,10 @@ async function sendCartUpdate(cartId, quantity) {
                         summaryTotal.textContent = 'RM ' + parseFloat(data.total).toFixed(2);
                     }
                 }
+
+                if (data.subtotal !== undefined) {
+                    updateCartDeliveryThreshold(data.subtotal);
+                }
             }
 
             // Update navbar cart badge
@@ -1436,6 +1440,10 @@ async function removeCartItemAjax(cartId) {
                         summaryTotal.textContent = 'RM ' + parseFloat(data.total).toFixed(2);
                     }
                 }
+
+                if (data.subtotal !== undefined) {
+                    updateCartDeliveryThreshold(data.subtotal);
+                }
             }
 
             if (typeof updateCartCount === 'function') updateCartCount();
@@ -1449,6 +1457,39 @@ async function removeCartItemAjax(cartId) {
         console.error(err);
         showToast(cartI18n.errorRemoving);
         if (card) card.classList.remove('updating');
+    }
+}
+
+function updateCartDeliveryThreshold(subtotal) {
+    const container = document.getElementById('cartDeliveryThresholdContainer');
+    if (!container) return;
+    const threshold = parseFloat(container.getAttribute('data-threshold')) || 100.00;
+    const sub = parseFloat(subtotal) || 0.0;
+    const eligibleBanner = document.getElementById('bannerEligible');
+    const belowBanner = document.getElementById('bannerBelow');
+
+    if (sub >= threshold) {
+        if (eligibleBanner) eligibleBanner.style.display = 'block';
+        if (belowBanner) belowBanner.style.display = 'none';
+    } else {
+        if (eligibleBanner) eligibleBanner.style.display = 'none';
+        if (belowBanner) {
+            belowBanner.style.display = 'block';
+            const shortfall = Math.max(0, threshold - sub);
+            const pct = Math.min(100, Math.round((sub / Math.max(1, threshold)) * 100));
+
+            const shortfallAmount = document.getElementById('bannerShortfallAmount');
+            if (shortfallAmount) shortfallAmount.textContent = 'RM ' + shortfall.toFixed(2);
+
+            const curSub = document.getElementById('bannerCurrentSubtotal');
+            if (curSub) curSub.textContent = 'RM ' + sub.toFixed(2);
+
+            const progBar = document.getElementById('bannerProgressBar');
+            if (progBar) progBar.style.width = pct + '%';
+
+            const pctVal = document.getElementById('bannerProgressPctVal');
+            if (pctVal) pctVal.textContent = pct + '%';
+        }
     }
 }
 

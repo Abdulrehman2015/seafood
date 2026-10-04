@@ -200,6 +200,8 @@ class EndToEndGuestCheckoutE2ETest extends TestCase
                 'customer_phone'   => $guestPhone,
                 'customer_email'   => $guestEmail,
                 'payment_method'   => 'cash',
+                'collection_date'  => now()->toDateString(),
+                'collection_time'  => '10:30 AM - 12:30 PM',
             ]);
 
         $submitRes->assertSessionHasNoErrors();

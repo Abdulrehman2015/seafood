@@ -148,18 +148,20 @@
                             @endif
                         </span>
                     </div>
-                    <div class="summary-line" id="mobileZoneRow" style="{{ ($group === 'walkin' || empty($deliveryInfo['zone_name'])) ? 'display:none;' : '' }}">
-                        <span style="font-size:0.8rem;color:#64748b">@t('checkout.delivery_zone', 'Delivery Zone')</span>
-                        <span style="font-size:0.8rem;font-weight:600;color:#0f172a" id="mobileZoneDisplay">{{ $deliveryInfo['zone_name'] ?? 'Local Zone' }}</span>
-                    </div>
-                    <div class="summary-line" id="mobileBelowFeeRow" style="{{ (empty($deliveryInfo['below_threshold_fee']) || $deliveryInfo['below_threshold_fee'] <= 0) ? 'display:none;' : '' }}">
-                        <span style="font-size:0.8rem;color:#d97706">@t('checkout.below_threshold_additional_fee', 'Below-Threshold Additional Delivery Fee')</span>
-                        <span style="font-size:0.8rem;font-weight:700;color:#d97706" id="mobileBelowFeeDisplay">+ RM {{ number_format($deliveryInfo['below_threshold_fee'] ?? 0, 2) }}</span>
-                    </div>
-                    <div class="summary-line">
-                        <span>@t('checkout.shipping_logistics', 'Delivery Charge')</span>
+                    <div class="summary-line" id="mobileDeliveryFeeRow">
+                        <span id="mobileDeliveryFeeLabel">
+                            @if($group === 'walkin' || (old('fulfillment_type', $deliveryInfo['fulfillment_type'] ?? 'delivery') === 'self_collection'))
+                                @t('checkout.fulfillment_type', 'Fulfillment')
+                            @elseif(!empty($deliveryInfo['zone_name']))
+                                Cold-Chain Delivery – {{ $deliveryInfo['zone_name'] }}
+                            @else
+                                @t('checkout.shipping_logistics', 'Cold-Chain Delivery')
+                            @endif
+                        </span>
                         <span class="{{ $initialShippingFee <= 0 ? 'val-green' : 'val-fee' }}" id="mobileShippingDisplay">
-                            @if($initialShippingFee <= 0)
+                            @if(old('fulfillment_type', $deliveryInfo['fulfillment_type'] ?? 'delivery') === 'self_collection')
+                                @t('checkout.free_self_collection', 'Free (Self-collection)')
+                            @elseif($initialShippingFee <= 0)
                                 @t('checkout.free_standard_delivery', 'Free (Standard Local Delivery)')
                             @else
                                 + RM {{ number_format($initialShippingFee, 2) }}
@@ -519,18 +521,20 @@
                                     @endif
                                 </span>
                             </div>
-                            <div class="summary-line" id="desktopZoneRow" style="{{ ($group === 'walkin' || empty($deliveryInfo['zone_name'])) ? 'display:none;' : '' }}">
-                                <span class="line-label" style="font-size:0.8rem;color:#64748b">@t('checkout.delivery_zone', 'Delivery Zone')</span>
-                                <span class="line-val" style="font-size:0.8rem;font-weight:600;color:#0f172a" id="desktopZoneDisplay">{{ $deliveryInfo['zone_name'] ?? 'Local Zone' }}</span>
-                            </div>
-                            <div class="summary-line" id="desktopBelowFeeRow" style="{{ (empty($deliveryInfo['below_threshold_fee']) || $deliveryInfo['below_threshold_fee'] <= 0) ? 'display:none;' : '' }}">
-                                <span class="line-label" style="font-size:0.8rem;color:#d97706">@t('checkout.below_threshold_additional_fee', 'Below-Threshold Additional Delivery Fee')</span>
-                                <span class="line-val" style="font-size:0.8rem;font-weight:700;color:#d97706" id="desktopBelowFeeDisplay">+ RM {{ number_format($deliveryInfo['below_threshold_fee'] ?? 0, 2) }}</span>
-                            </div>
-                            <div class="summary-line">
-                                <span class="line-label">@t('checkout.shipping_logistics', 'Delivery Charge')</span>
+                            <div class="summary-line" id="desktopDeliveryFeeRow">
+                                <span class="line-label" id="desktopDeliveryFeeLabel">
+                                    @if($group === 'walkin' || (old('fulfillment_type', $deliveryInfo['fulfillment_type'] ?? 'delivery') === 'self_collection'))
+                                        @t('checkout.fulfillment_type', 'Fulfillment')
+                                    @elseif(!empty($deliveryInfo['zone_name']))
+                                        Cold-Chain Delivery – {{ $deliveryInfo['zone_name'] }}
+                                    @else
+                                        @t('checkout.shipping_logistics', 'Cold-Chain Delivery')
+                                    @endif
+                                </span>
                                 <span class="line-val {{ $initialShippingFee <= 0 ? 'val-green' : 'val-fee' }}" id="shippingDisplay">
-                                    @if($initialShippingFee <= 0)
+                                    @if(old('fulfillment_type', $deliveryInfo['fulfillment_type'] ?? 'delivery') === 'self_collection')
+                                        @t('checkout.free_self_collection', 'Free (Self-collection)')
+                                    @elseif($initialShippingFee <= 0)
                                         @t('checkout.free_standard_delivery', 'Free (Standard Local Delivery)')
                                     @else
                                         + RM {{ number_format($initialShippingFee, 2) }}
@@ -1555,6 +1559,8 @@ const checkoutI18n = {
     calculatedByAdmin: @json(__t('checkout.shipping_calculated_admin', 'Calculated by admin')),
     freeSelfCollection: @json(__t('checkout.free_self_collection', 'Free (Self-collection)')),
     freeStandardDelivery: @json(__t('checkout.free_standard_delivery', 'Free (Standard Local Delivery)')),
+    fulfillmentLabel: @json(__t('checkout.fulfillment_type', 'Fulfillment')),
+    deliveryLabel: @json(__t('checkout.shipping_logistics', 'Cold-Chain Delivery')),
     showOrderSummary: @json(__t('checkout.show_summary', 'Show Order Summary')),
     hideOrderSummary: @json(__t('checkout.hide_summary', 'Hide Order Summary')),
     proceeding: @json(__t('checkout.proceeding', 'Proceeding to checkout...')),
@@ -1641,54 +1647,19 @@ function applyDeliveryFeeUpdate(data) {
         mobileShip.className = (isFree || isSelfCollection) ? 'val-green' : (requiresManual ? '' : 'val-fee');
     }
 
-    // Update Zone rows
-    const desktopZoneRow = document.getElementById('desktopZoneRow');
-    const desktopZoneDisplay = document.getElementById('desktopZoneDisplay');
-    const mobileZoneRow = document.getElementById('mobileZoneRow');
-    const mobileZoneDisplay = document.getElementById('mobileZoneDisplay');
+    // Update Delivery line labels
+    const deliveryLabelText = isSelfCollection 
+        ? checkoutI18n.fulfillmentLabel || 'Fulfillment'
+        : (data.zone_name ? 'Cold-Chain Delivery – ' + data.zone_name : 'Cold-Chain Delivery');
 
-    if (desktopZoneRow && desktopZoneDisplay) {
-        if (!isSelfCollection && data.zone_name) {
-            desktopZoneRow.style.display = 'flex';
-            desktopZoneDisplay.textContent = data.zone_name;
-        } else {
-            desktopZoneRow.style.display = 'none';
-        }
+    const desktopDeliveryLabel = document.getElementById('desktopDeliveryFeeLabel');
+    if (desktopDeliveryLabel) {
+        desktopDeliveryLabel.textContent = deliveryLabelText;
     }
 
-    if (mobileZoneRow && mobileZoneDisplay) {
-        if (!isSelfCollection && data.zone_name) {
-            mobileZoneRow.style.display = 'flex';
-            mobileZoneDisplay.textContent = data.zone_name;
-        } else {
-            mobileZoneRow.style.display = 'none';
-        }
-    }
-
-    // Update Below-RM100 Fee Rows
-    const desktopBelowRow = document.getElementById('desktopBelowFeeRow');
-    const desktopBelowDisplay = document.getElementById('desktopBelowFeeDisplay');
-    const mobileBelowRow = document.getElementById('mobileBelowFeeRow');
-    const mobileBelowDisplay = document.getElementById('mobileBelowFeeDisplay');
-
-    const hasBelowFee = !isSelfCollection && (parseFloat(data.below_threshold_fee) > 0);
-
-    if (desktopBelowRow && desktopBelowDisplay) {
-        if (hasBelowFee) {
-            desktopBelowRow.style.display = 'flex';
-            desktopBelowDisplay.textContent = '+ RM ' + data.below_threshold_fee_formatted;
-        } else {
-            desktopBelowRow.style.display = 'none';
-        }
-    }
-
-    if (mobileBelowRow && mobileBelowDisplay) {
-        if (hasBelowFee) {
-            mobileBelowRow.style.display = 'flex';
-            mobileBelowDisplay.textContent = '+ RM ' + data.below_threshold_fee_formatted;
-        } else {
-            mobileBelowRow.style.display = 'none';
-        }
+    const mobileDeliveryLabel = document.getElementById('mobileDeliveryFeeLabel');
+    if (mobileDeliveryLabel) {
+        mobileDeliveryLabel.textContent = deliveryLabelText;
     }
 
     // Format Grand Total strings
