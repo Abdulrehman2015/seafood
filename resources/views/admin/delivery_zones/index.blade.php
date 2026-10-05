@@ -10,7 +10,7 @@
                 <span>🚚</span> Delivery Zones &amp; Transportation Rules
             </h1>
             <p class="text-sm text-muted" style="margin:4px 0 0">
-                Configure backend delivery zones, postcodes, area mappings, and below-RM100 transport fee rules.
+                Configure backend delivery zones, postcodes, area mappings, and below-RM{{ (float)$b2cThreshold == (int)$b2cThreshold ? number_format($b2cThreshold, 0) : number_format($b2cThreshold, 2) }} transport fee rules.
             </p>
         </div>
         <div style="display:flex;gap:10px;align-items:center">
@@ -95,7 +95,7 @@
         <div style="font-size:2.5rem;margin-bottom:8px">🚚</div>
         <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-bottom:4px">No Delivery Zones Configured</h3>
         <p style="font-size:0.85rem;max-width:460px;margin:0 auto 16px">
-            Create delivery zones to specify postcodes, area boundaries, standard fees, and below-RM100 additional rates.
+            Create delivery zones to specify postcodes, area boundaries, standard fees, and below-RM{{ (float)$b2cThreshold == (int)$b2cThreshold ? number_format($b2cThreshold, 0) : number_format($b2cThreshold, 2) }} additional rates.
         </p>
         <button type="button" class="btn btn-primary" onclick="openCreateZoneModal()" style="font-weight:700;border-radius:8px">
             ➕ Create First Delivery Zone
@@ -110,7 +110,7 @@
                     <th style="padding:12px 16px">Zone Name &amp; Code</th>
                     <th style="padding:12px 16px">Postcodes &amp; Areas</th>
                     <th style="padding:12px 16px;text-align:right">Base Delivery Fee</th>
-                    <th style="padding:12px 16px;text-align:right">Below-RM100 Fee</th>
+                    <th style="padding:12px 16px;text-align:right">Below-RM{{ (float)$b2cThreshold == (int)$b2cThreshold ? number_format($b2cThreshold, 0) : number_format($b2cThreshold, 2) }} Fee</th>
                     <th style="padding:12px 16px;text-align:center">Customer Tiers</th>
                     <th style="padding:12px 16px;text-align:center">Status</th>
                     <th style="padding:12px 16px;text-align:right">Actions</th>
@@ -283,9 +283,9 @@
                     <div style="font-size:0.72rem;color:#64748b;margin-top:3px">Standard base fee (set to 0 for free standard delivery)</div>
                 </div>
                 <div class="form-group mb-0">
-                    <label class="form-label" style="font-weight:700;font-size:0.85rem">Below-RM100 Additional Fee (RM) <span style="color:#ef4444">*</span></label>
+                    <label class="form-label" style="font-weight:700;font-size:0.85rem">Below-RM{{ (float)$b2cThreshold == (int)$b2cThreshold ? number_format($b2cThreshold, 0) : number_format($b2cThreshold, 2) }} Additional Fee (RM) <span style="color:#ef4444">*</span></label>
                     <input type="number" step="0.01" min="0" name="below_threshold_fee" id="input_below_threshold_fee" class="form-control" value="10.00" required style="border-radius:8px;font-weight:700;color:#d97706">
-                    <div style="font-size:0.72rem;color:#64748b;margin-top:3px">Additional charge applied when cart total &lt; RM100</div>
+                    <div style="font-size:0.72rem;color:#64748b;margin-top:3px">Additional charge applied when cart total &lt; RM{{ (float)$b2cThreshold == (int)$b2cThreshold ? number_format($b2cThreshold, 0) : number_format($b2cThreshold, 2) }}</div>
                 </div>
             </div>
 
