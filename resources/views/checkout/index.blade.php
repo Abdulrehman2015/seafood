@@ -152,15 +152,19 @@
                         <span id="mobileDeliveryFeeLabel">
                             @if($group === 'walkin' || (old('fulfillment_type', $deliveryInfo['fulfillment_type'] ?? 'delivery') === 'self_collection'))
                                 @t('checkout.fulfillment_type', 'Fulfillment')
+                            @elseif(!empty($deliveryInfo['requires_manual_arrangement']))
+                                Outstation Transportation Fee
                             @elseif(!empty($deliveryInfo['zone_name']))
                                 Cold-Chain Delivery – {{ $deliveryInfo['zone_name'] }}
                             @else
                                 @t('checkout.shipping_logistics', 'Cold-Chain Delivery')
                             @endif
                         </span>
-                        <span class="{{ $initialShippingFee <= 0 ? 'val-green' : 'val-fee' }}" id="mobileShippingDisplay">
+                        <span class="{{ (old('fulfillment_type', $deliveryInfo['fulfillment_type'] ?? 'delivery') === 'self_collection' || (!empty($deliveryInfo['is_eligible_free_delivery']) && empty($deliveryInfo['requires_manual_arrangement']))) ? 'val-green' : (!empty($deliveryInfo['requires_manual_arrangement']) ? 'val-warning' : 'val-fee') }}" id="mobileShippingDisplay">
                             @if(old('fulfillment_type', $deliveryInfo['fulfillment_type'] ?? 'delivery') === 'self_collection')
                                 @t('checkout.free_self_collection', 'Free (Self-collection)')
+                            @elseif(!empty($deliveryInfo['requires_manual_arrangement']))
+                                <span style="font-weight:700;color:#d97706;background:#fffbeb;border:1px solid #fde68a;padding:2px 8px;border-radius:6px;font-size:0.75rem">To Be Confirmed</span>
                             @elseif($initialShippingFee <= 0)
                                 @t('checkout.free_standard_delivery', 'Free (Standard Local Delivery)')
                             @else
@@ -316,7 +320,7 @@
                             <span style="font-size:1.1rem;line-height:1;flex-shrink:0" id="deliveryNoticeIcon">{{ !empty($deliveryInfo['requires_manual_arrangement']) ? '🚚' : ($initialShippingFee <= 0 ? '✅' : 'ℹ️') }}</span>
                             <div id="deliveryNoticeText" style="flex:1">
                                 @if(!empty($deliveryInfo['requires_manual_arrangement']))
-                                    <strong>@t('checkout.outstation_delivery_title', 'Outstation Cold-Chain Delivery:')</strong> @t('checkout.outstation_delivery_desc', 'Packaging and transportation fees will be calculated based on the required Styrofoam box size/quantity and confirmed with you via WhatsApp prior to dispatch.')
+                                    <strong>@t('checkout.outstation_delivery_title', 'Outstation Cold-Chain Delivery:')</strong> @t('checkout.outstation_delivery_desc', 'Outstation transportation charges are not included in the amount shown above. The final transportation cost will be confirmed by MST via WhatsApp based on your delivery location and the required cold-chain packaging (Styrofoam box size & quantity) prior to dispatch.')
                                     <div style="margin-top:6px">
                                         <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '601112710260')) }}" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
                                             💬 Contact via WhatsApp
@@ -413,10 +417,16 @@
                         <div class="card-header">
                             <div class="card-title">
                                 <span class="card-title-icon">📝</span>
-                                <span>@t('checkout.special_notes_step', '4. Special Instructions & Notes')</span>
+                                <span>@t('checkout.special_notes_step', '4. Special Instructions & Preparation Notes')</span>
                             </div>
                         </div>
-                        <textarea name="customer_notes" class="form-control" rows="3" placeholder="{{ __t('checkout.notes_placeholder', 'Add specific delivery timing, packing instructions, or gate codes (optional)...') }}">{{ old('customer_notes') }}</textarea>
+                        <textarea name="customer_notes" class="form-control" rows="3" placeholder="{{ __t('checkout.notes_placeholder', 'Add specific delivery timing, packing instructions, or cutting / preparation requests (optional)...') }}">{{ old('customer_notes') }}</textarea>
+                        
+                        {{-- Custom Processing Notice --}}
+                        <div style="margin-top:10px;padding:10px 14px;background:#eff6ff;border:1.5px solid #93c5fd;border-radius:10px;font-size:0.80rem;color:#1e40af;line-height:1.45">
+                            <strong>🔪 @t('checkout.custom_processing_title', 'Custom Processing Notice'):</strong>
+                            @t('checkout.custom_processing_desc', 'Custom processing, cutting, slicing, portioning or other preparation requests will only be arranged after payment has been successfully confirmed by MST. Processing will begin only after payment confirmation and order preparation scheduling. Additional processing charges may apply where applicable.')
+                        </div>
                     </div>
 
                     <!-- 5. Payment Method Card -->
@@ -434,7 +444,7 @@
                         <div class="stripe-secure-banner">
                             <div class="banner-icon">🛡️</div>
                             <div class="banner-text">
-                                <strong>@t('checkout.stripe_banner_title', 'Stripe Official Hosted Checkout:')</strong> @t('checkout.stripe_banner_desc', "When you click below, you will be securely redirected to Stripe's payment page (checkout.stripe.com) to complete your card or online banking payment.")
+                                <strong>@t('checkout.stripe_banner_title', 'Stripe Official Hosted Checkout:')</strong> @t('checkout.stripe_banner_desc', "When you click proceed, you will be securely redirected to Stripe's hosted checkout page (checkout.stripe.com) to finalize your payment.")
                             </div>
                         </div>
 
@@ -443,8 +453,8 @@
                                 <div class="stripe-gateway-brand">
                                     <span class="stripe-logo-icon">💳</span>
                                     <div>
-                                        <div class="stripe-brand-title">@t('checkout.stripe_official', 'Stripe Official Checkout')</div>
-                                        <div class="stripe-brand-subtitle">@t('checkout.stripe_methods', 'Credit / Debit Card, Apple Pay & FPX')</div>
+                                        <div class="stripe-brand-title">@t('checkout.stripe_official', 'Stripe Secure Checkout')</div>
+                                        <div class="stripe-brand-subtitle">@t('checkout.stripe_methods', 'Credit / Debit Card (Visa, Mastercard, Amex), FPX Online Banking & Supported Wallets')</div>
                                     </div>
                                 </div>
                                 <span class="stripe-badge-pill">@t('checkout.secure_gateway', 'Secure Gateway')</span>
@@ -453,9 +463,10 @@
                             <div class="stripe-payment-methods-grid">
                                 <span class="pay-method-chip">💳 Visa</span>
                                 <span class="pay-method-chip">💳 Mastercard</span>
+                                <span class="pay-method-chip">💳 Amex</span>
+                                <span class="pay-method-chip">🏦 FPX Banking</span>
                                 <span class="pay-method-chip">🍎 Apple Pay</span>
                                 <span class="pay-method-chip">🌐 Google Pay</span>
-                                <span class="pay-method-chip">🏦 FPX Online Banking</span>
                             </div>
                         </div>
                     </div>
@@ -525,15 +536,19 @@
                                 <span class="line-label" id="desktopDeliveryFeeLabel">
                                     @if($group === 'walkin' || (old('fulfillment_type', $deliveryInfo['fulfillment_type'] ?? 'delivery') === 'self_collection'))
                                         @t('checkout.fulfillment_type', 'Fulfillment')
+                                    @elseif(!empty($deliveryInfo['requires_manual_arrangement']))
+                                        Outstation Transportation Fee
                                     @elseif(!empty($deliveryInfo['zone_name']))
                                         Cold-Chain Delivery – {{ $deliveryInfo['zone_name'] }}
                                     @else
                                         @t('checkout.shipping_logistics', 'Cold-Chain Delivery')
                                     @endif
                                 </span>
-                                <span class="line-val {{ $initialShippingFee <= 0 ? 'val-green' : 'val-fee' }}" id="shippingDisplay">
+                                <span class="line-val {{ (old('fulfillment_type', $deliveryInfo['fulfillment_type'] ?? 'delivery') === 'self_collection' || (!empty($deliveryInfo['is_eligible_free_delivery']) && empty($deliveryInfo['requires_manual_arrangement']))) ? 'val-green' : (!empty($deliveryInfo['requires_manual_arrangement']) ? 'val-warning' : 'val-fee') }}" id="shippingDisplay">
                                     @if(old('fulfillment_type', $deliveryInfo['fulfillment_type'] ?? 'delivery') === 'self_collection')
                                         @t('checkout.free_self_collection', 'Free (Self-collection)')
+                                    @elseif(!empty($deliveryInfo['requires_manual_arrangement']))
+                                        <span style="font-weight:700;color:#d97706;background:#fffbeb;border:1px solid #fde68a;padding:2px 8px;border-radius:6px;font-size:0.8rem">To Be Confirmed</span>
                                     @elseif($initialShippingFee <= 0)
                                         @t('checkout.free_standard_delivery', 'Free (Standard Local Delivery)')
                                     @else
@@ -549,6 +564,11 @@
                                         <span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal" id="grandTotalBaseDisplay">Base: RM {{ number_format($initialGrandTotal, 2) }}</span>
                                     @else
                                         RM {{ number_format($initialGrandTotal, 2) }}
+                                    @endif
+                                    @if(!empty($deliveryInfo['requires_manual_arrangement']))
+                                        <span style="font-size:0.75rem;color:#d97706;display:block;font-weight:600;margin-top:2px" id="grandTotalOutstationNote">* Excl. Outstation Transport Fee (To Be Confirmed)</span>
+                                    @else
+                                        <span style="font-size:0.75rem;color:#d97706;display:none;font-weight:600;margin-top:2px" id="grandTotalOutstationNote">* Excl. Outstation Transport Fee (To Be Confirmed)</span>
                                     @endif
                                 </span>
                             </div>
@@ -582,8 +602,8 @@
                                 <span>@t('checkout.trust_cold_chain', 'Cold-Chain')</span>
                             </div>
                             <div class="trust-item">
-                                <span class="trust-icon">⚡</span>
-                                <span>@t('checkout.trust_instant', 'Instant Confirm')</span>
+                                <span class="trust-icon">📅</span>
+                                <span>@t('checkout.trust_scheduled', 'Scheduled Sourcing')</span>
                             </div>
                         </div>
 
@@ -1627,7 +1647,7 @@ function applyDeliveryFeeUpdate(data) {
     if (isSelfCollection) {
         feeText = checkoutI18n.freeSelfCollection;
     } else if (requiresManual) {
-        feeText = 'Quoted via WhatsApp';
+        feeText = 'To Be Confirmed';
     } else if (isFree) {
         feeText = checkoutI18n.freeStandardDelivery;
     } else {
@@ -1638,19 +1658,19 @@ function applyDeliveryFeeUpdate(data) {
     const desktopShip = document.getElementById('shippingDisplay');
     if (desktopShip) {
         desktopShip.textContent = feeText;
-        desktopShip.className = (isFree || isSelfCollection) ? 'line-val val-green' : (requiresManual ? 'line-val' : 'line-val val-fee');
+        desktopShip.className = (isFree || isSelfCollection) ? 'line-val val-green' : (requiresManual ? 'line-val val-warning' : 'line-val val-fee');
     }
 
     const mobileShip = document.getElementById('mobileShippingDisplay');
     if (mobileShip) {
         mobileShip.textContent = feeText;
-        mobileShip.className = (isFree || isSelfCollection) ? 'val-green' : (requiresManual ? '' : 'val-fee');
+        mobileShip.className = (isFree || isSelfCollection) ? 'val-green' : (requiresManual ? 'val-warning' : 'val-fee');
     }
 
     // Update Delivery line labels
     const deliveryLabelText = isSelfCollection 
         ? checkoutI18n.fulfillmentLabel || 'Fulfillment'
-        : (data.zone_name ? 'Cold-Chain Delivery – ' + data.zone_name : 'Cold-Chain Delivery');
+        : (requiresManual ? 'Outstation Transportation Fee' : (data.zone_name ? 'Cold-Chain Delivery – ' + data.zone_name : 'Cold-Chain Delivery'));
 
     const desktopDeliveryLabel = document.getElementById('desktopDeliveryFeeLabel');
     if (desktopDeliveryLabel) {
@@ -1671,21 +1691,31 @@ function applyDeliveryFeeUpdate(data) {
     // Update Desktop Grand Total
     const grandTotalEl = document.getElementById('grandTotalDisplay');
     if (grandTotalEl) {
+        let grandHtml = '';
         if (isForeign) {
-            grandTotalEl.innerHTML = totalDisplayFormatted + '<span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal" id="grandTotalBaseDisplay">Base: RM ' + data.total_formatted + '</span>';
+            grandHtml = totalDisplayFormatted + '<span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal" id="grandTotalBaseDisplay">Base: RM ' + data.total_formatted + '</span>';
         } else {
-            grandTotalEl.textContent = totalDisplayFormatted;
+            grandHtml = totalDisplayFormatted;
         }
+        if (requiresManual) {
+            grandHtml += '<span style="font-size:0.75rem;color:#d97706;display:block;font-weight:600;margin-top:2px" id="grandTotalOutstationNote">* Excl. Outstation Transport Fee (To Be Confirmed)</span>';
+        }
+        grandTotalEl.innerHTML = grandHtml;
     }
 
     // Update Mobile Collapsible Grand Total
     const mobileGrandTotalEl = document.getElementById('mobileGrandTotalDisplay');
     if (mobileGrandTotalEl) {
+        let mobileHtml = '';
         if (isForeign) {
-            mobileGrandTotalEl.innerHTML = totalDisplayFormatted + '<span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal" id="mobileGrandTotalBase">Base: RM ' + data.total_formatted + '</span>';
+            mobileHtml = totalDisplayFormatted + '<span style="font-size:0.8rem;color:#64748b;display:block;font-weight:normal" id="mobileGrandTotalBase">Base: RM ' + data.total_formatted + '</span>';
         } else {
-            mobileGrandTotalEl.textContent = totalDisplayFormatted;
+            mobileHtml = totalDisplayFormatted;
         }
+        if (requiresManual) {
+            mobileHtml += '<span style="font-size:0.75rem;color:#d97706;display:block;font-weight:600;margin-top:2px">* Excl. Outstation Transport Fee (To Be Confirmed)</span>';
+        }
+        mobileGrandTotalEl.innerHTML = mobileHtml;
     }
 
     // Update Top Mobile Banner Total
@@ -1717,13 +1747,13 @@ function applyDeliveryFeeUpdate(data) {
             noticeBanner.style.border = '1px solid #bbf7d0';
             noticeBanner.style.color = '#166534';
             noticeIcon.textContent = '🏪';
-            noticeText.innerHTML = '<strong>Self-Collection:</strong> Collect your confirmed order directly from MST (Self-collection only · no delivery).';
+            noticeText.innerHTML = '<strong>Self-Collection:</strong> Collect your confirmed order directly from MST (Self-collection only · no delivery fee applies).';
         } else if (requiresManual) {
             noticeBanner.style.background = '#fff7ed';
             noticeBanner.style.border = '1px solid #fdba74';
             noticeBanner.style.color = '#9a3412';
             noticeIcon.textContent = '🚚';
-            noticeText.innerHTML = '<strong>Outstation Cold-Chain Delivery:</strong> Packaging and transportation fees will be calculated based on the required Styrofoam box size/quantity and confirmed with you via WhatsApp prior to dispatch.<div style="margin-top:6px"><a href="' + (data.whatsapp_url || '#') + '" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">💬 Contact via WhatsApp</a></div>';
+            noticeText.innerHTML = '<strong>Outstation Cold-Chain Delivery:</strong> Outstation transportation charges are not included in the amount shown above. The final transportation cost will be confirmed by MST via WhatsApp based on your delivery location and the required cold-chain packaging (Styrofoam box size & quantity) prior to dispatch.<div style="margin-top:6px"><a href="' + (data.whatsapp_url || '#') + '" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">💬 Contact via WhatsApp</a></div>';
         } else if (isFree) {
             noticeBanner.style.background = '#f0fdf4';
             noticeBanner.style.border = '1px solid #bbf7d0';

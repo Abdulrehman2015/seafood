@@ -218,7 +218,17 @@
                 </div>
                 @endif
 
-                <!-- Disclaimers Notice -->
+                <!-- Disclaimers & Custom Processing Notice -->
+                <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-left:4px solid #2563eb;border-radius:10px;padding:12px 14px;margin-bottom:var(--space-4);font-size:0.80rem;color:#1e40af;line-height:1.5">
+                    <div style="font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:3px;font-size:0.84rem;color:#1d4ed8">
+                        <span>🔪</span>
+                        <span>@t('shop.custom_processing_title', 'Custom Processing Notice')</span>
+                    </div>
+                    <div>
+                        @t('shop.custom_processing_desc', 'Custom processing, cutting, slicing, portioning or other preparation requests will only be arranged after payment has been successfully confirmed by MST. Processing will begin only after payment confirmation and order preparation scheduling. Additional processing charges may apply where applicable.')
+                    </div>
+                </div>
+
                 <div style="font-size:0.75rem;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:var(--space-4);line-height:1.4">
                     <div><strong>ℹ️ @t('shop.pricing_disclaimer_head', 'Notice:'):</strong> @t('shop.retail_ref_price_disclaimer', 'Retail prices are shown for reference. Wholesale and trading prices are available after account approval or by quotation.')</div>
                     <div style="margin-top:3px">@t('shop.delivery_threshold_full_note', 'Standard local delivery coverage applies to Johor Bahru and Iskandar Puteri / Nusajaya. Orders outside the standard area or below the applicable threshold may be considered case-by-case, subject to product, logistics requirements and applicable transportation charges.')</div>
@@ -312,7 +322,7 @@
                 @elseif($price === null && $product->isInStock())
                     <div class="product-purchase-cluster mb-5">
                         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px">
-                            @t('shop.price_on_request_desc', 'This item is priced based on volume and market rate. Inquire below for an instant quote:')
+                            @t('shop.price_on_request_desc', 'This item is priced based on volume and market rate. Inquire below for an official quote:')
                         </p>
                         <div class="product-actions-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                             <a href="{{ route('contact') }}?subject={{ urlencode('Pricing Inquiry: ' . $product->name) }}" class="btn-product-cta btn-cta-add-cart" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #2563eb, #1d4ed8);color:#ffffff;height:48px;border-radius:10px;font-weight:700">

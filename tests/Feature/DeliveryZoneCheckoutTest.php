@@ -193,6 +193,29 @@ class DeliveryZoneCheckoutTest extends TestCase
     }
 
     /**
+     * Test H: Zone C / Outstation RM150.40 Delivery
+     * Expected: Even at >= RM150, Zone C is NOT free, does not apply RM20 dummy fee, and flags manual arrangement.
+     */
+    public function test_h_zone_c_outstation_rm150_40_is_not_free_and_flags_quotation(): void
+    {
+        $result = $this->deliveryService->calculateFee(
+            subtotal: 150.40,
+            fulfillmentType: 'delivery',
+            state: 'Kuala Lumpur',
+            city: 'Kuala Lumpur',
+            postcode: '50000',
+            group: 'retail'
+        );
+
+        $this->assertTrue($result['requires_manual_arrangement']);
+        $this->assertTrue($result['is_outstation']);
+        $this->assertFalse($result['is_eligible_free_delivery']);
+        $this->assertEquals(0.00, $result['fee']);
+        $this->assertStringContainsString('Outstation Cold-Chain Delivery', $result['message']);
+        $this->assertStringContainsString('not included in the amount shown above', $result['message']);
+    }
+
+    /**
      * Test API endpoint live response
      */
     public function test_calculate_delivery_fee_api_endpoint(): void

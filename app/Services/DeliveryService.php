@@ -134,12 +134,14 @@ class DeliveryService
         $zone      = $this->resolveZone($postcode, $city, $state, $group);
 
         // Case 3A: Outstation, Zone B/C, or manual cold-chain quotation required
-        if (!$zone || $zone->manual_quotation_required) {
+        // Note: The RM150 free-delivery threshold applies ONLY to Zone A (Local JB / Iskandar Puteri / Nusajaya / Skudai).
+        if (!$zone || $zone->manual_quotation_required || $zone->code !== 'ZONE-A') {
             $zoneName = $zone?->name ?? 'Outstation / Extended Area';
             return [
                 'fulfillment_type'             => 'delivery',
                 'is_self_collection'           => false,
                 'is_matched'                   => (bool) $zone,
+                'is_outstation'                => true,
                 'requires_manual_arrangement'  => true,
                 'is_eligible_free_delivery'    => false,
                 'threshold'                    => $threshold,
@@ -151,7 +153,7 @@ class DeliveryService
                 'zone_code'                    => $zone?->code ?? 'OUTSTATION',
                 'zone_name'                    => $zoneName,
                 'zone_description'             => $zone?->description ?? 'Outstation Cold-Chain Transportation',
-                'message'                      => '🚚 Outstation Cold-Chain Delivery: Packaging and transportation fees will be calculated based on the required Styrofoam box size/quantity and confirmed with you via WhatsApp prior to dispatch.',
+                'message'                      => '🚚 Outstation Cold-Chain Delivery: Outstation transportation charges are not included in the amount shown above. The final transportation cost will be confirmed by MST via WhatsApp based on your delivery location and the required cold-chain packaging (Styrofoam box size & quantity) prior to dispatch.',
             ];
         }
 
@@ -176,6 +178,7 @@ class DeliveryService
             'fulfillment_type'             => 'delivery',
             'is_self_collection'           => false,
             'is_matched'                   => true,
+            'is_outstation'                => false,
             'requires_manual_arrangement'  => false,
             'is_eligible_free_delivery'    => $isAboveThreshold,
             'threshold'                    => $threshold,
