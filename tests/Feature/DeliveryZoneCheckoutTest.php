@@ -61,8 +61,8 @@ class DeliveryZoneCheckoutTest extends TestCase
         $this->assertEquals('ZONE-A', $result['zone_code']);
         $this->assertEquals(10.00, $result['below_threshold_fee']);
         $this->assertEquals(10.00, $result['fee']);
-        $this->assertEquals(100.00, $result['threshold']);
-        $this->assertEquals(50.00, $result['shortfall_for_free_delivery']);
+        $this->assertEquals(150.00, $result['threshold']);
+        $this->assertEquals(100.00, $result['shortfall_for_free_delivery']);
     }
 
     /**
@@ -84,16 +84,17 @@ class DeliveryZoneCheckoutTest extends TestCase
         $this->assertFalse($result['is_eligible_free_delivery']);
         $this->assertEquals(10.00, $result['below_threshold_fee']);
         $this->assertEquals(10.00, $result['fee']);
+        $this->assertEquals(60.00, $result['shortfall_for_free_delivery']);
     }
 
     /**
-     * Test C: B2C RM100 Delivery
-     * Expected: Standard local delivery arrangement applies, no below-threshold fee
+     * Test C: B2C RM150 Delivery
+     * Expected: Standard local delivery arrangement applies, no below-threshold fee (Free Delivery)
      */
-    public function test_c_b2c_rm100_standard_delivery(): void
+    public function test_c_b2c_rm150_standard_delivery(): void
     {
         $result = $this->deliveryService->calculateFee(
-            subtotal: 100.00,
+            subtotal: 150.00,
             fulfillmentType: 'delivery',
             state: 'Johor',
             city: 'Iskandar Puteri',
@@ -188,7 +189,7 @@ class DeliveryZoneCheckoutTest extends TestCase
 
         $this->assertTrue($result['requires_manual_arrangement']);
         $this->assertFalse($result['is_matched']);
-        $this->assertStringContainsString('outside our standard delivery zones', $result['message']);
+        $this->assertStringContainsString('Outstation Cold-Chain Delivery', $result['message']);
     }
 
     /**

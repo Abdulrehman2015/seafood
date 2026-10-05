@@ -271,7 +271,7 @@
                                             @t('cart.standard_delivery_eligible_title', 'Free Standard Delivery Unlocked!')
                                         </div>
                                         <div style="font-size:0.78rem;color:#047857;line-height:1.4">
-                                            @t('cart.standard_delivery_eligible_desc', 'Your order qualifies for Free Standard Delivery (RM :threshold Reference Threshold).', ['threshold' => number_format($activeThreshold, 2)])
+                                            @t('cart.standard_delivery_eligible_desc', 'Your order qualifies for Free Standard Delivery in Zone A (Local JB / Iskandar Puteri / Nusajaya / Skudai, RM :threshold Reference Threshold). Outstation packaging & transport is confirmed via WhatsApp.', ['threshold' => number_format($activeThreshold, 2)])
                                         </div>
                                     </div>
                                 </div>
@@ -284,8 +284,8 @@
                                             @t('cart.delivery_fee_notice_title', 'Delivery Fee Notice')
                                         </div>
                                         <div style="font-size:0.80rem;color:#0c4a6e;line-height:1.45" id="bannerShortfallText">
-                                            Add <strong id="bannerShortfallAmount">RM {{ number_format($deliveryShortfall, 2) }}</strong> more to qualify for Free Standard Delivery.
-                                            <span style="display:block;font-size:0.74rem;color:#0369a1;margin-top:2px">(@t('cart.reference_threshold_note', 'RM :threshold :tier Reference Threshold', ['threshold' => number_format($activeThreshold, 2), 'tier' => $tierName]))</span>
+                                            Add <strong id="bannerShortfallAmount">RM {{ number_format($deliveryShortfall, 2) }}</strong> more to qualify for Free Zone A Delivery.
+                                            <span style="display:block;font-size:0.74rem;color:#0369a1;margin-top:2px">(@t('cart.reference_threshold_note', 'RM :threshold :tier Reference Threshold for Zone A local delivery (Outstation quoted separately)', ['threshold' => number_format($activeThreshold, 2), 'tier' => $tierName]))</span>
                                         </div>
                                         <div style="margin-top:8px;background:#e0f2fe;border-radius:6px;height:6px;overflow:hidden">
                                             <div id="bannerProgressBar" style="height:100%;background:#0284c7;border-radius:6px;width:{{ $progressPct }}%;transition:width 0.3s"></div>

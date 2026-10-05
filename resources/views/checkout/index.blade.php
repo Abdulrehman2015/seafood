@@ -313,10 +313,10 @@
 
                         {{-- Dynamic Delivery & Transportation Fee Notice Banner --}}
                         <div id="deliveryNoticeBanner" style="margin-bottom:16px;padding:12px 14px;border-radius:10px;font-size:0.83rem;line-height:1.45;display:flex;align-items:flex-start;gap:10px;{{ !empty($deliveryInfo['requires_manual_arrangement']) ? 'background:#fff7ed;border:1px solid #fdba74;color:#9a3412;' : ($initialShippingFee <= 0 ? 'background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;' : 'background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;') }}">
-                            <span style="font-size:1.1rem;line-height:1;flex-shrink:0" id="deliveryNoticeIcon">{{ !empty($deliveryInfo['requires_manual_arrangement']) ? '⚠️' : ($initialShippingFee <= 0 ? '✅' : 'ℹ️') }}</span>
+                            <span style="font-size:1.1rem;line-height:1;flex-shrink:0" id="deliveryNoticeIcon">{{ !empty($deliveryInfo['requires_manual_arrangement']) ? '🚚' : ($initialShippingFee <= 0 ? '✅' : 'ℹ️') }}</span>
                             <div id="deliveryNoticeText" style="flex:1">
                                 @if(!empty($deliveryInfo['requires_manual_arrangement']))
-                                    <strong>@t('checkout.delivery_arrangement_title', 'Delivery Arrangement Required:')</strong> @t('checkout.outside_zone_desc', 'Your delivery location is outside our standard delivery zones. Please contact MST to confirm the applicable delivery arrangement and charges.')
+                                    <strong>@t('checkout.outstation_delivery_title', 'Outstation Cold-Chain Delivery:')</strong> @t('checkout.outstation_delivery_desc', 'Packaging and transportation fees will be calculated based on the required Styrofoam box size/quantity and confirmed with you via WhatsApp prior to dispatch.')
                                     <div style="margin-top:6px">
                                         <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '601112710260')) }}" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
                                             💬 Contact via WhatsApp
@@ -325,7 +325,7 @@
                                 @elseif($initialShippingFee <= 0)
                                     <strong>@t('checkout.standard_delivery_eligible', 'Free Standard Delivery (RM 0.00):')</strong> @t('checkout.standard_delivery_desc', 'Your order qualifies for the free standard local delivery arrangement in Johor Bahru and Iskandar Puteri / Nusajaya.')
                                 @else
-                                    <strong>@t('checkout.delivery_fee_notice_title', 'Delivery Fee Notice:')</strong> @t('checkout.below_threshold_notice', 'Orders below the standard delivery threshold (RM :threshold) can still be placed and may be subject to transportation or delivery charges based on delivery location.', ['threshold' => number_format($deliveryInfo['threshold'] ?? 100, 2)]) ({{ $deliveryInfo['zone_name'] ?? 'Zone Fee' }}: +RM {{ number_format($initialShippingFee, 2) }})
+                                    <strong>@t('checkout.delivery_fee_notice_title', 'Delivery Fee Notice:')</strong> @t('checkout.below_threshold_notice', 'Orders below the standard delivery threshold (RM :threshold) can still be placed and may be subject to transportation or delivery charges based on delivery location.', ['threshold' => number_format($deliveryInfo['threshold'] ?? 150, 2)]) ({{ $deliveryInfo['zone_name'] ?? 'Zone Fee' }}: +RM {{ number_format($initialShippingFee, 2) }})
                                 @endif
                             </div>
                         </div>
@@ -1627,7 +1627,7 @@ function applyDeliveryFeeUpdate(data) {
     if (isSelfCollection) {
         feeText = checkoutI18n.freeSelfCollection;
     } else if (requiresManual) {
-        feeText = 'Custom Arrangement';
+        feeText = 'Quoted via WhatsApp';
     } else if (isFree) {
         feeText = checkoutI18n.freeStandardDelivery;
     } else {
@@ -1722,8 +1722,8 @@ function applyDeliveryFeeUpdate(data) {
             noticeBanner.style.background = '#fff7ed';
             noticeBanner.style.border = '1px solid #fdba74';
             noticeBanner.style.color = '#9a3412';
-            noticeIcon.textContent = '⚠️';
-            noticeText.innerHTML = '<strong>Delivery Arrangement Required:</strong> Your delivery location is outside our standard delivery zones. Please contact MST to confirm the applicable delivery arrangement and charges.<div style="margin-top:6px"><a href="' + (data.whatsapp_url || '#') + '" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">💬 Contact via WhatsApp</a></div>';
+            noticeIcon.textContent = '🚚';
+            noticeText.innerHTML = '<strong>Outstation Cold-Chain Delivery:</strong> Packaging and transportation fees will be calculated based on the required Styrofoam box size/quantity and confirmed with you via WhatsApp prior to dispatch.<div style="margin-top:6px"><a href="' + (data.whatsapp_url || '#') + '" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">💬 Contact via WhatsApp</a></div>';
         } else if (isFree) {
             noticeBanner.style.background = '#f0fdf4';
             noticeBanner.style.border = '1px solid #bbf7d0';

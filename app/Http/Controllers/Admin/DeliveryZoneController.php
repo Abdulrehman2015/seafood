@@ -12,7 +12,7 @@ class DeliveryZoneController extends Controller
     public function index()
     {
         $zones = DeliveryZone::orderBy('sort_order')->orderBy('id')->get();
-        $b2cThreshold = (float) Setting::get('delivery_b2c_free_threshold', 100.00);
+        $b2cThreshold = (float) Setting::get('delivery_b2c_free_threshold', 150.00);
 
         return view('admin.delivery_zones.index', compact('zones', 'b2cThreshold'));
     }
