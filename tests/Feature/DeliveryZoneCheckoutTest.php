@@ -288,4 +288,28 @@ class DeliveryZoneCheckoutTest extends TestCase
             'total' => 60.00,
         ]);
     }
+
+    /**
+     * Test J: Skudai 81300 API Call at Subtotal RM164.50 (Client UAT Test Case)
+     * Expected: Returns Zone B, requires_manual_arrangement = true, fee = 0.00, is_eligible_free_delivery = false
+     */
+    public function test_j_skudai_81300_subtotal_164_50_returns_zone_b_quotation(): void
+    {
+        $response = $this->postJson('/api/calculate-delivery-fee', [
+            'fulfillment_type' => 'delivery',
+            'postcode'         => '81300',
+            'city'             => 'Skudai',
+            'state'            => 'Johor',
+            'subtotal'         => 164.50,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'fee'                         => 0.0,
+            'is_eligible_free_delivery'   => false,
+            'requires_manual_arrangement' => true,
+            'is_outstation'               => true,
+            'zone_code'                   => 'ZONE-B',
+        ]);
+    }
 }

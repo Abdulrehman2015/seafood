@@ -20,7 +20,7 @@ return new class extends Migration
             'description'               => 'Johor Bahru, Iskandar Puteri, and Nusajaya local direct delivery coverage',
             'postcodes'                 => "79000\n79100\n79200\n79250\n79500\n80000\n80050\n80100\n80150\n80200\n80250\n80300\n80350\n80400\n80500\n81100\n81200",
             'areas'                     => "Johor Bahru, JB, Iskandar Puteri, Nusajaya, Medini, Puteri Harbour, Gelang Patah, Tampoi, Perling, Bukit Indah",
-            'states'                    => "Johor",
+            'states'                    => null,
             'delivery_fee'              => 0.00,
             'below_threshold_fee'       => 10.00,
             'manual_quotation_required' => false,

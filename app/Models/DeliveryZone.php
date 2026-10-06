@@ -61,14 +61,24 @@ class DeliveryZone extends Model
         $cleanCity     = strtolower(trim((string) $city));
         $cleanState    = strtolower(trim((string) $state));
 
+        // Explicit Exclusion: Skudai (81300) must NEVER match Zone A
+        if ($this->code === 'ZONE-A') {
+            if ($cleanPostcode === '81300' || str_contains($cleanCity, 'skudai')) {
+                return false;
+            }
+        }
+
+        $hasPostcodes = !empty($this->postcodes);
+        $hasAreas     = !empty($this->areas);
+
         // 1. Check Postcodes if provided
-        if (!empty($cleanPostcode) && !empty($this->postcodes)) {
+        if (!empty($cleanPostcode) && $hasPostcodes) {
             $postcodeEntries = preg_split('/[\r\n,]+/', (string) $this->postcodes);
             foreach ($postcodeEntries as $entry) {
                 $entry = trim($entry);
                 if (empty($entry)) continue;
 
-                // Exact match (e.g. "79100")
+                // Exact match (e.g. "79100" or "81300")
                 if ($cleanPostcode === $entry) {
                     return true;
                 }
@@ -82,7 +92,7 @@ class DeliveryZone extends Model
         }
 
         // 2. Check Areas / Cities if provided
-        if (!empty($cleanCity) && !empty($this->areas)) {
+        if (!empty($cleanCity) && $hasAreas) {
             $areaEntries = preg_split('/[\r\n,]+/', strtolower((string) $this->areas));
             foreach ($areaEntries as $area) {
                 $area = trim($area);
@@ -94,8 +104,18 @@ class DeliveryZone extends Model
             }
         }
 
-        // 3. Check States if provided
+        // 3. Fallback to States ONLY IF:
+        // - Zone does NOT have restrictive postcodes/areas configured (e.g. state-wide zone like Zone C), OR
+        // - Customer did not provide a postcode or city.
+        // A customer with a non-matching postcode/city must NEVER falsely match a local zone (e.g. Zone A) simply because state is "Johor".
         if (!empty($cleanState) && !empty($this->states)) {
+            if (!empty($cleanPostcode) && $hasPostcodes) {
+                return false;
+            }
+            if (!empty($cleanCity) && $hasAreas) {
+                return false;
+            }
+
             $stateEntries = preg_split('/[\r\n,]+/', strtolower((string) $this->states));
             foreach ($stateEntries as $st) {
                 $st = trim($st);
