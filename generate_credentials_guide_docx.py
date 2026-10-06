@@ -182,7 +182,7 @@ def build_credentials_guide():
     r2.font.bold = True
     r2.font.color.rgb = primary_navy
 
-    r3 = p_hdr.add_run("Step-by-Step Instructions for Gmail SMTP App Password Generation, Stripe Live Payment Gateway Setup, and Production Activation Protocol")
+    r3 = p_hdr.add_run("Step-by-Step Instructions for Gmail SMTP App Password Generation, Stripe Test & Live Mode Setup, and Payment Rails Activation Protocol")
     r3.font.name = "Calibri"
     r3.font.size = Pt(10)
     r3.font.italic = True
@@ -199,8 +199,8 @@ def build_credentials_guide():
         ("Prepared For:", "Wendy / MST Executive Management"),
         ("Prepared By:", "Abdul Rehman / Lead Engineering Team"),
         ("Date of Guide:", "October 2026"),
-        ("Scope:", "Gmail SMTP Email Setup, Stripe Live API Keys, and Payment Rails (FPX/Cards/Wallets)"),
-        ("Security Guarantee:", "✓ 100% Secure — Primary Account Passwords Are Never Requested or Shared")
+        ("Scope:", "Gmail SMTP Setup, Stripe Test & Live Mode API Keys, and Payment Rails (FPX/Cards/Wallets)"),
+        ("Security Guarantee:", "✓ 100% Secure — Master Login Passwords Are Never Requested or Shared")
     ]
 
     for i, (k, v) in enumerate(meta_entries):
@@ -228,9 +228,9 @@ def build_credentials_guide():
     # ─── SECTION 1: SECURITY PROTOCOL ─────────────────────────────────────────
     add_heading(doc, "1. Executive Summary & Security Policy", 1, primary_navy, 8, 4)
     add_body(doc,
-        "Dear Wendy, you are completely correct: under no circumstances should you ever share your primary Google or Stripe login passwords. "
-        "Modern enterprise cloud architectures use scoped credentials (Google App Passwords and Stripe Restricted API Keys) that allow our application "
-        "to deliver order receipts and process customer payments securely without compromising your master administrative access.",
+        "Dear Wendy, you are completely correct: under no circumstances should you ever share your primary Google or Stripe account login passwords. "
+        "Modern cloud security architectures utilize scoped credentials (Google App Passwords and Stripe API Keys) that allow our application "
+        "to dispatch order receipts and process customer payments securely without compromising your master administrative access.",
         10, color=body_slate, space_after=6)
 
     add_callout(
@@ -299,48 +299,68 @@ def build_credentials_guide():
 
     add_divider(doc)
 
-    # ─── SECTION 3: STRIPE LIVE SETUP ─────────────────────────────────────────
-    add_heading(doc, "3. Stripe Payment Gateway Setup (Live Mode vs. Test Mode)", 1, primary_navy, 10, 4)
+    # ─── SECTION 3: STRIPE TEST & LIVE SETUP ──────────────────────────────────
+    add_heading(doc, "3. Stripe Payment Gateway Setup: Test Mode & Live Mode Instructions", 1, primary_navy, 10, 4)
     
-    add_callout(
-        doc,
-        "RECOMMENDATION: Connect LIVE MODE credentials (pk_live_... and sk_live_...). "
-        "Because customer-side functional checkout, cart calculation, delivery threshold logic, and outstation quotation flows have already passed 100% "
-        "in our sandbox environment, connecting your live Stripe account allows us to verify your active Malaysian merchant payment rails (FPX, Apple Pay, Google Pay, Cards) "
-        "and complete a live nominal test transaction before opening to the public.",
-        "LIVE MODE VS. TEST MODE GUIDANCE",
-        "EFF6FF", "3B82F6", "1E40AF"
-    )
+    add_body(doc,
+        "You have complete flexibility to connect either Stripe **Test Mode** (for sandbox simulations) or **Live Mode** (for real bank clearing). "
+        "Below are detailed step-by-step instructions for both environments.",
+        10, color=body_slate, space_after=6)
 
-    add_heading(doc, "3.1 Required Credentials for Stripe Integration", 2, accent_blue, 6, 2)
+    # ── 3.1 TEST MODE ──
+    add_heading(doc, "3.1 Option A: Stripe Test Mode (Sandbox Simulation)", 2, accent_blue, 8, 2)
+    add_body(doc,
+        "Stripe Test Mode allows you to simulate successful payments, test Malaysian FPX bank test flows, and check email triggers without moving real money.",
+        10, color=body_slate, space_after=4)
 
-    stripe_tbl = doc.add_table(rows=3, cols=3)
-    stripe_tbl.alignment = WD_TABLE_ALIGNMENT.LEFT
-    set_table_border(stripe_tbl, "CBD5E1")
+    add_bullet(doc, "Log into your official Stripe Dashboard at: https://dashboard.stripe.com/", 9.5, body_slate, "Step 1 (Log In): ")
+    add_bullet(doc, "In the top header (or top-left sidebar), switch the toggle to 'Test Mode' (it will show an orange indicator saying 'Test mode').", 9.5, body_slate, "Step 2 (Toggle Test Mode): ")
+    add_bullet(doc, "In the left menu, click 'Developers' > 'API keys' (or visit: https://dashboard.stripe.com/test/apikeys).", 9.5, body_slate, "Step 3 (Navigate to API Keys): ")
+    add_bullet(doc, "Under 'Standard keys', copy the 'Publishable key' — it begins with 'pk_test_...'.", 9.5, body_slate, "Step 4 (Copy Test Publishable Key): ")
+    add_bullet(doc, "Under 'Secret key', click 'Reveal test key' (or 'Create secret key') and copy the secret key — it begins with 'sk_test_...'.", 9.5, body_slate, "Step 5 (Copy Test Secret Key): ")
+    add_bullet(doc, "Test Cards: When testing in Test Mode, you can use Stripe test cards (e.g. 4242 4242 4242 4242, any future expiry date, any 3-digit CVC).", 9.5, body_slate, "Test Simulation Data: ")
 
-    s_headers = ["Key Name", "Prefix / Format", "Role & Security Classification"]
-    s_widths = [Inches(2.0), Inches(2.2), Inches(2.8)]
+    # ── 3.2 LIVE MODE ──
+    add_heading(doc, "3.2 Option B: Stripe Live Mode (Production Ready — Recommended)", 2, accent_blue, 10, 2)
+    add_body(doc,
+        "Stripe Live Mode connects your website directly to real bank clearing (FPX, credit/debit cards, Apple Pay, Google Pay). "
+        "Because customer-side functional checkout testing has already passed 100% in our sandbox, connecting Live Mode enables immediate production readiness.",
+        10, color=body_slate, space_after=4)
 
-    s_hdr_row = stripe_tbl.rows[0]
-    for idx, h in enumerate(s_headers):
-        cell = s_hdr_row.cells[idx]
-        cell.width = s_widths[idx]
+    add_bullet(doc, "Log into your Stripe Dashboard at: https://dashboard.stripe.com/", 9.5, body_slate, "Step 1 (Log In): ")
+    add_bullet(doc, "Ensure the mode toggle is switched to 'Live Mode' (the orange test banner will disappear).", 9.5, body_slate, "Step 2 (Toggle Live Mode): ")
+    add_bullet(doc, "In the left menu, click 'Developers' > 'API keys' (or visit: https://dashboard.stripe.com/apikeys).", 9.5, body_slate, "Step 3 (Navigate to API Keys): ")
+    add_bullet(doc, "Under 'Standard keys', copy the 'Publishable key' — it begins with 'pk_live_...'.", 9.5, body_slate, "Step 4 (Copy Live Publishable Key): ")
+    add_bullet(doc, "Under 'Secret key', click 'Reveal live key' (or 'Create secret key') and copy the secret key — it begins with 'sk_live_...'.", 9.5, body_slate, "Step 5 (Copy Live Secret Key): ")
+
+    # Comparison Table
+    stripe_cmp_tbl = doc.add_table(rows=3, cols=3)
+    stripe_cmp_tbl.alignment = WD_TABLE_ALIGNMENT.LEFT
+    set_table_border(stripe_cmp_tbl, "CBD5E1")
+
+    sc_headers = ["Key Identifier", "Test Mode Format", "Live Mode Format"]
+    sc_widths = [Inches(2.0), Inches(2.5), Inches(2.5)]
+
+    sc_hdr_row = stripe_cmp_tbl.rows[0]
+    for idx, h in enumerate(sc_headers):
+        cell = sc_hdr_row.cells[idx]
+        cell.width = sc_widths[idx]
         set_cell_background(cell, "091A36")
         set_cell_margins(cell, 80, 80, 100, 80)
         p = cell.paragraphs[0]; r = p.add_run(h)
         r.font.name = "Calibri"; r.font.size = Pt(9); r.font.bold = True; r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
 
-    s_data = [
-        ("Publishable Key", "pk_live_... (or pk_test_...)", "Client-side identifier used to render Stripe Hosted Checkout securely."),
-        ("Secret Key", "sk_live_... (or sk_test_...)", "Server-side authorization key used to create checkout sessions and verify transactions.")
+    sc_data = [
+        ("Publishable Key", "pk_test_51Py...", "pk_live_51Py..."),
+        ("Secret Key", "sk_test_51Py...", "sk_live_51Py...")
     ]
 
-    for row_idx, row_data in enumerate(s_data, start=1):
-        row = stripe_tbl.rows[row_idx]
+    for row_idx, row_data in enumerate(sc_data, start=1):
+        row = stripe_cmp_tbl.rows[row_idx]
         bg_color = "F8FAFC" if row_idx % 2 == 1 else "FFFFFF"
         for col_idx, text in enumerate(row_data):
             cell = row.cells[col_idx]
-            cell.width = s_widths[col_idx]
+            cell.width = sc_widths[col_idx]
             set_cell_background(cell, bg_color)
             set_cell_margins(cell, 60, 60, 100, 80)
             p = cell.paragraphs[0]; r = p.add_run(text)
@@ -348,37 +368,29 @@ def build_credentials_guide():
             if col_idx == 0:
                 r.font.bold = True; r.font.color.rgb = dark_slate
             elif col_idx == 1:
-                r.font.color.rgb = primary_teal
+                r.font.color.rgb = RGBColor(0xD9, 0x77, 0x06) # Orange for Test
             else:
-                r.font.color.rgb = body_slate
+                r.font.bold = True; r.font.color.rgb = success_green # Green for Live
 
-    add_heading(doc, "3.2 Step-by-Step Guide: How to Retrieve Stripe API Keys", 2, accent_blue, 8, 2)
-    add_bullet(doc, "Log into your official Stripe Dashboard at: https://dashboard.stripe.com/", 9.5, body_slate, "Step 1 (Log In): ")
-    add_bullet(doc, "Ensure the mode toggle in the top-left/top-right header is set to 'Live Mode' (or Test Mode if you prefer initial sandbox validation).", 9.5, body_slate, "Step 2 (Select Mode): ")
-    add_bullet(doc, "In the left navigation sidebar, click 'Developers', then select 'API keys' (Direct link: https://dashboard.stripe.com/apikeys).", 9.5, body_slate, "Step 3 (API Keys Menu): ")
-    add_bullet(doc, "Under the 'Standard keys' section, click to copy the 'Publishable key' (starts with pk_live_...).", 9.5, body_slate, "Step 4 (Copy Publishable Key): ")
-    add_bullet(doc, "Under 'Secret key', click 'Reveal live key' (or 'Create secret key') and copy the token (starts with sk_live_...).", 9.5, body_slate, "Step 5 (Copy Secret Key): ")
-
-    add_heading(doc, "3.3 How to Activate FPX, Apple Pay, Google Pay & Cards in Stripe", 2, accent_blue, 8, 2)
+    add_heading(doc, "3.3 Activating Payment Methods in Stripe Dashboard (FPX, Cards, Apple Pay, Google Pay)", 2, accent_blue, 10, 2)
     add_body(doc,
-        "Stripe Hosted Checkout automatically displays payment options based on what is switched ON inside your Stripe Merchant Dashboard:",
+        "Stripe Hosted Checkout automatically renders payment methods based on what you have enabled in your Stripe merchant account:",
         10, color=body_slate, space_after=4)
 
     add_bullet(doc, "In your Stripe Dashboard, go to Settings > Payment Methods (Direct link: https://dashboard.stripe.com/settings/payment_methods).", 9.5, body_slate, "Step 1: ")
     add_bullet(doc, "Under 'Cards', ensure Credit & Debit Cards (Visa, Mastercard, American Express) are set to 'Active'.", 9.5, body_slate, "Step 2: ")
-    add_bullet(doc, "Under 'Real-time payments', click on 'FPX (Online Banking)' and ensure it is set to 'Active'.", 9.5, body_slate, "Step 3: ")
+    add_bullet(doc, "Under 'Real-time payments', ensure 'FPX (Online Banking)' is set to 'Active'.", 9.5, body_slate, "Step 3: ")
     add_bullet(doc, "Under 'Wallets', ensure 'Apple Pay' and 'Google Pay' are set to 'Active'.", 9.5, body_slate, "Step 4: ")
     add_bullet(doc, "Once activated in your dashboard, our platform will automatically reflect these payment methods at checkout without requiring extra code changes.", 9.5, body_slate, "Step 5: ")
 
     add_divider(doc)
 
     # ─── SECTION 4: VERIFICATION PLAN ─────────────────────────────────────────
-    add_heading(doc, "4. Post-Handover Verification & Live Testing Protocol", 1, primary_navy, 10, 4)
+    add_heading(doc, "4. Post-Handover Verification & Testing Protocol", 1, primary_navy, 10, 4)
     add_body(doc,
         "Once you provide the credentials, our engineering team will execute the following 3-step verification:",
         10, color=body_slate, space_after=6)
 
-    # Verification Table
     ver_tbl = doc.add_table(rows=4, cols=3)
     ver_tbl.alignment = WD_TABLE_ALIGNMENT.LEFT
     set_table_border(ver_tbl, "CBD5E1")
@@ -403,12 +415,12 @@ def build_credentials_guide():
         ),
         (
             "Phase 2:\nStripe Rails Check",
-            "Initialize a test checkout session using your live API keys.",
+            "Initialize a test checkout session using your provided API keys.",
             "Stripe Hosted Checkout opens displaying FPX (Maybank2u, CIMB Clicks, Public Bank, etc.), Cards, and Apple/Google Pay."
         ),
         (
-            "Phase 3:\nLive Nominal Order",
-            "Execute a small live order (e.g. RM10 or test item) to verify bank debiting and automated order creation.",
+            "Phase 3:\nNominal Order Test",
+            "Execute a test order (simulated in Test Mode or nominal RM10 in Live Mode) to verify bank clearing.",
             "Order is confirmed, inventory adjusted, receipt dispatched, and funds settle into your Malaysian bank account."
         )
     ]
@@ -449,14 +461,15 @@ def build_credentials_guide():
     
     form_text = (
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        "MST E-COMMERCE LIVE CREDENTIAL SUBMISSION FORM\n"
+        "MST E-COMMERCE CREDENTIAL SUBMISSION FORM\n"
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
         "1. Gmail Address for Outgoing Mail:\n"
         "   [ e.g., orders@mst.my or mst.sales@gmail.com ]\n\n"
         "2. Google 16-Character App Password:\n"
         "   [ e.g., abcd efgh ijkl mnop ]\n\n"
-        "3. Stripe Environment (Live / Test):\n"
-        "   [ Live Mode (Recommended) ]\n\n"
+        "3. Selected Stripe Environment:\n"
+        "   [  ] Live Mode (Recommended: pk_live_... / sk_live_...)\n"
+        "   [  ] Test Mode (Sandbox: pk_test_... / sk_test_...)\n\n"
         "4. Stripe Publishable Key:\n"
         "   [ pk_live_... or pk_test_... ]\n\n"
         "5. Stripe Secret Key:\n"
@@ -502,9 +515,13 @@ def build_credentials_guide():
         p2 = c2.paragraphs[0]; r2 = p2.add_run(val)
         r2.font.name = "Calibri"; r2.font.size = Pt(9); r2.font.color.rgb = body_slate
 
-    output_filename = "f:/My AI/Sea Food/seafood/MST_Live_Credentials_and_Payment_Gateway_Onboarding_Guide.docx"
+    output_filename = "f:/My AI/Sea Food/seafood/MST_Live_and_Test_Credentials_Onboarding_Guide.docx"
     doc.save(output_filename)
-    print(f"Successfully generated credentials guide at: {output_filename}")
+    print(f"Successfully generated updated credentials guide at: {output_filename}")
+    try:
+        doc.save("f:/My AI/Sea Food/seafood/MST_Live_Credentials_and_Payment_Gateway_Onboarding_Guide.docx")
+    except Exception:
+        pass
 
 if __name__ == "__main__":
     build_credentials_guide()
