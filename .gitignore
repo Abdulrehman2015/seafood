@@ -26,3 +26,4 @@ Thumbs.db
 *.zip
 /storage/app/backups
 /storage/app/map-tiles
+~$*

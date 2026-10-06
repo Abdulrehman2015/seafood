@@ -23,10 +23,10 @@ class DeliveryZoneCheckoutTest extends TestCase
         DeliveryZone::firstOrCreate(
             ['code' => 'ZONE-A'],
             [
-                'name' => 'Zone A - Johor Bahru & Iskandar Puteri',
-                'description' => 'Selected Johor Bahru and Iskandar Puteri areas',
+                'name' => 'Zone A - Local JB / Iskandar Puteri / Nusajaya',
+                'description' => 'Johor Bahru, Iskandar Puteri, and Nusajaya local direct delivery coverage',
                 'postcodes' => ['79000', '79100', '79200', '79250', '80000', '80100', '80200', '80300'],
-                'areas' => ['Johor Bahru', 'Iskandar Puteri', 'Skudai', 'Medini', 'Puteri Harbour'],
+                'areas' => ['Johor Bahru', 'Iskandar Puteri', 'Nusajaya', 'Medini', 'Puteri Harbour'],
                 'states' => ['Johor'],
                 'delivery_fee' => 0.00,
                 'below_threshold_fee' => 10.00,
@@ -36,6 +36,25 @@ class DeliveryZoneCheckoutTest extends TestCase
                 'is_active' => true,
                 'manual_quotation_required' => false,
                 'sort_order' => 1,
+            ]
+        );
+
+        DeliveryZone::firstOrCreate(
+            ['code' => 'ZONE-B'],
+            [
+                'name' => 'Zone B - Extended Johor & Melaka (Outstation Cold-Chain)',
+                'description' => 'Extended Johor districts including Skudai, Kulai, Batu Pahat & Melaka',
+                'postcodes' => ['81300', '81400', '82000', '83000'],
+                'areas' => ['Skudai', 'Kulai', 'Senai', 'Batu Pahat', 'Muar', 'Kluang'],
+                'states' => ['Johor', 'Melaka'],
+                'delivery_fee' => 0.00,
+                'below_threshold_fee' => 0.00,
+                'is_b2c_enabled' => true,
+                'is_b2b_enabled' => true,
+                'is_trading_enabled' => false,
+                'is_active' => true,
+                'manual_quotation_required' => true,
+                'sort_order' => 2,
             ]
         );
     }
@@ -213,6 +232,29 @@ class DeliveryZoneCheckoutTest extends TestCase
         $this->assertEquals(0.00, $result['fee']);
         $this->assertStringContainsString('Outstation Cold-Chain Delivery', $result['message']);
         $this->assertStringContainsString('not included in the amount shown above', $result['message']);
+    }
+
+    /**
+     * Test I: Skudai Coverage Verification
+     * Expected: Skudai is NOT in Zone A. It routes to Zone B / Extended Area, requiring manual WhatsApp quotation.
+     */
+    public function test_i_skudai_is_outstation_and_requires_quotation(): void
+    {
+        $result = $this->deliveryService->calculateFee(
+            subtotal: 180.00,
+            fulfillmentType: 'delivery',
+            state: 'Johor',
+            city: 'Skudai',
+            postcode: '81300',
+            group: 'retail'
+        );
+
+        $this->assertTrue($result['requires_manual_arrangement']);
+        $this->assertTrue($result['is_outstation']);
+        $this->assertFalse($result['is_eligible_free_delivery']);
+        $this->assertEquals('ZONE-B', $result['zone_code']);
+        $this->assertEquals(0.00, $result['fee']);
+        $this->assertStringContainsString('Outstation Cold-Chain Delivery', $result['message']);
     }
 
     /**

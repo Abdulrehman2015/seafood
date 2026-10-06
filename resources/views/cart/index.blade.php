@@ -271,7 +271,7 @@
                                             @t('cart.standard_delivery_eligible_title', 'Free Standard Delivery Unlocked!')
                                         </div>
                                         <div style="font-size:0.78rem;color:#047857;line-height:1.4">
-                                            @t('cart.standard_delivery_eligible_desc', 'Your order qualifies for Free Standard Delivery in Zone A (Local JB / Iskandar Puteri / Nusajaya / Skudai, RM :threshold Reference Threshold). Outstation packaging & transport is confirmed via WhatsApp.', ['threshold' => number_format($activeThreshold, 2)])
+                                            @t('cart.standard_delivery_eligible_desc', 'Your order qualifies for Free Standard Delivery in Zone A (Local JB / Iskandar Puteri / Nusajaya, RM :threshold Reference Threshold). Outstation packaging & transport is confirmed via WhatsApp.', ['threshold' => number_format($activeThreshold, 2)])
                                         </div>
                                     </div>
                                 </div>

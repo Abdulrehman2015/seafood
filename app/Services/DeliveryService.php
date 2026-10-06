@@ -134,7 +134,7 @@ class DeliveryService
         $zone      = $this->resolveZone($postcode, $city, $state, $group);
 
         // Case 3A: Outstation, Zone B/C, or manual cold-chain quotation required
-        // Note: The RM150 free-delivery threshold applies ONLY to Zone A (Local JB / Iskandar Puteri / Nusajaya / Skudai).
+        // Note: The RM150 free-delivery threshold applies ONLY to Zone A (Local JB / Iskandar Puteri / Nusajaya).
         if (!$zone || $zone->manual_quotation_required || $zone->code !== 'ZONE-A') {
             $zoneName = $zone?->name ?? 'Outstation / Extended Area';
             return [
@@ -157,7 +157,7 @@ class DeliveryService
             ];
         }
 
-        // Case 3B: Standard Zone Matched (Zone A - Local JB / Iskandar Puteri / Nusajaya / Skudai)
+        // Case 3B: Standard Zone Matched (Zone A - Local JB / Iskandar Puteri / Nusajaya)
         $baseFee           = (float) $zone->delivery_fee;
         $belowThresholdFee = (float) $zone->below_threshold_fee;
         $isAboveThreshold  = ($subtotal >= $threshold);
