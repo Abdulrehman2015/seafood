@@ -71,11 +71,18 @@ class DeliveryZone extends Model
         $hasPostcodes = !empty($this->postcodes);
         $hasAreas     = !empty($this->areas);
 
-        // 1. Check Postcodes if provided
+        $parseList = function ($val) {
+            if (is_array($val)) {
+                return $val;
+            }
+            return preg_split('/[\r\n,]+/', (string) $val) ?: [];
+        };
+
+        // 1. Postcode is the most authoritative location identifier
         if (!empty($cleanPostcode) && $hasPostcodes) {
-            $postcodeEntries = preg_split('/[\r\n,]+/', (string) $this->postcodes);
+            $postcodeEntries = $parseList($this->postcodes);
             foreach ($postcodeEntries as $entry) {
-                $entry = trim($entry);
+                $entry = trim((string) $entry);
                 if (empty($entry)) continue;
 
                 // Exact match (e.g. "79100" or "81300")
@@ -89,25 +96,32 @@ class DeliveryZone extends Model
                     return true;
                 }
             }
+
+            // CRITICAL: If this zone defines specific postcodes and the customer provided a postcode,
+            // failing the postcode match means this zone is NOT a match.
+            // Do NOT fall back to city or state matching, because broad municipal city names (e.g. "Johor Bahru")
+            // span both Zone A and Outstation/Zone B postcodes.
+            return false;
         }
 
-        // 2. Check Areas / Cities if provided
+        // 2. Check Areas / Cities if postcode was not provided or zone has no postcode restrictions
         if (!empty($cleanCity) && $hasAreas) {
-            $areaEntries = preg_split('/[\r\n,]+/', strtolower((string) $this->areas));
+            $areaEntries = $parseList($this->areas);
             foreach ($areaEntries as $area) {
-                $area = trim($area);
+                $area = strtolower(trim((string) $area));
                 if (empty($area)) continue;
 
                 if ($cleanCity === $area || str_contains($cleanCity, $area) || str_contains($area, $cleanCity)) {
                     return true;
                 }
             }
+
+            if ($hasAreas) {
+                return false;
+            }
         }
 
-        // 3. Fallback to States ONLY IF:
-        // - Zone does NOT have restrictive postcodes/areas configured (e.g. state-wide zone like Zone C), OR
-        // - Customer did not provide a postcode or city.
-        // A customer with a non-matching postcode/city must NEVER falsely match a local zone (e.g. Zone A) simply because state is "Johor".
+        // 3. Fallback to State matching ONLY IF zone has no postcodes/areas configured (e.g. statewide outstation)
         if (!empty($cleanState) && !empty($this->states)) {
             if (!empty($cleanPostcode) && $hasPostcodes) {
                 return false;
@@ -116,9 +130,9 @@ class DeliveryZone extends Model
                 return false;
             }
 
-            $stateEntries = preg_split('/[\r\n,]+/', strtolower((string) $this->states));
+            $stateEntries = $parseList($this->states);
             foreach ($stateEntries as $st) {
-                $st = trim($st);
+                $st = strtolower(trim((string) $st));
                 if (empty($st)) continue;
 
                 if ($cleanState === $st || str_contains($cleanState, $st) || str_contains($st, $cleanState)) {

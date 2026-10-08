@@ -308,7 +308,7 @@ class CheckoutController extends Controller
                     'currency'     => $currency,
                     'product_data' => [
                         'name'        => 'Cold-Chain Delivery & Transportation (' . ($deliveryResult['zone_name'] ?? 'Area Fee') . ')',
-                        'description' => 'Transportation charge for delivery orders below RM 100 threshold',
+                        'description' => 'Transportation charge for delivery orders below RM ' . number_format($deliveryResult['threshold'] ?? 150, 0) . ' threshold',
                     ],
                     'unit_amount'  => (int) round($shippingFee * 100),
                 ],

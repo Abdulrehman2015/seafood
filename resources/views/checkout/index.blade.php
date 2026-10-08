@@ -320,16 +320,16 @@
                             <span style="font-size:1.1rem;line-height:1;flex-shrink:0" id="deliveryNoticeIcon">{{ !empty($deliveryInfo['requires_manual_arrangement']) ? '🚚' : ($initialShippingFee <= 0 ? '✅' : 'ℹ️') }}</span>
                             <div id="deliveryNoticeText" style="flex:1">
                                 @if(!empty($deliveryInfo['requires_manual_arrangement']))
-                                    <strong>@t('checkout.outstation_delivery_title', 'Outstation Cold-Chain Delivery:')</strong> @t('checkout.outstation_delivery_desc', 'Outstation transportation charges are not included in the amount shown above. The final transportation cost will be confirmed by MST via WhatsApp based on your delivery location and the required cold-chain packaging (Styrofoam box size & quantity) prior to dispatch.')
+                                    <strong>@t('checkout.outstation_delivery_title', 'Outstation Cold-Chain Delivery (To Be Confirmed):')</strong> @t('checkout.outstation_delivery_desc', 'Outstation transportation charges are not included in the amount shown above. The final transportation cost will be confirmed by MST via WhatsApp based on your delivery location and the required cold-chain packaging (Styrofoam box size & quantity) prior to dispatch.')
                                     <div style="margin-top:6px">
                                         <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '601112710260')) }}" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">
                                             💬 Contact via WhatsApp
                                         </a>
                                     </div>
                                 @elseif($initialShippingFee <= 0)
-                                    <strong>@t('checkout.standard_delivery_eligible', 'Free Standard Delivery (RM 0.00):')</strong> @t('checkout.standard_delivery_desc', 'Your order qualifies for the free standard local delivery arrangement in Johor Bahru and Iskandar Puteri / Nusajaya.')
+                                    <strong>@t('checkout.standard_delivery_eligible', 'Free Standard Delivery (Zone A):')</strong> @t('checkout.standard_delivery_desc', 'Your order qualifies for Free Standard Delivery in Johor Bahru and Iskandar Puteri / Nusajaya (RM 0.00).')
                                 @else
-                                    <strong>@t('checkout.delivery_fee_notice_title', 'Delivery Fee Notice:')</strong> @t('checkout.below_threshold_notice', 'Orders below the standard delivery threshold (RM :threshold) can still be placed and may be subject to transportation or delivery charges based on delivery location.', ['threshold' => number_format($deliveryInfo['threshold'] ?? 150, 2)]) ({{ $deliveryInfo['zone_name'] ?? 'Zone Fee' }}: +RM {{ number_format($initialShippingFee, 2) }})
+                                    <strong>@t('checkout.delivery_fee_notice_title', 'Zone A Delivery Fee (RM :fee):', ['fee' => number_format($initialShippingFee, 2)])</strong> @t('checkout.below_threshold_notice', 'Applicable local delivery fee of RM :fee applied for :zone. Orders RM :threshold and above qualify for Free Standard Delivery.', ['fee' => number_format($initialShippingFee, 2), 'zone' => $deliveryInfo['zone_name'] ?? 'Zone A', 'threshold' => number_format($deliveryInfo['threshold'] ?? 150, 2)])
                                 @endif
                             </div>
                         </div>
@@ -1747,25 +1747,25 @@ function applyDeliveryFeeUpdate(data) {
             noticeBanner.style.border = '1px solid #bbf7d0';
             noticeBanner.style.color = '#166534';
             noticeIcon.textContent = '🏪';
-            noticeText.innerHTML = '<strong>Self-Collection:</strong> Collect your confirmed order directly from MST (Self-collection only · no delivery fee applies).';
+            noticeText.innerHTML = '<strong>Store Self-Collection (Free):</strong> Collect your confirmed order directly from MST SILC Cold-Chain Facility (RM 0.00 collection fee).';
         } else if (requiresManual) {
             noticeBanner.style.background = '#fff7ed';
             noticeBanner.style.border = '1px solid #fdba74';
             noticeBanner.style.color = '#9a3412';
             noticeIcon.textContent = '🚚';
-            noticeText.innerHTML = '<strong>Outstation Cold-Chain Delivery:</strong> Outstation transportation charges are not included in the amount shown above. The final transportation cost will be confirmed by MST via WhatsApp based on your delivery location and the required cold-chain packaging (Styrofoam box size & quantity) prior to dispatch.<div style="margin-top:6px"><a href="' + (data.whatsapp_url || '#') + '" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">💬 Contact via WhatsApp</a></div>';
+            noticeText.innerHTML = '<strong>Outstation Cold-Chain Delivery (To Be Confirmed):</strong> Outstation transportation charges are not included in the amount shown above. The final transportation cost will be confirmed by MST via WhatsApp based on your delivery location and the required cold-chain packaging (Styrofoam box size & quantity) prior to dispatch.<div style="margin-top:6px"><a href="' + (data.whatsapp_url || '#') + '" target="_blank" rel="noopener" class="btn btn-sm" style="background:#22c55e;color:#ffffff;font-size:0.75rem;padding:3px 10px;border-radius:6px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px">💬 Contact via WhatsApp</a></div>';
         } else if (isFree) {
             noticeBanner.style.background = '#f0fdf4';
             noticeBanner.style.border = '1px solid #bbf7d0';
             noticeBanner.style.color = '#166534';
             noticeIcon.textContent = '✅';
-            noticeText.innerHTML = '<strong>Standard Local Delivery Eligible:</strong> Your order qualifies for standard local delivery arrangement in Johor Bahru and Iskandar Puteri / Nusajaya.';
+            noticeText.innerHTML = '<strong>Free Standard Delivery (Zone A):</strong> Your order qualifies for Free Standard Delivery in Johor Bahru and Iskandar Puteri / Nusajaya (RM 0.00).';
         } else {
             noticeBanner.style.background = '#eff6ff';
             noticeBanner.style.border = '1px solid #bfdbfe';
             noticeBanner.style.color = '#1e40af';
             noticeIcon.textContent = 'ℹ️';
-            noticeText.innerHTML = '<strong>Delivery Fee Notice:</strong> Orders below the standard delivery threshold (RM ' + Number(data.threshold).toFixed(2) + ') may be subject to an additional delivery fee based on your delivery location. (<strong>' + data.zone_name + '</strong>: Delivery Fee RM ' + data.fee_formatted + (hasBelowFee ? ' including RM ' + data.below_threshold_fee_formatted + ' below-threshold fee' : '') + ').';
+            noticeText.innerHTML = '<strong>Zone A Delivery Fee (RM ' + data.fee_formatted + '):</strong> Applicable local delivery fee of <strong>RM ' + data.fee_formatted + '</strong> applied for ' + (data.zone_name || 'Zone A') + '. (Orders RM ' + Number(data.threshold).toFixed(2) + ' and above qualify for Free Standard Delivery).';
         }
     }
 
