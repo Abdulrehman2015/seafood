@@ -319,6 +319,13 @@ class CheckoutController extends Controller
         $orderNumber = 'ORD-' . strtoupper(uniqid());
         $payload['order_number'] = $orderNumber;
 
+        $currentAppLocale = app()->getLocale();
+        $stripeLocale = match ($currentAppLocale) {
+            'zh'       => 'zh',
+            'bm', 'ms' => 'ms',
+            default    => 'en',
+        };
+
         $stripeMetadata = [
             'order_number'          => $orderNumber,
             'fulfillment_type'      => $request->fulfillment_type,
@@ -348,13 +355,6 @@ class CheckoutController extends Controller
         }
 
         session(['stripe_checkout_payload' => $payload]);
-
-        $currentAppLocale = app()->getLocale();
-        $stripeLocale = match ($currentAppLocale) {
-            'zh'       => 'zh',
-            'bm', 'ms' => 'ms',
-            default    => 'en',
-        };
 
         try {
             $session = StripeSession::create([
