@@ -316,6 +316,37 @@ class CheckoutController extends Controller
             ];
         }
 
+        $orderNumber = 'ORD-' . strtoupper(uniqid());
+        $payload['order_number'] = $orderNumber;
+
+        $stripeMetadata = [
+            'order_number'          => $orderNumber,
+            'fulfillment_type'      => $request->fulfillment_type,
+            'customer_name'         => mb_substr((string) ($payload['customer_name'] ?? 'Customer'), 0, 100),
+            'customer_phone'        => mb_substr((string) ($payload['customer_phone'] ?? ''), 0, 50),
+            'customer_email'        => mb_substr((string) ($payload['customer_email'] ?? ''), 0, 100),
+            'customer_group'        => $group,
+            'user_id'               => (string) (Auth::id() ?? 'guest'),
+            'shipping_fee_myr'      => number_format($shippingFee, 2, '.', ''),
+            'expected_total_myr'    => number_format($grandTotal, 2, '.', ''),
+            'expected_total_cents'  => (string) $expectedTotalCents,
+            'site_locale'           => $currentAppLocale,
+        ];
+
+        if ($request->fulfillment_type === 'delivery') {
+            $stripeMetadata['delivery_date']    = (string) ($payload['delivery_date'] ?: 'Standard Schedule');
+            $stripeMetadata['delivery_address'] = mb_substr(trim(($payload['address'] ?? '') . ', ' . ($payload['city'] ?? '') . ', ' . ($payload['postcode'] ?? '') . ' ' . ($payload['state'] ?? '')), 0, 450);
+            $stripeMetadata['delivery_zone']    = (string) ($payload['delivery_zone'] ?? 'Standard');
+        } else {
+            $stripeMetadata['collection_date']  = (string) ($payload['collection_date'] ?: 'Today');
+            $stripeMetadata['collection_time']  = (string) ($payload['collection_time'] ?: 'Standard Hours');
+            $stripeMetadata['collection_point'] = 'MST Counter 2, SILC Industrial Park';
+        }
+
+        if (!empty($payload['customer_notes'])) {
+            $stripeMetadata['customer_notes']   = mb_substr($payload['customer_notes'], 0, 450);
+        }
+
         session(['stripe_checkout_payload' => $payload]);
 
         $currentAppLocale = app()->getLocale();
@@ -334,13 +365,10 @@ class CheckoutController extends Controller
                 'success_url'          => route('checkout.stripe.success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url'           => $isWalkin ? route('walkin.checkout') : route('checkout.stripe.cancel'),
                 'customer_email'       => !empty($payload['customer_email']) ? trim($payload['customer_email']) : null,
-                'metadata'             => [
-                    'user_id'              => Auth::id() ?? 'guest',
-                    'fulfillment_type'     => $request->fulfillment_type,
-                    'customer_group'       => $group,
-                    'shipping_fee'         => (string) $shippingFee,
-                    'expected_total_cents' => $expectedTotalCents,
-                    'site_locale'          => $currentAppLocale,
+                'metadata'             => $stripeMetadata,
+                'payment_intent_data'  => [
+                    'metadata'    => $stripeMetadata,
+                    'description' => "Order #{$orderNumber} - " . ($payload['customer_name'] ?? 'Customer') . " (" . ucfirst(str_replace('_', ' ', $request->fulfillment_type)) . ")",
                 ],
             ]);
 
@@ -475,6 +503,7 @@ class CheckoutController extends Controller
             $initialStatus = $isPaid ? 'confirmed' : 'pending';
 
             $order = Order::create([
+                'order_number'          => $payload['order_number'] ?? null,
                 'user_id'               => $user?->id ?? ($payload['user_id'] ?? null),
                 'customer_group'        => $group,
                 'customer_name'         => $payload['customer_name'] ?? $user?->name ?? 'Customer',
