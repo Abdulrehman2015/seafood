@@ -15,6 +15,94 @@ class Setting extends Model
     protected static array $inMemorySettings = [];
 
     /**
+     * List of sensitive keys that must be encrypted at rest in the database in Hash format.
+     */
+    public static array $sensitiveKeys = [
+        'mail_password',
+        'stripe_secret',
+        'stripe_test_secret',
+        'stripe_live_secret',
+        'stripe_key',
+        'stripe_test_key',
+        'stripe_live_key',
+        'stripe_webhook_secret',
+        'whatsapp_api_key',
+        'webhook_signing_secret',
+        'recaptcha_secret_key',
+    ];
+
+    /**
+     * Check whether a given setting key is sensitive.
+     */
+    public static function isSensitiveKey(string $key): bool
+    {
+        if (in_array($key, static::$sensitiveKeys, true)) {
+            return true;
+        }
+
+        return str_ends_with($key, '_secret') || str_ends_with($key, '_password') || str_ends_with($key, '_api_key');
+    }
+
+    /**
+     * Prepare a setting value for secure storage (encrypt sensitive fields into Hash/Cipher format).
+     */
+    public static function prepareValueForStorage(string $key, ?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return $value;
+        }
+
+        if (static::isSensitiveKey($key)) {
+            // Already encrypted in Hash format
+            if (str_starts_with($value, 'enc:')) {
+                return $value;
+            }
+
+            try {
+                return 'enc:' . \Illuminate\Support\Facades\Crypt::encryptString($value);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning("Setting [{$key}] encryption failed: " . $e->getMessage());
+                return $value;
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * Format a setting value retrieved from storage (decrypt encrypted Hash fields).
+     */
+    public static function formatValueFromStorage(string $key, ?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return $value;
+        }
+
+        if (str_starts_with($value, 'enc:')) {
+            try {
+                return \Illuminate\Support\Facades\Crypt::decryptString(substr($value, 4));
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning("Setting [{$key}] decryption failed: " . $e->getMessage());
+                return $value;
+            }
+        }
+
+        // Backward compatibility for raw Crypt payload or unencrypted legacy value
+        if (static::isSensitiveKey($key)) {
+            try {
+                $decoded = json_decode(base64_decode($value, true) ?: '', true);
+                if (is_array($decoded) && isset($decoded['iv'], $decoded['value'], $decoded['mac'])) {
+                    return \Illuminate\Support\Facades\Crypt::decryptString($value);
+                }
+            } catch (\Throwable $e) {
+                // Not encrypted, return raw
+            }
+        }
+
+        return $value;
+    }
+
+    /**
      * Get a setting by key with fallback.
      */
     public static function get(string $key, $default = null)
@@ -23,10 +111,21 @@ class Setting extends Model
             return static::$inMemorySettings[$key] ?? $default;
         }
 
-        return static::$inMemorySettings[$key] = Cache::remember("setting.{$key}", 3600, function () use ($key, $default) {
-            $setting = static::where('key', $key)->first();
-            return $setting ? $setting->value : $default;
-        });
+        try {
+            $raw = Cache::remember("setting.{$key}", 3600, function () use ($key) {
+                $setting = static::where('key', $key)->first();
+                return $setting ? $setting->value : null;
+            });
+
+            if ($raw === null) {
+                return $default;
+            }
+
+            $decrypted = static::formatValueFromStorage($key, $raw);
+            return static::$inMemorySettings[$key] = $decrypted;
+        } catch (\Throwable $e) {
+            return $default;
+        }
     }
 
     /**
@@ -38,7 +137,9 @@ class Setting extends Model
         Cache::forget("setting.{$key}");
         Cache::forget('settings.all');
 
-        return static::updateOrCreate(['key' => $key], ['value' => $value]);
+        $storedValue = static::prepareValueForStorage($key, is_null($value) ? '' : (string) $value);
+
+        return static::updateOrCreate(['key' => $key], ['value' => $storedValue]);
     }
 
     /**
@@ -266,6 +367,9 @@ class Setting extends Model
             ];
 
             $dbSettings = static::pluck('value', 'key')->toArray();
+            foreach ($dbSettings as $k => $v) {
+                $dbSettings[$k] = static::formatValueFromStorage($k, $v);
+            }
 
             return array_merge($defaults, $dbSettings);
         });
