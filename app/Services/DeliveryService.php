@@ -37,15 +37,8 @@ class DeliveryService
         $cleanPostcode = trim((string) $postcode);
         $cleanCity     = strtolower(trim((string) $city));
 
-        // Strict Business Rule: Skudai (81300) is strictly classified as Zone B (Extended Cold-Chain Quotation)
-        if ($cleanPostcode === '81300' || str_contains($cleanCity, 'skudai')) {
-            $zoneB = DeliveryZone::where('code', 'ZONE-B')->first();
-            if ($zoneB) {
-                return $zoneB;
-            }
-        }
-
         $zones = DeliveryZone::active()->forCustomerGroup($group)->get();
+
 
         foreach ($zones as $zone) {
             if ($zone->matchesLocation($postcode, $city, $state)) {

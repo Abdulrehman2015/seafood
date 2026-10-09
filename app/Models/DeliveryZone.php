@@ -60,10 +60,10 @@ class DeliveryZone extends Model
         $cleanPostcode = trim((string) $postcode);
         $cleanCity     = strtolower(trim((string) $city));
         $cleanState    = strtolower(trim((string) $state));
-
-        // Explicit Exclusion: Skudai (81300) must NEVER match Zone A
-        if ($this->code === 'ZONE-A') {
-            if ($cleanPostcode === '81300' || str_contains($cleanCity, 'skudai')) {
+        // Special Business Rule for Kulai: Only Indahpura is included in Zone A.
+        // Other Kulai areas remain in extended / Outstation coverage.
+        if ($this->code === 'ZONE-A' && $cleanPostcode === '81000') {
+            if (!str_contains($cleanCity, 'indahpura')) {
                 return false;
             }
         }
