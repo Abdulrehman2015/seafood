@@ -150,6 +150,24 @@ def create_document():
 
         doc.add_paragraph().paragraph_format.space_after = Pt(4)
 
+    def add_image_figure(image_path, caption_text, width=Inches(6.2)):
+        if os.path.exists(image_path):
+            p_img = doc.add_paragraph()
+            p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p_img.paragraph_format.space_before = Pt(6)
+            p_img.paragraph_format.space_after = Pt(2)
+            p_img.add_run().add_picture(image_path, width=width)
+
+            p_cap = doc.add_paragraph()
+            p_cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p_cap.paragraph_format.space_before = Pt(2)
+            p_cap.paragraph_format.space_after = Pt(8)
+            r_cap = p_cap.add_run(f"Figure: {caption_text}")
+            r_cap.font.name = "Calibri"
+            r_cap.font.size = Pt(8.5)
+            r_cap.font.italic = True
+            r_cap.font.color.rgb = c_slate
+
     # ═══════════════════════════════════════════════════════════════════════════
     # 1. HEADER / TITLE BLOCK
     # ═══════════════════════════════════════════════════════════════════════════
@@ -172,13 +190,13 @@ def create_document():
 
     r_title = hp.add_run("CLIENT REQUIREMENTS CONSOLIDATION, ZONE A SPECIFICATION\n& COMPLETE BACKEND ADMINISTRATION MANUAL\n")
     r_title.font.name = "Calibri"
-    r_title.font.size = Pt(14.5)
+    r_title.font.size = Pt(14)
     r_title.font.bold = True
     r_title.font.color.rgb = RGBColor(255, 255, 255)
 
-    r_sub = hp.add_run("Formal Technical Response, Postcode Directory (Postcode.my), Operational Manual & Handover Roadmap")
+    r_sub = hp.add_run("Formal Technical Response, Postcode.my Reference Directory, Illustrated Admin Manual, Promotion Analysis & Handover Roadmap")
     r_sub.font.name = "Calibri"
-    r_sub.font.size = Pt(10)
+    r_sub.font.size = Pt(9.5)
     r_sub.font.italic = True
     r_sub.font.color.rgb = RGBColor(224, 242, 254)
 
@@ -191,9 +209,9 @@ def create_document():
     col_widths = [Inches(3.5), Inches(3.5)]
 
     meta_data = [
-        [("Addressed To:", "MST Management & Client Representative"), ("Prepared By:", "Abdul Rehman (Lead Full-Stack & Technical Architect)")],
-        [("Document Reference:", "MST-UAT-CONSOLIDATION-2026-V1"), ("Date of Issuance:", "October 9, 2026")],
-        [("Platform Version:", "Laravel Unified B2B & B2C Production Engine"), ("Status:", "Official Response & Action Plan Ready")]
+        [("Addressed To:", "Wendy (Client Project Lead) & MST Management"), ("Prepared By:", "Abdul Rehman (Lead Full-Stack & Technical Architect)")],
+        [("Document Reference:", "MST-UAT-CONSOLIDATION-2026-FINAL"), ("Date of Issuance:", "October 9, 2026")],
+        [("Platform Version:", "Laravel Unified B2B & B2C Cold-Chain Engine"), ("Status:", "Official Response & Action Plan Ready for Final UAT")]
     ]
 
     for r_idx, row in enumerate(meta_table.rows):
@@ -219,11 +237,12 @@ def create_document():
 
     # Executive Greeting & Callout
     add_callout(
-        "Thank you for your comprehensive consolidation message. We have carefully reviewed every requirement regarding "
-        "Zone A delivery coverage, delivery fee rules, backend administration, promotions/discounts, and final handover. "
-        "All code updates regarding Skudai (81300) and Kulai (Indahpura only) have been implemented and aligned. "
-        "This document provides the compiled Postcode.my directory for your review, a complete step-by-step Admin Operation Manual, "
-        "a transparent review of the coupon/marketing attribution architecture, and our final handover confirmation.",
+        "Dear Wendy,\n\n"
+        "Thank you for your comprehensive consolidation message. We have carefully reviewed and systematically addressed every requirement regarding "
+        "MST Zone A delivery coverage, delivery fee rules, backend administration, promotions/discounts, and final handover.\n\n"
+        "All code updates regarding Skudai (81300) and Kulai (Indahpura only) have been implemented, tested, and pushed to the live deployment pipeline. "
+        "This document provides the complete compiled Postcode.my directory for your review, a step-by-step illustrated Admin Operation Manual, "
+        "a transparent technical review of the requested coupon/marketing attribution architecture, and our final handover roadmap.",
         title="Executive Opening & Acknowledgment",
         fill_hex="F0FDF4",
         border_hex="16A34A"
@@ -259,7 +278,7 @@ def create_document():
         ("7", "Skudai (incl. 81300)", "81300", "Skudai Town, Taman Universiti, Mutiara Rini, Taman Ungku Tun Aminah (TUTA), Skudai Baru, Sutera Utama / Sutera Mall", "Zone A (Local)"),
         ("8", "Setia Eco Gardens", "81550", "Setia Eco Gardens, Eco Village, Gelang Patah Southern Corridor", "Zone A (Local)"),
         ("9", "Mount Austin", "81100", "Taman Mount Austin, Austin Heights, Austin Perdana, Austin Duta, Taman Daya, JP Perdana", "Zone A (Local)"),
-        ("10", "Confirmed ICQ Area (Iskandar Puteri)", "79000, 79100, 79200, 79250", "Kompleks Sultan Abu Bakar (Second Link CIQ), Tanjung Kupang, Puteri Harbour Ferry Terminal ICQ, Kota Iskandar CIQ checkpoints", "Zone A (Local)")
+        ("10", "Confirmed ICQ Area (Iskandar Puteri)", "79000, 79100, 79200, 79250, 79500", "Kompleks Sultan Abu Bakar (Second Link CIQ), Tanjung Kupang, Puteri Harbour Ferry Terminal ICQ, Kota Iskandar CIQ checkpoints", "Zone A (Local)")
     ]
 
     p_table = doc.add_table(rows=len(postcode_table_data), cols=5)
@@ -310,7 +329,7 @@ def create_document():
     doc.add_paragraph().paragraph_format.space_after = Pt(8)
 
     # ═══════════════════════════════════════════════════════════════════════════
-    # 3. SECTION 2: DELIVERY FEE RULES CONFIRMATION
+    # 3. SECTION 2: DELIVERY FEE RULES CONFIRMATION & VISUAL PROOF
     # ═══════════════════════════════════════════════════════════════════════════
     add_heading("2. Delivery Fee Rules & Fulfillment Workflow Confirmation", level=1)
     add_body("We confirm that all six delivery fee rules specified in your message are strictly retained, active, and verified:")
@@ -323,6 +342,12 @@ def create_document():
     add_bullet("Checkout displays: 'Please allow up to 7 working days for order sourcing and cold-chain delivery arrangements. The available delivery date will be confirmed by MST based on product availability and delivery scheduling.'", bold_prefix="• 7 Working Days Delivery Lead-Time Notice: ")
     add_bullet("Orders of any value (e.g. RM25, RM50, RM80) are fully permitted to proceed to payment. RM150 functions strictly as the delivery waiver threshold, preserving retail sales volume.", bold_prefix="• RM150 Reference Threshold (Non-Blocking): ")
 
+    # Visual Evidence / Screenshots
+    add_heading("Visual Evidence: Verified Cart & Checkout Delivery Behaviors", level=2)
+    add_image_figure("screenshots/01_cart_rm93_below_threshold.png", "Shopping Cart showing RM10 delivery fee and dynamic spend tracker toward the RM150 free delivery threshold.")
+    add_image_figure("screenshots/03_checkout_delivery_rm93_single_fee.png", "Live Checkout page displaying the Zone A lead-time notice, address fields, and single itemized RM10 fee.")
+    add_image_figure("screenshots/04_checkout_self_collection_rm93.png", "Checkout with Self-Collection selected: Delivery address hidden, collection date and time slots required, RM0.00 fee.")
+
     # ═══════════════════════════════════════════════════════════════════════════
     # 4. SECTION 3: STEP-BY-STEP WEBSITE ADMIN & OPERATION MANUAL
     # ═══════════════════════════════════════════════════════════════════════════
@@ -333,10 +358,10 @@ def create_document():
     )
 
     add_heading("3.1. Updating Company Information, Address, Phone, WhatsApp & Email", level=2)
-    add_bullet("Navigate to: Admin Panel → Store Settings (URL: /admin/settings).", bold_prefix="Step 1: ")
-    add_bullet("Locate the 'Store Legacy / Physical Details' card and 'SMTP Mail Settings' card.", bold_prefix="Step 2: ")
-    add_bullet("Editable fields include: Store Name, Store Tagline, Store Physical Address, Phone Number, WhatsApp Number (format: 601112710260 without '+' or hyphens for WhatsApp API compatibility), Store Contact Email, and Business Operating Hours.", bold_prefix="Step 3: ")
-    add_bullet("Click 'Save All Settings' at the bottom of the page. The system clears the settings cache immediately, and all footer, header, and contact page elements update site-wide.", bold_prefix="Step 4: ")
+    add_bullet("Navigate to: Admin Panel → Store Settings (URL: /admin/settings).", bold_prefix="Step 1 — Access: ")
+    add_bullet("Locate the 'Store Legacy / Physical Details' card and 'SMTP Mail Settings' card.", bold_prefix="Step 2 — Location: ")
+    add_bullet("Editable fields include: Store Name, Store Tagline, Store Physical Address, Phone Number, WhatsApp Number (format: 601112710260 without '+' or hyphens for WhatsApp API compatibility), Store Contact Email, and Business Operating Hours.", bold_prefix="Step 3 — Editable Fields: ")
+    add_bullet("Click 'Save All Settings' at the bottom of the page. The system clears the settings cache immediately, and all footer, header, and contact page elements update site-wide.", bold_prefix="Step 4 — Confirmation: ")
 
     add_heading("3.2. Updating Website Banners, Announcements & Page Content", level=2)
     add_bullet("Homepage Hero & Announcements: Managed via Admin Panel → Store Settings → Site Appearance & General Settings. Update the primary site title, meta description, and banner text.", bold_prefix="Banners & Announcements: ")
@@ -479,7 +504,7 @@ def create_document():
     add_bullet("If approved, this can be executed immediately as a supplementary milestone or post-handover enhancement without delaying the primary platform UAT sign-off.", bold_prefix="Execution Path: ")
 
     # ═══════════════════════════════════════════════════════════════════════════
-    # 6. SECTION 5: FINAL HANDOVER & DOCUMENTATION
+    # 6. SECTION 5: FINAL HANDOVER, CREDENTIALS & ACCEPTANCE ROADMAP
     # ═══════════════════════════════════════════════════════════════════════════
     add_heading("5. Final Handover, Credentials & Acceptance Roadmap", level=1)
 
